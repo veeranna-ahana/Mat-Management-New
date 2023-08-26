@@ -21,9 +21,10 @@ function PofilesMaterials(props) {
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
-  let [firstTableData, setFirstTableData] = useState([]);
-  let [secondTableData, setSecondTableData] = useState([]);
-  let [thirdTable, setThirdTable] = useState([]);
+  const [firstTableData, setFirstTableData] = useState([]);
+  const [secondTableData, setSecondTableData] = useState([]);
+  const [thirdTable, setThirdTable] = useState([]);
+  const [thirdTableData, setThirdTableData] = useState([]);
   let [objShape, setObjShape] = useState({});
   let [objMaterial, setObjMaterial] = useState({});
 
@@ -227,7 +228,7 @@ function PofilesMaterials(props) {
   // console.log("selected first table..", firstTableSelectedRow);
 
   const selectRowFirstFun = (rowData) => {
-    console.log("clciked................", rowData);
+    console.log("inside first select................", rowData);
 
     // console.log("all, data", allData);
     setFirstTableSelectedRow([]);
@@ -387,57 +388,85 @@ function PofilesMaterials(props) {
     // //     }
     // //   },
   };
-  const selectRowSecond = {
-    mode: "checkbox",
-    clickToSelect: true,
-    bgColor: "#8A92F0",
-    selected: selectedSecond.selected,
-    onSelect: (row, isSelect) => {
-      if (isSelect) {
-        //setFirstTableSingleRow(row);
-        //console.log("third table = ", thirdTable);
-        //console.log("row = ", row);
+  const selectRowSecondFun = (rowData) => {
+    console.log("inside second select", rowData);
 
-        const newArray = allData.filter((obj) => {
-          return obj.MtrlStockID === row.MtrlStockID;
-        });
+    setThirdTableData([...thirdTableData, rowData]);
 
-        let arr = [];
-        //mark checkbox of second table
-        newArray.forEach(async (item, i) => {
-          arr = [...selectedSecond.selected, item.MtrlStockID];
-        });
-        setSelectedSecond({
-          selected: arr,
-        });
-        //console.log("new array = ", newArray);
-        //console.log("selected = ", selectedSecond);
-        //setSecondTable(newArray);
-        thirdTable.push.apply(thirdTable, newArray);
-        setThirdTable(thirdTable);
-      } else {
-        //console.log("third table = ", thirdTable);
-        //console.log("row = ", row);
-        let newData = thirdTable.filter((obj, index) => {
-          return obj.MtrlStockID !== row.MtrlStockID;
-        });
+    console.log("third table data", thirdTableData);
+    //setFirstTableSingleRow(row);
+    //console.log("third table = ", thirdTable);
+    //console.log("row = ", row);
 
-        //secondTable.forEach((item, i) => {
-        setSelectedSecond({
-          selected: selectedSecond.selected.filter((ele) => {
-            return ele !== row.MtrlStockID;
-          }),
-        });
-        //});
+    // const newArray = allData.filter((obj) => {
+    //   return obj.MtrlStockID === row.MtrlStockID;
+    // });
 
-        // setSelectedSecond({
-        //   selected: [],
-        // });
-
-        setThirdTable(newData);
-      }
-    },
+    // let arr = [];
+    // //mark checkbox of second table
+    // newArray.forEach(async (item, i) => {
+    //   arr = [...selectedSecond.selected, item.MtrlStockID];
+    // });
+    // setSelectedSecond({
+    //   selected: arr,
+    // });
+    // //console.log("new array = ", newArray);
+    // //console.log("selected = ", selectedSecond);
+    // //setSecondTable(newArray);
+    // thirdTable.push.apply(thirdTable, newArray);
+    // setThirdTable(thirdTable);
   };
+  // const selectRowSecond = {
+  //   mode: "checkbox",
+  //   clickToSelect: true,
+  //   bgColor: "#8A92F0",
+  //   selected: selectedSecond.selected,
+  //   onSelect: (row, isSelect) => {
+  //     if (isSelect) {
+  //       //setFirstTableSingleRow(row);
+  //       //console.log("third table = ", thirdTable);
+  //       //console.log("row = ", row);
+
+  //       const newArray = allData.filter((obj) => {
+  //         return obj.MtrlStockID === row.MtrlStockID;
+  //       });
+
+  //       let arr = [];
+  //       //mark checkbox of second table
+  //       newArray.forEach(async (item, i) => {
+  //         arr = [...selectedSecond.selected, item.MtrlStockID];
+  //       });
+  //       setSelectedSecond({
+  //         selected: arr,
+  //       });
+  //       //console.log("new array = ", newArray);
+  //       //console.log("selected = ", selectedSecond);
+  //       //setSecondTable(newArray);
+  //       thirdTable.push.apply(thirdTable, newArray);
+  //       setThirdTable(thirdTable);
+  //     } else {
+  //       //console.log("third table = ", thirdTable);
+  //       //console.log("row = ", row);
+  //       let newData = thirdTable.filter((obj, index) => {
+  //         return obj.MtrlStockID !== row.MtrlStockID;
+  //       });
+
+  //       //secondTable.forEach((item, i) => {
+  //       setSelectedSecond({
+  //         selected: selectedSecond.selected.filter((ele) => {
+  //           return ele !== row.MtrlStockID;
+  //         }),
+  //       });
+  //       //});
+
+  //       // setSelectedSecond({
+  //       //   selected: [],
+  //       // });
+
+  //       setThirdTable(newData);
+  //     }
+  //   },
+  // };
   let createReturnVoucher = async () => {
     //console.log("selected rows = ", firstTableSelectedRow);
     //console.log("second = ", secondTable);
@@ -730,7 +759,10 @@ function PofilesMaterials(props) {
         <div className="col-md-6 col-sm-12">
           <div style={{ maxHeight: "400px", overflow: "auto" }}>
             {" "}
-            <SecondTable secondTableData={secondTableData} />
+            <SecondTable
+              secondTableData={secondTableData}
+              selectRowSecondFun={selectRowSecondFun}
+            />
             {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsSecond}
@@ -745,7 +777,7 @@ function PofilesMaterials(props) {
         </div>
         <div className="col-md-6 col-sm-12">
           <div style={{ maxHeight: "400px", overflow: "auto" }}>
-            <ThirdTable />
+            <ThirdTable thirdTableData={thirdTableData} />
             {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsThird}

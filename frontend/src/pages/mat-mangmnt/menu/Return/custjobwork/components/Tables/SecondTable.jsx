@@ -21,7 +21,14 @@ export default function SecondTable(props) {
         </thead>
         <tbody>
           {props.secondTableData.map((val, key) => (
-            <tr>
+            // <tr>
+
+            <tr
+              onClick={() => props.selectRowSecondFun(val)}
+              // className={
+              //   val === props.firstTableSelectedRow ? "selectedRowClr" : ""
+              // }
+            >
               <td>{key + 1}</td>
               <td>{val.MtrlStockID}</td>
               <td>
