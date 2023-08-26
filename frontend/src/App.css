@@ -481,3 +481,7 @@ li.nav-item {
   /* top: -1px; */
   text-transform: capitalize;
 }
+
+.selectedRowClr {
+  background-color: rgb(152, 168, 248) !important;
+}

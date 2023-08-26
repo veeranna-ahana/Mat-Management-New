@@ -6,6 +6,9 @@ import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
 import { formatDate, get_Iv_DetailsEntry } from "../../../../../../utils";
 import CreateReturnNewModal from "../../../../components/CreateReturnNewModal";
+import FirstTable from "./Tables/FirstTable";
+import SecondTable from "./Tables/SecondTable";
+import ThirdTable from "./Tables/ThirdTable";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
@@ -18,8 +21,8 @@ function PofilesMaterials(props) {
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
-  let [firstTable, setFirstTable] = useState([]);
-  let [secondTable, setSecondTable] = useState([]);
+  let [firstTableData, setFirstTableData] = useState([]);
+  let [secondTableData, setSecondTableData] = useState([]);
   let [thirdTable, setThirdTable] = useState([]);
   let [objShape, setObjShape] = useState({});
   let [objMaterial, setObjMaterial] = useState({});
@@ -44,7 +47,7 @@ function PofilesMaterials(props) {
           item.id = i + 1;
           item.Issue = false;
         });
-        setFirstTable(data);
+        setFirstTableData(data);
       });
 
       //fetch second table data
@@ -221,76 +224,168 @@ function PofilesMaterials(props) {
       editable: false,
     },
   ];
-  const selectRowFirst = {
-    mode: "checkbox",
-    clickToSelect: true,
-    selectColumnPosition: "right",
-    selectionHeaderRenderer: () => "Issue",
-    bgColor: "#8A92F0",
-    onSelect: (row, isSelect, rowIndex) => {
-      if (isSelect) {
-        //console.log("first table = ", firstTable);
-        //console.log("second table = ",secondTable)
+  // console.log("selected first table..", firstTableSelectedRow);
 
-        //store selected row data
-        setFirstTableSelectedRow(
-          //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
-          [...firstTableSelectedRow, firstTable[rowIndex]]
-        );
+  const selectRowFirstFun = (rowData) => {
+    console.log("clciked................", rowData);
 
-        const newArray = allData.filter((obj) => {
-          return (
-            obj.RV_No === row.RV_No &&
-            obj.Mtrl_Code === row.Mtrl_Code &&
-            obj.DynamicPara1 === row.DynamicPara1 &&
-            obj.DynamicPara2 === row.DynamicPara2
-          );
-        });
+    // console.log("all, data", allData);
+    setFirstTableSelectedRow([]);
+    setFirstTableSelectedRow(rowData);
 
-        let arr = [];
-        //mark checkbox of second table
-        newArray.forEach(async (item, i) => {
-          arr = [...arr, item.MtrlStockID];
-        });
-        setSelectedSecond({
-          selected: arr,
-        });
-        //console.log("new array = ", newArray);
-        //console.log("selected = ", selectedSecond);
-        setSecondTable(newArray);
-        thirdTable.push.apply(thirdTable, newArray);
-        setThirdTable(thirdTable);
-      } else {
-        //remove row in selectedTRow array
-        setFirstTableSelectedRow(
-          firstTableSelectedRow.filter((obj) => {
-            return (
-              obj.RV_No !== row.RV_No &&
-              obj.Mtrl_Code !== row.Mtrl_Code &&
-              obj.DynamicPara1 !== row.DynamicPara1 &&
-              obj.DynamicPara2 !== row.DynamicPara2
-            );
-          })
-        );
+    const newArray = allData.filter((obj) => {
+      return (
+        obj.RV_No === rowData.RV_No &&
+        obj.Mtrl_Code === rowData.Mtrl_Code &&
+        obj.DynamicPara1 === rowData.DynamicPara1 &&
+        obj.DynamicPara2 === rowData.DynamicPara2
+      );
+    });
 
-        //console.log("selected = ", selectedSecond);
-        //console.log("third table = ", thirdTable);
-        let newData = thirdTable.filter((obj, index) => {
-          return (
-            obj.RV_No !== row.RV_No ||
-            obj.Mtrl_Code !== row.Mtrl_Code ||
-            obj.DynamicPara1 !== row.DynamicPara1 ||
-            obj.DynamicPara2 !== row.DynamicPara2
-          );
-        });
+    // console.log("newArray", newArray);
+    setSecondTableData([]);
+    setSecondTableData(newArray);
+    // console.log("all data.....", allData);
+    // setFirstTableSelectedRow([]);
+    // for (let i = 0; i < allData.length; i++) {
+    //   const element = allData[i];
+    //   if (
+    //     rowData.RV_No === element.RV_No &&
+    //     rowData.RvID === element.RVId &&
+    //     rowData.Cust_Code === element.Cust_Code
+    //   ) {
+    //     console.log("data inside...", element);
+    //   }
+    //   //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
+    // }
+    // allData.map((obj) => {
+    // });
 
-        setSelectedSecond({
-          selected: [],
-        });
+    // console.log("selected first table..", firstTableSelectedRow);
+    // setSelectedSecond({
+    //   selected: [],
+    // });
 
-        setThirdTable(newData);
-      }
-    },
+    // //console.log("first table = ", firstTable);
+    // //console.log("second table = ",secondTable)
+
+    // //store selected row data
+
+    // const newArray = allData.filter((obj) => {
+    //   return (
+    //     obj.RV_No === row.RV_No &&
+    //     obj.Mtrl_Code === row.Mtrl_Code &&
+    //     obj.DynamicPara1 === row.DynamicPara1 &&
+    //     obj.DynamicPara2 === row.DynamicPara2
+    //   );
+    // });
+
+    // console.log("newArray... getting the selected row data...", newArray);
+
+    // let arr = [];
+    // //mark checkbox of second table
+    // newArray.forEach(async (item, i) => {
+    //   arr = [...arr, item.MtrlStockID];
+    // });
+
+    // console.log("arr...getting all the selected mtrlstockids ", arr);
+
+    // // selecting all the mtrlstckids by default in second table
+
+    // // setSelectedSecond({
+    // //   selected: arr,
+    // // });
+
+    // setSelectedSecond({
+    //   selected: [],
+    // });
+
+    // //console.log("new array = ", newArray);
+    // console.log("selectedSecond...... ", selectedSecond);
+    // setSecondTable(newArray);
+    // // thirdTable.push.apply(thirdTable, newArray);
+    // // setThirdTable(thirdTable);
+    // //   mode: "checkbox",
+    // //   clickToSelect: true,
+    // //   selectColumnPosition: "right",
+    // //   selectionHeaderRenderer: () => "Issue",
+    // //   bgColor: "#8A92F0",
+    // //   onSelect: (row, isSelect, rowIndex) => {
+    // //     if (isSelect) {
+    // //       //console.log("first table = ", firstTable);
+    // //       //console.log("second table = ",secondTable)
+
+    // //       //store selected row data
+    // //       setFirstTableSelectedRow(
+    // //         //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
+    // //         [...firstTableSelectedRow, firstTable[rowIndex]]
+    // //       );
+
+    // //       const newArray = allData.filter((obj) => {
+    // //         return (
+    // //           obj.RV_No === row.RV_No &&
+    // //           obj.Mtrl_Code === row.Mtrl_Code &&
+    // //           obj.DynamicPara1 === row.DynamicPara1 &&
+    // //           obj.DynamicPara2 === row.DynamicPara2
+    // //         );
+    // //       });
+
+    // //       console.log("newArray... getting the selected row data...", newArray);
+
+    // //       let arr = [];
+    // //       //mark checkbox of second table
+    // //       newArray.forEach(async (item, i) => {
+    // //         arr = [...arr, item.MtrlStockID];
+    // //       });
+
+    // //       console.log("arr...getting all the selected mtrlstockids ", arr);
+
+    // //       // selecting all the mtrlstckids by default in second table
+
+    // //       // setSelectedSecond({
+    // //       //   selected: arr,
+    // //       // });
+
+    // //       setSelectedSecond({
+    // //         selected: [],
+    // //       });
+
+    // //       //console.log("new array = ", newArray);
+    // //       console.log("selectedSecond...... ", selectedSecond);
+    // //       setSecondTable(newArray);
+    // //       // thirdTable.push.apply(thirdTable, newArray);
+    // //       // setThirdTable(thirdTable);
+    // //     } else {
+    // //       //remove row in selectedTRow array
+    // //       setFirstTableSelectedRow(
+    // //         firstTableSelectedRow.filter((obj) => {
+    // //           return (
+    // //             obj.RV_No !== row.RV_No &&
+    // //             obj.Mtrl_Code !== row.Mtrl_Code &&
+    // //             obj.DynamicPara1 !== row.DynamicPara1 &&
+    // //             obj.DynamicPara2 !== row.DynamicPara2
+    // //           );
+    // //         })
+    // //       );
+
+    // //       //console.log("selected = ", selectedSecond);
+    // //       //console.log("third table = ", thirdTable);
+    // //       let newData = thirdTable.filter((obj, index) => {
+    // //         return (
+    // //           obj.RV_No !== row.RV_No ||
+    // //           obj.Mtrl_Code !== row.Mtrl_Code ||
+    // //           obj.DynamicPara1 !== row.DynamicPara1 ||
+    // //           obj.DynamicPara2 !== row.DynamicPara2
+    // //         );
+    // //       });
+
+    // //       setSelectedSecond({
+    // //         selected: [],
+    // //       });
+
+    // //       // setThirdTable(newData);
+    // //     }
+    // //   },
   };
   const selectRowSecond = {
     mode: "checkbox",
@@ -344,8 +439,8 @@ function PofilesMaterials(props) {
     },
   };
   let createReturnVoucher = async () => {
-    console.log("selected rows = ", firstTableSelectedRow);
-    console.log("second = ", secondTable);
+    //console.log("selected rows = ", firstTableSelectedRow);
+    //console.log("second = ", secondTable);
 
     get_Iv_DetailsEntry();
     if (thirdTable.length === 0) {
@@ -408,7 +503,7 @@ function PofilesMaterials(props) {
             (data) => {
               //console.log("data = ", data);
               if (data.affectedRows !== 0) {
-                console.log("Record inserted 1 : materialIssueRegister");
+                //console.log("Record inserted 1 : materialIssueRegister");
                 //insert second table
                 setSrlIVID(data.insertId);
 
@@ -482,17 +577,17 @@ function PofilesMaterials(props) {
                     RvId: firstTableSelectedRow[i].RvID,
                     Mtrl_Rv_id: firstTableSelectedRow[i].Mtrl_Rv_id,
                   };
-                  console.log(
-                    "newRowMtrlIssueDetails : ",
-                    newRowMtrlIssueDetails
-                  );
+                  //console.log(
+                  //   "newRowMtrlIssueDetails : ",
+                  //   newRowMtrlIssueDetails
+                  // );
                   postRequest(
                     endpoints.insertMtrlIssueDetails,
                     newRowMtrlIssueDetails,
                     async (data) => {
                       //console.log("data = ", data);
                       if (data.affectedRows !== 0) {
-                        console.log("Record inserted 1 : materialIssueDetails");
+                        //console.log("Record inserted 1 : materialIssueDetails");
                       } else {
                         toast.error("Record Not Inserted");
                       }
@@ -547,14 +642,6 @@ function PofilesMaterials(props) {
   };
   return (
     <>
-      <CreateReturnNewModal
-        show={show}
-        setShow={setShow}
-        srlMaterialType={srlMaterialType}
-        srlIVID={srlIVID}
-        IVNOVal={IVNOVal}
-      />
-
       <div>
         <button
           className="button-style"
@@ -565,8 +652,69 @@ function PofilesMaterials(props) {
         </button>
       </div>
       <div className="row-md-12 table-data mt-3">
-        <div style={{ height: "400px", overflowY: "scroll" }}>
-          <BootstrapTable
+        <div
+          style={{
+            maxHeight: "400px",
+            overflow: "auto",
+          }}
+        >
+          <FirstTable
+            firstTableData={firstTableData}
+            selectRowFirstFun={selectRowFirstFun}
+            firstTableSelectedRow={firstTableSelectedRow}
+          />
+          {/* <Table
+            hover
+            condensed
+            className="table-data border header-class table-striped"
+          >
+            <thead className="text-white">
+              <tr>
+                <th>Sl No</th>
+                <th>RV No</th>
+                <th>Cust Document</th>
+                <th>Mtrl code</th>
+                <th>Width</th>
+                <th>Length</th>
+                <th>Scrap</th>
+                <th>Weight</th>
+                <th>Scrap Weight</th>
+                <th>In Stock</th>
+                <th>Issue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {firstTable.map((val, k) => (
+                <tr
+                  onClick={() => selectRowFirst(val)}
+                  // className={
+                  //   val.DC_Inv_No === selectedSecond ? "selectedRowClr" : ""
+                  // }
+                >
+                  <td>{k + 1}</td>
+                  <td>{val.RV_No}</td>
+                  <td>{val.Cust_Docu_No}</td>
+                  <td>{val.Mtrl_Code}</td>
+                  <td>{val.DynamicPara1}</td>
+                  <td>{val.DynamicPara2}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={val.Scrap === 0 ? false : true}
+                    />
+                  </td>
+                  <td>{val.Weight}</td>
+                  <td>{val.ScrapWeight}</td>
+                  <td>{val.InStock}</td>
+                  <td>
+                    <input type="checkbox" name="" id="" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table> */}
+
+          {/* <BootstrapTable
             keyField="id"
             columns={columnsFirst}
             data={firstTable}
@@ -575,13 +723,15 @@ function PofilesMaterials(props) {
             condensed
             selectRow={selectRowFirst}
             headerClasses="header-class "
-          ></BootstrapTable>
+          ></BootstrapTable> */}
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-6 col-sm-12">
-          <div style={{ height: "400px", overflowY: "scroll" }}>
-            <BootstrapTable
+          <div style={{ maxHeight: "400px", overflow: "auto" }}>
+            {" "}
+            <SecondTable secondTableData={secondTableData} />
+            {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsSecond}
               data={secondTable}
@@ -590,12 +740,13 @@ function PofilesMaterials(props) {
               condensed
               selectRow={selectRowSecond}
               headerClasses="header-class "
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
         <div className="col-md-6 col-sm-12">
-          <div style={{ height: "400px", overflowY: "scroll" }}>
-            <BootstrapTable
+          <div style={{ maxHeight: "400px", overflow: "auto" }}>
+            <ThirdTable />
+            {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsThird}
               data={thirdTable}
@@ -603,10 +754,19 @@ function PofilesMaterials(props) {
               hover
               condensed
               headerClasses="header-class "
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
       </div>
+
+      {/* create return voucher modal  */}
+      <CreateReturnNewModal
+        show={show}
+        setShow={setShow}
+        srlMaterialType={srlMaterialType}
+        srlIVID={srlIVID}
+        IVNOVal={IVNOVal}
+      />
     </>
   );
 }
