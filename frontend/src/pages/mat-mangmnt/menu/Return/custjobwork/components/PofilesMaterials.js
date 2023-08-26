@@ -66,166 +66,165 @@ function PofilesMaterials(props) {
     //console.log("S props value = ", propsValue);
   }, [props.custCode]);
 
-  const columnsFirst = [
-    {
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },
-    {
-      text: "RV No",
-      dataField: "RV_No",
-      editable: false,
-    },
-    {
-      text: "Cust Document",
-      dataField: "Cust_Docu_No",
-      editable: false,
-    },
-    {
-      text: "Mtrl code",
-      dataField: "Mtrl_Code",
-      editable: false,
-    },
-    {
-      text: "Width",
-      dataField: "DynamicPara1",
-      editable: false,
-    },
-    {
-      text: "Length",
-      dataField: "DynamicPara2",
-      editable: false,
-    },
-    {
-      text: "Scrap",
-      dataField: "Scrap",
-      editable: false,
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input type="checkbox" checked={celContent === 0 ? false : true} />
-          </lable>
-        </div>
-      ),
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-    {
-      text: "Scrap Weight",
-      dataField: "ScrapWeight",
-      editable: false,
-    },
-    {
-      text: "In Stock",
-      dataField: "InStock",
-      editable: false,
-    },
-    /*    {
-      text: "Issue",
-      dataField: "Issue",
-      type: "bool",
-      //editable: true,
-      editor: {
-        type: Type.CHECKBOX,
-        value: "true:false",
-      },
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input
-              type="checkbox"
-              onChange={firstTableCheckoxChange(row)}
-              checked={celContent === true ? true : false}
-            />
-          </lable>
-        </div>
-      ),
-    },*/
-  ];
+  // const columnsFirst = [
+  //   {
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "RV No",
+  //     dataField: "RV_No",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Cust Document",
+  //     dataField: "Cust_Docu_No",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Mtrl code",
+  //     dataField: "Mtrl_Code",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Width",
+  //     dataField: "DynamicPara1",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Length",
+  //     dataField: "DynamicPara2",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Scrap",
+  //     dataField: "Scrap",
+  //     editable: false,
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input type="checkbox" checked={celContent === 0 ? false : true} />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Scrap Weight",
+  //     dataField: "ScrapWeight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "In Stock",
+  //     dataField: "InStock",
+  //     editable: false,
+  //   },
+  //   /*    {
+  //     text: "Issue",
+  //     dataField: "Issue",
+  //     type: "bool",
+  //     //editable: true,
+  //     editor: {
+  //       type: Type.CHECKBOX,
+  //       value: "true:false",
+  //     },
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input
+  //             type="checkbox"
+  //             onChange={firstTableCheckoxChange(row)}
+  //             checked={celContent === true ? true : false}
+  //           />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },*/
+  // ];
 
-  const columnsSecond = [
-    /*{
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },*/
-    {
-      text: "MtrlStockID",
-      dataField: "MtrlStockID",
-      editable: false,
-    },
-    {
-      text: "Issue",
-      dataField: "Issue",
-      type: "bool",
-      editor: {
-        type: Type.CHECKBOX,
-        value: "true:false",
-      },
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input
-              type="checkbox"
-              checked={celContent === true ? true : false}
-            />
-          </lable>
-        </div>
-      ),
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-    {
-      text: "ScrapWeight",
-      dataField: "ScrapWeight",
-      editable: false,
-    },
-    {
-      text: "RVId",
-      dataField: "RVId",
-      editable: false,
-    },
-  ];
-  const columnsThird = [
-    {
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },
-    {
-      text: "MtrlStockID",
-      dataField: "MtrlStockID",
-      editable: false,
-    },
-    {
-      text: "Mtrl_Code",
-      dataField: "Mtrl_Code",
-      editable: false,
-    },
-    {
-      text: "DynamicPara1",
-      dataField: "DynamicPara1",
-      editable: false,
-    },
-    {
-      text: "DynamicPara2",
-      dataField: "DynamicPara2",
-      editable: false,
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-  ];
-  // console.log("selected first table..", firstTableSelectedRow);
+  // const columnsSecond = [
+  //   /*{
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },*/
+  //   {
+  //     text: "MtrlStockID",
+  //     dataField: "MtrlStockID",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Issue",
+  //     dataField: "Issue",
+  //     type: "bool",
+  //     editor: {
+  //       type: Type.CHECKBOX,
+  //       value: "true:false",
+  //     },
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input
+  //             type="checkbox"
+  //             checked={celContent === true ? true : false}
+  //           />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "ScrapWeight",
+  //     dataField: "ScrapWeight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "RVId",
+  //     dataField: "RVId",
+  //     editable: false,
+  //   },
+  // ];
+  // const columnsThird = [
+  //   {
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "MtrlStockID",
+  //     dataField: "MtrlStockID",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Mtrl_Code",
+  //     dataField: "Mtrl_Code",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "DynamicPara1",
+  //     dataField: "DynamicPara1",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "DynamicPara2",
+  //     dataField: "DynamicPara2",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  // ];
 
   const selectRowFirstFun = (rowData) => {
     console.log("inside first select................", rowData);
@@ -389,24 +388,6 @@ function PofilesMaterials(props) {
     // //   },
   };
 
-  //   const [test, setTest] = useState([
-  //     { onea: "onea", oneb: "oneb", onec: "onec" },
-  //     { twoa: "twoa", twob: "twob", twoc: "twoc" },
-  //   ]);
-
-  //   let vari = { twoa: "twoa", twob: "twob", twoc: "twoc" };
-  //   console.log("before", test);
-  //   for (let i = 0; i < test.length; i++) {
-  //     const element = test[i];
-  //     if(element === vari){
-  // console.log('nothing');
-  //     }else{
-
-  //     }
-  //   }
-  //   setTest(test.pop(vari));
-  //   console.log("after", test);
-
   const selectRowSecondFun = (rowData) => {
     // console.log("inside second select", rowData);
     // console.log("third table length", thirdTableData.length);
@@ -543,8 +524,10 @@ function PofilesMaterials(props) {
     //console.log("selected rows = ", firstTableSelectedRow);
     //console.log("second = ", secondTable);
 
+    console.log("firstTableSelectedRow", firstTableSelectedRow);
+
     get_Iv_DetailsEntry();
-    if (thirdTable.length === 0) {
+    if (thirdTableData.length === 0) {
       toast.error("Please select the customer");
     } else {
       //get running no and assign to RvNo
@@ -590,12 +573,12 @@ function PofilesMaterials(props) {
             EMail: "",
             PkngDcNo: "",
             PkngDCDate: null,
-            TotalWeight: thirdTable[0].TotalWeight,
-            TotalCalculatedWeight: thirdTable[0].TotalCalculatedWeight,
+            TotalWeight: thirdTableData[0].TotalWeight,
+            TotalCalculatedWeight: thirdTableData[0].TotalCalculatedWeight,
             UpDated: 0,
             IVStatus: "draft",
             Dc_ID: 0,
-            Type: thirdTable[0].Type,
+            Type: thirdTableData[0].Type,
           };
           //insert first table
           postRequest(
@@ -610,7 +593,7 @@ function PofilesMaterials(props) {
 
                 for (let i = 0; i < firstTableSelectedRow.length; i++) {
                   //find Qty
-                  const foundArray = thirdTable.filter((obj) => {
+                  const foundArray = thirdTableData.filter((obj) => {
                     return (
                       obj.RV_No === firstTableSelectedRow[i].RV_No &&
                       obj.Mtrl_Code === firstTableSelectedRow[i].Mtrl_Code &&
@@ -702,11 +685,11 @@ function PofilesMaterials(props) {
           );
 
           //update mtrlStocklist by ivno and issue
-          for (let i = 0; i < thirdTable.length; i++) {
+          for (let i = 0; i < thirdTableData.length; i++) {
             const mtrlstockData = {
               Issue: 0,
               Iv_No: no,
-              MtrlStockID: thirdTable[i].MtrlStockID,
+              MtrlStockID: thirdTableData[i].MtrlStockID,
             };
             postRequest(
               endpoints.updateIssueIVNo,
