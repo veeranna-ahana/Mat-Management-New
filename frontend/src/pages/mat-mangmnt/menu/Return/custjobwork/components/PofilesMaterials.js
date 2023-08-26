@@ -388,12 +388,84 @@ function PofilesMaterials(props) {
     // //     }
     // //   },
   };
+
+  //   const [test, setTest] = useState([
+  //     { onea: "onea", oneb: "oneb", onec: "onec" },
+  //     { twoa: "twoa", twob: "twob", twoc: "twoc" },
+  //   ]);
+
+  //   let vari = { twoa: "twoa", twob: "twob", twoc: "twoc" };
+  //   console.log("before", test);
+  //   for (let i = 0; i < test.length; i++) {
+  //     const element = test[i];
+  //     if(element === vari){
+  // console.log('nothing');
+  //     }else{
+
+  //     }
+  //   }
+  //   setTest(test.pop(vari));
+  //   console.log("after", test);
+
   const selectRowSecondFun = (rowData) => {
-    console.log("inside second select", rowData);
+    // console.log("inside second select", rowData);
+    // console.log("third table length", thirdTableData.length);
+    // if (thirdTableData.length > 0) {
+    //   for (let i = 0; i < thirdTableData.length; i++) {
+    //     const element = thirdTableData[i];
+    //     // console.log("before", element);
+    //     if (element === rowData) {
+    //       console.log("no need to insert");
+    //       break;
+    //     } else {
+    //       console.log("need to insert");
+    //       setThirdTableData([...thirdTableData, rowData]);
+    //       break;
+    //     }
+    //   }
+    // } else {
+    //   console.log("first element to insert");
 
-    setThirdTableData([...thirdTableData, rowData]);
+    //   setThirdTableData([...thirdTableData, rowData]);
+    // }
 
-    console.log("third table data", thirdTableData);
+    // function add(arr, name) {
+    // const { length } = arr;
+    // const id = length + 1;
+    const found = thirdTableData.some(
+      (el) => el.MtrlStockID === rowData.MtrlStockID
+    );
+    if (found) {
+      // deleting the element if found
+      const newThirdTableData = thirdTableData.filter(
+        (data) => data !== rowData
+      );
+      setThirdTableData(newThirdTableData);
+      // console.log("deleted");
+
+      // setThirdTableData([thirdTableData.remove(rowData)]);
+      // console.log("deselected", thirdTableData);
+    } else {
+      // inserting the element if not found
+      setThirdTableData([...thirdTableData, rowData]);
+      // console.log("inserted");
+    }
+
+    // return arr;
+    // }
+
+    // console.log("rowdata", rowData);
+
+    // for (let i = 0; i < thirdTableData.length; i++) {
+    //   const element = thirdTableData[i];
+    //   console.log("element", element);
+    // }
+
+    // console.log('rowdata', rowData);
+
+    // setThirdTableData([...thirdTableData, rowData]);
+
+    // console.log("after", thirdTableData);
     //setFirstTableSingleRow(row);
     //console.log("third table = ", thirdTable);
     //console.log("row = ", row);
@@ -692,56 +764,6 @@ function PofilesMaterials(props) {
             selectRowFirstFun={selectRowFirstFun}
             firstTableSelectedRow={firstTableSelectedRow}
           />
-          {/* <Table
-            hover
-            condensed
-            className="table-data border header-class table-striped"
-          >
-            <thead className="text-white">
-              <tr>
-                <th>Sl No</th>
-                <th>RV No</th>
-                <th>Cust Document</th>
-                <th>Mtrl code</th>
-                <th>Width</th>
-                <th>Length</th>
-                <th>Scrap</th>
-                <th>Weight</th>
-                <th>Scrap Weight</th>
-                <th>In Stock</th>
-                <th>Issue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {firstTable.map((val, k) => (
-                <tr
-                  onClick={() => selectRowFirst(val)}
-                  // className={
-                  //   val.DC_Inv_No === selectedSecond ? "selectedRowClr" : ""
-                  // }
-                >
-                  <td>{k + 1}</td>
-                  <td>{val.RV_No}</td>
-                  <td>{val.Cust_Docu_No}</td>
-                  <td>{val.Mtrl_Code}</td>
-                  <td>{val.DynamicPara1}</td>
-                  <td>{val.DynamicPara2}</td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={val.Scrap === 0 ? false : true}
-                    />
-                  </td>
-                  <td>{val.Weight}</td>
-                  <td>{val.ScrapWeight}</td>
-                  <td>{val.InStock}</td>
-                  <td>
-                    <input type="checkbox" name="" id="" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table> */}
 
           {/* <BootstrapTable
             keyField="id"
@@ -758,10 +780,10 @@ function PofilesMaterials(props) {
       <div className="row mt-3">
         <div className="col-md-6 col-sm-12">
           <div style={{ maxHeight: "400px", overflow: "auto" }}>
-            {" "}
             <SecondTable
               secondTableData={secondTableData}
               selectRowSecondFun={selectRowSecondFun}
+              thirdTableData={thirdTableData}
             />
             {/* <BootstrapTable
               keyField="MtrlStockID"

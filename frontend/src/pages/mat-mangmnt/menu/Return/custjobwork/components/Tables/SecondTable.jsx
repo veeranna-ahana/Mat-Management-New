@@ -25,9 +25,15 @@ export default function SecondTable(props) {
 
             <tr
               onClick={() => props.selectRowSecondFun(val)}
-              // className={
-              //   val === props.firstTableSelectedRow ? "selectedRowClr" : ""
-              // }
+              className={
+                props.thirdTableData.some(
+                  (el) => el.MtrlStockID === val.MtrlStockID
+                )
+                  ? "selectedRowClr"
+                  : ""
+
+                // val === props.firstTableSelectedRow ? "selectedRowClr" : ""
+              }
             >
               <td>{key + 1}</td>
               <td>{val.MtrlStockID}</td>
