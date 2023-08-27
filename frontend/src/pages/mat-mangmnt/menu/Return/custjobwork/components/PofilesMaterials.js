@@ -227,11 +227,11 @@ function PofilesMaterials(props) {
   // ];
 
   const selectRowFirstFun = (rowData) => {
-    console.log("inside first select................", rowData);
+    // console.log("inside first select................", rowData);
 
     // console.log("all, data", allData);
     setFirstTableSelectedRow([]);
-    setFirstTableSelectedRow(rowData);
+    setFirstTableSelectedRow([rowData]);
 
     const newArray = allData.filter((obj) => {
       return (
@@ -521,10 +521,8 @@ function PofilesMaterials(props) {
   //   },
   // };
   let createReturnVoucher = async () => {
-    //console.log("selected rows = ", firstTableSelectedRow);
-    //console.log("second = ", secondTable);
-
-    console.log("firstTableSelectedRow", firstTableSelectedRow);
+    console.log("selected rows = ", firstTableSelectedRow);
+    // console.log("second = ", secondTable);
 
     get_Iv_DetailsEntry();
     if (thirdTableData.length === 0) {
@@ -557,7 +555,7 @@ function PofilesMaterials(props) {
           //console.log("first = ", firstTable);
           //console.log("selected rows = ", firstTableSelectedRow);
           //console.log("second = ", secondTable);
-          //console.log("third = ", thirdTable);
+          //console.log("third = ", thirdTableData);
 
           setIVNOVal(no);
 
@@ -587,7 +585,7 @@ function PofilesMaterials(props) {
             (data) => {
               //console.log("data = ", data);
               if (data.affectedRows !== 0) {
-                //console.log("Record inserted 1 : materialIssueRegister");
+                console.log("Record inserted 1 : materialIssueRegister");
                 //insert second table
                 setSrlIVID(data.insertId);
 
@@ -661,17 +659,17 @@ function PofilesMaterials(props) {
                     RvId: firstTableSelectedRow[i].RvID,
                     Mtrl_Rv_id: firstTableSelectedRow[i].Mtrl_Rv_id,
                   };
-                  //console.log(
-                  //   "newRowMtrlIssueDetails : ",
-                  //   newRowMtrlIssueDetails
-                  // );
+                  console.log(
+                    "newRowMtrlIssueDetails : ",
+                    newRowMtrlIssueDetails
+                  );
                   postRequest(
                     endpoints.insertMtrlIssueDetails,
                     newRowMtrlIssueDetails,
                     async (data) => {
                       //console.log("data = ", data);
                       if (data.affectedRows !== 0) {
-                        //console.log("Record inserted 1 : materialIssueDetails");
+                        console.log("Record inserted 1 : materialIssueDetails");
                       } else {
                         toast.error("Record Not Inserted");
                       }

@@ -23,9 +23,12 @@ function CreateReturnNewModal(props) {
       let selectData = {
         Iv_Id: props.srlIVID,
       };
-      nav("/MaterialManagement/Return/CustomerJobWork/OutwordPartIssueVoucher", {
-        state: { selectData },
-      });
+      nav(
+        "/MaterialManagement/Return/CustomerJobWork/OutwordPartIssueVoucher",
+        {
+          state: { selectData },
+        }
+      );
     }
     setShow(false);
   };
