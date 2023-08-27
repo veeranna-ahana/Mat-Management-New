@@ -744,6 +744,9 @@ function PofilesMaterials(props) {
             firstTableData={firstTableData}
             selectRowFirstFun={selectRowFirstFun}
             firstTableSelectedRow={firstTableSelectedRow}
+            thirdTableData={thirdTableData}
+            setThirdTableData={setThirdTableData}
+            allData={allData}
           />
 
           {/* <BootstrapTable
