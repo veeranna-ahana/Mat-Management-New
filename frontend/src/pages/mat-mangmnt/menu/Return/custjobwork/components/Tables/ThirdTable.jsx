@@ -14,8 +14,8 @@ export default function ThirdTable(props) {
             <th>SL No</th>
             <th>Mtrl Stock ID</th>
             <th>Mtrl Code</th>
-            <th>Dynamic Para 1</th>
-            <th>Dynamic Para 2</th>
+            <th>Width</th>
+            <th>Length</th>
             <th>Weight</th>
           </tr>
         </thead>

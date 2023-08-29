@@ -206,6 +206,19 @@ export default function FirstTable(props) {
     // //   // console.log("inserted");
     // // }
   };
+
+  // console.log(
+  //   "inside... includes",
+  //   props.allData.filter((obj) => {
+  //     return (
+  //       obj.RV_No === val.RV_No &&
+  //       obj.Mtrl_Code === val.Mtrl_Code &&
+  //       obj.DynamicPara1 === val.DynamicPara1 &&
+  //       obj.DynamicPara2 === val.DynamicPara2
+  //     );
+  //   })
+  // );
+
   return (
     <>
       <Table
