@@ -3,6 +3,7 @@ import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import { toast } from "react-toastify";
 import { formatDate } from "../../../../../../../utils";
 
@@ -15,7 +16,7 @@ const { endpoints } = require("../../../../../../api/constants");
 function MaterialAllotmentMain() {
   const location = useLocation();
   const nav = useNavigate();
-  console.log("ncid = ", location.state.ncid);
+  console.log("ncid = ", location?.state?.ncid);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const [formHeader, setFormHeader] = useState({});
@@ -99,6 +100,70 @@ function MaterialAllotmentMain() {
     //custbom ids array
   };
 
+  // const fetchData = async () => {
+  //   if (location && location.state && location.state.ncid) {
+  //     // Access the ncid property
+  //     const ncid = location.state.ncid;
+
+  //     // Proceed with data fetching
+  //     let url1 = endpoints.getRowByNCID + "?id=" + ncid;
+
+  //     getRequest(url1, async (data) => {
+  //       setFormHeader(data);
+
+  //       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_Code;
+  //       getRequest(url2, async (data1) => {
+  //         setFormHeader({ ...data, customer: data1.Cust_name });
+  //       });
+  //     });
+
+  //     delay(1000);
+
+  //     // Get first table data
+  //     let url3 =
+  //       endpoints.getShopFloorAllotmentPartFirstTable + "?id=" + ncid;
+  //     getRequest(url3, async (data) => {
+  //       let tempArray = [];
+  //       for (let i = 0; i < data.length; i++) {
+  //         tempArray.push(data[i].CustBOM_Id);
+
+  //         // Find QtyAvailable
+  //         let url5 =
+  //           endpoints.getShopFloorAllotmentPartFirstTableQtyAvl +
+  //           "?id=" +
+  //           data[i].CustBOM_Id;
+  //         getRequest(url5, async (data2) => {
+  //           data[i].QtyAvailable = data2[0]["QtyAvialable"];
+  //           data[i].issueNow = 0;
+  //           data[i].AlreadyUsed = 0;
+  //           data[i].TotalUsed = 0;
+  //         });
+  //       }
+  //       await delay(2000);
+  //       setFirstTable(data);
+
+  //       if (tempArray.length !== 0) {
+  //         // Fetch data in the second table
+  //         let url4 =
+  //           endpoints.getShopFloorAllotmentPartSecondTableIds +
+  //           "?bomids=" +
+  //           tempArray;
+  //         getRequest(url4, async (data) => {
+  //           for (let i = 0; i < data.length; i++) {
+  //             data[i].issueNow = 0;
+  //           }
+  //           setSecondTable(data);
+  //         });
+  //       }
+  //     });
+  //   } else {
+
+  //     console.error("Location or ncid is null.");
+
+  //   }
+  // };
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -129,12 +194,12 @@ function MaterialAllotmentMain() {
         if (
           Math.floor(
             parseInt(firstTable[key].QtyAvailable) /
-              parseInt(firstTable[key].QtyPerAssy)
+            parseInt(firstTable[key].QtyPerAssy)
           ) < parseInt(setQtyAvailable)
         ) {
           setQtyAvailable = Math.floor(
             parseInt(firstTable[key].QtyAvailable) /
-              parseInt(firstTable[key].QtyPerAssy)
+            parseInt(firstTable[key].QtyPerAssy)
           );
         }
         //setQtyAvailable = 20;
@@ -147,28 +212,60 @@ function MaterialAllotmentMain() {
       if (issuenowval > setQtyAvailable) {
         toast.error(
           "Sets Required : " +
-            issuenowval +
-            " Sets Available : " +
-            setQtyAvailable
+          issuenowval +
+          " Sets Available : " +
+          setQtyAvailable
         );
-      } else {
-        firstTable.map(async (obj1) => {
-          obj1.issueNow = obj1.QtyPerAssy * setQtyAvailable;
+      }
+      // else {
+      //   firstTable.map(async (obj1) => {
+      //     obj1.issueNow = obj1.QtyPerAssy * setQtyAvailable;
+      //     let flag = 0;
+      //     secondTable.map((obj2) => {
+      //       if (obj1.CustBOM_Id === obj2.CustBOM_Id && flag == 0) {
+      //         obj2.issueNow = obj1.issueNow;
+      //         flag = flag + 1;
+      //       }
+      //     });
+      //   });
+
+      //   await delay(1000);
+      //   console.log("new first table = ", firstTable);
+      //   console.log("new second table = ", secondTable);
+      //   setFirstTable(firstTable.filter((obj) => obj.issueNow >= 0));
+      //   setSecondTable(secondTable.filter((obj) => obj.issueNow >= 0));
+      // }
+      else {
+        const updatedFirstTable = firstTable.map((obj1) => {
+          const newIssueNow = obj1.QtyPerAssy * setQtyAvailable;
           let flag = 0;
-          secondTable.map((obj2) => {
-            if (obj1.CustBOM_Id === obj2.CustBOM_Id && flag == 0) {
-              obj2.issueNow = obj1.issueNow;
-              flag = flag + 1;
+
+          const updatedSecondTable = secondTable.map((obj2) => {
+            if (obj1.CustBOM_Id === obj2.CustBOM_Id && flag === 0) {
+              obj2.issueNow = newIssueNow;
+              flag = 1;
             }
+            return obj2;
           });
+
+
+          return { ...obj1, issueNow: newIssueNow };
         });
 
+
         await delay(1000);
-        console.log("new first table = ", firstTable);
+
+        console.log("new first table = ", updatedFirstTable);
         console.log("new second table = ", secondTable);
-        setFirstTable(firstTable.filter((obj) => obj.issueNow >= 0));
-        setSecondTable(secondTable.filter((obj) => obj.issueNow >= 0));
+
+
+        setFirstTable(updatedFirstTable);
+        setSecondTable(secondTable);
       }
+
+
+
+
     }
   };
   const columns1 = [
@@ -208,6 +305,7 @@ function MaterialAllotmentMain() {
     {
       text: "Issue Now",
       dataField: "issueNow",
+
     },
   ];
   // Process the returned date in the formatter
@@ -246,8 +344,22 @@ function MaterialAllotmentMain() {
     {
       text: "Issue Now",
       dataField: "issueNow",
+      editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
+        return (
+          <input
+            type="number"
+            {...editorProps}
+            value={value}
+            onChange={(e) => handleIssueNowChange(e, row)}
+          />
+        );
+      }
+
+
     },
   ];
+
+
   const selectRow1 = {
     mode: "radio",
     clickToSelect: true,
@@ -390,7 +502,7 @@ function MaterialAllotmentMain() {
               Period: formatDate(new Date(), 6),
               RunningNo: newNo,
             };
-            postRequest(endpoints.updateRunningNo, inputData, (data) => {});
+            postRequest(endpoints.updateRunningNo, inputData, (data) => { });
 
             console.log("Return id = ", issueidval);
             //return data.insertId;
@@ -425,6 +537,33 @@ function MaterialAllotmentMain() {
       }
     );*/
   };
+
+  const handleIssueNowChange = (e, editedRow) => {
+    const updatedSecondTable = secondTable.map((row) => {
+      if (row.Id === editedRow.Id) {
+        return { ...row, issueNow: parseInt(e.target.value) };
+      }
+      return row;
+    });
+    setSecondTable(updatedSecondTable);
+  };
+
+  // Add the handleIssueNowBlur function
+  const handleIssueNowBlur = (editedRow) => {
+    const updatedSecondTable = secondTable.map((row) => {
+      if (row.Id === editedRow.Id) {
+        // Update the issueNow value in the state
+        const newIssueNow = parseInt(editedRow.issueNow);
+        return { ...row, issueNow: newIssueNow };
+      }
+      return row;
+    });
+
+    // Update the secondTable state with the new data
+    setSecondTable(updatedSecondTable);
+  };
+
+
   return (
     <div>
       <div>
@@ -542,7 +681,7 @@ function MaterialAllotmentMain() {
         </div>
         <div className="col-md-7">
           <div style={{ height: "300px", overflowY: "scroll" }}>
-            <BootstrapTable
+            {/* <BootstrapTable
               keyField="Id"
               columns={columns2}
               data={secondTable}
@@ -553,7 +692,58 @@ function MaterialAllotmentMain() {
               //pagination={paginationFactory()}
               selectRow={selectRow2}
               headerClasses="header-class"
-            ></BootstrapTable>
+
+              cellEdit={cellEditFactory({
+                mode: 'click',
+                blurToSave: true,
+              })}
+
+
+            ></BootstrapTable> */}
+
+            <Table className="table" striped bordered hover>
+              <thead className="header-class">
+                <tr>
+                  <th>ID</th>
+                  <th>RV No</th>
+                  <th>RV Date</th>
+                  <th>Received</th>
+                  <th>Accepted</th>
+                  <th>Issued</th>
+                  <th>Issue Now</th>
+                </tr>
+              </thead>
+              <tbody>
+                {secondTable.map((row) => (
+                  <tr key={row.Id}
+                    className={row.Id === row2.Id ? "selected-row" : ""}
+                    style={rowStyle2(row)}
+                    onClick={() => {
+                      // selectRow2.onSelect(row, true);
+                      setRow2(row)
+
+                    }}
+
+                  >
+                    <td>{row.Id}</td>
+                    <td>{row.RV_No}</td>
+                    <td>{formatDate(new Date(row.RV_Date), 3)}</td>
+                    <td>{row.QtyReceived}</td>
+                    <td>{row.QtyAccepted}</td>
+                    <td>{row.QtyIssued}</td>
+                    <td>
+                      <input
+                        type="number"
+                        value={row.issueNow}
+                        onChange={(e) => handleIssueNowChange(e, row)}
+                        onBlur={() => handleIssueNowBlur(row)}
+
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
         </div>
 
@@ -588,7 +778,7 @@ function MaterialAllotmentMain() {
 
             <div className="row">
               <div className="col-md-4 mt-1">
-                <label className="form-label" style={{whiteSpace:"nowrap"}}>Qty Received</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Received</label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -603,7 +793,7 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{whiteSpace:"nowrap"}}>Qty Accepted</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Accepted</label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -616,7 +806,7 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{whiteSpace:"nowrap"}}>Qty Issued</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Issued</label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -629,10 +819,10 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row mb-4">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{whiteSpace:"nowrap"}}>Issue Now</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Issue Now</label>
               </div>
               <div className="col-md-8 ">
-                <input className="in-field" type="text" disabled />
+                <input className="in-field" type="text" value={row2.issueNow} disabled />
               </div>
             </div>
           </div>

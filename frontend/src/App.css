@@ -481,3 +481,7 @@ li.nav-item {
   /* top: -1px; */
   text-transform: capitalize;
 }
+
+.selected-row {
+  background-color: #98A8F8 !important;
+}
