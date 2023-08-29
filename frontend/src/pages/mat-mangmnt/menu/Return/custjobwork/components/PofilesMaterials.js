@@ -6,6 +6,9 @@ import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
 import { formatDate, get_Iv_DetailsEntry } from "../../../../../../utils";
 import CreateReturnNewModal from "../../../../components/CreateReturnNewModal";
+import FirstTable from "./Tables/FirstTable";
+import SecondTable from "./Tables/SecondTable";
+import ThirdTable from "./Tables/ThirdTable";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
@@ -18,9 +21,10 @@ function PofilesMaterials(props) {
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
-  let [firstTable, setFirstTable] = useState([]);
-  let [secondTable, setSecondTable] = useState([]);
-  let [thirdTable, setThirdTable] = useState([]);
+  const [firstTableData, setFirstTableData] = useState([]);
+  const [secondTableData, setSecondTableData] = useState([]);
+  const [thirdTable, setThirdTable] = useState([]);
+  const [thirdTableData, setThirdTableData] = useState([]);
   let [objShape, setObjShape] = useState({});
   let [objMaterial, setObjMaterial] = useState({});
 
@@ -44,7 +48,7 @@ function PofilesMaterials(props) {
           item.id = i + 1;
           item.Issue = false;
         });
-        setFirstTable(data);
+        setFirstTableData(data);
       });
 
       //fetch second table data
@@ -62,293 +66,466 @@ function PofilesMaterials(props) {
     //console.log("S props value = ", propsValue);
   }, [props.custCode]);
 
-  const columnsFirst = [
-    {
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },
-    {
-      text: "RV No",
-      dataField: "RV_No",
-      editable: false,
-    },
-    {
-      text: "Cust Document",
-      dataField: "Cust_Docu_No",
-      editable: false,
-    },
-    {
-      text: "Mtrl code",
-      dataField: "Mtrl_Code",
-      editable: false,
-    },
-    {
-      text: "Width",
-      dataField: "DynamicPara1",
-      editable: false,
-    },
-    {
-      text: "Length",
-      dataField: "DynamicPara2",
-      editable: false,
-    },
-    {
-      text: "Scrap",
-      dataField: "Scrap",
-      editable: false,
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input type="checkbox" checked={celContent === 0 ? false : true} />
-          </lable>
-        </div>
-      ),
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-    {
-      text: "Scrap Weight",
-      dataField: "ScrapWeight",
-      editable: false,
-    },
-    {
-      text: "In Stock",
-      dataField: "InStock",
-      editable: false,
-    },
-    /*    {
-      text: "Issue",
-      dataField: "Issue",
-      type: "bool",
-      //editable: true,
-      editor: {
-        type: Type.CHECKBOX,
-        value: "true:false",
-      },
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input
-              type="checkbox"
-              onChange={firstTableCheckoxChange(row)}
-              checked={celContent === true ? true : false}
-            />
-          </lable>
-        </div>
-      ),
-    },*/
-  ];
+  // const columnsFirst = [
+  //   {
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "RV No",
+  //     dataField: "RV_No",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Cust Document",
+  //     dataField: "Cust_Docu_No",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Mtrl code",
+  //     dataField: "Mtrl_Code",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Width",
+  //     dataField: "DynamicPara1",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Length",
+  //     dataField: "DynamicPara2",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Scrap",
+  //     dataField: "Scrap",
+  //     editable: false,
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input type="checkbox" checked={celContent === 0 ? false : true} />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Scrap Weight",
+  //     dataField: "ScrapWeight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "In Stock",
+  //     dataField: "InStock",
+  //     editable: false,
+  //   },
+  //   /*    {
+  //     text: "Issue",
+  //     dataField: "Issue",
+  //     type: "bool",
+  //     //editable: true,
+  //     editor: {
+  //       type: Type.CHECKBOX,
+  //       value: "true:false",
+  //     },
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input
+  //             type="checkbox"
+  //             onChange={firstTableCheckoxChange(row)}
+  //             checked={celContent === true ? true : false}
+  //           />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },*/
+  // ];
 
-  const columnsSecond = [
-    /*{
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },*/
-    {
-      text: "MtrlStockID",
-      dataField: "MtrlStockID",
-      editable: false,
-    },
-    {
-      text: "Issue",
-      dataField: "Issue",
-      type: "bool",
-      editor: {
-        type: Type.CHECKBOX,
-        value: "true:false",
-      },
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input
-              type="checkbox"
-              checked={celContent === true ? true : false}
-            />
-          </lable>
-        </div>
-      ),
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-    {
-      text: "ScrapWeight",
-      dataField: "ScrapWeight",
-      editable: false,
-    },
-    {
-      text: "RVId",
-      dataField: "RVId",
-      editable: false,
-    },
-  ];
-  const columnsThird = [
-    {
-      text: "#",
-      dataField: "id",
-      hidden: true,
-    },
-    {
-      text: "MtrlStockID",
-      dataField: "MtrlStockID",
-      editable: false,
-    },
-    {
-      text: "Mtrl_Code",
-      dataField: "Mtrl_Code",
-      editable: false,
-    },
-    {
-      text: "DynamicPara1",
-      dataField: "DynamicPara1",
-      editable: false,
-    },
-    {
-      text: "DynamicPara2",
-      dataField: "DynamicPara2",
-      editable: false,
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-      editable: false,
-    },
-  ];
-  const selectRowFirst = {
-    mode: "checkbox",
-    clickToSelect: true,
-    selectColumnPosition: "right",
-    selectionHeaderRenderer: () => "Issue",
-    bgColor: "#8A92F0",
-    onSelect: (row, isSelect, rowIndex) => {
-      if (isSelect) {
-        //console.log("first table = ", firstTable);
-        //console.log("second table = ",secondTable)
+  // const columnsSecond = [
+  //   /*{
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },*/
+  //   {
+  //     text: "MtrlStockID",
+  //     dataField: "MtrlStockID",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Issue",
+  //     dataField: "Issue",
+  //     type: "bool",
+  //     editor: {
+  //       type: Type.CHECKBOX,
+  //       value: "true:false",
+  //     },
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input
+  //             type="checkbox"
+  //             checked={celContent === true ? true : false}
+  //           />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "ScrapWeight",
+  //     dataField: "ScrapWeight",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "RVId",
+  //     dataField: "RVId",
+  //     editable: false,
+  //   },
+  // ];
+  // const columnsThird = [
+  //   {
+  //     text: "#",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "MtrlStockID",
+  //     dataField: "MtrlStockID",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Mtrl_Code",
+  //     dataField: "Mtrl_Code",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "DynamicPara1",
+  //     dataField: "DynamicPara1",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "DynamicPara2",
+  //     dataField: "DynamicPara2",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //     editable: false,
+  //   },
+  // ];
 
-        //store selected row data
-        setFirstTableSelectedRow(
-          //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
-          [...firstTableSelectedRow, firstTable[rowIndex]]
-        );
+  const selectRowFirstFun = (rowData) => {
+    // console.log("inside first select................", rowData);
 
-        const newArray = allData.filter((obj) => {
-          return (
-            obj.RV_No === row.RV_No &&
-            obj.Mtrl_Code === row.Mtrl_Code &&
-            obj.DynamicPara1 === row.DynamicPara1 &&
-            obj.DynamicPara2 === row.DynamicPara2
-          );
-        });
+    // console.log("all, data", allData);
+    setFirstTableSelectedRow([]);
+    setFirstTableSelectedRow([rowData]);
 
-        let arr = [];
-        //mark checkbox of second table
-        newArray.forEach(async (item, i) => {
-          arr = [...arr, item.MtrlStockID];
-        });
-        setSelectedSecond({
-          selected: arr,
-        });
-        //console.log("new array = ", newArray);
-        //console.log("selected = ", selectedSecond);
-        setSecondTable(newArray);
-        thirdTable.push.apply(thirdTable, newArray);
-        setThirdTable(thirdTable);
-      } else {
-        //remove row in selectedTRow array
-        setFirstTableSelectedRow(
-          firstTableSelectedRow.filter((obj) => {
-            return (
-              obj.RV_No !== row.RV_No &&
-              obj.Mtrl_Code !== row.Mtrl_Code &&
-              obj.DynamicPara1 !== row.DynamicPara1 &&
-              obj.DynamicPara2 !== row.DynamicPara2
-            );
-          })
-        );
+    const newArray = allData.filter((obj) => {
+      return (
+        obj.RV_No === rowData.RV_No &&
+        obj.Mtrl_Code === rowData.Mtrl_Code &&
+        obj.DynamicPara1 === rowData.DynamicPara1 &&
+        obj.DynamicPara2 === rowData.DynamicPara2
+      );
+    });
 
-        //console.log("selected = ", selectedSecond);
-        //console.log("third table = ", thirdTable);
-        let newData = thirdTable.filter((obj, index) => {
-          return (
-            obj.RV_No !== row.RV_No ||
-            obj.Mtrl_Code !== row.Mtrl_Code ||
-            obj.DynamicPara1 !== row.DynamicPara1 ||
-            obj.DynamicPara2 !== row.DynamicPara2
-          );
-        });
+    // console.log("newArray", newArray);
+    setSecondTableData([]);
+    setSecondTableData(newArray);
+    // console.log("all data.....", allData);
+    // setFirstTableSelectedRow([]);
+    // for (let i = 0; i < allData.length; i++) {
+    //   const element = allData[i];
+    //   if (
+    //     rowData.RV_No === element.RV_No &&
+    //     rowData.RvID === element.RVId &&
+    //     rowData.Cust_Code === element.Cust_Code
+    //   ) {
+    //     console.log("data inside...", element);
+    //   }
+    //   //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
+    // }
+    // allData.map((obj) => {
+    // });
 
-        setSelectedSecond({
-          selected: [],
-        });
+    // console.log("selected first table..", firstTableSelectedRow);
+    // setSelectedSecond({
+    //   selected: [],
+    // });
 
-        setThirdTable(newData);
-      }
-    },
+    // //console.log("first table = ", firstTable);
+    // //console.log("second table = ",secondTable)
+
+    // //store selected row data
+
+    // const newArray = allData.filter((obj) => {
+    //   return (
+    //     obj.RV_No === row.RV_No &&
+    //     obj.Mtrl_Code === row.Mtrl_Code &&
+    //     obj.DynamicPara1 === row.DynamicPara1 &&
+    //     obj.DynamicPara2 === row.DynamicPara2
+    //   );
+    // });
+
+    // console.log("newArray... getting the selected row data...", newArray);
+
+    // let arr = [];
+    // //mark checkbox of second table
+    // newArray.forEach(async (item, i) => {
+    //   arr = [...arr, item.MtrlStockID];
+    // });
+
+    // console.log("arr...getting all the selected mtrlstockids ", arr);
+
+    // // selecting all the mtrlstckids by default in second table
+
+    // // setSelectedSecond({
+    // //   selected: arr,
+    // // });
+
+    // setSelectedSecond({
+    //   selected: [],
+    // });
+
+    // //console.log("new array = ", newArray);
+    // console.log("selectedSecond...... ", selectedSecond);
+    // setSecondTable(newArray);
+    // // thirdTable.push.apply(thirdTable, newArray);
+    // // setThirdTable(thirdTable);
+    // //   mode: "checkbox",
+    // //   clickToSelect: true,
+    // //   selectColumnPosition: "right",
+    // //   selectionHeaderRenderer: () => "Issue",
+    // //   bgColor: "#8A92F0",
+    // //   onSelect: (row, isSelect, rowIndex) => {
+    // //     if (isSelect) {
+    // //       //console.log("first table = ", firstTable);
+    // //       //console.log("second table = ",secondTable)
+
+    // //       //store selected row data
+    // //       setFirstTableSelectedRow(
+    // //         //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
+    // //         [...firstTableSelectedRow, firstTable[rowIndex]]
+    // //       );
+
+    // //       const newArray = allData.filter((obj) => {
+    // //         return (
+    // //           obj.RV_No === row.RV_No &&
+    // //           obj.Mtrl_Code === row.Mtrl_Code &&
+    // //           obj.DynamicPara1 === row.DynamicPara1 &&
+    // //           obj.DynamicPara2 === row.DynamicPara2
+    // //         );
+    // //       });
+
+    // //       console.log("newArray... getting the selected row data...", newArray);
+
+    // //       let arr = [];
+    // //       //mark checkbox of second table
+    // //       newArray.forEach(async (item, i) => {
+    // //         arr = [...arr, item.MtrlStockID];
+    // //       });
+
+    // //       console.log("arr...getting all the selected mtrlstockids ", arr);
+
+    // //       // selecting all the mtrlstckids by default in second table
+
+    // //       // setSelectedSecond({
+    // //       //   selected: arr,
+    // //       // });
+
+    // //       setSelectedSecond({
+    // //         selected: [],
+    // //       });
+
+    // //       //console.log("new array = ", newArray);
+    // //       console.log("selectedSecond...... ", selectedSecond);
+    // //       setSecondTable(newArray);
+    // //       // thirdTable.push.apply(thirdTable, newArray);
+    // //       // setThirdTable(thirdTable);
+    // //     } else {
+    // //       //remove row in selectedTRow array
+    // //       setFirstTableSelectedRow(
+    // //         firstTableSelectedRow.filter((obj) => {
+    // //           return (
+    // //             obj.RV_No !== row.RV_No &&
+    // //             obj.Mtrl_Code !== row.Mtrl_Code &&
+    // //             obj.DynamicPara1 !== row.DynamicPara1 &&
+    // //             obj.DynamicPara2 !== row.DynamicPara2
+    // //           );
+    // //         })
+    // //       );
+
+    // //       //console.log("selected = ", selectedSecond);
+    // //       //console.log("third table = ", thirdTable);
+    // //       let newData = thirdTable.filter((obj, index) => {
+    // //         return (
+    // //           obj.RV_No !== row.RV_No ||
+    // //           obj.Mtrl_Code !== row.Mtrl_Code ||
+    // //           obj.DynamicPara1 !== row.DynamicPara1 ||
+    // //           obj.DynamicPara2 !== row.DynamicPara2
+    // //         );
+    // //       });
+
+    // //       setSelectedSecond({
+    // //         selected: [],
+    // //       });
+
+    // //       // setThirdTable(newData);
+    // //     }
+    // //   },
   };
-  const selectRowSecond = {
-    mode: "checkbox",
-    clickToSelect: true,
-    bgColor: "#8A92F0",
-    selected: selectedSecond.selected,
-    onSelect: (row, isSelect) => {
-      if (isSelect) {
-        //setFirstTableSingleRow(row);
-        //console.log("third table = ", thirdTable);
-        //console.log("row = ", row);
 
-        const newArray = allData.filter((obj) => {
-          return obj.MtrlStockID === row.MtrlStockID;
-        });
+  const selectRowSecondFun = (rowData) => {
+    // console.log("inside second select", rowData);
+    // console.log("third table length", thirdTableData.length);
+    // if (thirdTableData.length > 0) {
+    //   for (let i = 0; i < thirdTableData.length; i++) {
+    //     const element = thirdTableData[i];
+    //     // console.log("before", element);
+    //     if (element === rowData) {
+    //       console.log("no need to insert");
+    //       break;
+    //     } else {
+    //       console.log("need to insert");
+    //       setThirdTableData([...thirdTableData, rowData]);
+    //       break;
+    //     }
+    //   }
+    // } else {
+    //   console.log("first element to insert");
 
-        let arr = [];
-        //mark checkbox of second table
-        newArray.forEach(async (item, i) => {
-          arr = [...selectedSecond.selected, item.MtrlStockID];
-        });
-        setSelectedSecond({
-          selected: arr,
-        });
-        //console.log("new array = ", newArray);
-        //console.log("selected = ", selectedSecond);
-        //setSecondTable(newArray);
-        thirdTable.push.apply(thirdTable, newArray);
-        setThirdTable(thirdTable);
-      } else {
-        //console.log("third table = ", thirdTable);
-        //console.log("row = ", row);
-        let newData = thirdTable.filter((obj, index) => {
-          return obj.MtrlStockID !== row.MtrlStockID;
-        });
+    //   setThirdTableData([...thirdTableData, rowData]);
+    // }
 
-        //secondTable.forEach((item, i) => {
-        setSelectedSecond({
-          selected: selectedSecond.selected.filter((ele) => {
-            return ele !== row.MtrlStockID;
-          }),
-        });
-        //});
+    // function add(arr, name) {
+    // const { length } = arr;
+    // const id = length + 1;
+    const found = thirdTableData.some(
+      (el) => el.MtrlStockID === rowData.MtrlStockID
+    );
+    if (found) {
+      // deleting the element if found
+      const newThirdTableData = thirdTableData.filter(
+        (data) => data !== rowData
+      );
+      setThirdTableData(newThirdTableData);
+      // console.log("deleted");
 
-        // setSelectedSecond({
-        //   selected: [],
-        // });
+      // setThirdTableData([thirdTableData.remove(rowData)]);
+      // console.log("deselected", thirdTableData);
+    } else {
+      // inserting the element if not found
+      setThirdTableData([...thirdTableData, rowData]);
+      // console.log("inserted");
+    }
 
-        setThirdTable(newData);
-      }
-    },
+    // return arr;
+    // }
+
+    // console.log("rowdata", rowData);
+
+    // for (let i = 0; i < thirdTableData.length; i++) {
+    //   const element = thirdTableData[i];
+    //   console.log("element", element);
+    // }
+
+    // console.log('rowdata', rowData);
+
+    // setThirdTableData([...thirdTableData, rowData]);
+
+    // console.log("after", thirdTableData);
+    //setFirstTableSingleRow(row);
+    //console.log("third table = ", thirdTable);
+    //console.log("row = ", row);
+
+    // const newArray = allData.filter((obj) => {
+    //   return obj.MtrlStockID === row.MtrlStockID;
+    // });
+
+    // let arr = [];
+    // //mark checkbox of second table
+    // newArray.forEach(async (item, i) => {
+    //   arr = [...selectedSecond.selected, item.MtrlStockID];
+    // });
+    // setSelectedSecond({
+    //   selected: arr,
+    // });
+    // //console.log("new array = ", newArray);
+    // //console.log("selected = ", selectedSecond);
+    // //setSecondTable(newArray);
+    // thirdTable.push.apply(thirdTable, newArray);
+    // setThirdTable(thirdTable);
   };
+  // const selectRowSecond = {
+  //   mode: "checkbox",
+  //   clickToSelect: true,
+  //   bgColor: "#8A92F0",
+  //   selected: selectedSecond.selected,
+  //   onSelect: (row, isSelect) => {
+  //     if (isSelect) {
+  //       //setFirstTableSingleRow(row);
+  //       //console.log("third table = ", thirdTable);
+  //       //console.log("row = ", row);
+
+  //       const newArray = allData.filter((obj) => {
+  //         return obj.MtrlStockID === row.MtrlStockID;
+  //       });
+
+  //       let arr = [];
+  //       //mark checkbox of second table
+  //       newArray.forEach(async (item, i) => {
+  //         arr = [...selectedSecond.selected, item.MtrlStockID];
+  //       });
+  //       setSelectedSecond({
+  //         selected: arr,
+  //       });
+  //       //console.log("new array = ", newArray);
+  //       //console.log("selected = ", selectedSecond);
+  //       //setSecondTable(newArray);
+  //       thirdTable.push.apply(thirdTable, newArray);
+  //       setThirdTable(thirdTable);
+  //     } else {
+  //       //console.log("third table = ", thirdTable);
+  //       //console.log("row = ", row);
+  //       let newData = thirdTable.filter((obj, index) => {
+  //         return obj.MtrlStockID !== row.MtrlStockID;
+  //       });
+
+  //       //secondTable.forEach((item, i) => {
+  //       setSelectedSecond({
+  //         selected: selectedSecond.selected.filter((ele) => {
+  //           return ele !== row.MtrlStockID;
+  //         }),
+  //       });
+  //       //});
+
+  //       // setSelectedSecond({
+  //       //   selected: [],
+  //       // });
+
+  //       setThirdTable(newData);
+  //     }
+  //   },
+  // };
   let createReturnVoucher = async () => {
     console.log("selected rows = ", firstTableSelectedRow);
-    console.log("second = ", secondTable);
+    // console.log("second = ", secondTable);
 
     get_Iv_DetailsEntry();
-    if (thirdTable.length === 0) {
+    if (thirdTableData.length === 0) {
       toast.error("Please select the customer");
     } else {
       //get running no and assign to RvNo
@@ -378,7 +555,7 @@ function PofilesMaterials(props) {
           //console.log("first = ", firstTable);
           //console.log("selected rows = ", firstTableSelectedRow);
           //console.log("second = ", secondTable);
-          //console.log("third = ", thirdTable);
+          //console.log("third = ", thirdTableData);
 
           setIVNOVal(no);
 
@@ -394,12 +571,12 @@ function PofilesMaterials(props) {
             EMail: "",
             PkngDcNo: "",
             PkngDCDate: null,
-            TotalWeight: thirdTable[0].TotalWeight,
-            TotalCalculatedWeight: thirdTable[0].TotalCalculatedWeight,
+            TotalWeight: thirdTableData[0].TotalWeight,
+            TotalCalculatedWeight: thirdTableData[0].TotalCalculatedWeight,
             UpDated: 0,
             IVStatus: "draft",
             Dc_ID: 0,
-            Type: thirdTable[0].Type,
+            Type: thirdTableData[0].Type,
           };
           //insert first table
           postRequest(
@@ -414,7 +591,7 @@ function PofilesMaterials(props) {
 
                 for (let i = 0; i < firstTableSelectedRow.length; i++) {
                   //find Qty
-                  const foundArray = thirdTable.filter((obj) => {
+                  const foundArray = thirdTableData.filter((obj) => {
                     return (
                       obj.RV_No === firstTableSelectedRow[i].RV_No &&
                       obj.Mtrl_Code === firstTableSelectedRow[i].Mtrl_Code &&
@@ -506,11 +683,11 @@ function PofilesMaterials(props) {
           );
 
           //update mtrlStocklist by ivno and issue
-          for (let i = 0; i < thirdTable.length; i++) {
+          for (let i = 0; i < thirdTableData.length; i++) {
             const mtrlstockData = {
               Issue: 0,
               Iv_No: no,
-              MtrlStockID: thirdTable[i].MtrlStockID,
+              MtrlStockID: thirdTableData[i].MtrlStockID,
             };
             postRequest(
               endpoints.updateIssueIVNo,
@@ -547,14 +724,6 @@ function PofilesMaterials(props) {
   };
   return (
     <>
-      <CreateReturnNewModal
-        show={show}
-        setShow={setShow}
-        srlMaterialType={srlMaterialType}
-        srlIVID={srlIVID}
-        IVNOVal={IVNOVal}
-      />
-
       <div>
         <button
           className="button-style"
@@ -565,8 +734,22 @@ function PofilesMaterials(props) {
         </button>
       </div>
       <div className="row-md-12 table-data mt-3">
-        <div style={{ height: "400px", overflowY: "scroll" }}>
-          <BootstrapTable
+        <div
+          style={{
+            maxHeight: "400px",
+            overflow: "auto",
+          }}
+        >
+          <FirstTable
+            firstTableData={firstTableData}
+            selectRowFirstFun={selectRowFirstFun}
+            firstTableSelectedRow={firstTableSelectedRow}
+            thirdTableData={thirdTableData}
+            setThirdTableData={setThirdTableData}
+            allData={allData}
+          />
+
+          {/* <BootstrapTable
             keyField="id"
             columns={columnsFirst}
             data={firstTable}
@@ -575,13 +758,18 @@ function PofilesMaterials(props) {
             condensed
             selectRow={selectRowFirst}
             headerClasses="header-class "
-          ></BootstrapTable>
+          ></BootstrapTable> */}
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-6 col-sm-12">
-          <div style={{ height: "400px", overflowY: "scroll" }}>
-            <BootstrapTable
+          <div style={{ maxHeight: "400px", overflow: "auto" }}>
+            <SecondTable
+              secondTableData={secondTableData}
+              selectRowSecondFun={selectRowSecondFun}
+              thirdTableData={thirdTableData}
+            />
+            {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsSecond}
               data={secondTable}
@@ -590,12 +778,13 @@ function PofilesMaterials(props) {
               condensed
               selectRow={selectRowSecond}
               headerClasses="header-class "
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
         <div className="col-md-6 col-sm-12">
-          <div style={{ height: "400px", overflowY: "scroll" }}>
-            <BootstrapTable
+          <div style={{ maxHeight: "400px", overflow: "auto" }}>
+            <ThirdTable thirdTableData={thirdTableData} />
+            {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsThird}
               data={thirdTable}
@@ -603,10 +792,19 @@ function PofilesMaterials(props) {
               hover
               condensed
               headerClasses="header-class "
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
       </div>
+
+      {/* create return voucher modal  */}
+      <CreateReturnNewModal
+        show={show}
+        setShow={setShow}
+        srlMaterialType={srlMaterialType}
+        srlIVID={srlIVID}
+        IVNOVal={IVNOVal}
+      />
     </>
   );
 }

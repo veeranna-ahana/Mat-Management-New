@@ -62,7 +62,7 @@ function OutwordMaterialIssueVocher(props) {
   }
 
   async function fetchData() {
-    console.log("propstype = ", location.state.propsType);
+    // console.log("propstype = ", location.state.propsType);
     //header data
     let url =
       endpoints.getMaterialIssueRegisterRouterByIVID +
@@ -90,7 +90,7 @@ function OutwordMaterialIssueVocher(props) {
       //get cust data
       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_code;
       getRequest(url2, async (data) => {
-        console.log("cust data = ", data);
+        // console.log("cust data = ", data);
         setCustdata(data);
       });
     });
@@ -222,7 +222,7 @@ function OutwordMaterialIssueVocher(props) {
     }
   };
   let getDCID = async (data) => {
-    console.log("get dc = ", data);
+    // console.log("get dc = ", data);
     setdcID(data);
 
     if (data !== "" && data !== 0 && data !== undefined) {
@@ -313,7 +313,9 @@ function OutwordMaterialIssueVocher(props) {
                 />
               </div>
               <div className="col-md-3">
-                <div className="form-label mt-4 ms-3">{formHeader.IVStatus}</div>
+                <div className="form-label mt-4 ms-3">
+                  {formHeader.IVStatus}
+                </div>
                 {/* <input
                   type="text"
                   name="status"
@@ -399,9 +401,9 @@ function OutwordMaterialIssueVocher(props) {
           <div className="col-md-3">
             <label className="form-label"></label>
             <textarea
-             id="exampleFormControlTextarea1"
-             rows="4  "
-             style={{ width: "240px" }}
+              id="exampleFormControlTextarea1"
+              rows="4  "
+              style={{ width: "240px" }}
               value={custdata.Address}
               readOnly
             ></textarea>
@@ -527,7 +529,7 @@ function OutwordMaterialIssueVocher(props) {
             //className="col-md-12 col-sm-12"
           >
             <BootstrapTable
-            headerClasses="header-class "
+              headerClasses="header-class "
               keyField="IV_No"
               //keyField="id"
               columns={columns}

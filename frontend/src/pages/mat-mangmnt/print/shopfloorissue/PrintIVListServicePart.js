@@ -7,17 +7,17 @@ function PrintIVListServicePart() {
   const location = useLocation();
   console.log(
     "Second formheader = ",
-    location.state.formHeader,
+    location?.state?.formHeader,
     " outdata = ",
-    location.state.tableData
+    location?.state?.tableData
   );
 
   return (
     <Fragment>
       <PDFViewer width="1200" height="600" filename="IVListPart.pdf">
         <PrintIVListServicePartTable
-          formHeader={location.state.formHeader}
-          tableData={location.state.tableData}
+          formHeader={location?.state?.formHeader}
+          tableData={location?.state?.tableData}
         />
       </PDFViewer>
     </Fragment>
