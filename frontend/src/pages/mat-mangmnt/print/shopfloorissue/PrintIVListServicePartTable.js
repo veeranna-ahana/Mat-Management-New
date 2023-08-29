@@ -183,7 +183,7 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
           <Text style={styles.linegap}>Set Returned</Text>
         </View>
         <View style={styles.blockLeftAlign}>
-          <Text>{formHeader.IV_No}</Text>
+          <Text>{formHeader?.IV_No}</Text>
           <Text style={styles.linegap}>{formHeader.Issue_date}</Text>
           <Text style={styles.linegap}>{formHeader.TaskNo}</Text>
           <Text style={styles.linegap}>{formHeader.NCProgramNo}</Text>

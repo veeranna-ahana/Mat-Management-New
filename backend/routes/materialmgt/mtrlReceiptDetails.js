@@ -13,7 +13,7 @@ mtrlReceiptDetailsRouter.get(
         `SELECT * FROM mtrlreceiptdetails where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
-          res.send(data);
+          res.json(data);
         }
       );
     } catch (error) {
