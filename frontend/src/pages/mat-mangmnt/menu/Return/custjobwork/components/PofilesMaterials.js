@@ -521,7 +521,7 @@ function PofilesMaterials(props) {
   //   },
   // };
   let createReturnVoucher = async () => {
-    console.log("selected rows = ", firstTableSelectedRow);
+    console.log("selected rows = ", thirdTableData);
     // console.log("second = ", secondTable);
 
     get_Iv_DetailsEntry();
