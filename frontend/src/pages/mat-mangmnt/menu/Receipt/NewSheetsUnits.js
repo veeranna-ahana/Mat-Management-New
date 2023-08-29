@@ -46,7 +46,7 @@ function NewSheetsUnits(props) {
   const [boolVal7, setBoolVal7] = useState(true);
 
   // enable add to stock / remove stock
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const [insCheck, setInsCheck] = useState(false);
   const [calcWeightVal, setCalcWeightVal] = useState(0);
@@ -884,6 +884,7 @@ function NewSheetsUnits(props) {
         let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
         getRequest(url, async (data) => {
           //setCustdata(data);
+          console.log("weight", data);
           let TotalWeightCalculated =
             parseFloat(inputPart.qtyAccepted) *
             getWeight(
@@ -893,13 +894,19 @@ function NewSheetsUnits(props) {
               parseFloat(inputPart.dynamicPara3)
             );
 
+          // console.log("TotalWeightCalculated", TotalWeightCalculated);
+
           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
+          console.log("TotalWeightCalculated", TotalWeightCalculated);
+
           inputPart.totalWeightCalculated = parseFloat(
             TotalWeightCalculated
           ).toFixed(2);
+
           inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(2);
           inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
           inputPart["TotalWeight"] = TotalWeightCalculated;
+
           setInputPart(inputPart);
 
           //update forheader in database
@@ -1007,13 +1014,8 @@ function NewSheetsUnits(props) {
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
       console.log("Row = ", row);
-      console.log("Row = ", row.updated);
-      // {
-      //   row.updated === 1 ? setBoolVal9(true) : setBoolVal9(false);
-      // }
-      // Assuming row.updated can only be 0 or 1
-      // setIsButtonDisabled(row.updated === 1);
-
+      // console.log("Row = ", row.updated);
+      setIsButtonEnabled(row.updated === 1);
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2.forEach((obj) => {
@@ -1387,7 +1389,7 @@ function NewSheetsUnits(props) {
                         : true*/
                       boolVal6
                     }
-                    // disabled={isButtonDisabled}
+                    // disabled={isButtonEnabled && boolVal6}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -1404,6 +1406,7 @@ function NewSheetsUnits(props) {
                         : true*/
                       boolVal7
                     }
+                    // disabled={!isButtonEnabled && boolVal7}
                     onClick={removeStock}
                   >
                     Remove stock
@@ -1425,6 +1428,7 @@ function NewSheetsUnits(props) {
                         className="ip-select dropdown-field"
                         onChange={changeMtrl}
                         defaultValue={" "}
+                        value={inputPart.mtrlCode}
                         name="mtrlCode"
                         disabled={boolVal3 | boolVal4 | boolVal5}
                       >
@@ -1533,7 +1537,7 @@ function NewSheetsUnits(props) {
                       <input
                         className="in-field"
                         name="qtyReceived"
-                        defaultValue={0}
+                        // defaultValue={0}
                         value={inputPart.qtyReceived}
                         disabled={boolVal3 | boolVal4}
                         onChange={changeMaterialHandle}
@@ -1570,7 +1574,7 @@ function NewSheetsUnits(props) {
                       <input
                         className="in-field"
                         name="qtyAccepted"
-                        defaultValue={0}
+                        // defaultValue={0}
                         value={inputPart.qtyAccepted}
                         disabled={boolVal3 | boolVal4 | !boolVal5}
                         onChange={changeMaterialHandle}
@@ -1632,6 +1636,7 @@ function NewSheetsUnits(props) {
                       <select
                         className="ip-select dropdown-field"
                         onChange={changeMaterialHandle}
+                        value={inputPart.locationNo}
                         disabled={boolVal3 | boolVal4}
                         name="locationNo"
                       >
