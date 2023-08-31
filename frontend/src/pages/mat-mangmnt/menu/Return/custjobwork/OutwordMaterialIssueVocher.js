@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import { dateToShort } from "../../../../../utils";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
@@ -70,6 +71,8 @@ function OutwordMaterialIssueVocher(props) {
       location.state.selectData.Iv_Id;
     //console.log("url = ", url);
     getRequest(url, async (data) => {
+      // console.log("inside...", data);
+
       setIVNOValue(data.IV_No);
       setIVIDValue(data.Iv_Id);
       setdcID(data.Dc_ID);
@@ -196,8 +199,21 @@ function OutwordMaterialIssueVocher(props) {
   };
   let cancelIV = () => {
     //console.log(IVNOValue, " and ", IVIDValue);
-    setShow(true);
-    setBoolVal2(true);
+
+    Axios.post(endpoints.postCancleIV, {
+      Iv_Id: location.state.selectData.Iv_Id,
+    }).then((res) => {
+      // console.log("res", res);
+
+      if (res.affectedRows !== 0) {
+        toast.success("Return Voucher Cancelled Successfully");
+      } else {
+        toast.error("Backend error, Record Not Updated");
+      }
+    });
+
+    // setShow(true);
+    // setBoolVal2(true);
   };
 
   let createDC = () => {
@@ -269,6 +285,7 @@ function OutwordMaterialIssueVocher(props) {
       toast.error("DC Not Created");
     }
   };
+
   return (
     <div>
       <ReturnCancelIVModal
@@ -328,13 +345,15 @@ function OutwordMaterialIssueVocher(props) {
                   className="button-style ms-1"
                   onClick={saveButtonState}
                   disabled={
-                    boolVal2 |
-                    boolVal3 |
-                    (location.state.propsType === "customerIVList")
-                      ? true
-                      : false | (location.state.propsType === "returnCancelled")
-                      ? true
-                      : false
+                    formHeader.IVStatus === "Cancelled" ? true : false
+
+                    // boolVal2 |
+                    // boolVal3 |
+                    // (location.state.propsType === "customerIVList")
+                    //   ? true
+                    //   : false | (location.state.propsType === "returnCancelled")
+                    //   ? true
+                    //   : false
                   }
                 >
                   Save
@@ -414,11 +433,13 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={cancelIV}
                 disabled={
-                  boolVal2 | (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
-                    ? true
-                    : false
+                  formHeader.IVStatus === "Cancelled" ? true : false
+
+                  // boolVal2 | (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Cancel IV
@@ -429,11 +450,12 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={createDC}
                 disabled={
-                  boolVal2 | (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
-                    ? true
-                    : false
+                  formHeader.IVStatus === "Cancelled" ? true : false
+                  // boolVal2 | (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Create DC
@@ -444,13 +466,14 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={printDC}
                 disabled={
-                  boolVal1 |
-                  boolVal3 |
-                  (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
-                    ? true
-                    : false
+                  formHeader.IVStatus === "Cancelled" ? true : false
+                  // boolVal1 |
+                  // boolVal3 |
+                  // (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Print DC

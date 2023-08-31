@@ -238,4 +238,21 @@ materialIssueRegisterRouter.get("/SalesIVList", async (req, res, next) => {
     next(error);
   }
 }); */
+
+materialIssueRegisterRouter.post("/postCancleIV", async (req, res, next) => {
+  // console.log("reqq..", req.body);
+  // res.send("got the data..");
+  // let id = req.query.id;
+  try {
+    await misQueryMod(
+      `UPDATE magodmis.material_issue_register SET IVStatus = 'Cancelled' WHERE (Iv_Id = '${req.body.Iv_Id}')`,
+      (err, data) => {
+        if (err) logger.error(err);
+        res.send(data);
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = materialIssueRegisterRouter;
