@@ -254,7 +254,7 @@ function PofilesMaterials(props) {
     //     rowData.RvID === element.RVId &&
     //     rowData.Cust_Code === element.Cust_Code
     //   ) {
-    //     console.log("data inside...", element);
+    //   // console.log("data inside...", element);
     //   }
     //   //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
     // }
@@ -330,7 +330,7 @@ function PofilesMaterials(props) {
     // //         );
     // //       });
 
-    // //       console.log("newArray... getting the selected row data...", newArray);
+    // //     // console.log("newArray... getting the selected row data...", newArray);
 
     // //       let arr = [];
     // //       //mark checkbox of second table
@@ -338,7 +338,7 @@ function PofilesMaterials(props) {
     // //         arr = [...arr, item.MtrlStockID];
     // //       });
 
-    // //       console.log("arr...getting all the selected mtrlstockids ", arr);
+    // //     // console.log("arr...getting all the selected mtrlstockids ", arr);
 
     // //       // selecting all the mtrlstckids by default in second table
 
@@ -351,7 +351,7 @@ function PofilesMaterials(props) {
     // //       });
 
     // //       //console.log("new array = ", newArray);
-    // //       console.log("selectedSecond...... ", selectedSecond);
+    // //     // console.log("selectedSecond...... ", selectedSecond);
     // //       setSecondTable(newArray);
     // //       // thirdTable.push.apply(thirdTable, newArray);
     // //       // setThirdTable(thirdTable);
@@ -396,16 +396,16 @@ function PofilesMaterials(props) {
     //     const element = thirdTableData[i];
     //     // console.log("before", element);
     //     if (element === rowData) {
-    //       console.log("no need to insert");
+    //     // console.log("no need to insert");
     //       break;
     //     } else {
-    //       console.log("need to insert");
+    //     // console.log("need to insert");
     //       setThirdTableData([...thirdTableData, rowData]);
     //       break;
     //     }
     //   }
     // } else {
-    //   console.log("first element to insert");
+    // // console.log("first element to insert");
 
     //   setThirdTableData([...thirdTableData, rowData]);
     // }
@@ -439,7 +439,7 @@ function PofilesMaterials(props) {
 
     // for (let i = 0; i < thirdTableData.length; i++) {
     //   const element = thirdTableData[i];
-    //   console.log("element", element);
+    // // console.log("element", element);
     // }
 
     // console.log('rowdata', rowData);
@@ -523,7 +523,7 @@ function PofilesMaterials(props) {
 
   // createReturnVoucherFunc
   // let createReturnVoucher = async () => {
-  //   console.log("selected rows = ", thirdTableData);
+  // // console.log("selected rows = ", thirdTableData);
   //   // console.log("second = ", secondTable);
 
   //   get_Iv_DetailsEntry();
@@ -588,7 +588,7 @@ function PofilesMaterials(props) {
   //           (data) => {
   //             //console.log("data = ", data);
   //             if (data.affectedRows !== 0) {
-  //               console.log("Record inserted 1 : materialIssueRegister");
+  //             // console.log("Record inserted 1 : materialIssueRegister");
   //               //insert second table
   //               setSrlIVID(data.insertId);
 
@@ -662,7 +662,7 @@ function PofilesMaterials(props) {
   //                   RvId: firstTableSelectedRow[i].RvID,
   //                   Mtrl_Rv_id: firstTableSelectedRow[i].Mtrl_Rv_id,
   //                 };
-  //                 console.log(
+  //               // console.log(
   //                   "newRowMtrlIssueDetails : ",
   //                   newRowMtrlIssueDetails
   //                 );
@@ -672,7 +672,7 @@ function PofilesMaterials(props) {
   //                   async (data) => {
   //                     //console.log("data = ", data);
   //                     if (data.affectedRows !== 0) {
-  //                       console.log("Record inserted 1 : materialIssueDetails");
+  //                     // console.log("Record inserted 1 : materialIssueDetails");
   //                     } else {
   //                       toast.error("Record Not Inserted");
   //                     }
@@ -741,7 +741,7 @@ function PofilesMaterials(props) {
     if (props.custCode) {
       if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
         if (thirdTableData.length > 0) {
-          console.log("third table data", thirdTableData);
+          // console.log("third table data", thirdTableData);
           //get running no and assign to RvNo
           let yyyy = formatDate(new Date(), 6).toString();
           //console.log("yy = ", yyyy);
@@ -773,14 +773,14 @@ function PofilesMaterials(props) {
               //console.log("third = ", thirdTableData);
 
               setIVNOVal(no);
-              console.log("no", no);
+              // console.log("no", no);
 
               // calculating the total weights for selected materials in third table
               let RVTotalWeight = 0;
               let RVTotalCalWeight = 0;
               for (let i = 0; i < thirdTableData.length; i++) {
                 const element = thirdTableData[i];
-                console.log("elemt", element);
+                // console.log("elemt", element);
                 RVTotalWeight =
                   parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
                 RVTotalCalWeight =
@@ -819,9 +819,10 @@ function PofilesMaterials(props) {
                 endpoints.insertMaterialIssueRegister,
                 newRowMaterialIssueRegister,
                 (data) => {
-                  console.log("first post done in register...", data);
+                  // console.log("first post done in register...", data);
 
                   if (data.insertId) {
+                    setSrlIVID(data.insertId);
                     for (let j = 0; j < thirdTableData.length; j++) {
                       const element = thirdTableData[j];
 
@@ -833,14 +834,14 @@ function PofilesMaterials(props) {
                         element.Mtrl_Code;
                       getRequest(url3, async (MtrlData) => {
                         setObjMaterial(MtrlData);
-                        console.log("material data..", MtrlData);
+                        // console.log("material data..", MtrlData);
 
                         //find shape
                         let url2 =
                           endpoints.getRowByShape + "?shape=" + MtrlData.Shape;
                         getRequest(url2, async (shapeData) => {
                           setObjShape(shapeData);
-                          console.log("shape data..", shapeData);
+                          // console.log("shape data..", shapeData);
 
                           let mtrlDescription =
                             get_Iv_DetailsEntry(
@@ -856,12 +857,12 @@ function PofilesMaterials(props) {
                             " ** " +
                             element.Cust_Docu_No;
 
-                          console.log(
-                            "mtrlDescription",
-                            mtrlDescription,
-                            "no.....",
-                            j
-                          );
+                          // console.log(
+                          //   "mtrlDescription",
+                          //   mtrlDescription,
+                          //   "no.....",
+                          //   j
+                          // );
 
                           let newRowMtrlIssueDetails = {
                             Iv_Id: data.insertId,
@@ -885,21 +886,21 @@ function PofilesMaterials(props) {
                             RvId: element.RvID ? element.RvID : 0,
                             Mtrl_Rv_id: element.Mtrl_Rv_id,
                           };
-                          console.log(
-                            "newRowMtrlIssueDetails : ",
-                            newRowMtrlIssueDetails
-                          );
+                          // console.log(
+                          //   "newRowMtrlIssueDetails : ",
+                          //   newRowMtrlIssueDetails
+                          // );
                           postRequest(
                             endpoints.insertMtrlIssueDetails,
                             newRowMtrlIssueDetails,
                             async (issueDetailsData) => {
                               //console.log("data = ", data);
                               if (issueDetailsData.affectedRows !== 0) {
-                                console.log(
-                                  `Record inserted ${
-                                    j + 1
-                                  } : materialIssueDetails`
-                                );
+                                // console.log(
+                                //   `Record inserted ${
+                                //     j + 1
+                                //   } : materialIssueDetails`
+                                // );
                                 // toast.success('Data recoreded sucessfully')
 
                                 const mtrlstockData = {
@@ -911,10 +912,10 @@ function PofilesMaterials(props) {
                                   endpoints.updateIssueIVNo,
                                   mtrlstockData,
                                   async (mtrlUpdateData) => {
-                                    console.log(
-                                      "mtrlUpdateData...",
-                                      mtrlUpdateData
-                                    );
+                                    // console.log(
+                                    //   "mtrlUpdateData...",
+                                    //   mtrlUpdateData
+                                    // );
                                     const inputData = {
                                       SrlType: "MaterialReturnIV",
                                       Period: formatDate(new Date(), 6),
@@ -924,10 +925,10 @@ function PofilesMaterials(props) {
                                       endpoints.updateRunningNo,
                                       inputData,
                                       async (updateRunningNoData) => {
-                                        console.log(
-                                          "updateRunningNoData",
-                                          updateRunningNoData
-                                        );
+                                        // console.log(
+                                        //   "updateRunningNoData",
+                                        //   updateRunningNoData
+                                        // );
 
                                         // toast.success(
                                         //   "Data inserted successfully..."

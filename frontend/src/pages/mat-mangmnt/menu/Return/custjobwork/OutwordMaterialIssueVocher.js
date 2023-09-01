@@ -64,6 +64,7 @@ function OutwordMaterialIssueVocher(props) {
 
   async function fetchData() {
     // console.log("propstype = ", location.state.propsType);
+    // console.log("location data", location.state);
     //header data
     let url =
       endpoints.getMaterialIssueRegisterRouterByIVID +
@@ -104,6 +105,7 @@ function OutwordMaterialIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, async (data) => {
+      // console.log("mtrl issue details...", data);
       setOutData(data);
     });
   }
@@ -142,7 +144,7 @@ function OutwordMaterialIssueVocher(props) {
       text: "Total Weight",
       dataField: "TotalWeight",
       // editable: (content, row, rowIndex, columnIndex) => {
-      //   console.log("content = ", content);
+      // // console.log("content = ", content);
       // },
     },
     {
@@ -217,7 +219,7 @@ function OutwordMaterialIssueVocher(props) {
   };
 
   let createDC = () => {
-    console.log("outedata = ", outData);
+    // console.log("outedata = ", outData);
     let flag = 0;
     outData.map((item) => {
       if (
@@ -231,7 +233,7 @@ function OutwordMaterialIssueVocher(props) {
       }
     });
     if (flag === 0) {
-      console.log("Valid");
+      // console.log("Valid");
       setShowCreateDC(true);
       //setBoolVal1(false);
       //setBoolVal2(true);

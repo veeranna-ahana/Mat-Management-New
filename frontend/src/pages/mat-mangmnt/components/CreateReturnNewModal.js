@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 
 function CreateReturnNewModal(props) {
+  // console.log("props", props);
   const { show, setShow, handleShow } = props;
   const nav = useNavigate();
 

@@ -39,9 +39,9 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
   try {
     let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
-    console.log(
-      `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
-    );
+    // console.log(
+    //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
+    // );
     misQueryMod(
       `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
       (err, data) => {
@@ -98,6 +98,7 @@ materialIssueRegisterRouter.get(
       await misQueryMod(
         `Select * from magodmis.material_issue_register where Iv_Id = ${id}`,
         (err, data) => {
+          // console.log("getMaterialIssueRegisterRouterByIVID", data);
           if (err) logger.error(err);
           res.send(data[0]);
         }

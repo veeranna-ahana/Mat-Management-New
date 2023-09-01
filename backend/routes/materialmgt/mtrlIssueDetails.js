@@ -51,6 +51,7 @@ mtrlIssueDetailsRouter.get(
       await misQueryMod(
         `Select * from magodmis.mtrlissuedetails where IV_Id = ${id}`,
         (err, data) => {
+          // console.log("getmtrlIssueDetailsByIVID", data);
           if (err) logger.error(err);
           res.send(data);
         }
