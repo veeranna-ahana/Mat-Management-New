@@ -37,16 +37,48 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 });
 
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
+  // console.log("reqqqq..", req.body);
+
+  let flag = false;
   try {
-    let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
+    // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
     // console.log(
     //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
     // );
+    // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
+
     misQueryMod(
-      `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
-      (err, data) => {
+      `update  material_issue_register set PkngDcNo = "${req.body.formHeader.PkngDcNo}", TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+      (err, data1) => {
         if (err) logger.error(err);
-        res.send(data);
+
+        if (data1.affectedRows !== 0) {
+          for (let i = 0; i < req.body.outData.length; i++) {
+            const element = req.body.outData[i];
+
+            try {
+              misQueryMod(
+                `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${element.TotalWeightCalculated}', UpDated = ${element.UpDated} WHERE (Iv_Id = '${element.Iv_Id}')`,
+                (err, data) => {
+                  if (err) logger.error(err);
+                  // res.send(data)
+                }
+              );
+            } catch (error) {
+              next(error);
+            }
+            flag = true;
+          }
+
+          if (flag) {
+            res.send(data1);
+            // console.log("successfull");
+          } else {
+            res.send("Error found while updating (BE001)");
+          }
+        } else {
+          res.send("Error found while updating (BE001)");
+        }
       }
     );
   } catch (error) {

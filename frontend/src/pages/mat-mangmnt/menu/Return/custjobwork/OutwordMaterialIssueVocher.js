@@ -181,14 +181,19 @@ function OutwordMaterialIssueVocher(props) {
     } else if (formHeader.TotalWeight.length == 0)
       toast.error("Please Enter TotalWeight");
     else {*/
-    postRequest(endpoints.updateDCWeight, formHeader, (data) => {
-      //console.log("data = ", data);
-      if (data.affectedRows !== 0) {
-        toast.success("Record Updated Successfully");
-      } else {
-        toast.error("Record Not Updated");
+    postRequest(
+      endpoints.updateDCWeight,
+
+      { outData: outData, formHeader: formHeader },
+      (data) => {
+        //console.log("data = ", data);
+        if (data.affectedRows !== 0) {
+          toast.success("Record Updated Successfully");
+        } else {
+          toast.error("Record Not Updated");
+        }
       }
-    });
+    );
     //}
   };
 
@@ -289,14 +294,14 @@ function OutwordMaterialIssueVocher(props) {
     }
   };
 
-  const updateChange = (key, value) => {
+  const updateChange = (key, value, field) => {
     const newArray = [];
 
     for (let i = 0; i < outData.length; i++) {
       const element = outData[i];
 
       if (i === key) {
-        element.UpDated = value;
+        element[field] = value;
       }
       console.log("element", element);
 
@@ -313,6 +318,26 @@ function OutwordMaterialIssueVocher(props) {
     console.log("new", newArray);
 
     setOutData(newArray);
+  };
+
+  // const updateTotalWeight = (key, value)=>{
+
+  // }
+
+  const handleChangeWeightTotalCal = () => {
+    let newTotalCalWeight = 0;
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+      // console.log("elemet@@@@@@@@@@@@@@", element.TotalWeightCalculated);
+      newTotalCalWeight =
+        parseFloat(newTotalCalWeight) +
+        parseFloat(element.TotalWeightCalculated);
+    }
+
+    setFormHeader({
+      ...formHeader,
+      TotalWeight: newTotalCalWeight,
+    });
   };
 
   return (
@@ -604,14 +629,43 @@ function OutwordMaterialIssueVocher(props) {
                     <td>{val.Material} </td>
                     <td>{val.Qty}</td>
                     <td>{val.TotalWeight}</td>
-                    <td>{val.TotalWeightCalculated}</td>
+                    <td
+                    // contenteditable="true"
+                    // onChange={(e) => {
+                    //   console.log("eeeeeeeeee", e);
+                    // }}
+                    >
+                      {/* {val.TotalWeightCalculated} */}
+                      <input
+                        type="number"
+                        min={0}
+                        defaultValue={val.TotalWeightCalculated}
+                        onChange={(e) => {
+                          // console.log("eeeeeeeeee", e.target.value);
+
+                          updateChange(
+                            key,
+
+                            e.target.value.length === 0 ? 0 : e.target.value,
+                            "TotalWeightCalculated"
+                          );
+                          handleChangeWeightTotalCal();
+                        }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      />
+                    </td>
                     <td>
                       {val.UpDated === 0 ? (
                         <input
                           type="checkbox"
                           name=""
                           id=""
-                          onClick={() => updateChange(key, 1)}
+                          onClick={() => updateChange(key, 1, "UpDated")}
                           // onChange={(e) => {
                           //   // console.log("checkbox clicked", e.target.value);
 
@@ -648,7 +702,7 @@ function OutwordMaterialIssueVocher(props) {
                           name=""
                           id=""
                           checked
-                          onClick={() => updateChange(key, 0)}
+                          onClick={() => updateChange(key, 0, "UpDated")}
 
                           // onChange={(e) => {
                           //   // console.log("checkbox clicked", e.target.value);
