@@ -9,6 +9,7 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
+import Table from "react-bootstrap/Table";
 
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
@@ -288,6 +289,32 @@ function OutwordMaterialIssueVocher(props) {
     }
   };
 
+  const updateChange = (key, value) => {
+    const newArray = [];
+
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+
+      if (i === key) {
+        element.UpDated = value;
+      }
+      console.log("element", element);
+
+      newArray.push(element);
+
+      // if(i===key){
+
+      // }else{
+
+      //   setOutData([element])
+      // }
+    }
+
+    console.log("new", newArray);
+
+    setOutData(newArray);
+  };
+
   return (
     <div>
       <ReturnCancelIVModal
@@ -553,7 +580,89 @@ function OutwordMaterialIssueVocher(props) {
             style={{ height: "420px", overflowY: "scroll" }}
             //className="col-md-12 col-sm-12"
           >
-            <BootstrapTable
+            <Table
+              hover
+              condensed
+              className="table-data border header-class table-striped"
+            >
+              <thead className="text-white">
+                <tr>
+                  <th>SL No</th>
+                  <th>Description</th>
+                  <th>Material </th>
+                  <th>Qty</th>
+                  <th>Weight</th>
+                  <th>Total Weight</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {outData.map((val, key) => (
+                  <tr>
+                    <td>{key + 1}</td>
+                    <td>{val.MtrlDescription}</td>
+                    <td>{val.Material} </td>
+                    <td>{val.Qty}</td>
+                    <td>{val.TotalWeight}</td>
+                    <td>{val.TotalWeightCalculated}</td>
+                    <td>
+                      {val.UpDated === 0 ? (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          onClick={() => updateChange(key, 1)}
+                          // onChange={(e) => {
+                          //   // console.log("checkbox clicked", e.target.value);
+
+                          //   const newArray = [];
+
+                          //   for (let i = 0; i < outData.length; i++) {
+                          //     const element = outData[i];
+
+                          //     if (i === key) {
+                          //       element.UpDated = 1;
+                          //     }
+                          //     console.log("element", element);
+
+                          //     newArray.push(element);
+
+                          //     // if(i===key){
+
+                          //     // }else{
+
+                          //     //   setOutData([element])
+                          //     // }
+                          //   }
+
+                          //   console.log("new", newArray);
+
+                          //   setOutData(newArray);
+
+                          //   // console.log("setOutData", outData[key].UpDated);
+                          // }}
+                        />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          checked
+                          onClick={() => updateChange(key, 0)}
+
+                          // onChange={(e) => {
+                          //   // console.log("checkbox clicked", e.target.value);
+                          //   // console.log("setOutData", outData);
+                          // }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+
+            {/* <BootstrapTable
               headerClasses="header-class "
               keyField="IV_No"
               //keyField="id"
@@ -569,7 +678,7 @@ function OutwordMaterialIssueVocher(props) {
                 blurToSave: true,
                 afterSaveCell,
               })}
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
       </div>
