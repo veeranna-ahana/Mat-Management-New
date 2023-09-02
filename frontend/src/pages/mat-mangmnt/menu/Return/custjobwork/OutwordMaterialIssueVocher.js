@@ -52,6 +52,7 @@ function OutwordMaterialIssueVocher(props) {
     Customer: "",
     CustGSTNo: "",
     PkngDcNo: "",
+    PkngDCDate: "",
     TotalWeight: "",
     TotalCalculatedWeight: "",
     Dc_ID: "",
@@ -86,6 +87,7 @@ function OutwordMaterialIssueVocher(props) {
         Customer: data.Customer,
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
+        PkngDCDate: data.PkngDCDate,
         TotalWeight: data.TotalWeight,
         TotalCalculatedWeight: data.TotalCalculatedWeight,
         Dc_ID: data.Dc_ID,
@@ -386,7 +388,7 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="IVDate"
-                  value={statusFormatter(formHeader.IV_Date)}
+                  value={formHeader.IV_Date}
                   disabled
                 />
               </div>
@@ -455,7 +457,13 @@ function OutwordMaterialIssueVocher(props) {
                   type="text"
                   name="PkngDcNo"
                   disabled
-                  value={formHeader.PkngDcNo}
+                  value={
+                    formHeader.PkngDcNo
+                      ? formHeader.PkngDcNo +
+                        "   Date : " +
+                        formHeader.PkngDCDate
+                      : ""
+                  }
                   // onChange={InputHeaderEvent}
                 />
               </div>

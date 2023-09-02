@@ -128,7 +128,9 @@ materialIssueRegisterRouter.get(
     let id = req.query.id;
     try {
       await misQueryMod(
-        `Select * from magodmis.material_issue_register where Iv_Id = ${id}`,
+        `Select *,
+        DATE_FORMAT(PkngDCDate, '%d/%m/%Y') AS PkngDCDate,
+        DATE_FORMAT(IV_Date, '%d/%m/%Y') AS IV_Date from magodmis.material_issue_register where Iv_Id = ${id}`,
         (err, data) => {
           // console.log("getMaterialIssueRegisterRouterByIVID", data);
           if (err) logger.error(err);
