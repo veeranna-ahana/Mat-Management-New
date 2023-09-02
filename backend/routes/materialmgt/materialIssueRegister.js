@@ -110,7 +110,7 @@ materialIssueRegisterRouter.post(
     try {
       let { Iv_Id, PkngDcNo, Dc_ID } = req.body;
       misQueryMod(
-        `update  material_issue_register set IVStatus='Returned', PkngDcNo = "${PkngDcNo}", Dc_ID = "${Dc_ID}" where Iv_Id = ${Iv_Id} `,
+        `update  material_issue_register set IVStatus='Returned', PkngDcNo = "${PkngDcNo}", PkngDCDate =now(), Dc_ID = "${Dc_ID}" where Iv_Id = ${Iv_Id} `,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);

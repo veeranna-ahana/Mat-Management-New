@@ -169,10 +169,13 @@ function OutwordMaterialIssueVocher(props) {
       TotalWeight: newValue,
     });
   }
-  const InputHeaderEvent = (e) => {
-    const { name, value } = e.target;
+  const InputHeaderEvent = (name, value) => {
+    // console.log("function.........", "name", name, "value", value);
+    // const { name, value } = e.target;
     setFormHeader({ ...formHeader, [name]: value });
   };
+
+  // console.log("formHeader", formHeader);
 
   const saveButtonState = (e) => {
     e.preventDefault();
@@ -214,7 +217,10 @@ function OutwordMaterialIssueVocher(props) {
       // console.log("res", res);
 
       if (res.affectedRows !== 0) {
-        toast.success("Return Voucher Cancelled Successfully");
+        InputHeaderEvent("IVStatus", "Cancelled");
+        toast.success(
+          "Return Voucher Cancelled Successfully and Stock added to Material Stock"
+        );
       } else {
         toast.error("Backend error, Record Not Updated");
       }
@@ -357,6 +363,7 @@ function OutwordMaterialIssueVocher(props) {
         outData={outData}
         type="sheets"
         getDCID={getDCID}
+        InputHeaderEvent={InputHeaderEvent}
       />
       <div>
         <h4 className="title">Outward Material Issue Voucher</h4>
@@ -371,7 +378,7 @@ function OutwordMaterialIssueVocher(props) {
                   name="IvId"
                   value={formHeader.IV_No}
                   disabled
-                  onChange={InputHeaderEvent}
+                  // onChange={InputHeaderEvent}
                 />
               </div>
               <div className="col-md-3">
@@ -399,7 +406,10 @@ function OutwordMaterialIssueVocher(props) {
                   className="button-style ms-1"
                   onClick={saveButtonState}
                   disabled={
-                    formHeader.IVStatus === "Cancelled" ? true : false
+                    formHeader.IVStatus === "Cancelled" ||
+                    (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
+                      ? true
+                      : false
 
                     // boolVal2 |
                     // boolVal3 |
@@ -444,8 +454,9 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="PkngDcNo"
+                  disabled
                   value={formHeader.PkngDcNo}
-                  onChange={InputHeaderEvent}
+                  // onChange={InputHeaderEvent}
                 />
               </div>
             </div>
@@ -455,8 +466,9 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="TotalWeight"
+                  disabled
                   value={formHeader.TotalWeight}
-                  onChange={InputHeaderEvent}
+                  // onChange={InputHeaderEvent}
                 />
               </div>
               <div className="col-md-6">
@@ -487,7 +499,10 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={cancelIV}
                 disabled={
-                  formHeader.IVStatus === "Cancelled" ? true : false
+                  formHeader.IVStatus === "Cancelled" ||
+                  (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
+                    ? true
+                    : false
 
                   // boolVal2 | (location.state.propsType === "customerIVList")
                   //   ? true
@@ -504,7 +519,10 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={createDC}
                 disabled={
-                  formHeader.IVStatus === "Cancelled" ? true : false
+                  formHeader.IVStatus === "Cancelled" ||
+                  (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
+                    ? true
+                    : false
                   // boolVal2 | (location.state.propsType === "customerIVList")
                   //   ? true
                   //   : false | (location.state.propsType === "returnCancelled")
