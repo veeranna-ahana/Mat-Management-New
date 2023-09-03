@@ -211,7 +211,7 @@ function OutwordMaterialIssueVocher(props) {
     });
   };
   let cancelIV = () => {
-    //console.log(IVNOValue, " and ", IVIDValue);
+    // console.log("location.state", location.state);
 
     Axios.post(endpoints.postCancleIV, {
       Iv_Id: location.state.selectData.Iv_Id,

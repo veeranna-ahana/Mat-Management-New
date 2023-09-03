@@ -281,9 +281,39 @@ materialIssueRegisterRouter.post("/postCancleIV", async (req, res, next) => {
   try {
     await misQueryMod(
       `UPDATE magodmis.material_issue_register SET IVStatus = 'Cancelled' WHERE (Iv_Id = '${req.body.Iv_Id}')`,
-      (err, data) => {
+      (err, data1) => {
         if (err) logger.error(err);
-        res.send(data);
+
+        // console.log("data1", data1);
+        if (data1.affectedRows !== 0) {
+          try {
+            misQueryMod(
+              `select IV_No from magodmis.material_issue_register WHERE (Iv_Id = '${req.body.Iv_Id}')`,
+              (err, data2) => {
+                if (err) logger.error(err);
+                // console.log("data2", data2[0].IV_No);
+                // res.send(data2);
+
+                try {
+                  misQueryMod(
+                    `UPDATE magodmis.mtrlstocklist SET Issue = '0' WHERE (IV_No = '${data2[0].IV_No}')`,
+                    (err, data3) => {
+                      if (err) logger.error(err);
+                      // console.log("data3", data3);
+                      res.send(data3);
+                    }
+                  );
+                } catch (error) {
+                  next(error);
+                }
+              }
+            );
+          } catch (error) {
+            next(error);
+          }
+        } else {
+          res.send(data1);
+        }
       }
     );
   } catch (error) {

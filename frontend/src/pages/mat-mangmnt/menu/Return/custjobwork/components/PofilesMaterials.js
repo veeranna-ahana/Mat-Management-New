@@ -49,6 +49,7 @@ function PofilesMaterials(props) {
           item.Issue = false;
         });
         setFirstTableData(data);
+        // console.log("first table...", data);
       });
 
       //fetch second table data
@@ -56,6 +57,7 @@ function PofilesMaterials(props) {
         endpoints.profileMaterialSecond + "?Cust_Code=" + props.custCode;
       getRequest(url2, (data) => {
         setAllData(data);
+        // console.log("all data...", data);
       });
     }
   };
