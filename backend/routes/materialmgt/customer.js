@@ -26,6 +26,7 @@ customerRouter.get("/getCustomerByCustCode", async (req, res, next) => {
     misQueryMod(
       `Select * from magodmis.cust_data where Cust_Code = ${code}`,
       (err, data) => {
+        // console.log("getCustomerByCustCode", data);
         if (err) logger.error(err);
         res.send(data[0]);
       }

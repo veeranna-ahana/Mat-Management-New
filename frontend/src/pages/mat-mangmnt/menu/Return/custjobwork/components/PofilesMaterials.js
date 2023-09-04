@@ -49,6 +49,7 @@ function PofilesMaterials(props) {
           item.Issue = false;
         });
         setFirstTableData(data);
+        // console.log("first table...", data);
       });
 
       //fetch second table data
@@ -56,6 +57,7 @@ function PofilesMaterials(props) {
         endpoints.profileMaterialSecond + "?Cust_Code=" + props.custCode;
       getRequest(url2, (data) => {
         setAllData(data);
+        // console.log("all data...", data);
       });
     }
   };
@@ -254,7 +256,7 @@ function PofilesMaterials(props) {
     //     rowData.RvID === element.RVId &&
     //     rowData.Cust_Code === element.Cust_Code
     //   ) {
-    //     console.log("data inside...", element);
+    //   // console.log("data inside...", element);
     //   }
     //   //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
     // }
@@ -330,7 +332,7 @@ function PofilesMaterials(props) {
     // //         );
     // //       });
 
-    // //       console.log("newArray... getting the selected row data...", newArray);
+    // //     // console.log("newArray... getting the selected row data...", newArray);
 
     // //       let arr = [];
     // //       //mark checkbox of second table
@@ -338,7 +340,7 @@ function PofilesMaterials(props) {
     // //         arr = [...arr, item.MtrlStockID];
     // //       });
 
-    // //       console.log("arr...getting all the selected mtrlstockids ", arr);
+    // //     // console.log("arr...getting all the selected mtrlstockids ", arr);
 
     // //       // selecting all the mtrlstckids by default in second table
 
@@ -351,7 +353,7 @@ function PofilesMaterials(props) {
     // //       });
 
     // //       //console.log("new array = ", newArray);
-    // //       console.log("selectedSecond...... ", selectedSecond);
+    // //     // console.log("selectedSecond...... ", selectedSecond);
     // //       setSecondTable(newArray);
     // //       // thirdTable.push.apply(thirdTable, newArray);
     // //       // setThirdTable(thirdTable);
@@ -396,16 +398,16 @@ function PofilesMaterials(props) {
     //     const element = thirdTableData[i];
     //     // console.log("before", element);
     //     if (element === rowData) {
-    //       console.log("no need to insert");
+    //     // console.log("no need to insert");
     //       break;
     //     } else {
-    //       console.log("need to insert");
+    //     // console.log("need to insert");
     //       setThirdTableData([...thirdTableData, rowData]);
     //       break;
     //     }
     //   }
     // } else {
-    //   console.log("first element to insert");
+    // // console.log("first element to insert");
 
     //   setThirdTableData([...thirdTableData, rowData]);
     // }
@@ -439,7 +441,7 @@ function PofilesMaterials(props) {
 
     // for (let i = 0; i < thirdTableData.length; i++) {
     //   const element = thirdTableData[i];
-    //   console.log("element", element);
+    // // console.log("element", element);
     // }
 
     // console.log('rowdata', rowData);
@@ -520,215 +522,475 @@ function PofilesMaterials(props) {
   //     }
   //   },
   // };
-  let createReturnVoucher = async () => {
-    console.log("selected rows = ", firstTableSelectedRow);
-    // console.log("second = ", secondTable);
 
-    get_Iv_DetailsEntry();
-    if (thirdTableData.length === 0) {
-      toast.error("Please select the customer");
-    } else {
-      //get running no and assign to RvNo
-      let yyyy = formatDate(new Date(), 6).toString();
-      //console.log("yy = ", yyyy);
-      const url =
-        endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
-      getRequest(url, (data) => {
-        data.map((obj) => {
-          let newNo = parseInt(obj.Running_No) + 1;
-          //let no = "23/000" + newNo;
-          let series = "";
-          //add prefix zeros
-          for (
-            let i = 0;
-            i < parseInt(obj.Length) - newNo.toString().length;
-            i++
-          ) {
-            series = series + "0";
-          }
-          series = series + "" + newNo;
-          //console.log("series = ", series);
-          //get last 2 digit of year
-          let yy = formatDate(new Date(), 6).toString().substring(2);
-          let no = yy + "/" + series;
-          //console.log("no = ", no);
-          //console.log("first = ", firstTable);
-          //console.log("selected rows = ", firstTableSelectedRow);
-          //console.log("second = ", secondTable);
-          //console.log("third = ", thirdTableData);
+  // createReturnVoucherFunc
+  // let createReturnVoucher = async () => {
+  // // console.log("selected rows = ", thirdTableData);
+  //   // console.log("second = ", secondTable);
 
-          setIVNOVal(no);
+  //   get_Iv_DetailsEntry();
+  //   if (thirdTableData.length === 0) {
+  //     toast.error("Please select the customer");
+  //   } else {
+  //     //get running no and assign to RvNo
+  //     let yyyy = formatDate(new Date(), 6).toString();
+  //     //console.log("yy = ", yyyy);
+  //     const url =
+  //       endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
+  //     getRequest(url, (data) => {
+  //       data.map((obj) => {
+  //         let newNo = parseInt(obj.Running_No) + 1;
+  //         //let no = "23/000" + newNo;
+  //         let series = "";
+  //         //add prefix zeros
+  //         for (
+  //           let i = 0;
+  //           i < parseInt(obj.Length) - newNo.toString().length;
+  //           i++
+  //         ) {
+  //           series = series + "0";
+  //         }
+  //         series = series + "" + newNo;
+  //         // loop ends here
+  //         // console.log("series = ", series);
+  //         //get last 2 digit of year
+  //         let yy = formatDate(new Date(), 6).toString().substring(2);
+  //         let no = yy + "/" + series;
+  //         //console.log("no = ", no);
+  //         //console.log("first = ", firstTable);
+  //         //console.log("selected rows = ", firstTableSelectedRow);
+  //         //console.log("second = ", secondTable);
+  //         //console.log("third = ", thirdTableData);
 
-          let newRowMaterialIssueRegister = {
-            IV_No: no,
-            IV_Date: formatDate(new Date(), 5),
-            Cust_code: props.custCode,
-            Customer: props.custName,
-            CustCSTNo: props.custCST,
-            CustTINNo: props.custTIN,
-            CustECCNo: props.custECC,
-            CustGSTNo: props.custGST,
-            EMail: "",
-            PkngDcNo: "",
-            PkngDCDate: null,
-            TotalWeight: thirdTableData[0].TotalWeight,
-            TotalCalculatedWeight: thirdTableData[0].TotalCalculatedWeight,
-            UpDated: 0,
-            IVStatus: "draft",
-            Dc_ID: 0,
-            Type: thirdTableData[0].Type,
-          };
-          //insert first table
-          postRequest(
-            endpoints.insertMaterialIssueRegister,
-            newRowMaterialIssueRegister,
-            (data) => {
-              //console.log("data = ", data);
-              if (data.affectedRows !== 0) {
-                console.log("Record inserted 1 : materialIssueRegister");
-                //insert second table
-                setSrlIVID(data.insertId);
+  //         setIVNOVal(no);
 
-                for (let i = 0; i < firstTableSelectedRow.length; i++) {
-                  //find Qty
-                  const foundArray = thirdTableData.filter((obj) => {
-                    return (
-                      obj.RV_No === firstTableSelectedRow[i].RV_No &&
-                      obj.Mtrl_Code === firstTableSelectedRow[i].Mtrl_Code &&
-                      obj.DynamicPara1 ===
-                        firstTableSelectedRow[i].DynamicPara1 &&
-                      obj.DynamicPara2 === firstTableSelectedRow[i].DynamicPara2
-                    );
-                  });
-                  //total instock - third table added rows
-                  let qty = foundArray.length;
+  //         let newRowMaterialIssueRegister = {
+  //           IV_No: no,
+  //           IV_Date: formatDate(new Date(), 5),
+  //           Cust_code: props.custCode,
+  //           Customer: props.custName,
+  //           CustCSTNo: props.custCST,
+  //           CustTINNo: props.custTIN,
+  //           CustECCNo: props.custECC,
+  //           CustGSTNo: props.custGST,
+  //           EMail: "",
+  //           PkngDcNo: "",
+  //           PkngDCDate: null,
+  //           TotalWeight: thirdTableData[0].TotalWeight,
+  //           TotalCalculatedWeight: thirdTableData[0].TotalCalculatedWeight,
+  //           UpDated: 0,
+  //           IVStatus: "draft",
+  //           Dc_ID: 0,
+  //           Type: thirdTableData[0].Type,
+  //         };
+  //         //insert first table
+  //         postRequest(
+  //           endpoints.insertMaterialIssueRegister,
+  //           newRowMaterialIssueRegister,
+  //           (data) => {
+  //             //console.log("data = ", data);
+  //             if (data.affectedRows !== 0) {
+  //             // console.log("Record inserted 1 : materialIssueRegister");
+  //               //insert second table
+  //               setSrlIVID(data.insertId);
 
-                  //find material description
-                  let url2 =
-                    endpoints.getRowByShape +
-                    "?shape=" +
-                    firstTableSelectedRow[i].Shape;
-                  getRequest(url2, async (data) => {
-                    setObjShape(data);
-                  });
+  //               for (let i = 0; i < firstTableSelectedRow.length; i++) {
+  //                 //find Qty
+  //                 const foundArray = thirdTableData.filter((obj) => {
+  //                   return (
+  //                     obj.RV_No === firstTableSelectedRow[i].RV_No &&
+  //                     obj.Mtrl_Code === firstTableSelectedRow[i].Mtrl_Code &&
+  //                     obj.DynamicPara1 ===
+  //                       firstTableSelectedRow[i].DynamicPara1 &&
+  //                     obj.DynamicPara2 === firstTableSelectedRow[i].DynamicPara2
+  //                   );
+  //                 });
+  //                 //total instock - third table added rows
+  //                 let qty = foundArray.length;
 
-                  let url3 =
-                    endpoints.getRowByMtrlCode +
-                    "?code=" +
-                    firstTableSelectedRow[i].Mtrl_Code;
-                  getRequest(url3, async (data) => {
-                    setObjMaterial(data);
-                  });
+  //                 //find material description
+  //                 let url2 =
+  //                   endpoints.getRowByShape +
+  //                   "?shape=" +
+  //                   firstTableSelectedRow[i].Shape;
+  //                 getRequest(url2, async (data) => {
+  //                   setObjShape(data);
+  //                 });
 
-                  //console.log("Shape = ", objShape, " mtrl = ", objMaterial);
+  //                 let url3 =
+  //                   endpoints.getRowByMtrlCode +
+  //                   "?code=" +
+  //                   firstTableSelectedRow[i].Mtrl_Code;
+  //                 getRequest(url3, async (data) => {
+  //                   setObjMaterial(data);
+  //                 });
 
-                  let mtrlDescription =
-                    get_Iv_DetailsEntry(
-                      firstTableSelectedRow[i].Scrap,
-                      firstTableSelectedRow[i].DynamicPara1,
-                      firstTableSelectedRow[i].DynamicPara2,
-                      firstTableSelectedRow[i].DynamicPara3,
-                      firstTableSelectedRow[i].Material,
-                      firstTableSelectedRow[i].Shape,
-                      objShape,
-                      objMaterial
-                    ) +
-                    " ** " +
-                    firstTableSelectedRow[i].Cust_Docu_No;
-                  //console.log("desc = ", mtrlDescription);
+  //                 //console.log("Shape = ", objShape, " mtrl = ", objMaterial);
 
-                  let newRowMtrlIssueDetails = {
-                    Iv_Id: data.insertId,
-                    Srl: i + 1,
-                    IV_Date: null,
-                    IV_No: "",
-                    Cust_Code: props.custCode,
-                    Customer: "",
-                    MtrlDescription: mtrlDescription,
-                    Mtrl_Code: firstTableSelectedRow[i].Mtrl_Code,
-                    Material: firstTableSelectedRow[i].Material,
-                    PkngDCNo: "",
-                    cust_docu_No: "",
-                    RV_No: "",
-                    RV_Srl: "",
-                    Qty: qty,
-                    TotalWeightCalculated:
-                      firstTableSelectedRow[i].TotalCalculatedWeight,
-                    TotalWeight: firstTableSelectedRow[i].TotalWeight,
-                    UpDated: 0,
-                    RvId: firstTableSelectedRow[i].RvID,
-                    Mtrl_Rv_id: firstTableSelectedRow[i].Mtrl_Rv_id,
-                  };
-                  console.log(
-                    "newRowMtrlIssueDetails : ",
-                    newRowMtrlIssueDetails
-                  );
-                  postRequest(
-                    endpoints.insertMtrlIssueDetails,
-                    newRowMtrlIssueDetails,
-                    async (data) => {
-                      //console.log("data = ", data);
-                      if (data.affectedRows !== 0) {
-                        console.log("Record inserted 1 : materialIssueDetails");
-                      } else {
-                        toast.error("Record Not Inserted");
-                      }
-                    }
-                  );
-                }
-              } else {
-                toast.error("Record Not Inserted");
+  //                 let mtrlDescription =
+  //                   get_Iv_DetailsEntry(
+  //                     firstTableSelectedRow[i].Scrap,
+  //                     firstTableSelectedRow[i].DynamicPara1,
+  //                     firstTableSelectedRow[i].DynamicPara2,
+  //                     firstTableSelectedRow[i].DynamicPara3,
+  //                     firstTableSelectedRow[i].Material,
+  //                     firstTableSelectedRow[i].Shape,
+  //                     objShape,
+  //                     objMaterial
+  //                   ) +
+  //                   " ** " +
+  //                   firstTableSelectedRow[i].Cust_Docu_No;
+  //                 //console.log("desc = ", mtrlDescription);
+
+  //                 let newRowMtrlIssueDetails = {
+  //                   Iv_Id: data.insertId,
+  //                   Srl: i + 1,
+  //                   IV_Date: null,
+  //                   IV_No: "",
+  //                   Cust_Code: props.custCode,
+  //                   Customer: "",
+  //                   MtrlDescription: mtrlDescription,
+  //                   Mtrl_Code: firstTableSelectedRow[i].Mtrl_Code,
+  //                   Material: firstTableSelectedRow[i].Material,
+  //                   PkngDCNo: "",
+  //                   cust_docu_No: "",
+  //                   RV_No: "",
+  //                   RV_Srl: "",
+  //                   Qty: qty,
+  //                   TotalWeightCalculated:
+  //                     firstTableSelectedRow[i].TotalCalculatedWeight,
+  //                   TotalWeight: firstTableSelectedRow[i].TotalWeight,
+  //                   UpDated: 0,
+  //                   RvId: firstTableSelectedRow[i].RvID,
+  //                   Mtrl_Rv_id: firstTableSelectedRow[i].Mtrl_Rv_id,
+  //                 };
+  //               // console.log(
+  //                   "newRowMtrlIssueDetails : ",
+  //                   newRowMtrlIssueDetails
+  //                 );
+  //                 postRequest(
+  //                   endpoints.insertMtrlIssueDetails,
+  //                   newRowMtrlIssueDetails,
+  //                   async (data) => {
+  //                     //console.log("data = ", data);
+  //                     if (data.affectedRows !== 0) {
+  //                     // console.log("Record inserted 1 : materialIssueDetails");
+  //                     } else {
+  //                       toast.error("Record Not Inserted");
+  //                     }
+  //                   }
+  //                 );
+  //               }
+  //             } else {
+  //               toast.error("Record Not Inserted");
+  //             }
+  //           }
+  //         );
+
+  //         //update mtrlStocklist by ivno and issue
+  //         for (let i = 0; i < thirdTableData.length; i++) {
+  //           const mtrlstockData = {
+  //             Issue: 0,
+  //             Iv_No: no,
+  //             MtrlStockID: thirdTableData[i].MtrlStockID,
+  //           };
+  //           postRequest(
+  //             endpoints.updateIssueIVNo,
+  //             mtrlstockData,
+  //             async (data) => {}
+  //           );
+  //         }
+
+  //         //insert into material Return Details
+  //         const inputDataDelete = {
+  //           IV_No: no,
+  //         };
+  //         postRequest(
+  //           endpoints.deleteMtrlStockByIVNo,
+  //           inputDataDelete,
+  //           async (data) => {}
+  //         );
+
+  //         //delete
+
+  //         //update the running no
+  //         const inputData = {
+  //           SrlType: "MaterialReturnIV",
+  //           Period: formatDate(new Date(), 6),
+  //           RunningNo: newNo,
+  //         };
+  //         postRequest(endpoints.updateRunningNo, inputData, async (data) => {});
+
+  //         setSrlMaterialType("material");
+  //         setShow(true);
+  //       });
+  //     });
+  //   }
+  // };
+
+  const createReturnVoucherFunc = () => {
+    // console.log(
+    //   "props.custCode",
+    //   props.custCode,
+    //   "secondTableData",
+    //   secondTableData,
+    //   "firstTableSelectedRow",
+    //   firstTableSelectedRow,
+    //   "thirdTableData",
+    //   thirdTableData
+    // );
+
+    if (props.custCode) {
+      if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
+        if (thirdTableData.length > 0) {
+          // console.log("third table data", thirdTableData);
+          //get running no and assign to RvNo
+          let yyyy = formatDate(new Date(), 6).toString();
+          //console.log("yy = ", yyyy);
+          const url =
+            endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
+          getRequest(url, (data) => {
+            data.map((obj) => {
+              let newNo = parseInt(obj.Running_No) + 1;
+              //let no = "23/000" + newNo;
+              let series = "";
+              //add prefix zeros
+              for (
+                let i = 0;
+                i < parseInt(obj.Length) - newNo.toString().length;
+                i++
+              ) {
+                series = series + "0";
               }
-            }
+              series = series + "" + newNo;
+              // loop ends here
+              // console.log("series = ", series);
+              //get last 2 digit of year
+              let yy = formatDate(new Date(), 6).toString().substring(2);
+              let no = yy + "/" + series;
+              //console.log("no = ", no);
+              //console.log("first = ", firstTable);
+              //console.log("selected rows = ", firstTableSelectedRow);
+              //console.log("second = ", secondTable);
+              //console.log("third = ", thirdTableData);
+
+              setIVNOVal(no);
+              // console.log("no", no);
+
+              // calculating the total weights for selected materials in third table
+              let RVTotalWeight = 0;
+              let RVTotalCalWeight = 0;
+              for (let i = 0; i < thirdTableData.length; i++) {
+                const element = thirdTableData[i];
+                // console.log("elemt", element);
+                RVTotalWeight =
+                  parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
+                RVTotalCalWeight =
+                  parseFloat(RVTotalCalWeight) +
+                  parseFloat(element.TotalCalculatedWeight);
+              }
+              // loop ends..........................
+
+              // console.log(
+              //   "total weight",
+              //   RVTotalWeight,
+              //   "cal weight",
+              //   RVTotalCalWeight
+              // );
+
+              let newRowMaterialIssueRegister = {
+                IV_No: no,
+                IV_Date: formatDate(new Date(), 5),
+                Cust_code: props.custCode,
+                Customer: props.custName,
+                CustCSTNo: props.custCST,
+                CustTINNo: props.custTIN,
+                CustECCNo: props.custECC,
+                CustGSTNo: props.custGST,
+                EMail: "",
+                PkngDcNo: "",
+                PkngDCDate: null,
+                TotalWeight: RVTotalWeight,
+                TotalCalculatedWeight: RVTotalCalWeight,
+                UpDated: 0,
+                IVStatus: "Draft",
+                Dc_ID: 0,
+                Type: thirdTableData[0].Type,
+              };
+              postRequest(
+                endpoints.insertMaterialIssueRegister,
+                newRowMaterialIssueRegister,
+                (data) => {
+                  // console.log("first post done in register...", data);
+
+                  if (data.insertId) {
+                    setSrlIVID(data.insertId);
+                    for (let j = 0; j < thirdTableData.length; j++) {
+                      const element = thirdTableData[j];
+
+                      //find material
+
+                      let url3 =
+                        endpoints.getRowByMtrlCode +
+                        "?code=" +
+                        element.Mtrl_Code;
+                      getRequest(url3, async (MtrlData) => {
+                        setObjMaterial(MtrlData);
+                        // console.log("material data..", MtrlData);
+
+                        //find shape
+                        let url2 =
+                          endpoints.getRowByShape + "?shape=" + MtrlData.Shape;
+                        getRequest(url2, async (shapeData) => {
+                          setObjShape(shapeData);
+                          // console.log("shape data..", shapeData);
+
+                          let mtrlDescription =
+                            get_Iv_DetailsEntry(
+                              element.Scrap,
+                              element.DynamicPara1,
+                              element.DynamicPara2,
+                              element.DynamicPara3,
+                              element.Material,
+                              MtrlData.Shape,
+                              shapeData,
+                              MtrlData
+                            ) +
+                            " ** " +
+                            element.Cust_Docu_No;
+
+                          // console.log(
+                          //   "mtrlDescription",
+                          //   mtrlDescription,
+                          //   "no.....",
+                          //   j
+                          // );
+
+                          let newRowMtrlIssueDetails = {
+                            Iv_Id: data.insertId,
+                            Srl: j + 1,
+                            IV_Date: null,
+                            IV_No: "",
+                            Cust_Code: props.custCode,
+                            Customer: "",
+                            MtrlDescription: mtrlDescription,
+                            Mtrl_Code: element.Mtrl_Code,
+                            Material: element.Material,
+                            PkngDCNo: "",
+                            cust_docu_No: element.Cust_Docu_No,
+                            RV_No: element.RV_No,
+                            RV_Srl: "",
+                            Qty: 1,
+                            TotalWeightCalculated:
+                              element.TotalCalculatedWeight,
+                            TotalWeight: element.TotalWeight,
+                            UpDated: 0,
+                            RvId: element.RvID ? element.RvID : 0,
+                            Mtrl_Rv_id: element.Mtrl_Rv_id,
+                          };
+                          // console.log(
+                          //   "newRowMtrlIssueDetails : ",
+                          //   newRowMtrlIssueDetails
+                          // );
+                          postRequest(
+                            endpoints.insertMtrlIssueDetails,
+                            newRowMtrlIssueDetails,
+                            async (issueDetailsData) => {
+                              //console.log("data = ", data);
+                              if (issueDetailsData.affectedRows !== 0) {
+                                // console.log(
+                                //   `Record inserted ${
+                                //     j + 1
+                                //   } : materialIssueDetails`
+                                // );
+                                // toast.success('Data recoreded sucessfully')
+
+                                const mtrlstockData = {
+                                  Issue: 1,
+                                  Iv_No: no,
+                                  MtrlStockID: element.MtrlStockID,
+                                };
+                                postRequest(
+                                  endpoints.updateIssueIVNo,
+                                  mtrlstockData,
+                                  async (mtrlUpdateData) => {
+                                    // console.log(
+                                    //   "mtrlUpdateData...",
+                                    //   mtrlUpdateData
+                                    // );
+                                    const inputData = {
+                                      SrlType: "MaterialReturnIV",
+                                      Period: formatDate(new Date(), 6),
+                                      RunningNo: newNo,
+                                    };
+                                    postRequest(
+                                      endpoints.updateRunningNo,
+                                      inputData,
+                                      async (updateRunningNoData) => {
+                                        // console.log(
+                                        //   "updateRunningNoData",
+                                        //   updateRunningNoData
+                                        // );
+
+                                        // toast.success(
+                                        //   "Data inserted successfully..."
+                                        // );
+
+                                        setSrlMaterialType("material");
+                                        setShow(true);
+                                      }
+                                    );
+                                  }
+                                );
+                              } else {
+                                toast.error("Uncaught Error (002)");
+                              }
+                            }
+                          );
+                        });
+                      });
+                    }
+
+                    // let mtrlDescription =
+                    // get_Iv_DetailsEntry(
+                    //   firstTableSelectedRow[i].Scrap,
+                    //   firstTableSelectedRow[i].DynamicPara1,
+                    //   firstTableSelectedRow[i].DynamicPara2,
+                    //   firstTableSelectedRow[i].DynamicPara3,
+                    //   firstTableSelectedRow[i].Material,
+                    //   firstTableSelectedRow[i].Shape,
+                    //   objShape,
+                    //   objMaterial
+                    // ) +
+                    // " ** " +
+                    // firstTableSelectedRow[i].Cust_Docu_No;
+                  } else {
+                    toast.error("Uncaught error while posting data (001)");
+                  }
+                }
+              );
+            });
+          });
+        } else {
+          toast.error(
+            "Select atleast one Material for creating the return voucher"
           );
-
-          //update mtrlStocklist by ivno and issue
-          for (let i = 0; i < thirdTableData.length; i++) {
-            const mtrlstockData = {
-              Issue: 0,
-              Iv_No: no,
-              MtrlStockID: thirdTableData[i].MtrlStockID,
-            };
-            postRequest(
-              endpoints.updateIssueIVNo,
-              mtrlstockData,
-              async (data) => {}
-            );
-          }
-
-          //insert into material Return Details
-          const inputDataDelete = {
-            IV_No: no,
-          };
-          postRequest(
-            endpoints.deleteMtrlStockByIVNo,
-            inputDataDelete,
-            async (data) => {}
-          );
-
-          //delete
-
-          //update the running no
-          const inputData = {
-            SrlType: "MaterialReturnIV",
-            Period: formatDate(new Date(), 6),
-            RunningNo: newNo,
-          };
-          postRequest(endpoints.updateRunningNo, inputData, async (data) => {});
-
-          setSrlMaterialType("material");
-          setShow(true);
-        });
-      });
+        }
+      } else {
+        toast.error("Select the Document for creating the return voucher");
+      }
+    } else {
+      toast.error("Select the Customer for creating the return voucher");
     }
   };
+
   return (
     <>
       <div>
         <button
           className="button-style"
           style={{ width: "200px" }}
-          onClick={createReturnVoucher}
+          onClick={createReturnVoucherFunc}
         >
           Create Return Voucher
         </button>
