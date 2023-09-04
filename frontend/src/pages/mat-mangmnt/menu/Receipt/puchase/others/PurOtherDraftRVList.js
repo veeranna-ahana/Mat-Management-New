@@ -3,12 +3,31 @@ import { dateToShort, formatDate } from "../../../../../../utils";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { useNavigate } from "react-router-dom";
-
+import { Typeahead } from "react-bootstrap-typeahead"; // ES2015
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
 
-export default function PurOtherDraftRVList() {
+export default function PurOtherDraftRVList(props) {
   const nav = useNavigate();
+  //after clicking save button
+  const [boolVal2, setBoolVal2] = useState(false);
+  const [formHeader, setFormHeader] = useState({
+    rvId: "",
+    receiptDate: "", //formatDate(new Date(), 4),
+    rvNo: "Draft",
+    rvDate: "", //currDate,
+    status: "Created",
+    customer: props.type2 === "purchase" ? "0000" : "",
+    customerName: "",
+    reference: "",
+    weight: "0",
+    calcWeight: "0",
+    type: props.type === "sheets" ? "Sheets" : "Units",
+    address: "",
+  });
+  let [custdata, setCustdata] = useState([]);
+  let [mtrlDetails, setMtrlDetails] = useState([]);
+  let [locationData, setLocationData] = useState([]);
 
   const [tabledata, setTableData] = useState([]);
   const [data, setData] = useState({
@@ -31,8 +50,76 @@ export default function PurOtherDraftRVList() {
     });
   };
 
+  async function fetchData2() {
+    getRequest(endpoints.getCustomers, (data) => {
+      if (props.type2 === "purchase") {
+        data = data.filter((obj) => obj.Cust_Code == 0);
+      }
+      //Cust_Code == 0
+      for (let i = 0; i < data.length; i++) {
+        data[i].label = data[i].Cust_name;
+      }
+      setCustdata(data);
+    });
+    getRequest(endpoints.getMaterialLocationList, (data) => {
+      setLocationData(data);
+    });
+    getRequest(endpoints.getMtrlData, (data) => {
+      setMtrlDetails(data);
+    });
+    //console.log("data = ", custdata);
+  }
+
+  let changeCustomer = async (e) => {
+    //e.preventDefault();
+    //const { value, name } = e.target;
+
+    const found = custdata.find((obj) => obj.Cust_Code === e[0].Cust_Code);
+    //setCustDetailVal(found.Address);
+
+    setFormHeader((preValue) => {
+      //console.log(preValue)
+      return {
+        ...preValue,
+        //[name]: value,
+        customerName: found.Cust_name,
+        customer: found.Cust_Code,
+        address: found.Address,
+      };
+    });
+
+    // getRequest(endpoints.getCustBomList, (data) => {
+    //   const foundPart = data.filter((obj) => obj.Cust_code == value);
+    //   setMtrlDetails(foundPart);
+    // });
+  };
+
+  let changeCustomer1 = async (e) => {
+    e.preventDefault();
+    const { value, name } = e.target;
+
+    const found = custdata.find((obj) => obj.Cust_Code === value);
+    //setCustDetailVal(found.Address);
+
+    setFormHeader((preValue) => {
+      //console.log(preValue)
+      return {
+        ...preValue,
+        [name]: value,
+        customerName: found.Cust_name,
+        customer: found.Cust_Code,
+        address: found.Address,
+      };
+    });
+
+    // getRequest(endpoints.getCustBomList, (data) => {
+    //   const foundPart = data.filter((obj) => obj.Cust_code == value);
+    //   setMtrlDetails(foundPart);
+    // });
+  };
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, []);
 
   // Process the returned date in the formatter
@@ -107,6 +194,51 @@ export default function PurOtherDraftRVList() {
             </button>
           </div>
 
+          {/* <div className="col-md-8">
+            <label className="form-label">Customer</label>
+            {props.type2 !== "purchase" ? (
+              <Typeahead
+                id="basic-example"
+                name="customer"
+                options={custdata}
+                //disabled={props.type2 === "purchase" ? true : boolVal2}
+                placeholder="Select Customer"
+                onChange={(label) => changeCustomer(label)}
+                disabled={boolVal2}
+              />
+            ) : (
+              <select
+                className="ip-select"
+                name="customer"
+                disabled={props.type2 === "purchase" ? true : boolVal2}
+                onChange={changeCustomer1}
+              >
+                {props.type2 === "purchase" ? (
+                  ""
+                ) : (
+                  <option value="" disabled selected>
+                    Select Customer
+                  </option>
+                )}
+
+                {props.type2 === "purchase"
+                  ? custdata.map((customer, index) =>
+                      customer.Cust_Code == 0 ? (
+                        <option key={index} value={customer.Cust_Code}>
+                          {customer.Cust_name}
+                        </option>
+                      ) : (
+                        ""
+                      )
+                    )
+                  : custdata.map((customer, index) => (
+                      <option key={index} value={customer.Cust_Code}>
+                        {customer.Cust_name}
+                      </option>
+                    ))}
+              </select>
+            )}
+          </div> */}
           <div
             style={{ height: "420px", overflowY: "scroll" }}
             className="col-md-7 col-sm-12"
@@ -128,124 +260,102 @@ export default function PurOtherDraftRVList() {
 
           <div className="col-md-5 col-sm-12">
             <div className="ip-box form-bg">
-              
-           
-                 
-                    
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Receipt Date</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.ReceiptDate}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV No</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RV_No}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV Date</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RV_Date}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Cust Code</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.Cust_Code}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Customer</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.Customer}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Cust Docu No</label>
-                        </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Receipt Date</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.ReceiptDate}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV No</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RV_No} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV Date</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RV_Date} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Cust Code</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.Cust_Code} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Customer</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.Customer} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Cust Docu No</label>
+                </div>
 
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.CustDocuNo}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Total Weight</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.TotalWeight}
-                            readOnly
-                          />
-                        </div>
-                      </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.CustDocuNo}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Total Weight</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.TotalWeight}
+                    readOnly
+                  />
+                </div>
+              </div>
 
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label" style={{whiteSpace:"nowrap"}}>Calculated Weight</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.TotalCalculatedWeight}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV Status</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RVStatus}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    
-                 
-               
-             
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label
+                    className="form-label"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Calculated Weight
+                  </label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.TotalCalculatedWeight}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV Status</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RVStatus} readOnly />
+                </div>
+              </div>
+
               <div className="row justify-content-center mt-4 mb-4">
                 <button
                   className="button-style "

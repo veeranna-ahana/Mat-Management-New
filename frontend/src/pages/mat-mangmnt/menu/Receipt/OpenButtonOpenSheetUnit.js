@@ -454,52 +454,23 @@ function OpenButtonOpenSheetUnit() {
     },
   ];
 
-  // const selectRow = {
-  //   mode: "radio",
-  //   clickToSelect: true,
-  //   bgColor: "#8A92F0",
-  //   onSelect: (row, isSelect, rowIndex, e) => {
-  //     // mtrlArray.map((obj) => {
-  //     //   if (obj.id == row.id) {
-  //     //     setMtrlStock(obj);
-  //     //   }
-  //     // });
-  //     setInputPart({
-  //       // id: row.id,
-  //       // partId: row.partId,
-  //       // unitWeight: row.unitWeight,
-  //       // qtyAccepted: row.qtyAccepted,
-  //       // qtyRejected: row.qtyRejected,
-  //       // qtyReceived: row.qtyReceived,
-  //       id: row.id,
-  //       srl: row.srl,
-  //       mtrlCode: row.mtrlCode,
-  //       dynamicPara1: row.dynamicPara1,
-  //       dynamicPara2: row.dynamicPara2,
-  //       dynamicPara3: row.dynamicPara3,
-  //       qty: row.qty,
-  //       inspected: row.inspected,
-  //       locationNo: row.locationNo,
-  //       upDated: row.upDated,
-  //     });
-  //   },
-  // };
-
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
-    // style: (row, rowIndex) => {
-    //   const backgroundColor = row.isSelected ? "#8A92F0" : "white"; // Change the colors accordingly
-    //   return { backgroundColor };
-    // },
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("Selected Row:", row);
-      console.log("Is Select:", isSelect);
-      console.log("Row Index:", rowIndex);
-      console.log("Event:", e);
-
+      mtrlArray.map((obj) => {
+        if (obj.id == row.id) {
+          setMtrlStock(obj);
+        }
+      });
       setInputPart({
+        // id: row.id,
+        // partId: row.partId,
+        // unitWeight: row.unitWeight,
+        // qtyAccepted: row.qtyAccepted,
+        // qtyRejected: row.qtyRejected,
+        // qtyReceived: row.qtyReceived,
         id: row.id,
         srl: row.srl,
         mtrlCode: row.mtrlCode,

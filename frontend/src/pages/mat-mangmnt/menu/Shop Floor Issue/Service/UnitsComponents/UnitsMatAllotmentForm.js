@@ -14,7 +14,7 @@ const { endpoints } = require("../../../../../api/constants");
 function UnitsMatAllotmentForm() {
   const nav = useNavigate();
   const location = useLocation();
-  console.log("ncid = ", location.state.ncid);
+  console.log("ncid = ", location?.state?.ncid);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const [formHeader, setFormHeader] = useState({});

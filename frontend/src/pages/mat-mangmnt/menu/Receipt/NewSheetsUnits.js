@@ -78,6 +78,9 @@ function NewSheetsUnits(props) {
   const [unitLabel2, setUnitLabel2] = useState("");
   const [unitLabel3, setUnitLabel3] = useState("");
 
+  // State to keep track of selected rows
+  const [selectedRows, setSelectedRows] = useState([]);
+
   const [partUniqueId, setPartUniqueId] = useState();
   const [materialArray, setMaterialArray] = useState([]);
   const [inputPart, setInputPart] = useState({
@@ -502,7 +505,7 @@ function NewSheetsUnits(props) {
     }
   };
 
-  console.log("part array = ", materialArray);
+  // console.log("part array = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
@@ -694,7 +697,7 @@ function NewSheetsUnits(props) {
 
     //clear all part fields
     inputPart.rvId = formHeader.rvId;
-    inputPart.srl = "01";
+    inputPart.srl = "0";
     inputPart.custCode = formHeader.customer;
     inputPart.mtrlCode = "";
     inputPart.material = "";
@@ -721,6 +724,7 @@ function NewSheetsUnits(props) {
     inputPart.inspected = 0;
     setBoolVal5(false);
     // console.log("partarray = ", partArray);
+    console.log("inputPart = ", inputPart);
 
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
@@ -735,6 +739,7 @@ function NewSheetsUnits(props) {
         //count total record in material Array
         let count = materialArray.length + 1;
         srl = "0" + count;
+        // srl = count.toString();
 
         //set inserted id
         setPartUniqueId(id);
@@ -1014,7 +1019,7 @@ function NewSheetsUnits(props) {
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
       console.log("Row = ", row);
-      // console.log("Row = ", row.updated);
+      console.log("Row = ", row.updated);
       setIsButtonEnabled(row.updated === 1);
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {

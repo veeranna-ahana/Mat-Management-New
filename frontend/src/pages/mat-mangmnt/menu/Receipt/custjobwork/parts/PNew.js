@@ -115,6 +115,8 @@ function PNew() {
     });
   };
 
+  console.log("mtrlDetails", mtrlDetails);
+
   const columns = [
     {
       text: "#",
@@ -199,53 +201,62 @@ function PNew() {
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
   //let id = uuid();
   const addNewPart = (e) => {
-    setBoolVal3(false);
+    // {
+    //   mtrlDetails.length === 0
+    //     ? toast.error("Customer has no Part registered to add ")
+    //     : null;
+    // }
+    if (mtrlDetails.length === 0) {
+      toast.error("Customer has no Part registered to add.");
+    } else {
+      setBoolVal3(false);
 
-    //clear all part fields
-    inputPart.rvId = formHeader.rvId;
-    inputPart.partId = "";
-    inputPart.qtyAccepted = 0;
-    inputPart.qtyReceived = 0;
-    inputPart.qtyRejected = 0;
-    inputPart.qtyUsed = 0;
-    inputPart.qtyReturned = 0;
-    inputPart.qtyIssued = 0;
-    inputPart.unitWeight = 0;
-    inputPart.custBomId = formHeader.customer;
+      //clear all part fields
+      inputPart.rvId = formHeader.rvId;
+      inputPart.partId = "";
+      inputPart.qtyAccepted = 0;
+      inputPart.qtyReceived = 0;
+      inputPart.qtyRejected = 0;
+      inputPart.qtyUsed = 0;
+      inputPart.qtyReturned = 0;
+      inputPart.qtyIssued = 0;
+      inputPart.unitWeight = 0;
+      inputPart.custBomId = formHeader.customer;
 
-    // console.log("partarray = ", partArray);
+      console.log("partarray = ", partArray);
 
-    //insert blank row in table
-    postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
-        let id = data.insertId;
-        inputPart.id = id;
-        setPartArray([
-          ...partArray,
-          { id, partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected },
-        ]);
-        //const newWeight = calcWeightVal + unitWeight * qtyReceived;
-        //setCalcWeightVal(parseFloat(newWeight).toFixed(2));
+      //insert blank row in table
+      postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
+        if (data.affectedRows !== 0) {
+          let id = data.insertId;
+          inputPart.id = id;
+          setPartArray([
+            ...partArray,
+            { id, partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected },
+          ]);
+          //const newWeight = calcWeightVal + unitWeight * qtyReceived;
+          //setCalcWeightVal(parseFloat(newWeight).toFixed(2));
 
-        //let uniqueid = uuid();
-        setPartUniqueId(id);
-        let newRow = {
-          id: id,
-          partId: "",
-          unitWeight: "",
-          qtyReceived: "",
-          qtyAccepted: "",
-          qtyRejected: "",
-        };
-        //setPartArray(newRow);
-        setPartArray([...partArray, newRow]);
-        setInputPart(inputPart);
-      } else {
-        toast.error("Record Not Inserted");
-      }
-    });
+          //let uniqueid = uuid();
+          setPartUniqueId(id);
+          let newRow = {
+            id: id,
+            partId: "",
+            unitWeight: "",
+            qtyReceived: "",
+            qtyAccepted: "",
+            qtyRejected: "",
+          };
+          //setPartArray(newRow);
+          setPartArray([...partArray, newRow]);
+          setInputPart(inputPart);
+        } else {
+          toast.error("Record Not Inserted");
+        }
+      });
 
-    //console.log("after = ", partArray);
+      console.log("after = ", partArray);
+    }
   };
 
   //delete part
@@ -276,6 +287,7 @@ function PNew() {
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
   };
 
+  console.log("calcWeightVal", calcWeightVal);
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
@@ -398,7 +410,7 @@ function PNew() {
         "Enter the Customer Material Weight as per Customer Document"
       );
     } else {
-      let flag1 = 1;
+      let flag1 = 0;
       for (let i = 0; i < partArray.length; i++) {
         if (
           partArray[i].partId == "" ||
