@@ -142,8 +142,10 @@ function CreateDCYesNoModal(props) {
                   console.log("material issue register Updated");
                 }
               );
+
               //send dc id to main page
               props.getDCID(dc_id);
+              props.InputHeaderEvent("IVStatus", "Returned");
 
               //update the running no
               const inputData = {
