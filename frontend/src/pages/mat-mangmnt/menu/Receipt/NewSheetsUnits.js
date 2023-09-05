@@ -666,14 +666,22 @@ function NewSheetsUnits(props) {
       formHeader,
       (data) => {
         if (data.affectedRows !== 0) {
-          toast.success("Record is Deleted");
-          nav(
-            "/MaterialManagement/Receipt/CustomerJobWork/SheetsAndOthers/New",
-            {
+          if (props.type === "units") {
+            toast.success("Record is Deleted");
+            nav("/MaterialManagement/Receipt/CustomerJobWork/Units/New", {
               replace: true,
-            }
-          );
-          window.location.reload();
+            });
+            window.location.reload();
+          } else {
+            toast.success("Record is Deleted");
+            nav(
+              "/MaterialManagement/Receipt/CustomerJobWork/SheetsAndOthers/New",
+              {
+                replace: true,
+              }
+            );
+            window.location.reload();
+          }
         }
       }
     );
@@ -1012,14 +1020,21 @@ function NewSheetsUnits(props) {
     });
     await delay(500);
   };
-
+  // row selection
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("Row = ", row);
-      console.log("Row = ", row.updated);
+      // You need to keep track of selected rows in an array
+      // if (isSelect) {
+      //   setSelectedRows((prevSelectedRows) => [...prevSelectedRows, row]);
+      // } else {
+      //   setSelectedRows((prevSelectedRows) =>
+      //     prevSelectedRows.filter((selectedRow) => selectedRow.id !== row.id)
+      //   );
+      // }
+      // console.log("selectedRows", selectedRows);
       setIsButtonEnabled(row.updated === 1);
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
@@ -1078,9 +1093,8 @@ function NewSheetsUnits(props) {
     },
   };
 
-  // const addToStock = () => {};
-
-  // const removeToStock = () => {};
+  console.log("inspected: row.inspected", inputPart.inspected);
+  // const addToStock
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
@@ -1142,6 +1156,7 @@ function NewSheetsUnits(props) {
     }
   };
 
+  // const removeToStock
   const removeStock = () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");

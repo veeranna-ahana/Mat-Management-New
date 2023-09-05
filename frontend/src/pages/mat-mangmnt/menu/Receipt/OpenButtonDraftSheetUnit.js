@@ -41,6 +41,8 @@ function OpenButtonDraftSheetUnit(props) {
   //falg for add to stock and remove stock
   const [boolValStock, setBoolValStock] = useState("off");
 
+  // enable add to stock / remove stock
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   //after selecting material disable dynamic para 1 2 3
   const [boolPara1, setBoolPara1] = useState(false);
   const [boolPara2, setBoolPara2] = useState(false);
@@ -147,7 +149,7 @@ function OpenButtonDraftSheetUnit(props) {
           <lable>
             <input
               type="checkbox"
-              checked={row.Inspected == 1 ? true : false}
+              checked={row.inspected == 1 ? true : false}
             />
           </lable>
         </div>
@@ -164,7 +166,7 @@ function OpenButtonDraftSheetUnit(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" checked={row.UpDated == 1 ? true : false} />
+            <input type="checkbox" checked={row.updated == 1 ? true : false} />
           </lable>
         </div>
       ),
@@ -1054,13 +1056,13 @@ function OpenButtonDraftSheetUnit(props) {
   };
 
   const selectRow = {
-    mode: "radio",
+    mode: "checkbox",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
       console.log("Row = ", row);
       // console.log("Row = ", row.updated);
-      // setIsButtonEnabled(row.updated === 1);
+      setIsButtonEnabled(row.updated === 1);
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2?.forEach((obj) => {

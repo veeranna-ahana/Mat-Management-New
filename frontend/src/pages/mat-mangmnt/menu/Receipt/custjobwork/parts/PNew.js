@@ -40,8 +40,8 @@ function PNew() {
     id: "",
     partId: "",
     unitWeight: "",
-    qtyReceived: "",
-    qtyAccepted: "",
+    qtyReceived: 0,
+    qtyAccepted: 0,
     qtyRejected: "0",
   });
 

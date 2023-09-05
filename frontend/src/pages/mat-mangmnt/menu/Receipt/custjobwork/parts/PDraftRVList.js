@@ -101,6 +101,7 @@ function PDraftRVList() {
     },
   };
 
+  console.log("tweight", data);
   const columns = [
     {
       text: "RV No",

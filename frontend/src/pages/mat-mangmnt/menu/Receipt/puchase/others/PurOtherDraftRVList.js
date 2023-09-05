@@ -181,8 +181,22 @@ export default function PurOtherDraftRVList(props) {
     <div>
       <>
         <h4 className="title">Magod : Sheets Receipt List Created</h4>
+
         <div className="row">
-          <div className="col-md-7 text-center"></div>
+          {/* <div className="col-md-7 text-center"></div> */}
+          <div className="col-md-7">
+            <label className="form-label">Customer</label>
+            <select
+              className="ip-select"
+              name="customer"
+              disabled={true}
+              //onChange={changeCustomer}
+            >
+              <option value={data.customer} disabled selected>
+                {data.Customer}
+              </option>
+            </select>
+          </div>
           <div className="col-md-5 mb-2 text-center">
             <button
               className="button-style "
@@ -194,51 +208,6 @@ export default function PurOtherDraftRVList(props) {
             </button>
           </div>
 
-          {/* <div className="col-md-8">
-            <label className="form-label">Customer</label>
-            {props.type2 !== "purchase" ? (
-              <Typeahead
-                id="basic-example"
-                name="customer"
-                options={custdata}
-                //disabled={props.type2 === "purchase" ? true : boolVal2}
-                placeholder="Select Customer"
-                onChange={(label) => changeCustomer(label)}
-                disabled={boolVal2}
-              />
-            ) : (
-              <select
-                className="ip-select"
-                name="customer"
-                disabled={props.type2 === "purchase" ? true : boolVal2}
-                onChange={changeCustomer1}
-              >
-                {props.type2 === "purchase" ? (
-                  ""
-                ) : (
-                  <option value="" disabled selected>
-                    Select Customer
-                  </option>
-                )}
-
-                {props.type2 === "purchase"
-                  ? custdata.map((customer, index) =>
-                      customer.Cust_Code == 0 ? (
-                        <option key={index} value={customer.Cust_Code}>
-                          {customer.Cust_name}
-                        </option>
-                      ) : (
-                        ""
-                      )
-                    )
-                  : custdata.map((customer, index) => (
-                      <option key={index} value={customer.Cust_Code}>
-                        {customer.Cust_name}
-                      </option>
-                    ))}
-              </select>
-            )}
-          </div> */}
           <div
             style={{ height: "420px", overflowY: "scroll" }}
             className="col-md-7 col-sm-12"
