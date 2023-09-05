@@ -175,6 +175,7 @@ export const endpoints = {
 
   //shopfloorPartIssueRegister
   updateStatusShopfloorPartIssueRegister: `${API}/shopfloorPartIssueRegister/updateStatusShopfloorPartIssueRegister`,
+
   insertShopfloorPartIssueRegister: `${API}/shopfloorPartIssueRegister/insertShopfloorPartIssueRegister`,
 
   //shopfloorUnitIssueRegister
