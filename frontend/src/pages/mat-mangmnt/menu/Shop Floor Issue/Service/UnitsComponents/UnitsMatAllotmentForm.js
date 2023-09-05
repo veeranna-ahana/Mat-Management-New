@@ -353,7 +353,7 @@ function UnitsMatAllotmentForm() {
                   Period: formatDate(new Date(), 6),
                   RunningNo: newNo,
                 };
-                postRequest(endpoints.updateRunningNo, inputData, (data) => {});
+                postRequest(endpoints.updateRunningNo, inputData, (data) => { });
                 //console.log("Return id = ", issueidval);
                 //return data.insertId;
 
@@ -547,8 +547,8 @@ function UnitsMatAllotmentForm() {
                   className="button-style "
                   onClick={CancelAllotMaterial}
                   style={{ width: "180px" }}
-                  //   disabled={true}
-                  //   onClick={addToStock}
+                //   disabled={true}
+                //   onClick={addToStock}
                 >
                   Cancel Allot
                 </button>

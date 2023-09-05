@@ -230,7 +230,7 @@ function ShopFloorMaterialAllotment(props) {
           className="button-style "
           style={{ width: "155px" }}
           onClick={allotMaterial}
-          // disabled={boolVal1 | boolVal4}
+        // disabled={boolVal1 | boolVal4}
         >
           Allot Material
         </button>
@@ -273,7 +273,7 @@ function ShopFloorMaterialAllotment(props) {
                           <span className="node">{mat.Mtrl_Code}</span>
                         );
                         return (
-                          <TreeView>
+                          <TreeView
                             nodeLabel={label3}
                             key={mat.Mtrl_Code}
                             defaultCollapsed={true}

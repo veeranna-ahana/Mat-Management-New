@@ -24,29 +24,41 @@ function MaterialAllotmentMain() {
   const [secondTable, setSecondTable] = useState([]);
   const [custBOMIdArray, setCustBOMIdArray] = useState([]);
   const [custBOMId, setCustBOMId] = useState([]);
-  const [row2, setRow2] = useState({});
+  // const [row2, setRow2] = useState({});
+  const [row2, setRow2] = useState(secondTable.length > 0 ? secondTable[0] : {});
+
   const [issuenowval, setissuenowval] = useState("");
+
   const [issueidval, setissueidval] = useState("");
   const [btnVisibility, setBtnVisibility] = useState(false);
+
+  const [selectedFirstTableRow, setSelectedFirstTableRow] = useState(null);
+  const [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
+  const [sumOfIssueNow, setSumOfIssueNow] = useState(0);
+
+
 
   const fetchData = async () => {
     //get formHeader data
     let url1 = endpoints.getRowByNCID + "?id=" + location.state.ncid;
 
     getRequest(url1, async (data) => {
-      //console.log("form header data = ", data);
+      // console.log("url1 data = ", data);
       setFormHeader(data);
       //setAllData(data);
 
       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_Code;
       //console.log(url2);
       getRequest(url2, async (data1) => {
+        // console.log("url2 data", data1);
         setFormHeader({ ...data, customer: data1.Cust_name });
+
+
       });
     });
 
     delay(1000);
-    console.log("form header fetchdata = ", formHeader);
+    // console.log("form header fetchdata222222222222 = ", formHeader);
     //get first table data
     let url3 =
       endpoints.getShopFloorAllotmentPartFirstTable +
@@ -54,7 +66,7 @@ function MaterialAllotmentMain() {
       location.state.ncid;
     getRequest(url3, async (data) => {
       //setFirstTable(data);
-      //console.log("first table data = ", data);
+      // console.log("first table data111111111 = ", data);
       let tempArray = [];
       for (let i = 0; i < data.length; i++) {
         //console.log("bom id = ", data[i].CustBOM_Id);
@@ -66,10 +78,16 @@ function MaterialAllotmentMain() {
           "?id=" +
           data[i].CustBOM_Id;
         getRequest(url5, async (data2) => {
-          data[i].QtyAvailable = data2[0]["QtyAvialable"];
+          if (data2 && data2[0] && data2[0]["QtyAvialable"] !== null || undefined) {
+            data[i].QtyAvailable = data2[0]["QtyAvialable"];
+          } else {
+            data[i].QtyAvailable = 0;
+          }
+          // data[i].QtyAvailable = data2[0]["QtyAvialable"];
           data[i].issueNow = 0;
           data[i].AlreadyUsed = 0;
           data[i].TotalUsed = 0;
+
         });
       }
       await delay(2000);
@@ -91,77 +109,18 @@ function MaterialAllotmentMain() {
             data[i].issueNow = 0;
           }
           //setFirstTable(data);
-          console.log("Second table data = ", data);
+          // console.log("Second table data = ", data);
           setSecondTable(data);
+
+          if (data.length > 0) {
+            setRow2(data[0]);
+          }
         });
       }
     });
-    //await delay(2000);
+    // await delay(2000);
     //custbom ids array
   };
-
-  // const fetchData = async () => {
-  //   if (location && location.state && location.state.ncid) {
-  //     // Access the ncid property
-  //     const ncid = location.state.ncid;
-
-  //     // Proceed with data fetching
-  //     let url1 = endpoints.getRowByNCID + "?id=" + ncid;
-
-  //     getRequest(url1, async (data) => {
-  //       setFormHeader(data);
-
-  //       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_Code;
-  //       getRequest(url2, async (data1) => {
-  //         setFormHeader({ ...data, customer: data1.Cust_name });
-  //       });
-  //     });
-
-  //     delay(1000);
-
-  //     // Get first table data
-  //     let url3 =
-  //       endpoints.getShopFloorAllotmentPartFirstTable + "?id=" + ncid;
-  //     getRequest(url3, async (data) => {
-  //       let tempArray = [];
-  //       for (let i = 0; i < data.length; i++) {
-  //         tempArray.push(data[i].CustBOM_Id);
-
-  //         // Find QtyAvailable
-  //         let url5 =
-  //           endpoints.getShopFloorAllotmentPartFirstTableQtyAvl +
-  //           "?id=" +
-  //           data[i].CustBOM_Id;
-  //         getRequest(url5, async (data2) => {
-  //           data[i].QtyAvailable = data2[0]["QtyAvialable"];
-  //           data[i].issueNow = 0;
-  //           data[i].AlreadyUsed = 0;
-  //           data[i].TotalUsed = 0;
-  //         });
-  //       }
-  //       await delay(2000);
-  //       setFirstTable(data);
-
-  //       if (tempArray.length !== 0) {
-  //         // Fetch data in the second table
-  //         let url4 =
-  //           endpoints.getShopFloorAllotmentPartSecondTableIds +
-  //           "?bomids=" +
-  //           tempArray;
-  //         getRequest(url4, async (data) => {
-  //           for (let i = 0; i < data.length; i++) {
-  //             data[i].issueNow = 0;
-  //           }
-  //           setSecondTable(data);
-  //         });
-  //       }
-  //     });
-  //   } else {
-
-  //     console.error("Location or ncid is null.");
-
-  //   }
-  // };
 
 
   useEffect(() => {
@@ -181,6 +140,8 @@ function MaterialAllotmentMain() {
     //console.log("change = ", e.target.value);
   };
 
+
+
   let issuenowonblur = async () => {
     //console.log("on blur : ", issuenowval, " calc = ", formHeader);
     if (issuenowval > formHeader.Qty - formHeader.QtyAllotted) {
@@ -189,6 +150,7 @@ function MaterialAllotmentMain() {
     } else {
       setBtnVisibility(false);
       let setQtyAvailable = issuenowval;
+
       //***** First Examaine the Max Set Quantity THAT can be issued
       for (const key in firstTable) {
         if (
@@ -216,25 +178,9 @@ function MaterialAllotmentMain() {
           " Sets Available : " +
           setQtyAvailable
         );
-      }
-      // else {
-      //   firstTable.map(async (obj1) => {
-      //     obj1.issueNow = obj1.QtyPerAssy * setQtyAvailable;
-      //     let flag = 0;
-      //     secondTable.map((obj2) => {
-      //       if (obj1.CustBOM_Id === obj2.CustBOM_Id && flag == 0) {
-      //         obj2.issueNow = obj1.issueNow;
-      //         flag = flag + 1;
-      //       }
-      //     });
-      //   });
 
-      //   await delay(1000);
-      //   console.log("new first table = ", firstTable);
-      //   console.log("new second table = ", secondTable);
-      //   setFirstTable(firstTable.filter((obj) => obj.issueNow >= 0));
-      //   setSecondTable(secondTable.filter((obj) => obj.issueNow >= 0));
-      // }
+      }
+
       else {
         const updatedFirstTable = firstTable.map((obj1) => {
           const newIssueNow = obj1.QtyPerAssy * setQtyAvailable;
@@ -252,6 +198,14 @@ function MaterialAllotmentMain() {
           return { ...obj1, issueNow: newIssueNow };
         });
 
+        const sumByCustBOM = {};
+        secondTable.forEach((obj2) => {
+          const { CustBOM_Id, issueNow } = obj2;
+          sumByCustBOM[CustBOM_Id] = (sumByCustBOM[CustBOM_Id] || 0) + issueNow;
+        });
+
+        console.log("Sum of issueNow values by CustBOM_Id:", sumByCustBOM);
+
 
         await delay(1000);
 
@@ -263,101 +217,124 @@ function MaterialAllotmentMain() {
         setSecondTable(secondTable);
       }
 
-
-
-
     }
   };
-  const columns1 = [
-    {
-      text: "Id",
-      dataField: "id",
-      hidden: true,
-    },
-    {
-      text: "Part Id",
-      dataField: "PartId",
-    },
-    {
-      text: "Qty / Assembly",
-      dataField: "QtyPerAssy",
-    },
-    {
-      text: "Required",
-      dataField: "QtyRequired",
-    },
-    {
-      text: "Already used",
-      dataField: "AlreadyUsed",
-    },
-    {
-      text: "Total used",
-      dataField: "TotalUsed",
-    },
-    {
-      text: "Rejected",
-      dataField: "QtyRejected",
-    },
-    {
-      text: "Available",
-      dataField: "QtyAvailable",
-    },
-    {
-      text: "Issue Now",
-      dataField: "issueNow",
 
-    },
-  ];
+  // const columns1 = [
+  //   {
+  //     text: "Id",
+  //     dataField: "id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "Part Id",
+  //     dataField: "PartId",
+  //   },
+  //   {
+  //     text: "Qty / Assembly",
+  //     dataField: "QtyPerAssy",
+  //   },
+  //   {
+  //     text: "Required",
+  //     dataField: "QtyRequired",
+  //   },
+  //   {
+  //     text: "Already used",
+  //     dataField: "AlreadyUsed",
+  //   },
+  //   {
+  //     text: "Total used",
+  //     dataField: "TotalUsed",
+  //   },
+  //   {
+  //     text: "Rejected",
+  //     dataField: "QtyRejected",
+  //   },
+  //   {
+  //     text: "Available",
+  //     dataField: "QtyAvailable",
+  //   },
+  //   {
+  //     text: "Issue Now",
+  //     dataField: "issueNow",
+
+  //   },
+  // ];
   // Process the returned date in the formatter
+
+  const releaseProduction = async () => {
+    if (issuenowval.length === 0) {
+      toast.warning("Please enter Issue Now Value");
+      return;
+    }
+
+    const sumByCustBOM = {};
+    secondTable.forEach((obj2) => {
+      const { CustBOM_Id, issueNow } = obj2;
+      sumByCustBOM[CustBOM_Id] = (sumByCustBOM[CustBOM_Id] || 0) + issueNow;
+    });
+
+    for (const key in sumByCustBOM) {
+      const sumIssueNow = sumByCustBOM[key];
+      const firstTableEntry = firstTable.find((item) => item.CustBOM_Id === parseInt(key));
+      if (firstTableEntry && sumIssueNow !== firstTableEntry.issueNow) {
+        toast.error(`Issue Quantity Mismatch ${firstTableEntry.PartId} Required: ${firstTableEntry.issueNow} Issuing: ${sumIssueNow}`);
+        return;
+      }
+    }
+
+    CreatePartsIssueVoucher();
+  };
+
+
+
   function statusFormatter(cell, row, rowIndex, formatExtraData) {
     //return dateToShort(cell);
     return formatDate(new Date(cell), 3);
   }
 
-  const columns2 = [
-    {
-      text: "Id",
-      dataField: "Id",
-      hidden: true,
-    },
-    {
-      text: "RV No",
-      dataField: "RV_No",
-    },
-    {
-      text: "RV Date",
-      dataField: "RV_Date",
-      formatter: statusFormatter,
-    },
-    {
-      text: "Received",
-      dataField: "QtyReceived",
-    },
-    {
-      text: "Accepted",
-      dataField: "QtyAccepted",
-    },
-    {
-      text: "Issued",
-      dataField: "QtyIssued",
-    },
-    {
-      text: "Issue Now",
-      dataField: "issueNow",
-      editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
-        return (
-          <input
-            type="number"
-            {...editorProps}
-            value={value}
-            onChange={(e) => handleIssueNowChange(e, row)}
-          />
-        );
-      }
-
-
-    },
-  ];
+  // const columns2 = [
+  //   {
+  //     text: "Id",
+  //     dataField: "Id",
+  //     hidden: true,
+  //   },
+  //   {
+  //     text: "RV No",
+  //     dataField: "RV_No",
+  //   },
+  //   {
+  //     text: "RV Date",
+  //     dataField: "RV_Date",
+  //     formatter: statusFormatter,
+  //   },
+  //   {
+  //     text: "Received",
+  //     dataField: "QtyReceived",
+  //   },
+  //   {
+  //     text: "Accepted",
+  //     dataField: "QtyAccepted",
+  //   },
+  //   {
+  //     text: "Issued",
+  //     dataField: "QtyIssued",
+  //   },
+  //   {
+  //     text: "Issue Now",
+  //     dataField: "issueNow",
+  //     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
+  //       return (
+  //         <input
+  //           type="number"
+  //           {...editorProps}
+  //           value={value}
+  //           onChange={(e) => handleIssueNowChange(e, row)}
+  //         />
+  //       );
+  //     }
+  //   },
+  // ];
 
 
   const selectRow1 = {
@@ -366,6 +343,13 @@ function MaterialAllotmentMain() {
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
       setCustBOMId(row.CustBOM_Id);
+      setSelectedFirstTableRow(isSelect ? row : null);
+
+      const correspondingRows = secondTable.filter(
+        (secondTableRow) => secondTableRow.CustBOM_Id === row.CustBOM_Id
+      );
+
+      setSelectedSecondTableRows(isSelect ? correspondingRows : []);
     },
   };
 
@@ -373,18 +357,36 @@ function MaterialAllotmentMain() {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#98A8F8",
+
     onSelect: (row, isSelect, rowIndex, e) => {
+      console.log("Selected Row in Second Table:", row);
       setRow2(row);
     },
+
   };
 
-  const rowStyle2 = (row, rowIndex) => {
+  // console.log("selectedFirstTableRow", selectedFirstTableRow);
+  // console.log("selectedSecondTableRows", selectedSecondTableRows)
+  // console.log("Sum of issueNow:", sumOfIssueNow);
+
+  const rowStyle1 = (row, rowIndex) => {
     const style = {};
     if (row.CustBOM_Id === custBOMId) {
       style.backgroundColor = "#98A8F8";
     }
     return style;
   };
+
+
+  const rowStyle2 = (row, rowIndex) => {
+    const style = {};
+    if (row.CustBOM_Id === custBOMId) {
+      style.backgroundColor = "#32a856";
+    }
+    return style;
+  };
+
+
 
   const CreatePartsIssueVoucher = async () => {
     //get running no and assign to RvNo
@@ -522,20 +524,19 @@ function MaterialAllotmentMain() {
 
     //return 10;
   };
-  const releaseProduction = async () => {
-    if (issuenowval.length == 0) {
-      toast.warning("Please enter Issue Now Value");
-    } else {
-      CreatePartsIssueVoucher();
-    }
-    /*await delay(5000);
-    console.log("return val = ", issueidval);
-    nav(
-      "/materialmanagement/shopfloorissue/ivlistservice/issued/shopmatissuevocher",
-      {
-        state: { issueIDVal: issueidval },
+
+  const updateSumByCustBOM = (tableData) => {
+    const sumByCustBOM = {};
+
+    tableData.forEach((row) => {
+      const { CustBOM_Id, issueNow } = row;
+      if (!sumByCustBOM[CustBOM_Id]) {
+        sumByCustBOM[CustBOM_Id] = 0;
       }
-    );*/
+      sumByCustBOM[CustBOM_Id] += parseInt(issueNow);
+    });
+
+    return sumByCustBOM;
   };
 
   const handleIssueNowChange = (e, editedRow) => {
@@ -545,22 +546,14 @@ function MaterialAllotmentMain() {
       }
       return row;
     });
-    setSecondTable(updatedSecondTable);
-  };
 
-  // Add the handleIssueNowBlur function
-  const handleIssueNowBlur = (editedRow) => {
-    const updatedSecondTable = secondTable.map((row) => {
-      if (row.Id === editedRow.Id) {
-        // Update the issueNow value in the state
-        const newIssueNow = parseInt(editedRow.issueNow);
-        return { ...row, issueNow: newIssueNow };
-      }
-      return row;
-    });
 
-    // Update the secondTable state with the new data
     setSecondTable(updatedSecondTable);
+    const sumByCustBOM = updateSumByCustBOM(updatedSecondTable);
+    console.log("Sum of issueNow values by CustBOM_Id:", sumByCustBOM);
+
+    // Calculate the sum of issueNow values for highlighted rows
+
   };
 
 
@@ -655,7 +648,7 @@ function MaterialAllotmentMain() {
       </div>
 
       <div style={{ height: "250px", overflowY: "scroll", marginTop: "10px" }}>
-        <BootstrapTable
+        {/* <BootstrapTable
           keyField="id"
           columns={columns1}
           data={firstTable}
@@ -665,7 +658,47 @@ function MaterialAllotmentMain() {
           //pagination={paginationFactory()
           selectRow={selectRow1}
           headerClasses="header-class"
-        ></BootstrapTable>
+        ></BootstrapTable> */}
+
+        <Table className="table custom-table" striped bordered hover>
+          <thead className="header-class">
+            <tr>
+              <th>Part Id</th>
+              <th>Qty / Assembly</th>
+              <th>Required</th>
+              <th>Already Used</th>
+              <th>Total Used</th>
+              <th>Rejected</th>
+              <th>Available</th>
+              <th>Issue Now</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {firstTable.map((row) => (
+              <tr key={row.Id}
+                style={rowStyle1(row)}
+                onClick={() => {
+                  selectRow1.onSelect(row, true);
+                  // setRow2(row)
+                }}
+
+              >
+
+                <td>{row.PartId}</td>
+                <td>{row.QtyPerAssy}</td>
+                <td>{row.QtyRequired}</td>
+                <td>{row.AlreadyUsed}</td>
+                <td>{row.TotalUsed}</td>
+                <td>{row.QtyRejected}</td>
+                <td>{row.QtyAvailable}</td>
+                <td>{row.issueNow}</td>
+
+
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
 
       <div className="row mt-4">
@@ -701,7 +734,7 @@ function MaterialAllotmentMain() {
 
             ></BootstrapTable> */}
 
-            <Table className="table" striped bordered hover>
+            <Table className="table custom-table" striped bordered hover>
               <thead className="header-class">
                 <tr>
                   <th>ID</th>
@@ -716,16 +749,17 @@ function MaterialAllotmentMain() {
               <tbody>
                 {secondTable.map((row) => (
                   <tr key={row.Id}
-                    className={row.Id === row2.Id ? "selected-row" : ""}
+                    // className={row.Id === row2.Id ? "selected-row" : ""}
                     style={rowStyle2(row)}
                     onClick={() => {
-                      // selectRow2.onSelect(row, true);
-                      setRow2(row)
+                      selectRow2.onSelect(row, true);
+                      // setRow2(row)
 
                     }}
 
                   >
-                    <td>{row.Id}</td>
+                    <td
+                    >{row.Id}</td>
                     <td>{row.RV_No}</td>
                     <td>{formatDate(new Date(row.RV_Date), 3)}</td>
                     <td>{row.QtyReceived}</td>
@@ -736,7 +770,7 @@ function MaterialAllotmentMain() {
                         type="number"
                         value={row.issueNow}
                         onChange={(e) => handleIssueNowChange(e, row)}
-                        onBlur={() => handleIssueNowBlur(row)}
+
 
                       />
                     </td>
