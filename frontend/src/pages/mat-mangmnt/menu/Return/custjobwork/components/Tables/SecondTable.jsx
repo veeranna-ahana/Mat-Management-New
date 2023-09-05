@@ -13,7 +13,7 @@ export default function SecondTable(props) {
           <tr>
             <th>SL No</th>
             <th>Mtrl Stock ID</th>
-            <th>Issue</th>
+            {/* <th>Issue</th> */}
             <th>Weight</th>
             <th>Scrap Weight</th>
             <th>RV ID</th>
@@ -24,21 +24,20 @@ export default function SecondTable(props) {
             <tr
               onClick={() => props.selectRowSecondFun(val)}
               className={
-                // checking if item exist then classname...selectedRowClr else ''
+                // checking if item exist then classname...selected-row else ''
                 props.thirdTableData.some(
                   (el) => el.MtrlStockID === val.MtrlStockID
                 )
-                  ? "selectedRowClr"
+                  ? "selected-row"
                   : ""
               }
             >
               <td>{key + 1}</td>
               <td>{val.MtrlStockID}</td>
-              <td>
+              {/* <td>
                 <input type="checkbox" name="" id="" checked={val.Issue} />
 
-                {/* {val.Issue} */}
-              </td>
+              </td> */}
               <td>{val.Weight}</td>
               <td>{val.ScrapWeight}</td>
               <td>{val.RVId}</td>

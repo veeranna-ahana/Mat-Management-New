@@ -106,6 +106,7 @@ export const endpoints = {
   updateStatusCancel: `${API}/materialIssueRegister/updateStatusCancel`,
   updateStatusDCNoDCID: `${API}/materialIssueRegister/updateStatusDCNoDCID`,
   getMaterialIssueRegisterRouterByIVID: `${API}/materialIssueRegister/getMaterialIssueRegisterRouterByIVID`,
+  postCancleIV: `${API}/materialIssueRegister/postCancleIV`,
   //getAllReturnListing: `${API}/materialIssueRegister/getAllReturnListing?type=''`,
   getReturnPendingList: `${API}/materialIssueRegister/getAllReturnListing?type=pending`,
   getCustomerIVList: `${API}/materialIssueRegister/getAllReturnListing?type=customer`,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import { dateToShort } from "../../../../../utils";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
@@ -8,6 +9,7 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
+import Table from "react-bootstrap/Table";
 
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
@@ -50,6 +52,7 @@ function OutwordMaterialIssueVocher(props) {
     Customer: "",
     CustGSTNo: "",
     PkngDcNo: "",
+    PkngDCDate: "",
     TotalWeight: "",
     TotalCalculatedWeight: "",
     Dc_ID: "",
@@ -63,6 +66,7 @@ function OutwordMaterialIssueVocher(props) {
 
   async function fetchData() {
     // console.log("propstype = ", location.state.propsType);
+    // console.log("location data", location.state);
     //header data
     let url =
       endpoints.getMaterialIssueRegisterRouterByIVID +
@@ -70,6 +74,8 @@ function OutwordMaterialIssueVocher(props) {
       location.state.selectData.Iv_Id;
     //console.log("url = ", url);
     getRequest(url, async (data) => {
+      // console.log("inside...", data);
+
       setIVNOValue(data.IV_No);
       setIVIDValue(data.Iv_Id);
       setdcID(data.Dc_ID);
@@ -81,6 +87,7 @@ function OutwordMaterialIssueVocher(props) {
         Customer: data.Customer,
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
+        PkngDCDate: data.PkngDCDate,
         TotalWeight: data.TotalWeight,
         TotalCalculatedWeight: data.TotalCalculatedWeight,
         Dc_ID: data.Dc_ID,
@@ -101,6 +108,7 @@ function OutwordMaterialIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, async (data) => {
+      // console.log("mtrl issue details...", data);
       setOutData(data);
     });
   }
@@ -139,7 +147,7 @@ function OutwordMaterialIssueVocher(props) {
       text: "Total Weight",
       dataField: "TotalWeight",
       // editable: (content, row, rowIndex, columnIndex) => {
-      //   console.log("content = ", content);
+      // // console.log("content = ", content);
       // },
     },
     {
@@ -163,10 +171,13 @@ function OutwordMaterialIssueVocher(props) {
       TotalWeight: newValue,
     });
   }
-  const InputHeaderEvent = (e) => {
-    const { name, value } = e.target;
+  const InputHeaderEvent = (name, value) => {
+    // console.log("function.........", "name", name, "value", value);
+    // const { name, value } = e.target;
     setFormHeader({ ...formHeader, [name]: value });
   };
+
+  // console.log("formHeader", formHeader);
 
   const saveButtonState = (e) => {
     e.preventDefault();
@@ -175,14 +186,19 @@ function OutwordMaterialIssueVocher(props) {
     } else if (formHeader.TotalWeight.length == 0)
       toast.error("Please Enter TotalWeight");
     else {*/
-    postRequest(endpoints.updateDCWeight, formHeader, (data) => {
-      //console.log("data = ", data);
-      if (data.affectedRows !== 0) {
-        toast.success("Record Updated Successfully");
-      } else {
-        toast.error("Record Not Updated");
+    postRequest(
+      endpoints.updateDCWeight,
+
+      { outData: outData, formHeader: formHeader },
+      (data) => {
+        //console.log("data = ", data);
+        if (data.affectedRows !== 0) {
+          toast.success("Record Updated Successfully");
+        } else {
+          toast.error("Record Not Updated");
+        }
       }
-    });
+    );
     //}
   };
 
@@ -195,13 +211,29 @@ function OutwordMaterialIssueVocher(props) {
     });
   };
   let cancelIV = () => {
-    //console.log(IVNOValue, " and ", IVIDValue);
-    setShow(true);
-    setBoolVal2(true);
+    // console.log("location.state", location.state);
+
+    Axios.post(endpoints.postCancleIV, {
+      Iv_Id: location.state.selectData.Iv_Id,
+    }).then((res) => {
+      // console.log("res", res);
+
+      if (res.affectedRows !== 0) {
+        InputHeaderEvent("IVStatus", "Cancelled");
+        toast.success(
+          "Return Voucher Cancelled Successfully and Stock added to Material Stock"
+        );
+      } else {
+        toast.error("Backend error, Record Not Updated");
+      }
+    });
+
+    // setShow(true);
+    // setBoolVal2(true);
   };
 
   let createDC = () => {
-    console.log("outedata = ", outData);
+    // console.log("outedata = ", outData);
     let flag = 0;
     outData.map((item) => {
       if (
@@ -215,7 +247,7 @@ function OutwordMaterialIssueVocher(props) {
       }
     });
     if (flag === 0) {
-      console.log("Valid");
+      // console.log("Valid");
       setShowCreateDC(true);
       //setBoolVal1(false);
       //setBoolVal2(true);
@@ -269,6 +301,53 @@ function OutwordMaterialIssueVocher(props) {
       toast.error("DC Not Created");
     }
   };
+
+  const updateChange = (key, value, field) => {
+    const newArray = [];
+
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+
+      if (i === key) {
+        element[field] = value;
+      }
+      console.log("element", element);
+
+      newArray.push(element);
+
+      // if(i===key){
+
+      // }else{
+
+      //   setOutData([element])
+      // }
+    }
+
+    console.log("new", newArray);
+
+    setOutData(newArray);
+  };
+
+  // const updateTotalWeight = (key, value)=>{
+
+  // }
+
+  const handleChangeWeightTotalCal = () => {
+    let newTotalCalWeight = 0;
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+      // console.log("elemet@@@@@@@@@@@@@@", element.TotalWeightCalculated);
+      newTotalCalWeight =
+        parseFloat(newTotalCalWeight) +
+        parseFloat(element.TotalWeightCalculated);
+    }
+
+    setFormHeader({
+      ...formHeader,
+      TotalWeight: newTotalCalWeight,
+    });
+  };
+
   return (
     <div>
       <ReturnCancelIVModal
@@ -286,6 +365,7 @@ function OutwordMaterialIssueVocher(props) {
         outData={outData}
         type="sheets"
         getDCID={getDCID}
+        InputHeaderEvent={InputHeaderEvent}
       />
       <div>
         <h4 className="title">Outward Material Issue Voucher</h4>
@@ -300,7 +380,7 @@ function OutwordMaterialIssueVocher(props) {
                   name="IvId"
                   value={formHeader.IV_No}
                   disabled
-                  onChange={InputHeaderEvent}
+                  // onChange={InputHeaderEvent}
                 />
               </div>
               <div className="col-md-3">
@@ -308,7 +388,7 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="IVDate"
-                  value={statusFormatter(formHeader.IV_Date)}
+                  value={formHeader.IV_Date}
                   disabled
                 />
               </div>
@@ -328,13 +408,18 @@ function OutwordMaterialIssueVocher(props) {
                   className="button-style ms-1"
                   onClick={saveButtonState}
                   disabled={
-                    boolVal2 |
-                    boolVal3 |
-                    (location.state.propsType === "customerIVList")
-                      ? true
-                      : false | (location.state.propsType === "returnCancelled")
+                    formHeader.IVStatus === "Cancelled" ||
+                    (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
                       ? true
                       : false
+
+                    // boolVal2 |
+                    // boolVal3 |
+                    // (location.state.propsType === "customerIVList")
+                    //   ? true
+                    //   : false | (location.state.propsType === "returnCancelled")
+                    //   ? true
+                    //   : false
                   }
                 >
                   Save
@@ -371,8 +456,15 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="PkngDcNo"
-                  value={formHeader.PkngDcNo}
-                  onChange={InputHeaderEvent}
+                  disabled
+                  value={
+                    formHeader.PkngDcNo
+                      ? formHeader.PkngDcNo +
+                        "   Date : " +
+                        formHeader.PkngDCDate
+                      : ""
+                  }
+                  // onChange={InputHeaderEvent}
                 />
               </div>
             </div>
@@ -382,8 +474,9 @@ function OutwordMaterialIssueVocher(props) {
                 <input
                   type="text"
                   name="TotalWeight"
+                  disabled
                   value={formHeader.TotalWeight}
-                  onChange={InputHeaderEvent}
+                  // onChange={InputHeaderEvent}
                 />
               </div>
               <div className="col-md-6">
@@ -414,11 +507,16 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={cancelIV}
                 disabled={
-                  boolVal2 | (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
+                  formHeader.IVStatus === "Cancelled" ||
+                  (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
                     ? true
                     : false
+
+                  // boolVal2 | (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Cancel IV
@@ -429,11 +527,15 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={createDC}
                 disabled={
-                  boolVal2 | (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
+                  formHeader.IVStatus === "Cancelled" ||
+                  (formHeader.PkngDcNo && formHeader.IVStatus === "Returned")
                     ? true
                     : false
+                  // boolVal2 | (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Create DC
@@ -444,13 +546,14 @@ function OutwordMaterialIssueVocher(props) {
                 className="button-style"
                 onClick={printDC}
                 disabled={
-                  boolVal1 |
-                  boolVal3 |
-                  (location.state.propsType === "customerIVList")
-                    ? true
-                    : false | (location.state.propsType === "returnCancelled")
-                    ? true
-                    : false
+                  formHeader.IVStatus === "Cancelled" ? true : false
+                  // boolVal1 |
+                  // boolVal3 |
+                  // (location.state.propsType === "customerIVList")
+                  //   ? true
+                  //   : false | (location.state.propsType === "returnCancelled")
+                  //   ? true
+                  //   : false
                 }
               >
                 Print DC
@@ -528,7 +631,118 @@ function OutwordMaterialIssueVocher(props) {
             style={{ height: "420px", overflowY: "scroll" }}
             //className="col-md-12 col-sm-12"
           >
-            <BootstrapTable
+            <Table
+              hover
+              condensed
+              className="table-data border header-class table-striped"
+            >
+              <thead className="text-white">
+                <tr>
+                  <th>SL No</th>
+                  <th>Description</th>
+                  <th>Material </th>
+                  <th>Qty</th>
+                  <th>Weight</th>
+                  <th>Total Weight</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {outData.map((val, key) => (
+                  <tr>
+                    <td>{key + 1}</td>
+                    <td>{val.MtrlDescription}</td>
+                    <td>{val.Material} </td>
+                    <td>{val.Qty}</td>
+                    <td>{val.TotalWeight}</td>
+                    <td
+                    // contenteditable="true"
+                    // onChange={(e) => {
+                    //   console.log("eeeeeeeeee", e);
+                    // }}
+                    >
+                      {/* {val.TotalWeightCalculated} */}
+                      <input
+                        type="number"
+                        min={0}
+                        defaultValue={val.TotalWeightCalculated}
+                        onChange={(e) => {
+                          // console.log("eeeeeeeeee", e.target.value);
+
+                          updateChange(
+                            key,
+
+                            e.target.value.length === 0 ? 0 : e.target.value,
+                            "TotalWeightCalculated"
+                          );
+                          handleChangeWeightTotalCal();
+                        }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      />
+                    </td>
+                    <td>
+                      {val.UpDated === 0 ? (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          onClick={() => updateChange(key, 1, "UpDated")}
+                          // onChange={(e) => {
+                          //   // console.log("checkbox clicked", e.target.value);
+
+                          //   const newArray = [];
+
+                          //   for (let i = 0; i < outData.length; i++) {
+                          //     const element = outData[i];
+
+                          //     if (i === key) {
+                          //       element.UpDated = 1;
+                          //     }
+                          //     console.log("element", element);
+
+                          //     newArray.push(element);
+
+                          //     // if(i===key){
+
+                          //     // }else{
+
+                          //     //   setOutData([element])
+                          //     // }
+                          //   }
+
+                          //   console.log("new", newArray);
+
+                          //   setOutData(newArray);
+
+                          //   // console.log("setOutData", outData[key].UpDated);
+                          // }}
+                        />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          checked
+                          onClick={() => updateChange(key, 0, "UpDated")}
+
+                          // onChange={(e) => {
+                          //   // console.log("checkbox clicked", e.target.value);
+                          //   // console.log("setOutData", outData);
+                          // }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+
+            {/* <BootstrapTable
               headerClasses="header-class "
               keyField="IV_No"
               //keyField="id"
@@ -544,7 +758,7 @@ function OutwordMaterialIssueVocher(props) {
                 blurToSave: true,
                 afterSaveCell,
               })}
-            ></BootstrapTable>
+            ></BootstrapTable> */}
           </div>
         </div>
       </div>
