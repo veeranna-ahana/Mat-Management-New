@@ -53,6 +53,7 @@ function ProductionMatIssueParts() {
       endpoints.getProductionMaterialIssueParts +
       "?id=" +
       location.state.issueIDVal;
+    console.log("issueIDVal", location?.state?.issueIDVal);
     getRequest(url, async (data) => {
       console.log("data = ", data);
       //get cust name
@@ -91,6 +92,8 @@ function ProductionMatIssueParts() {
       setTableData(data);
     });
   };
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -177,10 +180,13 @@ function ProductionMatIssueParts() {
       toast.success("Parts Cancelled Successfully");
     }
   };
+
   const cancelButton = () => {
     setShow(true);
     setShow1(true);
   };
+
+
 
   const acceptReturn = () => {
     let flag = 0;
@@ -264,7 +270,9 @@ function ProductionMatIssueParts() {
             <button
               className="button-style "
               onClick={cancelButton}
-              disabled={show1 || formHeader.Status === "Closed" ? true : false}
+              // disabled={show1 || formHeader.Status === "Closed" ? true : false}
+              disabled={show1 || formHeader.Status === "Cancelled" ? true : false}
+
             >
               Cancel
             </button>

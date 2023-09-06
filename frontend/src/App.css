@@ -485,6 +485,13 @@ li.nav-item {
 .rowSelectedClass {
   background-color: #98a8f8 !important;
 }
+.selected-row {
+  background-color: #98a8f8;
+}
+
+.custom-table tbody tr.selected-row {
+  background-color: #98a8f8;
+}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

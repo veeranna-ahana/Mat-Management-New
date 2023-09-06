@@ -3,42 +3,42 @@ var mysql = require("mysql2");
 var misConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "magodmis",
 });
 
 var setupConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "magod_setup",
 });
 
 var qtnConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "magodqtn",
 });
 
 var mchConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "machine_data",
 });
 
 var slsConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "magod_sales",
 });
 
 var mtrlConn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "nikon@d7K",
   database: "magod_mtrl",
 });
 
