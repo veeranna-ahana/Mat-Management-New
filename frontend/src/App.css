@@ -484,7 +484,11 @@ li.nav-item {
 
 .selected-row {
   background-color: #98A8F8;
- 
+}
+
+
+.custom-table tbody tr.selected-row {
+  background-color: #98A8F8;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -495,7 +499,7 @@ input::-webkit-inner-spin-button {
 }
 
 
-.custom-table tbody tr.selected-row {
-  background-color: #98A8F8;
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
-

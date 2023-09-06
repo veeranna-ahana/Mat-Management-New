@@ -17,6 +17,9 @@ function ShopFloorMaterialAllotment(props) {
   const [treeData, setTreeData] = useState([]);
   const [ncid, setncid] = useState("");
 
+  console.log("Props Type", props.type);
+  console.log("Props HasBom", props.hasbom);
+
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const fetchData = async () => {
     //get table data
@@ -150,9 +153,13 @@ function ShopFloorMaterialAllotment(props) {
       machine +
       "&tree=0";
     getRequest(url, async (data) => {
+      data = data.filter((obj) => obj["PStatus"] !== "Completed");
+      console.log("table data 2", data);
       setTableData(data);
     });
   };
+
+
   const treeViewclickProcess = (machine, process) => {
     //console.log("machine = ", machine, " process = ", process);
     let url =
@@ -167,6 +174,8 @@ function ShopFloorMaterialAllotment(props) {
       process +
       "&tree=0";
     getRequest(url, async (data) => {
+      data = data.filter((obj) => obj["PStatus"] !== "Completed");
+      console.log("table data 3", data);
       setTableData(data);
     });
   };
@@ -186,6 +195,8 @@ function ShopFloorMaterialAllotment(props) {
       "&material=" +
       material;
     getRequest(url, async (data) => {
+      data = data.filter((obj) => obj["PStatus"] !== "Completed");
+      console.log("table data 4", data);
       setTableData(data);
     });
   };
