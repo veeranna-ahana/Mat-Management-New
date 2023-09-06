@@ -17,7 +17,7 @@ function Parts(props) {
   let [thirdTableData, setThirdTableData] = useState([]);
 
   let [firstTableSelectedRow, setFirstTableSelectedRow] = useState([]);
-  let [secondSelectedRow, setSecondSelectedRow] = useState({ selected: [] });
+  let [secondSelectedRow, setSecondSelectedRow] = useState([]);
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
@@ -43,7 +43,7 @@ function Parts(props) {
             return obj.RVId === Object.values(data)[0].RvID;
           });
           setAllData(data1);
-          setSecondTableData(newData);
+          // setSecondTableData(newData);
         });
       });
     }
@@ -352,29 +352,55 @@ function Parts(props) {
   console.log("second selected row", secondSelectedRow);
 
   const selectRowSecondFunc = (rowData) => {
-    console.log("rorw data in second select func", rowData);
+    // console.log("rorw data in second select func", rowData);
 
-    setSecondSelectedRow([]);
-    setSecondSelectedRow(rowData);
+    console.log("rowdata", rowData);
+    // setSecondSelectedRow([]);
+    setSecondSelectedRow([...secondSelectedRow, rowData]);
 
+    const found = secondSelectedRow.some(
+      (el) =>
+        el.CustBOM_Id === rowData.CustBOM_Id &&
+        el.CustDocuNo === rowData.CustDocuNo &&
+        el.Id === rowData.Id &&
+        el.PartId === rowData.PartId &&
+        el.RVId === rowData.RVId
+    );
+    console.log("fond.......", found);
+    // console.log("found........", found);
+    // if (found) {
+    //   // deleting the element if found
+    //   const newThirdTableData = thirdTableData.filter(
+    //     (data) => data !== rowData
+    //   );
+    //   // setThirdTableData(newThirdTableData);
+    //   // console.log("deleted");
+
+    //   // setThirdTableData([thirdTableData.remove(rowData)]);
+    //   // console.log("deselected", thirdTableData);
+    // } else {
+    //   // inserting the element if not found
+    //   // setThirdTableData([...thirdTableData, rowData]);
+    //   setSecondSelectedRow([...secondSelectedRow, rowData]);
+    //   // console.log("inserted");
+    // }
+
+    //prepare third table
     // let newData = allData.filter((obj, index) => {
-    //   return obj.RVId === row.RVId;
+    //   return obj.RVId === rowData.RVId;
     // });
 
-    // //prepare third table
     // newData.forEach((item, i) => {
+    //   // console.log("item..", item);
     //   //set check in second table
-    //   setSecondSelectedRow({
-    //     selected: [...secondSelectedRow.selected, item.Id],
-    //   });
+    //   // setSecondSelectedRow({
+    //   //   selected: [...secondSelectedRow.selected, item.Id],
+    //   // });
     //   if (
-    //     item.QtyReceived -
-    //       item.QtyRejected -
-    //       item.QtyReturned -
-    //       item.QtyUsed >
+    //     item.QtyReceived - item.QtyRejected - item.QtyReturned - item.QtyUsed >
     //     0
     //   ) {
-    //     item.PartIdNew = item.partId + "/**Ref: " + row.CustDocuNo;
+    //     item.PartIdNew = item.partId + "/**Ref: " + rowData.CustDocuNo;
     //     if (item.QtyRejected > 0) {
     //       if (
     //         item.QtyReceived - item.QtyReturned - item.QtyUsed >
@@ -400,7 +426,8 @@ function Parts(props) {
     //   }
     // });
     // console.log("new data = ", newData);
-    // //concat to prev to new
+
+    //concat to prev to new
     // thirdTableData.push.apply(thirdTableData, newData);
     // setThirdTableData(thirdTableData);
   };
