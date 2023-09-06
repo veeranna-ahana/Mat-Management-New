@@ -3,7 +3,7 @@ import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
-import cellEditFactory from 'react-bootstrap-table2-editor';
+import cellEditFactory from "react-bootstrap-table2-editor";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../../../../../utils";
 
@@ -163,7 +163,6 @@ function MaterialAllotmentMain() {
   //   }
   // };
 
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -194,12 +193,12 @@ function MaterialAllotmentMain() {
         if (
           Math.floor(
             parseInt(firstTable[key].QtyAvailable) /
-            parseInt(firstTable[key].QtyPerAssy)
+              parseInt(firstTable[key].QtyPerAssy)
           ) < parseInt(setQtyAvailable)
         ) {
           setQtyAvailable = Math.floor(
             parseInt(firstTable[key].QtyAvailable) /
-            parseInt(firstTable[key].QtyPerAssy)
+              parseInt(firstTable[key].QtyPerAssy)
           );
         }
         //setQtyAvailable = 20;
@@ -212,9 +211,9 @@ function MaterialAllotmentMain() {
       if (issuenowval > setQtyAvailable) {
         toast.error(
           "Sets Required : " +
-          issuenowval +
-          " Sets Available : " +
-          setQtyAvailable
+            issuenowval +
+            " Sets Available : " +
+            setQtyAvailable
         );
       }
       // else {
@@ -248,24 +247,17 @@ function MaterialAllotmentMain() {
             return obj2;
           });
 
-
           return { ...obj1, issueNow: newIssueNow };
         });
-
 
         await delay(1000);
 
         console.log("new first table = ", updatedFirstTable);
         console.log("new second table = ", secondTable);
 
-
         setFirstTable(updatedFirstTable);
         setSecondTable(secondTable);
       }
-
-
-
-
     }
   };
   const columns1 = [
@@ -305,7 +297,6 @@ function MaterialAllotmentMain() {
     {
       text: "Issue Now",
       dataField: "issueNow",
-
     },
   ];
   // Process the returned date in the formatter
@@ -344,7 +335,14 @@ function MaterialAllotmentMain() {
     {
       text: "Issue Now",
       dataField: "issueNow",
-      editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
+      editorRenderer: (
+        editorProps,
+        value,
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      ) => {
         return (
           <input
             type="number"
@@ -353,12 +351,9 @@ function MaterialAllotmentMain() {
             onChange={(e) => handleIssueNowChange(e, row)}
           />
         );
-      }
-
-
+      },
     },
   ];
-
 
   const selectRow1 = {
     mode: "radio",
@@ -502,7 +497,7 @@ function MaterialAllotmentMain() {
               Period: formatDate(new Date(), 6),
               RunningNo: newNo,
             };
-            postRequest(endpoints.updateRunningNo, inputData, (data) => { });
+            postRequest(endpoints.updateRunningNo, inputData, (data) => {});
 
             console.log("Return id = ", issueidval);
             //return data.insertId;
@@ -563,7 +558,6 @@ function MaterialAllotmentMain() {
     setSecondTable(updatedSecondTable);
   };
 
-
   return (
     <div>
       <div>
@@ -584,13 +578,21 @@ function MaterialAllotmentMain() {
           <div className="col-md-4">
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">NC Program No</label>
-              <input className="form-label" value={formHeader.NCProgramNo} disabled />
+              <input
+                className="form-label"
+                value={formHeader.NCProgramNo}
+                disabled
+              />
             </div>
           </div>
           <div className="col-md-6">
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">Material Code</label>
-              <input className="form-label" value={formHeader.Mtrl_Code} disabled />
+              <input
+                className="form-label"
+                value={formHeader.Mtrl_Code}
+                disabled
+              />
             </div>
           </div>
         </div>
@@ -598,7 +600,11 @@ function MaterialAllotmentMain() {
         <div className="row">
           <div className="col-md-4">
             <label className="form-label">Priority</label>
-            <input className="form-label" value={formHeader.Priority} disabled />
+            <input
+              className="form-label"
+              value={formHeader.Priority}
+              disabled
+            />
           </div>
 
           <div className="col-md-3">
@@ -619,11 +625,19 @@ function MaterialAllotmentMain() {
 
           <div className="col-md-3">
             <label className="form-label">Process</label>
-            <input className="form-label" value={formHeader.Operation} disabled />
+            <input
+              className="form-label"
+              value={formHeader.Operation}
+              disabled
+            />
           </div>
           <div className="col-md-3">
             <label className="form-label">Allotted</label>
-            <input className="form-label" value={formHeader.QtyAllotted} disabled />
+            <input
+              className="form-label"
+              value={formHeader.QtyAllotted}
+              disabled
+            />
           </div>
         </div>
         <div className="row">
@@ -715,15 +729,14 @@ function MaterialAllotmentMain() {
               </thead>
               <tbody>
                 {secondTable.map((row) => (
-                  <tr key={row.Id}
-                    className={row.Id === row2.Id ? "selected-row" : ""}
+                  <tr
+                    key={row.Id}
+                    className={row.Id === row2.Id ? "rowSelectedClass" : ""}
                     style={rowStyle2(row)}
                     onClick={() => {
                       // selectRow2.onSelect(row, true);
-                      setRow2(row)
-
+                      setRow2(row);
                     }}
-
                   >
                     <td>{row.Id}</td>
                     <td>{row.RV_No}</td>
@@ -737,7 +750,6 @@ function MaterialAllotmentMain() {
                         value={row.issueNow}
                         onChange={(e) => handleIssueNowChange(e, row)}
                         onBlur={() => handleIssueNowBlur(row)}
-
                       />
                     </td>
                   </tr>
@@ -778,7 +790,9 @@ function MaterialAllotmentMain() {
 
             <div className="row">
               <div className="col-md-4 mt-1">
-                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Received</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                  Qty Received
+                </label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -793,7 +807,9 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Accepted</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                  Qty Accepted
+                </label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -806,7 +822,9 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Qty Issued</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                  Qty Issued
+                </label>
               </div>
               <div className="col-md-8 ">
                 <input
@@ -819,10 +837,17 @@ function MaterialAllotmentMain() {
             </div>
             <div className="row mb-4">
               <div className="col-md-4 mt-1 ">
-                <label className="form-label" style={{ whiteSpace: "nowrap" }}>Issue Now</label>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                  Issue Now
+                </label>
               </div>
               <div className="col-md-8 ">
-                <input className="in-field" type="text" value={row2.issueNow} disabled />
+                <input
+                  className="in-field"
+                  type="text"
+                  value={row2.issueNow}
+                  disabled
+                />
               </div>
             </div>
           </div>

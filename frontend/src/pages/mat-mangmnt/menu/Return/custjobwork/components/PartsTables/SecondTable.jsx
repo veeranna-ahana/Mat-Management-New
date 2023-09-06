@@ -27,7 +27,7 @@ export default function SecondTable(props) {
             <tr
               onClick={() => props.selectRowSecondFunc(val)}
               className={
-                val.Id === props.secondSelectedRow.Id ? "selected-row" : ""
+                val.Id === props.secondSelectedRow.Id ? "rowSelectedClass" : ""
               }
             >
               <td>{key + 1}</td>

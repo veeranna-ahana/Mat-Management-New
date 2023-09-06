@@ -246,7 +246,7 @@ export default function FirstTable(props) {
             <tr
               onClick={() => props.selectRowFirstFun(val)}
               className={
-                val === props.firstTableSelectedRow[0] ? "selected-row" : ""
+                val === props.firstTableSelectedRow[0] ? "rowSelectedClass" : ""
               }
             >
               <td>{k + 1}</td>

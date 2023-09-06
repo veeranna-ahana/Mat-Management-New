@@ -23,7 +23,7 @@ export default function FirstTable(props) {
               onClick={() => props.selectRowFirstFunc(val)}
               className={
                 val.RvID === props.firstTableSelectedRow.RvID
-                  ? "selected-row"
+                  ? "rowSelectedClass"
                   : ""
               }
             >
