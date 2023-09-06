@@ -35,6 +35,7 @@ function Parts(props) {
       let url1 = endpoints.partFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
         setFirstTableData(data);
+        setSecondTableData([]);
 
         //fetch second table data
         let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
@@ -118,7 +119,7 @@ function Parts(props) {
   //   },
   // ];
 
-  console.log("firstTableSelectedRow", firstTableSelectedRow);
+  // console.log("firstTableSelectedRow", firstTableSelectedRow);
   const selectRowFirstFunc = (rowData) => {
     // mode: "checkbox",
     // clickToSelect: true,
@@ -126,7 +127,7 @@ function Parts(props) {
     // selectionHeaderRenderer: () => "Select",
     // bgColor: "#8A92F0",
     // onSelect: (row, isSelect, rowIndex) => {
-    console.log("first..", rowData);
+    // console.log("first..", rowData);
 
     //update second table data
     let newData = allData.filter((obj, index) => {
@@ -224,77 +225,145 @@ function Parts(props) {
     // }
   };
 
-  const selectRowSecond = {
-    mode: "checkbox",
-    clickToSelect: true,
-    bgColor: "#8A92F0",
-    selected: secondSelectedRow.selected,
-    selectionHeaderRenderer: () => "Select",
-    onSelect: (row, isSelect) => {
-      if (isSelect) {
-        let newData = allData.filter((obj, index) => {
-          return obj.RVId === row.RVId;
-        });
+  // const selectRowSecond = {
+  //   mode: "checkbox",
+  //   clickToSelect: true,
+  //   bgColor: "#8A92F0",
+  //   selected: secondSelectedRow.selected,
+  //   selectionHeaderRenderer: () => "Select",
+  //   onSelect: (row, isSelect) => {
+  //     if (isSelect) {
+  //       let newData = allData.filter((obj, index) => {
+  //         return obj.RVId === row.RVId;
+  //       });
 
-        //prepare third table
-        newData.forEach((item, i) => {
-          //set check in second table
-          setSecondSelectedRow({
-            selected: [...secondSelectedRow.selected, item.Id],
-          });
-          if (
-            item.QtyReceived -
-              item.QtyRejected -
-              item.QtyReturned -
-              item.QtyUsed >
-            0
-          ) {
-            item.PartIdNew = item.partId + "/**Ref: " + row.CustDocuNo;
-            if (item.QtyRejected > 0) {
-              if (
-                item.QtyReceived - item.QtyReturned - item.QtyUsed >
-                item.QtyRejected
-              ) {
-                item.QtyReturnedNew = item.QtyRejected;
-              } else {
-                item.QtyReturnedNew =
-                  item.QtyReceived -
-                  item.QtyRejected -
-                  item.QtyReturned -
-                  item.QtyUsed;
-              }
-              item.Remarks = "Rejected";
-            } else {
-              item.QtyReturnedNew =
-                item.QtyReceived -
-                item.QtyRejected -
-                item.QtyReturned -
-                item.QtyUsed;
-              item.Remarks = "Returned Unused";
-            }
-          }
-        });
-        console.log("new data = ", newData);
-        //concat to prev to new
-        thirdTableData.push.apply(thirdTableData, newData);
-        setThirdTableData(thirdTableData);
-      } else {
-        console.log("third table = ", thirdTableData);
-        console.log("row = ", row);
-        let newData = thirdTableData.filter((obj, index) => {
-          return obj.RVId !== row.RVId;
-        });
-        secondTableData.forEach((item, i) => {
-          setSecondSelectedRow({
-            selected: secondSelectedRow.selected.filter((ele) => {
-              return ele !== item.Id;
-            }),
-          });
-        });
+  //       //prepare third table
+  //       newData.forEach((item, i) => {
+  //         //set check in second table
+  //         setSecondSelectedRow({
+  //           selected: [...secondSelectedRow.selected, item.Id],
+  //         });
+  //         if (
+  //           item.QtyReceived -
+  //             item.QtyRejected -
+  //             item.QtyReturned -
+  //             item.QtyUsed >
+  //           0
+  //         ) {
+  //           item.PartIdNew = item.partId + "/**Ref: " + row.CustDocuNo;
+  //           if (item.QtyRejected > 0) {
+  //             if (
+  //               item.QtyReceived - item.QtyReturned - item.QtyUsed >
+  //               item.QtyRejected
+  //             ) {
+  //               item.QtyReturnedNew = item.QtyRejected;
+  //             } else {
+  //               item.QtyReturnedNew =
+  //                 item.QtyReceived -
+  //                 item.QtyRejected -
+  //                 item.QtyReturned -
+  //                 item.QtyUsed;
+  //             }
+  //             item.Remarks = "Rejected";
+  //           } else {
+  //             item.QtyReturnedNew =
+  //               item.QtyReceived -
+  //               item.QtyRejected -
+  //               item.QtyReturned -
+  //               item.QtyUsed;
+  //             item.Remarks = "Returned Unused";
+  //           }
+  //         }
+  //       });
+  //       console.log("new data = ", newData);
+  //       //concat to prev to new
+  //       thirdTableData.push.apply(thirdTableData, newData);
+  //       setThirdTableData(thirdTableData);
+  //     } else {
+  //       console.log("third table = ", thirdTableData);
+  //       console.log("row = ", row);
+  //       let newData = thirdTableData.filter((obj, index) => {
+  //         return obj.RVId !== row.RVId;
+  //       });
+  //       secondTableData.forEach((item, i) => {
+  //         setSecondSelectedRow({
+  //           selected: secondSelectedRow.selected.filter((ele) => {
+  //             return ele !== item.Id;
+  //           }),
+  //         });
+  //       });
 
-        setThirdTableData(newData);
-      }
-    },
+  //       setThirdTableData(newData);
+  //     }
+  //   },
+  // };
+
+  const selectRowSecondFunc = (rowData) => {
+    console.log("rowData in second", rowData);
+
+    // let newData = allData.filter((obj, index) => {
+    //   return obj.RVId === rowData.RVId;
+    // });
+
+    // console.log("newData", newData);
+
+    let returnNew = rowData.QtyReceived - rowData.QtyUsed - rowData.QtyReturned;
+
+    if (
+      rowData.QtyReturned + returnNew + rowData.QtyUsed >
+      rowData.QtyReceived
+    ) {
+      toast.error(
+        "Greater then the quantity received, plus already returned/used."
+      );
+    } else if (returnNew === 0) {
+      toast.error("Returnable Quantity is zero, unable to process to return.");
+    } else {
+      toast.success("good to go!!!");
+    }
+
+    // //prepare third table
+    // newData.forEach((item, i) => {
+    //   //set check in second table
+    //   setSecondSelectedRow({
+    //     selected: [...secondSelectedRow.selected, item.Id],
+    //   });
+    //   if (
+    //     item.QtyReceived -
+    //       item.QtyRejected -
+    //       item.QtyReturned -
+    //       item.QtyUsed >
+    //     0
+    //   ) {
+    //     item.PartIdNew = item.partId + "/**Ref: " + row.CustDocuNo;
+    //     if (item.QtyRejected > 0) {
+    //       if (
+    //         item.QtyReceived - item.QtyReturned - item.QtyUsed >
+    //         item.QtyRejected
+    //       ) {
+    //         item.QtyReturnedNew = item.QtyRejected;
+    //       } else {
+    //         item.QtyReturnedNew =
+    //           item.QtyReceived -
+    //           item.QtyRejected -
+    //           item.QtyReturned -
+    //           item.QtyUsed;
+    //       }
+    //       item.Remarks = "Rejected";
+    //     } else {
+    //       item.QtyReturnedNew =
+    //         item.QtyReceived -
+    //         item.QtyRejected -
+    //         item.QtyReturned -
+    //         item.QtyUsed;
+    //       item.Remarks = "Returned Unused";
+    //     }
+    //   }
+    // });
+    // console.log("new data = ", newData);
+    // //concat to prev to new
+    // thirdTableData.push.apply(thirdTableData, newData);
+    // setThirdTableData(thirdTableData);
   };
 
   let createReturnVoucher = async () => {
@@ -456,6 +525,7 @@ function Parts(props) {
               <SecondTable
                 secondTableData={secondTableData}
                 secondSelectedRow={secondSelectedRow}
+                selectRowSecondFunc={selectRowSecondFunc}
               />
 
               {/* <BootstrapTable
