@@ -58,7 +58,7 @@ function MaterialAllotmentMain() {
     });
 
     delay(1000);
-    // console.log("form header fetchdata222222222222 = ", formHeader);
+
     //get first table data
     let url3 =
       endpoints.getShopFloorAllotmentPartFirstTable +
@@ -66,7 +66,7 @@ function MaterialAllotmentMain() {
       location.state.ncid;
     getRequest(url3, async (data) => {
       //setFirstTable(data);
-      // console.log("first table data111111111 = ", data);
+
       let tempArray = [];
       for (let i = 0; i < data.length; i++) {
         //console.log("bom id = ", data[i].CustBOM_Id);
@@ -209,8 +209,8 @@ function MaterialAllotmentMain() {
 
         await delay(1000);
 
-        console.log("new first table = ", updatedFirstTable);
-        console.log("new second table = ", secondTable);
+        // console.log("new first table = ", updatedFirstTable);
+        // console.log("new second table = ", secondTable);
 
 
         setFirstTable(updatedFirstTable);
@@ -260,6 +260,7 @@ function MaterialAllotmentMain() {
 
   //   },
   // ];
+
   // Process the returned date in the formatter
 
   const releaseProduction = async () => {
@@ -356,7 +357,7 @@ function MaterialAllotmentMain() {
   const selectRow2 = {
     mode: "radio",
     clickToSelect: true,
-    bgColor: "#98A8F8",
+    // bgColor: "#98A8F8",
 
     onSelect: (row, isSelect, rowIndex, e) => {
       console.log("Selected Row in Second Table:", row);
@@ -373,6 +374,7 @@ function MaterialAllotmentMain() {
     const style = {};
     if (row.CustBOM_Id === custBOMId) {
       style.backgroundColor = "#98A8F8";
+
     }
     return style;
   };
@@ -381,7 +383,8 @@ function MaterialAllotmentMain() {
   const rowStyle2 = (row, rowIndex) => {
     const style = {};
     if (row.CustBOM_Id === custBOMId) {
-      style.backgroundColor = "#32a856";
+      // style.backgroundColor = "#32a856";
+      style.backgroundColor = "#61f28a";
     }
     return style;
   };
@@ -747,9 +750,9 @@ function MaterialAllotmentMain() {
                 </tr>
               </thead>
               <tbody>
-                {secondTable.map((row) => (
+                {secondTable.map((row, index) => (
                   <tr key={row.Id}
-                    // className={row.Id === row2.Id ? "selected-row" : ""}
+                    className={row.Id === row2.Id ? "selected-row" : ""}
                     style={rowStyle2(row)}
                     onClick={() => {
                       selectRow2.onSelect(row, true);
@@ -760,7 +763,7 @@ function MaterialAllotmentMain() {
                   >
                     <td
                     >{row.Id}</td>
-                    <td>{row.RV_No}</td>
+                    <td >{row.RV_No}</td>
                     <td>{formatDate(new Date(row.RV_Date), 3)}</td>
                     <td>{row.QtyReceived}</td>
                     <td>{row.QtyAccepted}</td>
@@ -796,6 +799,7 @@ function MaterialAllotmentMain() {
                 />
               </div>
             </div>
+
             <div className="row">
               <div className="col-md-4 mt-2 ">
                 <label className="form-label">Part ID</label>
