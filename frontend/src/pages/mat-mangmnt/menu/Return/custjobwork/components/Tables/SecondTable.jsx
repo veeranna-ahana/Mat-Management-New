@@ -24,11 +24,11 @@ export default function SecondTable(props) {
             <tr
               onClick={() => props.selectRowSecondFun(val)}
               className={
-                // checking if item exist then classname...selected-row else ''
+                // checking if item exist then classname...rowSelectedClass else ''
                 props.thirdTableData.some(
                   (el) => el.MtrlStockID === val.MtrlStockID
                 )
-                  ? "selected-row"
+                  ? "rowSelectedClass"
                   : ""
               }
             >

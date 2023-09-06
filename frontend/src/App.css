@@ -482,13 +482,15 @@ li.nav-item {
   text-transform: capitalize;
 }
 
+.rowSelectedClass {
+  background-color: #98a8f8 !important;
+}
 .selected-row {
-  background-color: #98A8F8;
+  background-color: #98a8f8;
 }
 
-
 .custom-table tbody tr.selected-row {
-  background-color: #98A8F8;
+  background-color: #98a8f8;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -497,7 +499,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 
 /* Firefox */
 input[type="number"] {
