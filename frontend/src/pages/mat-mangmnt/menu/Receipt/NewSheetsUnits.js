@@ -748,7 +748,7 @@ function NewSheetsUnits(props) {
         let count = materialArray.length + 1;
         srl = "0" + count;
         // srl = count.toString();
-
+        console.log("srll", srl);
         //set inserted id
         setPartUniqueId(id);
         let newRow = {
@@ -1022,20 +1022,33 @@ function NewSheetsUnits(props) {
   };
   // row selection
   const selectRow = {
-    mode: "radio",
+    mode: "checkbox",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
       // You need to keep track of selected rows in an array
-      // if (isSelect) {
-      //   setSelectedRows((prevSelectedRows) => [...prevSelectedRows, row]);
-      // } else {
-      //   setSelectedRows((prevSelectedRows) =>
-      //     prevSelectedRows.filter((selectedRow) => selectedRow.id !== row.id)
-      //   );
-      // }
-      // console.log("selectedRows", selectedRows);
-      setIsButtonEnabled(row.updated === 1);
+      // setIsButtonEnabled(row.updated === 1);
+      setSelectedRows((prevSelectedRows) => {
+        // Create a new array with the selected rows from the previous state
+        const newSelectedRows = [...prevSelectedRows];
+
+        // Update the selected rows based on whether the row is being selected or deselected
+        if (isSelect) {
+          newSelectedRows.push(row);
+        } else {
+          // Filter out the deselected row
+          const indexToRemove = newSelectedRows.findIndex(
+            (selectedRow) => selectedRow.id === row.id
+          );
+          if (indexToRemove !== -1) {
+            newSelectedRows.splice(indexToRemove, 1);
+          }
+        }
+
+        // console.log("selectedRows", newSelectedRows); // Log the updated selected rows
+        setSelectedRows(newSelectedRows);
+        return newSelectedRows; // Return the updated array to update the state
+      });
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2.forEach((obj) => {
@@ -1073,12 +1086,6 @@ function NewSheetsUnits(props) {
       });
 
       setInputPart({
-        // id: row.id,
-        // partId: row.partId,
-        // unitWeight: row.unitWeight,
-        // qtyAccepted: row.qtyAccepted,
-        // qtyRejected: row.qtyRejected,
-        // qtyReceived: row.qtyReceived,
         id: row.id,
         srl: row.srl,
         mtrlCode: row.mtrlCode,
@@ -1093,7 +1100,8 @@ function NewSheetsUnits(props) {
     },
   };
 
-  console.log("inspected: row.inspected", inputPart.inspected);
+  console.log("selectedRowss", selectedRows);
+  // console.log("inspected: row.inspected", inputPart.inspected);
   // const addToStock
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
@@ -1155,6 +1163,76 @@ function NewSheetsUnits(props) {
       //console.log("after materialArray = ", materialArray);
     }
   };
+
+  // console.log("selectedRows", selectedRows);
+  //NEW ADD TO STOCK
+  // const addToStock = async (selectedRows) => {
+  //   console.log("selectedRowsArray", selectedRows);
+  //   if (selectedRows.length === 0) {
+  //     toast.error("Please Select Material");
+  //     return;
+  //   }
+
+  //   const promises = selectedRows.map((selectedRow) => {
+  //     const newRow = {
+  //       mtrlRvId: selectedRow.Mtrl_Rv_id,
+  //       custCode: selectedRow.Cust_Code,
+  //       customer: formHeader.customerName,
+  //       custDocuNo: "",
+  //       rvNo: formHeader.rvNo,
+  //       mtrlCode: selectedRow.Mtrl_Code,
+  //       shapeID: selectedRow.shapeID,
+  //       shape: "",
+  //       material: selectedRow.material,
+  //       dynamicPara1: selectedRow.dynamicPara1,
+  //       dynamicPara2: selectedRow.dynamicPara2,
+  //       dynamicPara3: selectedRow.dynamicPara3,
+  //       dynamicPara4: "0.00",
+  //       locked: 0,
+  //       scrap: 0,
+  //       issue: 0,
+  //       weight: formHeader.weight,
+  //       scrapWeight: "0.00",
+  //       srl: selectedRow.Srl,
+  //       ivNo: "",
+  //       ncProgramNo: "",
+  //       locationNo: selectedRow.locationNo,
+  //       qtyAccepted: selectedRow.qtyAccepted,
+  //     };
+
+  //     return new Promise((resolve) => {
+  //       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
+  //         if (data.affectedRows !== 0) {
+  //           // enable remove stock buttons
+  //           toast.success("Stock Added Successfully");
+  //           // You can add any additional logic here for success
+  //           resolve();
+  //         } else {
+  //           toast.error("Stock Not Added");
+  //           // You can add any additional error handling here
+  //           resolve();
+  //         }
+  //       });
+  //     });
+  //   });
+
+  //   // Wait for all promises to resolve
+  //   await Promise.all(promises);
+
+  //   // Update the materialArray after all rows are added to stock
+  //   const updatedMaterialArray = materialArray.map((material) => {
+  //     if (
+  //       selectedRows.some(
+  //         (selectedRow) => selectedRow.Mtrl_Code === material.mtrlCode
+  //       )
+  //     ) {
+  //       return { ...material, updated: 1 };
+  //     }
+  //     return material;
+  //   });
+
+  //   setMaterialArray(updatedMaterialArray);
+  // };
 
   // const removeToStock
   const removeStock = () => {

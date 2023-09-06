@@ -595,7 +595,7 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
-  console.log("part array = ", materialArray);
+  console.log("part arrayyyyyy = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
@@ -873,6 +873,7 @@ function OpenButtonDraftSheetUnit(props) {
     //console.log("after = ", partArray);
   };
 
+  console.log("inputpart10", inputPart);
   //delete part
   const handleDelete = () => {
     if (inputPart?.id?.length === 0) {
@@ -1027,7 +1028,7 @@ function OpenButtonDraftSheetUnit(props) {
         //inputPart[name] = value;
         //setInputPart(inputPart);
 
-        //console.log("inputPart : ", inputPart);
+        console.log("inputPart11 : ", inputPart);
       }
     }
     const newArray = materialArray.map((p) =>
@@ -1119,6 +1120,8 @@ function OpenButtonDraftSheetUnit(props) {
       });
     },
   };
+
+  console.log("inpurtpart.srl", inputPart.srl);
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
