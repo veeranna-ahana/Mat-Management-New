@@ -91,7 +91,7 @@ returnRouter.get("/partSecond", async (req, res, next) => {
   try {
     let Cust_Code = req.query.Cust_Code;
     misQueryMod(
-      `SELECT m1.*,m.CustDocuNo FROM magodmis.material_receipt_register m,magodmis.mtrl_part_receipt_details m1
+      `SELECT m1.*,m.* FROM magodmis.material_receipt_register m,magodmis.mtrl_part_receipt_details m1
 WHERE m.Type='Parts' AND m.RVStatus='Received' AND m1.RVId=m.RvID  AND m.Cust_Code=${Cust_Code}`,
       (err, data) => {
         if (err) logger.error(err);

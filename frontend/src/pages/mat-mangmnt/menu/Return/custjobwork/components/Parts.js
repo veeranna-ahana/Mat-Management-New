@@ -307,19 +307,77 @@ function Parts(props) {
 
     // console.log("newData", newData);
 
-    let returnNew = rowData.QtyReceived - rowData.QtyUsed - rowData.QtyReturned;
+    const found = thirdTableData.some(
+      (el) =>
+        el.CustBOM_Id === rowData.CustBOM_Id &&
+        el.RV_No === rowData.RV_No &&
+        el.CustDocuNo === rowData.CustDocuNo &&
+        el.Id === rowData.Id &&
+        el.PartId === rowData.PartId &&
+        el.RVId === rowData.RVId
+    );
 
-    if (
-      rowData.QtyReturned + returnNew + rowData.QtyUsed >
-      rowData.QtyReceived
-    ) {
-      toast.error(
-        "Greater then the quantity received, plus already returned/used."
+    console.log("found...", found);
+
+    if (found) {
+      // deleting the element if found
+      const newThirdTableData = thirdTableData.filter(
+        (el) =>
+          el.CustBOM_Id != rowData.CustBOM_Id &&
+          el.RV_No != rowData.RV_No &&
+          el.CustDocuNo != rowData.CustDocuNo &&
+          el.Id != rowData.Id &&
+          el.PartId != rowData.PartId &&
+          el.RVId != rowData.RVId
       );
-    } else if (returnNew === 0) {
-      toast.error("Returnable Quantity is zero, unable to process to return.");
+      // console.log("newthirdtabedata", newThirdTableData);
+      setThirdTableData(newThirdTableData);
     } else {
-      toast.success("good to go!!!");
+      let returnNew =
+        rowData.QtyReceived - rowData.QtyUsed - rowData.QtyReturned;
+
+      if (
+        rowData.QtyReturned + returnNew + rowData.QtyUsed >
+        rowData.QtyReceived
+      ) {
+        toast.error(
+          "Greater then the quantity received, plus already returned/used."
+        );
+      } else if (returnNew === 0) {
+        toast.error(
+          "Returnable Quantity is zero, unable to process to return."
+        );
+      } else {
+        // toast.success("good to go!!!");
+
+        rowData.PartIdNew = rowData.PartId + "/**Ref: " + rowData.CustDocuNo;
+        if (rowData.QtyRejected > 0) {
+          if (
+            rowData.QtyReceived - rowData.QtyReturned - rowData.QtyUsed >
+            rowData.QtyRejected
+          ) {
+            rowData.QtyReturnedNew = rowData.QtyRejected;
+          } else {
+            rowData.QtyReturnedNew =
+              rowData.QtyReceived -
+              rowData.QtyRejected -
+              rowData.QtyReturned -
+              rowData.QtyUsed;
+          }
+          rowData.Remarks = "Rejected";
+        } else {
+          rowData.QtyReturnedNew =
+            rowData.QtyReceived -
+            rowData.QtyRejected -
+            rowData.QtyReturned -
+            rowData.QtyUsed;
+          rowData.Remarks = "Return Unused";
+        }
+
+        console.log("after some operation...", rowData);
+
+        setThirdTableData([...thirdTableData, rowData]);
+      }
     }
 
     // //prepare third table
@@ -526,6 +584,7 @@ function Parts(props) {
                 secondTableData={secondTableData}
                 secondSelectedRow={secondSelectedRow}
                 selectRowSecondFunc={selectRowSecondFunc}
+                thirdTableData={thirdTableData}
               />
 
               {/* <BootstrapTable
