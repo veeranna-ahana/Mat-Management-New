@@ -23,14 +23,18 @@ function ReturnPartQtyCheckOk(props) {
         IVNOVal={props.IVNOVal}
       />
       <Modal show={showOK} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title></Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Qty Check Ok</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        <Modal.Header closeButton className="p-3 "></Modal.Header>
+        <Modal.Body className="p-3">
+          <span>Quantity Check Ok</span>
+        </Modal.Body>
+        <Modal.Footer className="p-2 px-3">
+          <button
+            className="button-style m-0"
+            onClick={handleClose}
+            style={{ width: "15%" }}
+          >
             Ok
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>
@@ -38,3 +42,15 @@ function ReturnPartQtyCheckOk(props) {
 }
 
 export default ReturnPartQtyCheckOk;
+
+// <Modal show={showOK} onHide={handleClose}>
+//   <Modal.Header closeButton>
+//     <Modal.Title></Modal.Title>
+//   </Modal.Header>
+//   <Modal.Body>Qty Check Ok</Modal.Body>
+//   <Modal.Footer>
+//     <Button variant="secondary" onClick={handleClose}>
+//       Ok
+//     </Button>
+//   </Modal.Footer>
+// </Modal>

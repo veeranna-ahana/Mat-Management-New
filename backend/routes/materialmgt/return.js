@@ -75,8 +75,15 @@ returnRouter.get("/partFirst", async (req, res, next) => {
   try {
     let Cust_Code = req.query.Cust_Code;
     misQueryMod(
-      `SELECT * FROM magodmis.material_receipt_register
-    WHERE Type='Parts' AND RVStatus='Received'  AND Cust_Code=${Cust_Code}`,
+      `SELECT 
+          *,
+          DATE_FORMAT(RV_Date, '%d/%m/%Y') AS RV_Date,
+          DATE_FORMAT(ReceiptDate, '%d/%m/%Y') AS ReceiptDate
+      FROM
+          magodmis.material_receipt_register
+      WHERE
+          Type = 'Parts' AND RVStatus = 'Received'
+              AND Cust_Code = ${Cust_Code}`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
@@ -91,7 +98,7 @@ returnRouter.get("/partSecond", async (req, res, next) => {
   try {
     let Cust_Code = req.query.Cust_Code;
     misQueryMod(
-      `SELECT m1.*,m.CustDocuNo FROM magodmis.material_receipt_register m,magodmis.mtrl_part_receipt_details m1
+      `SELECT m1.*,m.* FROM magodmis.material_receipt_register m,magodmis.mtrl_part_receipt_details m1
 WHERE m.Type='Parts' AND m.RVStatus='Received' AND m1.RVId=m.RvID  AND m.Cust_Code=${Cust_Code}`,
       (err, data) => {
         if (err) logger.error(err);

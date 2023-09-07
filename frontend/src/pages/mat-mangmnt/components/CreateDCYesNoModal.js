@@ -145,7 +145,7 @@ function CreateDCYesNoModal(props) {
 
               //send dc id to main page
               props.getDCID(dc_id);
-              props.InputHeaderEvent("IVStatus", "Returned");
+              // props.InputHeaderEvent("IVStatus", "Returned");
 
               //update the running no
               const inputData = {
@@ -168,12 +168,18 @@ function CreateDCYesNoModal(props) {
                 "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
               );*/
 
+        props.setFormHeader({ ...props.formHeader, IVStatus: "Returned" });
         toast.success("DC Created Successfully");
+        window.location.reload();
         //setpnno("");
         //setShow(false);
       });
     });
+
+    // props.setFormHeader([])
   };
+
+  // console.log("form header..", props.formHeader);
 
   const handleNo = () => setShowCreateDC(false);
   const handleYes = () => {

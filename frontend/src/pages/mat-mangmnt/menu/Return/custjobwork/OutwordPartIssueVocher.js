@@ -36,7 +36,7 @@ function OutwordPartIssueVocher(props) {
 
   const [IVNOValue, setIVNOValue] = useState("");
   const [IVIDValue, setIVIDValue] = useState("");
-  console.log("formtype :", location?.state?.propsType);
+  // console.log("formtype :", location?.state?.propsType);
 
   let [formHeader, setFormHeader] = useState({
     Iv_Id: "",
@@ -132,7 +132,16 @@ function OutwordPartIssueVocher(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              disabled={
+                formHeader.IVStatus === "Cancelled"
+                  ? true
+                  : false | (formHeader.IVStatus === "Returned")
+                  ? true
+                  : false
+              }
+            />
           </lable>
         </div>
       ),
@@ -151,14 +160,18 @@ function OutwordPartIssueVocher(props) {
     } else if (formHeader.TotalWeight.length == 0)
       toast.error("Please Enter TotalWeight");
     else {*/
-    postRequest(endpoints.updateDCWeight, formHeader, (data) => {
-      //console.log("data = ", data);
-      if (data.affectedRows !== 0) {
-        toast.success("Record Updated Successfully");
-      } else {
-        toast.error("Record Not Updated");
+    postRequest(
+      endpoints.updateDCWeight,
+      { outData: outData, formHeader: formHeader, type: "part" },
+      (data) => {
+        console.log("data = ", data);
+        if (data.affectedRows !== 0) {
+          toast.success("Record Updated Successfully");
+        } else {
+          toast.error("Record Not Updated");
+        }
       }
-    });
+    );
     //}
   };
   function statusFormatter(cell, row, rowIndex, formatExtraData) {
@@ -167,8 +180,10 @@ function OutwordPartIssueVocher(props) {
   }
   let cancelIV = () => {
     //console.log(IVNOValue, " and ", IVIDValue);
+    // InputHeaderEvent(IVStatus)
     setShow(true);
     setBoolVal2(true);
+    setFormHeader({ ...formHeader, IVStatus: "Cancelled" });
   };
 
   let createDC = () => {
@@ -262,10 +277,11 @@ function OutwordPartIssueVocher(props) {
         outData={outData}
         type="parts"
         getDCID={getDCID}
+        setFormHeader={setFormHeader}
       />
 
       <div>
-        <h4 className="title">Outward Material Issue Voucher</h4>
+        <h4 className="title">Outward Part Issue Voucher</h4>
 
         <div className="row">
           <div className="col-md-12">
@@ -313,6 +329,10 @@ function OutwordPartIssueVocher(props) {
                       : false |
                         (location.state?.propsType === "returnCancelled")
                       ? true
+                      : false | (formHeader.IVStatus === "Cancelled")
+                      ? true
+                      : false | (formHeader.IVStatus === "Returned")
+                      ? true
                       : false
                   }
                 >
@@ -353,17 +373,25 @@ function OutwordPartIssueVocher(props) {
                   name="PkngDcNo"
                   value={formHeader.PkngDcNo}
                   onChange={InputHeaderEvent}
+                  disabled
                 />
               </div>
             </div>
             <div className="row">
               <div className="col-md-6">
-                <label className="form-label">Weight</label>
+                <label className="form-label">Actual Weight</label>
                 <input
-                  type="text"
+                  type="number"
                   name="TotalWeight"
                   value={formHeader.TotalWeight}
                   onChange={InputHeaderEvent}
+                  disabled={
+                    formHeader.IVStatus === "Cancelled"
+                      ? true
+                      : false | (formHeader.IVStatus === "Returned")
+                      ? true
+                      : false
+                  }
                 />
               </div>
               <div className="col-md-6">
@@ -384,6 +412,7 @@ function OutwordPartIssueVocher(props) {
               rows="4  "
               style={{ width: "240px" }}
               value={custdata.Address}
+              disabled
               readOnly
             ></textarea>
           </div>
@@ -396,6 +425,10 @@ function OutwordPartIssueVocher(props) {
                   boolVal2 | (location?.state?.propsType === "customerIVList")
                     ? true
                     : false | (location?.state?.propsType === "returnCancelled")
+                    ? true
+                    : false | (formHeader.IVStatus === "Cancelled")
+                    ? true
+                    : false | (formHeader.IVStatus === "Returned")
                     ? true
                     : false
                 }
@@ -412,6 +445,10 @@ function OutwordPartIssueVocher(props) {
                     ? true
                     : false | (location?.state?.propsType === "returnCancelled")
                     ? true
+                    : false | (formHeader.IVStatus === "Cancelled")
+                    ? true
+                    : false | (formHeader.IVStatus === "Returned")
+                    ? true
                     : false
                 }
               >
@@ -423,13 +460,11 @@ function OutwordPartIssueVocher(props) {
                 className="button-style"
                 onClick={printDC}
                 disabled={
-                  boolVal1 |
-                  boolVal3 |
-                  (location?.state?.propsType === "customerIVList")
+                  formHeader.IVStatus === "Cancelled"
                     ? true
-                    : false | (location?.state?.propsType === "returnCancelled")
-                    ? true
-                    : false
+                    : false | (formHeader.IVStatus === "Returned")
+                    ? false
+                    : true
                 }
               >
                 Print DC

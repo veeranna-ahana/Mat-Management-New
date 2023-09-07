@@ -17,7 +17,7 @@ function Parts(props) {
   let [thirdTableData, setThirdTableData] = useState([]);
 
   let [firstTableSelectedRow, setFirstTableSelectedRow] = useState([]);
-  let [secondSelectedRow, setSecondSelectedRow] = useState([]);
+  let [secondSelectedRow, setSecondSelectedRow] = useState({ selected: [] });
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
@@ -35,6 +35,7 @@ function Parts(props) {
       let url1 = endpoints.partFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
         setFirstTableData(data);
+        setSecondTableData([]);
 
         //fetch second table data
         let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
@@ -118,110 +119,15 @@ function Parts(props) {
   //   },
   // ];
 
-  // const selectRowFirst = {
-  //   mode: "checkbox",
-  //   clickToSelect: true,
-  //   selectColumnPosition: "right",
-  //   selectionHeaderRenderer: () => "Select",
-  //   bgColor: "#8A92F0",
-  //   onSelect: (row, isSelect, rowIndex) => {
-  //     console.log("row...", row);
-
-  //     setrvNoVal(row.RV_No);
-  //     setCustRefVal(row.CustDocuNo);
-  //     if (isSelect) {
-  //       setFirstTableSelectedRow(
-  //         //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
-  //         [...firstTableSelectedRow, firstTableData[rowIndex]]
-  //       );
-
-  //       //update second table data
-  //       let newData = allData.filter((obj, index) => {
-  //         return obj.RVId === row.RvID;
-  //       });
-  //       setSecondTableData(newData);
-
-  //       // console.log("new data  =", newData);
-  //       //prepare third table
-  //       newData.forEach((item, i) => {
-  //         //set second table default checkbox selection
-  //         setSecondSelectedRow({
-  //           selected: [...secondSelectedRow.selected, item.Id],
-  //         });
-  //         //console.log(" secondSelectedRow = ", secondSelectedRow);
-  //         if (
-  //           item.QtyReceived -
-  //             item.QtyRejected -
-  //             item.QtyReturned -
-  //             item.QtyUsed >
-  //           0
-  //         ) {
-  //           item.PartIdNew = item.PartId + "/**Ref: " + row.CustDocuNo;
-  //           if (item.QtyRejected > 0) {
-  //             if (
-  //               item.QtyReceived - item.QtyReturned - item.QtyUsed >
-  //               item.QtyRejected
-  //             ) {
-  //               item.QtyReturnedNew = item.QtyRejected;
-  //             } else {
-  //               item.QtyReturnedNew =
-  //                 item.QtyReceived -
-  //                 item.QtyRejected -
-  //                 item.QtyReturned -
-  //                 item.QtyUsed;
-  //             }
-  //             item.Remarks = "Rejected";
-  //           } else {
-  //             item.QtyReturnedNew =
-  //               item.QtyReceived -
-  //               item.QtyRejected -
-  //               item.QtyReturned -
-  //               item.QtyUsed;
-  //             item.Remarks = "Returned Unused";
-  //           }
-  //         }
-  //       });
-  //       //concat to prev to new
-  //       thirdTableData.push.apply(thirdTableData, newData);
-  //       setThirdTableData(thirdTableData);
-  //     } else {
-  //       //remove row in selectedTRow array
-  //       setFirstTableSelectedRow(
-  //         firstTableSelectedRow.filter((obj) => {
-  //           return obj.RV_No !== row.RV_No;
-  //         })
-  //       );
-
-  //       let newData = thirdTableData.filter((obj, index) => {
-  //         return obj.RVId !== row.RvID;
-  //       });
-  //       //console.log("second table = ", secondTableData);
-  //       //console.log("before = ", secondSelectedRow);
-  //       //remove check selection in second table
-  //       secondTableData.forEach((item, i) => {
-  //         setSecondSelectedRow({
-  //           selected: secondSelectedRow.selected.filter((ele) => {
-  //             return ele !== item.Id;
-  //           }),
-  //         });
-  //       });
-
-  //       setThirdTableData(newData);
-  //     }
-  //   },
-  // };
-
-  // console.log("first table selectedd", firstTableSelectedRow);
+  // console.log("firstTableSelectedRow", firstTableSelectedRow);
   const selectRowFirstFunc = (rowData) => {
-    // console.log(rowData);
-
-    setFirstTableSelectedRow([]);
-
-    setFirstTableSelectedRow(rowData);
-    // setFirstTableSelectedRow(
-    //   //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
-    //   [...firstTableSelectedRow, firstTableData[rowIndex]]
-    // );
+    // mode: "checkbox",
+    // clickToSelect: true,
+    // selectColumnPosition: "right",
+    // selectionHeaderRenderer: () => "Select",
+    // bgColor: "#8A92F0",
+    // onSelect: (row, isSelect, rowIndex) => {
+    // console.log("first..", rowData);
 
     //update second table data
     let newData = allData.filter((obj, index) => {
@@ -230,51 +136,104 @@ function Parts(props) {
 
     setSecondTableData(newData);
 
-    // console.log("new data  =", newData);
-    //prepare third table
-    // newData.forEach((item, i) => {
-    //   //set second table default checkbox selection
-    //   setSecondSelectedRow({
-    //     selected: [...secondSelectedRow.selected, item.Id],
+    // console.log(
+    //   "RV_No",
+    //   rowData.RV_No,
+    //   "Customer Ref",
+    //   rowData.CustDocuNo + rowData.RV_Date
+    // );
+    // firstTableSelectedRow.each((obj, i) => {
+    //   console.log("inside...", obj);
+    // });
+    // setFirstTableSelectedRow([]);
+    setFirstTableSelectedRow(rowData);
+
+    setrvNoVal(rowData.RV_No);
+    setCustRefVal(rowData.CustDocuNo);
+
+    // setrvNoVal(row.RV_No);
+    // setCustRefVal(row.CustDocuNo);
+    // if (isSelect) {
+    //   setFirstTableSelectedRow(
+    //     //firstTableSelectedRow.push.apply(firstTableSelectedRow, row)
+    //     [...firstTableSelectedRow, firstTableData[rowIndex]]
+    //   );
+
+    //   //update second table data
+    //   let newData = allData.filter((obj, index) => {
+    //     return obj.RVId === row.RvID;
     //   });
-    //   //console.log(" secondSelectedRow = ", secondSelectedRow);
-    //   if (
-    //     item.QtyReceived -
-    //       item.QtyRejected -
-    //       item.QtyReturned -
-    //       item.QtyUsed >
-    //     0
-    //   ) {
-    //     item.PartIdNew = item.PartId + "/**Ref: " + row.CustDocuNo;
-    //     if (item.QtyRejected > 0) {
-    //       if (
-    //         item.QtyReceived - item.QtyReturned - item.QtyUsed >
-    //         item.QtyRejected
-    //       ) {
-    //         item.QtyReturnedNew = item.QtyRejected;
+    //   setSecondTableData(newData);
+
+    //   console.log("new data  =", newData);
+    //   //prepare third table
+    //   newData.forEach((item, i) => {
+    //     //set second table default checkbox selection
+    //     setSecondSelectedRow({
+    //       selected: [...secondSelectedRow.selected, item.Id],
+    //     });
+    //     //console.log(" secondSelectedRow = ", secondSelectedRow);
+    //     if (
+    //       item.QtyReceived -
+    //         item.QtyRejected -
+    //         item.QtyReturned -
+    //         item.QtyUsed >
+    //       0
+    //     ) {
+    //       item.PartIdNew = item.PartId + "/**Ref: " + row.CustDocuNo;
+    //       if (item.QtyRejected > 0) {
+    //         if (
+    //           item.QtyReceived - item.QtyReturned - item.QtyUsed >
+    //           item.QtyRejected
+    //         ) {
+    //           item.QtyReturnedNew = item.QtyRejected;
+    //         } else {
+    //           item.QtyReturnedNew =
+    //             item.QtyReceived -
+    //             item.QtyRejected -
+    //             item.QtyReturned -
+    //             item.QtyUsed;
+    //         }
+    //         item.Remarks = "Rejected";
     //       } else {
     //         item.QtyReturnedNew =
     //           item.QtyReceived -
     //           item.QtyRejected -
     //           item.QtyReturned -
     //           item.QtyUsed;
+    //         item.Remarks = "Returned Unused";
     //       }
-    //       item.Remarks = "Rejected";
-    //     } else {
-    //       item.QtyReturnedNew =
-    //         item.QtyReceived -
-    //         item.QtyRejected -
-    //         item.QtyReturned -
-    //         item.QtyUsed;
-    //       item.Remarks = "Returned Unused";
     //     }
-    //   }
-    // });
-    // //concat to prev to new
-    // thirdTableData.push.apply(thirdTableData, newData);
-    // setThirdTableData(thirdTableData);
+    //   });
+    //   //concat to prev to new
+    //   thirdTableData.push.apply(thirdTableData, newData);
+    //   setThirdTableData(thirdTableData);
+    // } else {
+    //   //remove row in selectedTRow array
+    //   setFirstTableSelectedRow(
+    //     firstTableSelectedRow.filter((obj) => {
+    //       return obj.RV_No !== row.RV_No;
+    //     })
+    //   );
+
+    //   let newData = thirdTableData.filter((obj, index) => {
+    //     return obj.RVId !== row.RvID;
+    //   });
+    //   //console.log("second table = ", secondTableData);
+    //   //console.log("before = ", secondSelectedRow);
+    //   //remove check selection in second table
+    //   secondTableData.forEach((item, i) => {
+    //     setSecondSelectedRow({
+    //       selected: secondSelectedRow.selected.filter((ele) => {
+    //         return ele !== item.Id;
+    //       }),
+    //     });
+    //   });
+
+    //   setThirdTableData(newData);
+    // }
+    // }
   };
-  // };
 
   // const selectRowSecond = {
   //   mode: "checkbox",
@@ -349,58 +308,100 @@ function Parts(props) {
   //   },
   // };
 
-  console.log("second selected row", secondSelectedRow);
-
   const selectRowSecondFunc = (rowData) => {
-    // console.log("rorw data in second select func", rowData);
+    // console.log("rowData in second", rowData);
 
-    console.log("rowdata", rowData);
-    // setSecondSelectedRow([]);
-    setSecondSelectedRow([...secondSelectedRow, rowData]);
+    // let newData = allData.filter((obj, index) => {
+    //   return obj.RVId === rowData.RVId;
+    // });
 
-    const found = secondSelectedRow.some(
+    // console.log("newData", newData);
+
+    const found = thirdTableData.some(
       (el) =>
         el.CustBOM_Id === rowData.CustBOM_Id &&
+        el.RV_No === rowData.RV_No &&
         el.CustDocuNo === rowData.CustDocuNo &&
         el.Id === rowData.Id &&
         el.PartId === rowData.PartId &&
         el.RVId === rowData.RVId
     );
-    console.log("fond.......", found);
-    // console.log("found........", found);
-    // if (found) {
-    //   // deleting the element if found
-    //   const newThirdTableData = thirdTableData.filter(
-    //     (data) => data !== rowData
-    //   );
-    //   // setThirdTableData(newThirdTableData);
-    //   // console.log("deleted");
 
-    //   // setThirdTableData([thirdTableData.remove(rowData)]);
-    //   // console.log("deselected", thirdTableData);
-    // } else {
-    //   // inserting the element if not found
-    //   // setThirdTableData([...thirdTableData, rowData]);
-    //   setSecondSelectedRow([...secondSelectedRow, rowData]);
-    //   // console.log("inserted");
-    // }
+    // console.log("found...", found);
 
-    //prepare third table
-    // let newData = allData.filter((obj, index) => {
-    //   return obj.RVId === rowData.RVId;
-    // });
+    if (found) {
+      // deleting the element if found
+      const newThirdTableData = thirdTableData.filter(
+        (el) =>
+          el.CustBOM_Id != rowData.CustBOM_Id &&
+          el.RV_No != rowData.RV_No &&
+          el.CustDocuNo != rowData.CustDocuNo &&
+          el.Id != rowData.Id &&
+          el.PartId != rowData.PartId &&
+          el.RVId != rowData.RVId
+      );
+      // console.log("newthirdtabedata", newThirdTableData);
+      setThirdTableData(newThirdTableData);
+    } else {
+      let returnNew =
+        rowData.QtyReceived - rowData.QtyUsed - rowData.QtyReturned;
 
+      if (
+        rowData.QtyReturned + returnNew + rowData.QtyUsed >
+        rowData.QtyReceived
+      ) {
+        toast.error(
+          "Greater then the quantity received, plus already returned/used."
+        );
+      } else if (returnNew === 0) {
+        toast.error("Stock is already returned");
+      } else {
+        // toast.success("good to go!!!");
+
+        rowData.PartIdNew = rowData.PartId + "/**Ref: " + rowData.CustDocuNo;
+        if (rowData.QtyRejected > 0) {
+          if (
+            rowData.QtyReceived - rowData.QtyReturned - rowData.QtyUsed >
+            rowData.QtyRejected
+          ) {
+            rowData.QtyReturnedNew = rowData.QtyRejected;
+          } else {
+            rowData.QtyReturnedNew =
+              rowData.QtyReceived -
+              rowData.QtyRejected -
+              rowData.QtyReturned -
+              rowData.QtyUsed;
+          }
+          rowData.Remarks = "Rejected";
+        } else {
+          rowData.QtyReturnedNew =
+            rowData.QtyReceived -
+            rowData.QtyRejected -
+            rowData.QtyReturned -
+            rowData.QtyUsed;
+          rowData.Remarks = "Return Unused";
+        }
+
+        // console.log("after some operation...", rowData);
+
+        setThirdTableData([...thirdTableData, rowData]);
+      }
+    }
+
+    // //prepare third table
     // newData.forEach((item, i) => {
-    //   // console.log("item..", item);
     //   //set check in second table
-    //   // setSecondSelectedRow({
-    //   //   selected: [...secondSelectedRow.selected, item.Id],
-    //   // });
+    //   setSecondSelectedRow({
+    //     selected: [...secondSelectedRow.selected, item.Id],
+    //   });
     //   if (
-    //     item.QtyReceived - item.QtyRejected - item.QtyReturned - item.QtyUsed >
+    //     item.QtyReceived -
+    //       item.QtyRejected -
+    //       item.QtyReturned -
+    //       item.QtyUsed >
     //     0
     //   ) {
-    //     item.PartIdNew = item.partId + "/**Ref: " + rowData.CustDocuNo;
+    //     item.PartIdNew = item.partId + "/**Ref: " + row.CustDocuNo;
     //     if (item.QtyRejected > 0) {
     //       if (
     //         item.QtyReceived - item.QtyReturned - item.QtyUsed >
@@ -426,8 +427,7 @@ function Parts(props) {
     //   }
     // });
     // console.log("new data = ", newData);
-
-    //concat to prev to new
+    // //concat to prev to new
     // thirdTableData.push.apply(thirdTableData, newData);
     // setThirdTableData(thirdTableData);
   };
@@ -436,111 +436,231 @@ function Parts(props) {
     //console.log("selected rows = ", firstTableSelectedRow);
     //console.log("second = ", secondTableData);
     //console.log("third = ", thirdTableData);
-    if (thirdTableData.length === 0) {
-      toast.error("Please select the customer");
-    } else {
-      //get running no and assign to RvNo
-      let yyyy = formatDate(new Date(), 6).toString();
-      const url =
-        endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
 
-      getRequest(url, async (data) => {
-        data.map((obj) => {
-          let newNo = parseInt(obj.Running_No) + 1;
-          //let no = "23/000" + newNo;
-          let series = "";
-          //add prefix zeros
-          for (
-            let i = 0;
-            i < parseInt(obj.Length) - newNo.toString().length;
-            i++
-          ) {
-            series = series + "0";
-          }
-          series = series + "" + newNo;
-          //console.log("series = ", series);
-          //get last 2 digit of year
-          let yy = formatDate(new Date(), 6).toString().substring(2);
-          let no = yy + "/" + series;
+    if (props.custCode) {
+      if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
+        // if(secondTableData.length > 0)
 
-          setIVNOVal(no);
+        if (thirdTableData.length > 0) {
+          // toast.success("good to go...");
 
-          let newRowMaterialIssueRegister = {
-            IV_No: no,
-            IV_Date: formatDate(new Date(), 5),
-            Cust_code: props.custCode,
-            Customer: props.custName,
-            CustCSTNo: props.custCST,
-            CustTINNo: props.custTIN,
-            CustECCNo: props.custECC,
-            CustGSTNo: props.custGST,
-            EMail: "",
-            PkngDcNo: "",
-            PkngDCDate: null,
-            TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
-            TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
-            UpDated: 0,
-            IVStatus: "draft",
-            Dc_ID: 0,
-            Type: "Parts",
-          };
-          //insert first table
-          postRequest(
-            endpoints.insertMaterialIssueRegister,
-            newRowMaterialIssueRegister,
-            async (data) => {
-              setSrlIVID(data.insertId);
-              //console.log("data = ", data);
-              if (data.affectedRows !== 0) {
-                console.log("Record inserted 1 : materialIssueRegister");
+          //get running no and assign to RvNo
+          let yyyy = formatDate(new Date(), 6).toString();
+          const url =
+            endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
 
-                for (let i = 0; i < thirdTableData.length; i++) {
-                  let newRowPartIssueDetails = {
-                    Iv_Id: data.insertId,
-                    Srl: i + 1,
-                    Cust_Code: props.custCode,
-                    RVId: thirdTableData[i].RVId,
-                    Mtrl_Rv_id: thirdTableData[i].Id,
-                    PartId:
-                      thirdTableData[i].PartId +
-                      "**Ref: " +
-                      thirdTableData[i].CustDocuNo,
-                    CustBOM_Id: thirdTableData[i].CustBOM_Id,
-                    UnitWt: thirdTableData[i].UnitWt,
-                    QtyReturned: thirdTableData[i].QtyReturnedNew,
-                    Remarks: thirdTableData[i].Remarks,
-                  };
-
-                  postRequest(
-                    endpoints.insertPartIssueDetails,
-                    newRowPartIssueDetails,
-                    async (data) => {
-                      console.log("Part issue details inserted");
-                    }
-                  );
-
-                  //update qtyReturned add
-                  let updateQty = {
-                    Id: thirdTableData[i].Id,
-                    QtyReturned: thirdTableData[i].QtyReturnedNew,
-                  };
-                  postRequest(
-                    endpoints.updateQtyReturnedPartReceiptDetails1,
-                    updateQty,
-                    async (data) => {
-                      console.log("Return Qty updated");
-                    }
-                  );
-                }
+          getRequest(url, async (data) => {
+            data.map((obj) => {
+              let newNo = parseInt(obj.Running_No) + 1;
+              //let no = "23/000" + newNo;
+              let series = "";
+              //add prefix zeros
+              for (
+                let i = 0;
+                i < parseInt(obj.Length) - newNo.toString().length;
+                i++
+              ) {
+                series = series + "0";
               }
-            }
+              series = series + "" + newNo;
+              //console.log("series = ", series);
+              //get last 2 digit of year
+              let yy = formatDate(new Date(), 6).toString().substring(2);
+              let no = yy + "/" + series;
+
+              setIVNOVal(no);
+
+              let newRowMaterialIssueRegister = {
+                IV_No: no,
+                IV_Date: formatDate(new Date(), 5),
+                Cust_code: props.custCode,
+                Customer: props.custName,
+                CustCSTNo: props.custCST,
+                CustTINNo: props.custTIN,
+                CustECCNo: props.custECC,
+                CustGSTNo: props.custGST,
+                EMail: "",
+                PkngDcNo: "",
+                PkngDCDate: null,
+                TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
+                TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
+                UpDated: 0,
+                IVStatus: "Draft",
+                Dc_ID: 0,
+                Type: "Parts",
+              };
+              //insert first table
+              postRequest(
+                endpoints.insertMaterialIssueRegister,
+                newRowMaterialIssueRegister,
+                async (data) => {
+                  setSrlIVID(data.insertId);
+                  //console.log("data = ", data);
+                  if (data.affectedRows !== 0) {
+                    // console.log("Record inserted 1 : materialIssueRegister");
+
+                    for (let i = 0; i < thirdTableData.length; i++) {
+                      let newRowPartIssueDetails = {
+                        Iv_Id: data.insertId,
+                        Srl: i + 1,
+                        Cust_Code: props.custCode,
+                        RVId: thirdTableData[i].RVId,
+                        Mtrl_Rv_id: thirdTableData[i].Id,
+                        PartId:
+                          thirdTableData[i].PartId +
+                          "**Ref: " +
+                          thirdTableData[i].CustDocuNo,
+                        CustBOM_Id: thirdTableData[i].CustBOM_Id,
+                        UnitWt: thirdTableData[i].UnitWt,
+                        QtyReturned: thirdTableData[i].QtyReturnedNew,
+                        Remarks: thirdTableData[i].Remarks,
+                      };
+
+                      postRequest(
+                        endpoints.insertPartIssueDetails,
+                        newRowPartIssueDetails,
+                        async (data) => {
+                          // console.log("Part issue details inserted");
+                        }
+                      );
+
+                      //update qtyReturned add
+                      let updateQty = {
+                        Id: thirdTableData[i].Id,
+                        QtyReturned: thirdTableData[i].QtyReturnedNew,
+                      };
+                      postRequest(
+                        endpoints.updateQtyReturnedPartReceiptDetails1,
+                        updateQty,
+                        async (data) => {
+                          // console.log("Return Qty updated");
+                        }
+                      );
+                    }
+                  }
+                }
+              );
+              setSrlMaterialType("part");
+              setShow(true);
+              // console.log("srlivid = ", srlIVID);
+            });
+          });
+        } else {
+          toast.error(
+            "Please select atleast one part to create the return voucher"
           );
-          setSrlMaterialType("part");
-          setShow(true);
-          console.log("srlivid = ", srlIVID);
-        });
-      });
+        }
+      } else {
+        toast.error("Please select the Return Voucher");
+      }
+    } else {
+      toast.error("Please select the customer");
     }
+    // if (thirdTableData.length === 0) {
+    //   toast.error("Please select the customer");
+    // } else {
+    //   //get running no and assign to RvNo
+    //   let yyyy = formatDate(new Date(), 6).toString();
+    //   const url =
+    //     endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
+
+    //   getRequest(url, async (data) => {
+    //     data.map((obj) => {
+    //       let newNo = parseInt(obj.Running_No) + 1;
+    //       //let no = "23/000" + newNo;
+    //       let series = "";
+    //       //add prefix zeros
+    //       for (
+    //         let i = 0;
+    //         i < parseInt(obj.Length) - newNo.toString().length;
+    //         i++
+    //       ) {
+    //         series = series + "0";
+    //       }
+    //       series = series + "" + newNo;
+    //       //console.log("series = ", series);
+    //       //get last 2 digit of year
+    //       let yy = formatDate(new Date(), 6).toString().substring(2);
+    //       let no = yy + "/" + series;
+
+    //       setIVNOVal(no);
+
+    //       let newRowMaterialIssueRegister = {
+    //         IV_No: no,
+    //         IV_Date: formatDate(new Date(), 5),
+    //         Cust_code: props.custCode,
+    //         Customer: props.custName,
+    //         CustCSTNo: props.custCST,
+    //         CustTINNo: props.custTIN,
+    //         CustECCNo: props.custECC,
+    //         CustGSTNo: props.custGST,
+    //         EMail: "",
+    //         PkngDcNo: "",
+    //         PkngDCDate: null,
+    //         TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
+    //         TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
+    //         UpDated: 0,
+    //         IVStatus: "draft",
+    //         Dc_ID: 0,
+    //         Type: "Parts",
+    //       };
+    //       //insert first table
+    //       postRequest(
+    //         endpoints.insertMaterialIssueRegister,
+    //         newRowMaterialIssueRegister,
+    //         async (data) => {
+    //           setSrlIVID(data.insertId);
+    //           //console.log("data = ", data);
+    //           if (data.affectedRows !== 0) {
+    //             console.log("Record inserted 1 : materialIssueRegister");
+
+    //             for (let i = 0; i < thirdTableData.length; i++) {
+    //               let newRowPartIssueDetails = {
+    //                 Iv_Id: data.insertId,
+    //                 Srl: i + 1,
+    //                 Cust_Code: props.custCode,
+    //                 RVId: thirdTableData[i].RVId,
+    //                 Mtrl_Rv_id: thirdTableData[i].Id,
+    //                 PartId:
+    //                   thirdTableData[i].PartId +
+    //                   "**Ref: " +
+    //                   thirdTableData[i].CustDocuNo,
+    //                 CustBOM_Id: thirdTableData[i].CustBOM_Id,
+    //                 UnitWt: thirdTableData[i].UnitWt,
+    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
+    //                 Remarks: thirdTableData[i].Remarks,
+    //               };
+
+    //               postRequest(
+    //                 endpoints.insertPartIssueDetails,
+    //                 newRowPartIssueDetails,
+    //                 async (data) => {
+    //                   console.log("Part issue details inserted");
+    //                 }
+    //               );
+
+    //               //update qtyReturned add
+    //               let updateQty = {
+    //                 Id: thirdTableData[i].Id,
+    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
+    //               };
+    //               postRequest(
+    //                 endpoints.updateQtyReturnedPartReceiptDetails1,
+    //                 updateQty,
+    //                 async (data) => {
+    //                   console.log("Return Qty updated");
+    //                 }
+    //               );
+    //             }
+    //           }
+    //         }
+    //       );
+    //       setSrlMaterialType("part");
+    //       setShow(true);
+    //       console.log("srlivid = ", srlIVID);
+    //     });
+    //   });
+    // }
   };
 
   return (
@@ -562,14 +682,56 @@ function Parts(props) {
       /> */}
 
       <div className="row">
+        <div className="col-md-9 p-0">
+          <div className="row">
+            <div className="col-md-4">
+              <div className="rvNO">
+                <label className="form-label">RV No</label>
+                <input
+                  type="text"
+                  name="rvNo"
+                  disabled
+                  value={rvNoval}
+                  // className="in-field"
+                />
+              </div>
+            </div>
+            <div className="col-md-8">
+              <div className="customerRef">
+                <label className="form-label">Customer Ref</label>
+                <input
+                  // className="in-field"
+                  type="text"
+                  name="customerRef"
+                  disabled
+                  value={custRefval}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="d-flex align-items-center justify-content-end">
+            <button
+              className="button-style mx-0"
+              style={{ width: "200px" }}
+              onClick={createReturnVoucher}
+            >
+              Create Return Voucher
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="p-2"></div>
+
+      <div className="row">
         <div className="col-md-2 col-sm-12">
-          {" "}
           <div className="row-md-12 table-data">
-            <div style={{ height: "400px", overflowY: "scroll" }}>
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <FirstTable
                 firstTableData={firstTableData}
-                selectRowFirstFunc={selectRowFirstFunc}
                 firstTableSelectedRow={firstTableSelectedRow}
+                selectRowFirstFunc={selectRowFirstFunc}
               />
 
               {/* <BootstrapTable
@@ -587,11 +749,12 @@ function Parts(props) {
         </div>
         <div className="col-md-6 col-sm-12">
           <div className="row-md-12 table-data">
-            <div style={{ height: "400px", overflowY: "scroll" }}>
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <SecondTable
                 secondTableData={secondTableData}
-                selectRowSecondFunc={selectRowSecondFunc}
                 secondSelectedRow={secondSelectedRow}
+                selectRowSecondFunc={selectRowSecondFunc}
+                thirdTableData={thirdTableData}
               />
 
               {/* <BootstrapTable
@@ -609,7 +772,7 @@ function Parts(props) {
           </div>
         </div>
         <div className="col-md-4 col-sm-12">
-          <div className="ip-box form-bg">
+          {/* <div className="ip-box form-bg">
             <div className="row mb-3">
               <div className="col-md-4">
                 <label className="form-label">RV_No</label>
@@ -642,12 +805,9 @@ function Parts(props) {
             >
               Create Return Voucher
             </button>
-          </div>
+          </div> */}
           <div>
-            <div
-              style={{ height: "400px", overflowY: "scroll" }}
-              className="mt-3"
-            >
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <ThirdTable thirdTableData={thirdTableData} />
 
               {/* <BootstrapTable

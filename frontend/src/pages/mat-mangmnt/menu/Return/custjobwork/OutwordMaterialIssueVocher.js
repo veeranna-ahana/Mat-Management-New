@@ -189,7 +189,7 @@ function OutwordMaterialIssueVocher(props) {
     postRequest(
       endpoints.updateDCWeight,
 
-      { outData: outData, formHeader: formHeader },
+      { outData: outData, formHeader: formHeader, type: "material" },
       (data) => {
         //console.log("data = ", data);
         if (data.affectedRows !== 0) {
