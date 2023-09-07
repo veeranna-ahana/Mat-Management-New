@@ -428,111 +428,231 @@ function Parts(props) {
     //console.log("selected rows = ", firstTableSelectedRow);
     //console.log("second = ", secondTableData);
     //console.log("third = ", thirdTableData);
-    if (thirdTableData.length === 0) {
-      toast.error("Please select the customer");
-    } else {
-      //get running no and assign to RvNo
-      let yyyy = formatDate(new Date(), 6).toString();
-      const url =
-        endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
 
-      getRequest(url, async (data) => {
-        data.map((obj) => {
-          let newNo = parseInt(obj.Running_No) + 1;
-          //let no = "23/000" + newNo;
-          let series = "";
-          //add prefix zeros
-          for (
-            let i = 0;
-            i < parseInt(obj.Length) - newNo.toString().length;
-            i++
-          ) {
-            series = series + "0";
-          }
-          series = series + "" + newNo;
-          //console.log("series = ", series);
-          //get last 2 digit of year
-          let yy = formatDate(new Date(), 6).toString().substring(2);
-          let no = yy + "/" + series;
+    if (props.custCode) {
+      if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
+        // if(secondTableData.length > 0)
 
-          setIVNOVal(no);
+        if (thirdTableData.length > 0) {
+          // toast.success("good to go...");
 
-          let newRowMaterialIssueRegister = {
-            IV_No: no,
-            IV_Date: formatDate(new Date(), 5),
-            Cust_code: props.custCode,
-            Customer: props.custName,
-            CustCSTNo: props.custCST,
-            CustTINNo: props.custTIN,
-            CustECCNo: props.custECC,
-            CustGSTNo: props.custGST,
-            EMail: "",
-            PkngDcNo: "",
-            PkngDCDate: null,
-            TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
-            TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
-            UpDated: 0,
-            IVStatus: "draft",
-            Dc_ID: 0,
-            Type: "Parts",
-          };
-          //insert first table
-          postRequest(
-            endpoints.insertMaterialIssueRegister,
-            newRowMaterialIssueRegister,
-            async (data) => {
-              setSrlIVID(data.insertId);
-              //console.log("data = ", data);
-              if (data.affectedRows !== 0) {
-                console.log("Record inserted 1 : materialIssueRegister");
+          //get running no and assign to RvNo
+          let yyyy = formatDate(new Date(), 6).toString();
+          const url =
+            endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
 
-                for (let i = 0; i < thirdTableData.length; i++) {
-                  let newRowPartIssueDetails = {
-                    Iv_Id: data.insertId,
-                    Srl: i + 1,
-                    Cust_Code: props.custCode,
-                    RVId: thirdTableData[i].RVId,
-                    Mtrl_Rv_id: thirdTableData[i].Id,
-                    PartId:
-                      thirdTableData[i].PartId +
-                      "**Ref: " +
-                      thirdTableData[i].CustDocuNo,
-                    CustBOM_Id: thirdTableData[i].CustBOM_Id,
-                    UnitWt: thirdTableData[i].UnitWt,
-                    QtyReturned: thirdTableData[i].QtyReturnedNew,
-                    Remarks: thirdTableData[i].Remarks,
-                  };
-
-                  postRequest(
-                    endpoints.insertPartIssueDetails,
-                    newRowPartIssueDetails,
-                    async (data) => {
-                      console.log("Part issue details inserted");
-                    }
-                  );
-
-                  //update qtyReturned add
-                  let updateQty = {
-                    Id: thirdTableData[i].Id,
-                    QtyReturned: thirdTableData[i].QtyReturnedNew,
-                  };
-                  postRequest(
-                    endpoints.updateQtyReturnedPartReceiptDetails1,
-                    updateQty,
-                    async (data) => {
-                      console.log("Return Qty updated");
-                    }
-                  );
-                }
+          getRequest(url, async (data) => {
+            data.map((obj) => {
+              let newNo = parseInt(obj.Running_No) + 1;
+              //let no = "23/000" + newNo;
+              let series = "";
+              //add prefix zeros
+              for (
+                let i = 0;
+                i < parseInt(obj.Length) - newNo.toString().length;
+                i++
+              ) {
+                series = series + "0";
               }
-            }
+              series = series + "" + newNo;
+              //console.log("series = ", series);
+              //get last 2 digit of year
+              let yy = formatDate(new Date(), 6).toString().substring(2);
+              let no = yy + "/" + series;
+
+              setIVNOVal(no);
+
+              let newRowMaterialIssueRegister = {
+                IV_No: no,
+                IV_Date: formatDate(new Date(), 5),
+                Cust_code: props.custCode,
+                Customer: props.custName,
+                CustCSTNo: props.custCST,
+                CustTINNo: props.custTIN,
+                CustECCNo: props.custECC,
+                CustGSTNo: props.custGST,
+                EMail: "",
+                PkngDcNo: "",
+                PkngDCDate: null,
+                TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
+                TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
+                UpDated: 0,
+                IVStatus: "draft",
+                Dc_ID: 0,
+                Type: "Parts",
+              };
+              //insert first table
+              postRequest(
+                endpoints.insertMaterialIssueRegister,
+                newRowMaterialIssueRegister,
+                async (data) => {
+                  setSrlIVID(data.insertId);
+                  //console.log("data = ", data);
+                  if (data.affectedRows !== 0) {
+                    console.log("Record inserted 1 : materialIssueRegister");
+
+                    for (let i = 0; i < thirdTableData.length; i++) {
+                      let newRowPartIssueDetails = {
+                        Iv_Id: data.insertId,
+                        Srl: i + 1,
+                        Cust_Code: props.custCode,
+                        RVId: thirdTableData[i].RVId,
+                        Mtrl_Rv_id: thirdTableData[i].Id,
+                        PartId:
+                          thirdTableData[i].PartId +
+                          "**Ref: " +
+                          thirdTableData[i].CustDocuNo,
+                        CustBOM_Id: thirdTableData[i].CustBOM_Id,
+                        UnitWt: thirdTableData[i].UnitWt,
+                        QtyReturned: thirdTableData[i].QtyReturnedNew,
+                        Remarks: thirdTableData[i].Remarks,
+                      };
+
+                      postRequest(
+                        endpoints.insertPartIssueDetails,
+                        newRowPartIssueDetails,
+                        async (data) => {
+                          console.log("Part issue details inserted");
+                        }
+                      );
+
+                      //update qtyReturned add
+                      let updateQty = {
+                        Id: thirdTableData[i].Id,
+                        QtyReturned: thirdTableData[i].QtyReturnedNew,
+                      };
+                      postRequest(
+                        endpoints.updateQtyReturnedPartReceiptDetails1,
+                        updateQty,
+                        async (data) => {
+                          console.log("Return Qty updated");
+                        }
+                      );
+                    }
+                  }
+                }
+              );
+              setSrlMaterialType("part");
+              setShow(true);
+              console.log("srlivid = ", srlIVID);
+            });
+          });
+        } else {
+          toast.error(
+            "Please select atleast one part to create the return voucher"
           );
-          setSrlMaterialType("part");
-          setShow(true);
-          console.log("srlivid = ", srlIVID);
-        });
-      });
+        }
+      } else {
+        toast.error("Please select the Return Voucher");
+      }
+    } else {
+      toast.error("Please select the customer");
     }
+    // if (thirdTableData.length === 0) {
+    //   toast.error("Please select the customer");
+    // } else {
+    //   //get running no and assign to RvNo
+    //   let yyyy = formatDate(new Date(), 6).toString();
+    //   const url =
+    //     endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
+
+    //   getRequest(url, async (data) => {
+    //     data.map((obj) => {
+    //       let newNo = parseInt(obj.Running_No) + 1;
+    //       //let no = "23/000" + newNo;
+    //       let series = "";
+    //       //add prefix zeros
+    //       for (
+    //         let i = 0;
+    //         i < parseInt(obj.Length) - newNo.toString().length;
+    //         i++
+    //       ) {
+    //         series = series + "0";
+    //       }
+    //       series = series + "" + newNo;
+    //       //console.log("series = ", series);
+    //       //get last 2 digit of year
+    //       let yy = formatDate(new Date(), 6).toString().substring(2);
+    //       let no = yy + "/" + series;
+
+    //       setIVNOVal(no);
+
+    //       let newRowMaterialIssueRegister = {
+    //         IV_No: no,
+    //         IV_Date: formatDate(new Date(), 5),
+    //         Cust_code: props.custCode,
+    //         Customer: props.custName,
+    //         CustCSTNo: props.custCST,
+    //         CustTINNo: props.custTIN,
+    //         CustECCNo: props.custECC,
+    //         CustGSTNo: props.custGST,
+    //         EMail: "",
+    //         PkngDcNo: "",
+    //         PkngDCDate: null,
+    //         TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
+    //         TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
+    //         UpDated: 0,
+    //         IVStatus: "draft",
+    //         Dc_ID: 0,
+    //         Type: "Parts",
+    //       };
+    //       //insert first table
+    //       postRequest(
+    //         endpoints.insertMaterialIssueRegister,
+    //         newRowMaterialIssueRegister,
+    //         async (data) => {
+    //           setSrlIVID(data.insertId);
+    //           //console.log("data = ", data);
+    //           if (data.affectedRows !== 0) {
+    //             console.log("Record inserted 1 : materialIssueRegister");
+
+    //             for (let i = 0; i < thirdTableData.length; i++) {
+    //               let newRowPartIssueDetails = {
+    //                 Iv_Id: data.insertId,
+    //                 Srl: i + 1,
+    //                 Cust_Code: props.custCode,
+    //                 RVId: thirdTableData[i].RVId,
+    //                 Mtrl_Rv_id: thirdTableData[i].Id,
+    //                 PartId:
+    //                   thirdTableData[i].PartId +
+    //                   "**Ref: " +
+    //                   thirdTableData[i].CustDocuNo,
+    //                 CustBOM_Id: thirdTableData[i].CustBOM_Id,
+    //                 UnitWt: thirdTableData[i].UnitWt,
+    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
+    //                 Remarks: thirdTableData[i].Remarks,
+    //               };
+
+    //               postRequest(
+    //                 endpoints.insertPartIssueDetails,
+    //                 newRowPartIssueDetails,
+    //                 async (data) => {
+    //                   console.log("Part issue details inserted");
+    //                 }
+    //               );
+
+    //               //update qtyReturned add
+    //               let updateQty = {
+    //                 Id: thirdTableData[i].Id,
+    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
+    //               };
+    //               postRequest(
+    //                 endpoints.updateQtyReturnedPartReceiptDetails1,
+    //                 updateQty,
+    //                 async (data) => {
+    //                   console.log("Return Qty updated");
+    //                 }
+    //               );
+    //             }
+    //           }
+    //         }
+    //       );
+    //       setSrlMaterialType("part");
+    //       setShow(true);
+    //       console.log("srlivid = ", srlIVID);
+    //     });
+    //   });
+    // }
   };
 
   return (
