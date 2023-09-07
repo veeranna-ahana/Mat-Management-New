@@ -134,7 +134,13 @@ function OutwordPartIssueVocher(props) {
           <lable>
             <input
               type="checkbox"
-              disabled={formHeader.IVStatus === "Cancelled" ? true : false}
+              disabled={
+                formHeader.IVStatus === "Cancelled"
+                  ? true
+                  : false | (formHeader.IVStatus === "Returned")
+                  ? true
+                  : false
+              }
             />
           </lable>
         </div>
@@ -271,6 +277,7 @@ function OutwordPartIssueVocher(props) {
         outData={outData}
         type="parts"
         getDCID={getDCID}
+        setFormHeader={setFormHeader}
       />
 
       <div>
@@ -324,6 +331,8 @@ function OutwordPartIssueVocher(props) {
                       ? true
                       : false | (formHeader.IVStatus === "Cancelled")
                       ? true
+                      : false | (formHeader.IVStatus === "Returned")
+                      ? true
                       : false
                   }
                 >
@@ -376,7 +385,13 @@ function OutwordPartIssueVocher(props) {
                   name="TotalWeight"
                   value={formHeader.TotalWeight}
                   onChange={InputHeaderEvent}
-                  disabled={formHeader.IVStatus === "Cancelled" ? true : false}
+                  disabled={
+                    formHeader.IVStatus === "Cancelled"
+                      ? true
+                      : false | (formHeader.IVStatus === "Returned")
+                      ? true
+                      : false
+                  }
                 />
               </div>
               <div className="col-md-6">
@@ -413,6 +428,8 @@ function OutwordPartIssueVocher(props) {
                     ? true
                     : false | (formHeader.IVStatus === "Cancelled")
                     ? true
+                    : false | (formHeader.IVStatus === "Returned")
+                    ? true
                     : false
                 }
               >
@@ -430,6 +447,8 @@ function OutwordPartIssueVocher(props) {
                     ? true
                     : false | (formHeader.IVStatus === "Cancelled")
                     ? true
+                    : false | (formHeader.IVStatus === "Returned")
+                    ? true
                     : false
                 }
               >
@@ -441,15 +460,11 @@ function OutwordPartIssueVocher(props) {
                 className="button-style"
                 onClick={printDC}
                 disabled={
-                  boolVal1 |
-                  boolVal3 |
-                  (location?.state?.propsType === "customerIVList")
+                  formHeader.IVStatus === "Cancelled"
                     ? true
-                    : false | (location?.state?.propsType === "returnCancelled")
-                    ? true
-                    : false | (formHeader.IVStatus === "Cancelled")
-                    ? true
-                    : false
+                    : false | (formHeader.IVStatus === "Returned")
+                    ? false
+                    : true
                 }
               >
                 Print DC
