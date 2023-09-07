@@ -554,10 +554,52 @@ function Parts(props) {
       /> */}
 
       <div className="row">
+        <div className="col-md-9 p-0">
+          <div className="row">
+            <div className="col-md-4">
+              <div className="rvNO">
+                <label className="form-label">RV No</label>
+                <input
+                  type="text"
+                  name="rvNo"
+                  disabled
+                  value={rvNoval}
+                  // className="in-field"
+                />
+              </div>
+            </div>
+            <div className="col-md-8">
+              <div className="customerRef">
+                <label className="form-label">Customer Ref</label>
+                <input
+                  // className="in-field"
+                  type="text"
+                  name="customerRef"
+                  disabled
+                  value={custRefval}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="d-flex align-items-center justify-content-end">
+            <button
+              className="button-style"
+              style={{ width: "200px" }}
+              onClick={createReturnVoucher}
+            >
+              Create Return Voucher
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="p-2"></div>
+
+      <div className="row">
         <div className="col-md-2 col-sm-12">
-          {" "}
           <div className="row-md-12 table-data">
-            <div style={{ height: "400px", overflowY: "scroll" }}>
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <FirstTable
                 firstTableData={firstTableData}
                 firstTableSelectedRow={firstTableSelectedRow}
@@ -579,7 +621,7 @@ function Parts(props) {
         </div>
         <div className="col-md-6 col-sm-12">
           <div className="row-md-12 table-data">
-            <div style={{ height: "400px", overflowY: "scroll" }}>
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <SecondTable
                 secondTableData={secondTableData}
                 secondSelectedRow={secondSelectedRow}
@@ -602,7 +644,7 @@ function Parts(props) {
           </div>
         </div>
         <div className="col-md-4 col-sm-12">
-          <div className="ip-box form-bg">
+          {/* <div className="ip-box form-bg">
             <div className="row mb-3">
               <div className="col-md-4">
                 <label className="form-label">RV_No</label>
@@ -635,12 +677,9 @@ function Parts(props) {
             >
               Create Return Voucher
             </button>
-          </div>
+          </div> */}
           <div>
-            <div
-              style={{ height: "400px", overflowY: "scroll" }}
-              className="mt-3"
-            >
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
               <ThirdTable thirdTableData={thirdTableData} />
 
               {/* <BootstrapTable
