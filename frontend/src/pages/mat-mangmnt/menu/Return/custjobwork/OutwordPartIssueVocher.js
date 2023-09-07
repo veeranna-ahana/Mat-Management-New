@@ -379,7 +379,7 @@ function OutwordPartIssueVocher(props) {
             </div>
             <div className="row">
               <div className="col-md-6">
-                <label className="form-label">Weight</label>
+                <label className="form-label">Actual Weight</label>
                 <input
                   type="number"
                   name="TotalWeight"
