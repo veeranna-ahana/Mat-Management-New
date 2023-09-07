@@ -136,11 +136,21 @@ function Parts(props) {
 
     setSecondTableData(newData);
 
+    // console.log(
+    //   "RV_No",
+    //   rowData.RV_No,
+    //   "Customer Ref",
+    //   rowData.CustDocuNo + rowData.RV_Date
+    // );
     // firstTableSelectedRow.each((obj, i) => {
     //   console.log("inside...", obj);
     // });
     // setFirstTableSelectedRow([]);
     setFirstTableSelectedRow(rowData);
+
+    setrvNoVal(rowData.RV_No);
+    setCustRefVal(rowData.CustDocuNo);
+
     // setrvNoVal(row.RV_No);
     // setCustRefVal(row.CustDocuNo);
     // if (isSelect) {
@@ -299,7 +309,7 @@ function Parts(props) {
   // };
 
   const selectRowSecondFunc = (rowData) => {
-    console.log("rowData in second", rowData);
+    // console.log("rowData in second", rowData);
 
     // let newData = allData.filter((obj, index) => {
     //   return obj.RVId === rowData.RVId;
@@ -317,7 +327,7 @@ function Parts(props) {
         el.RVId === rowData.RVId
     );
 
-    console.log("found...", found);
+    // console.log("found...", found);
 
     if (found) {
       // deleting the element if found
@@ -344,9 +354,7 @@ function Parts(props) {
           "Greater then the quantity received, plus already returned/used."
         );
       } else if (returnNew === 0) {
-        toast.error(
-          "Returnable Quantity is zero, unable to process to return."
-        );
+        toast.error("Stock is already returned");
       } else {
         // toast.success("good to go!!!");
 
@@ -374,7 +382,7 @@ function Parts(props) {
           rowData.Remarks = "Return Unused";
         }
 
-        console.log("after some operation...", rowData);
+        // console.log("after some operation...", rowData);
 
         setThirdTableData([...thirdTableData, rowData]);
       }
@@ -477,7 +485,7 @@ function Parts(props) {
                 TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
                 TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
                 UpDated: 0,
-                IVStatus: "draft",
+                IVStatus: "Draft",
                 Dc_ID: 0,
                 Type: "Parts",
               };
@@ -489,7 +497,7 @@ function Parts(props) {
                   setSrlIVID(data.insertId);
                   //console.log("data = ", data);
                   if (data.affectedRows !== 0) {
-                    console.log("Record inserted 1 : materialIssueRegister");
+                    // console.log("Record inserted 1 : materialIssueRegister");
 
                     for (let i = 0; i < thirdTableData.length; i++) {
                       let newRowPartIssueDetails = {
@@ -512,7 +520,7 @@ function Parts(props) {
                         endpoints.insertPartIssueDetails,
                         newRowPartIssueDetails,
                         async (data) => {
-                          console.log("Part issue details inserted");
+                          // console.log("Part issue details inserted");
                         }
                       );
 
@@ -525,7 +533,7 @@ function Parts(props) {
                         endpoints.updateQtyReturnedPartReceiptDetails1,
                         updateQty,
                         async (data) => {
-                          console.log("Return Qty updated");
+                          // console.log("Return Qty updated");
                         }
                       );
                     }
@@ -534,7 +542,7 @@ function Parts(props) {
               );
               setSrlMaterialType("part");
               setShow(true);
-              console.log("srlivid = ", srlIVID);
+              // console.log("srlivid = ", srlIVID);
             });
           });
         } else {
@@ -705,7 +713,7 @@ function Parts(props) {
         <div className="col-md-3">
           <div className="d-flex align-items-center justify-content-end">
             <button
-              className="button-style"
+              className="button-style mx-0"
               style={{ width: "200px" }}
               onClick={createReturnVoucher}
             >
