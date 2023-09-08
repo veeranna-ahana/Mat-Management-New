@@ -246,7 +246,7 @@ function App() {
                   element={<OutwordMaterialIssueVocher />}
                 />
                 <Route
-                  path="OutwordPartIssueVoucher"
+                  path="OutwardPartIssueVoucher"
                   element={<OutwordPartIssueVocher />}
                 />
                 <Route path="PrintMaterialDC" element={<PrintMaterialDC />} />
