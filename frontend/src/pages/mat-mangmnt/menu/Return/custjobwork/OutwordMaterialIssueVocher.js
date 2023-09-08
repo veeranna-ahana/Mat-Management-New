@@ -253,6 +253,7 @@ function OutwordMaterialIssueVocher(props) {
       //setBoolVal2(true);
     }
   };
+
   let getDCID = async (data) => {
     // console.log("get dc = ", data);
     setdcID(data);
@@ -368,7 +369,7 @@ function OutwordMaterialIssueVocher(props) {
                     value={formHeader.IV_No}
                     disabled
                     // onChange={InputHeaderEvent}
-                  />{" "}
+                  />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">IV Date</label>
@@ -391,7 +392,7 @@ function OutwordMaterialIssueVocher(props) {
                     name="Customer"
                     value={formHeader.Customer}
                     disabled
-                  />{" "}
+                  />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">GST</label>
@@ -416,7 +417,7 @@ function OutwordMaterialIssueVocher(props) {
                     name="reference"
                     value={formHeader.IVStatus}
                     disabled
-                  />{" "}
+                  />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">DC No / PN No</label>
@@ -432,7 +433,7 @@ function OutwordMaterialIssueVocher(props) {
                       // : ""
                     }
                     // onChange={InputHeaderEvent}
-                  />{" "}
+                  />
                 </div>
               </div>
               <div className="row">
@@ -444,7 +445,7 @@ function OutwordMaterialIssueVocher(props) {
                     disabled
                     value={formHeader.TotalWeight}
                     // onChange={InputHeaderEvent}
-                  />{" "}
+                  />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Calculated Weight</label>
@@ -453,7 +454,7 @@ function OutwordMaterialIssueVocher(props) {
                     name="Type"
                     value={formHeader.TotalCalculatedWeight}
                     disabled
-                  />{" "}
+                  />
                 </div>
               </div>
             </div>
@@ -516,7 +517,7 @@ function OutwordMaterialIssueVocher(props) {
             }
           >
             Cancel IV
-          </button>{" "}
+          </button>
           <button
             className="button-style"
             onClick={createDC}
@@ -557,7 +558,7 @@ function OutwordMaterialIssueVocher(props) {
             onClick={() => nav("/MaterialManagement")}
           >
             Close
-          </button>{" "}
+          </button>
         </div>
       </div>
       <div className="p-2"></div>
