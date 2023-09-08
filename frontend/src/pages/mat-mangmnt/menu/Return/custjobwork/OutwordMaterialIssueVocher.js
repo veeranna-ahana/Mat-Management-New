@@ -459,10 +459,10 @@ function OutwordMaterialIssueVocher(props) {
                   disabled
                   value={
                     formHeader.PkngDcNo
-                      ? formHeader.PkngDcNo +
-                        "   Date : " +
-                        formHeader.PkngDCDate
-                      : ""
+                    // ? formHeader.PkngDcNo +
+                    //   "   Date : " +
+                    //   formHeader.PkngDCDate
+                    // : ""
                   }
                   // onChange={InputHeaderEvent}
                 />
