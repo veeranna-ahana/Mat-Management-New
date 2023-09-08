@@ -987,31 +987,67 @@ function PofilesMaterials(props) {
   return (
     <>
       <div>
-        <button
-          className="button-style"
-          style={{ width: "200px" }}
-          onClick={createReturnVoucherFunc}
-        >
-          Create Return Voucher
-        </button>
-      </div>
-      <div className="row-md-12 table-data mt-3">
-        <div
-          style={{
-            maxHeight: "400px",
-            overflow: "auto",
-          }}
-        >
-          <FirstTable
-            firstTableData={firstTableData}
-            selectRowFirstFun={selectRowFirstFun}
-            firstTableSelectedRow={firstTableSelectedRow}
-            thirdTableData={thirdTableData}
-            setThirdTableData={setThirdTableData}
-            allData={allData}
-          />
+        <div className="row">
+          <div className="col-md-9 p-0">
+            {/* <div className="row">
+            <div className="col-md-4">
+              <div className="rvNO">
+                <label className="form-label">RV No</label>
+                <input
+                  type="text"
+                  name="rvNo"
+                  disabled
+                  value={rvNoval}
+                  // className="in-field"
+                />
+              </div>
+            </div>
+            <div className="col-md-8">
+              <div className="customerRef">
+                <label className="form-label">Customer Ref</label>
+                <input
+                  // className="in-field"
+                  type="text"
+                  name="customerRef"
+                  disabled
+                  value={custRefval}
+                />
+              </div>
+            </div>
+          </div> */}
+          </div>
+          <div className="col-md-3">
+            <div className="d-flex align-items-center justify-content-end">
+              <button
+                className="button-style mx-0"
+                style={{ width: "200px" }}
+                onClick={createReturnVoucherFunc}
+              >
+                Create Return Voucher
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="p-2"></div>
 
-          {/* <BootstrapTable
+        <div className="row">
+          <div className="col-md-12">
+            <div
+              style={{
+                maxHeight: "400px",
+                overflow: "auto",
+              }}
+            >
+              <FirstTable
+                firstTableData={firstTableData}
+                selectRowFirstFun={selectRowFirstFun}
+                firstTableSelectedRow={firstTableSelectedRow}
+                thirdTableData={thirdTableData}
+                setThirdTableData={setThirdTableData}
+                allData={allData}
+              />
+
+              {/* <BootstrapTable
             keyField="id"
             columns={columnsFirst}
             data={firstTable}
@@ -1021,17 +1057,18 @@ function PofilesMaterials(props) {
             selectRow={selectRowFirst}
             headerClasses="header-class "
           ></BootstrapTable> */}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="row mt-3">
-        <div className="col-md-6 col-sm-12">
-          <div style={{ maxHeight: "400px", overflow: "auto" }}>
-            <SecondTable
-              secondTableData={secondTableData}
-              selectRowSecondFun={selectRowSecondFun}
-              thirdTableData={thirdTableData}
-            />
-            {/* <BootstrapTable
+        <div className="row">
+          <div className="col-md-6">
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
+              <SecondTable
+                secondTableData={secondTableData}
+                selectRowSecondFun={selectRowSecondFun}
+                thirdTableData={thirdTableData}
+              />
+              {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsSecond}
               data={secondTable}
@@ -1041,12 +1078,12 @@ function PofilesMaterials(props) {
               selectRow={selectRowSecond}
               headerClasses="header-class "
             ></BootstrapTable> */}
+            </div>
           </div>
-        </div>
-        <div className="col-md-6 col-sm-12">
-          <div style={{ maxHeight: "400px", overflow: "auto" }}>
-            <ThirdTable thirdTableData={thirdTableData} />
-            {/* <BootstrapTable
+          <div className="col-md-6">
+            <div style={{ maxHeight: "400px", overflow: "auto" }}>
+              <ThirdTable thirdTableData={thirdTableData} />
+              {/* <BootstrapTable
               keyField="MtrlStockID"
               columns={columnsThird}
               data={thirdTable}
@@ -1055,6 +1092,7 @@ function PofilesMaterials(props) {
               condensed
               headerClasses="header-class "
             ></BootstrapTable> */}
+            </div>
           </div>
         </div>
       </div>
@@ -1072,3 +1110,76 @@ function PofilesMaterials(props) {
 }
 
 export default PofilesMaterials;
+
+// <div>
+// <button
+//   className="button-style"
+//   style={{ width: "200px" }}
+//   onClick={createReturnVoucherFunc}
+// >
+//   Create Return Voucher
+// </button>
+// </div>
+// <div className="row-md-12 table-data mt-3">
+// <div
+//   style={{
+//     maxHeight: "400px",
+//     overflow: "auto",
+//   }}
+// >
+//   <FirstTable
+//     firstTableData={firstTableData}
+//     selectRowFirstFun={selectRowFirstFun}
+//     firstTableSelectedRow={firstTableSelectedRow}
+//     thirdTableData={thirdTableData}
+//     setThirdTableData={setThirdTableData}
+//     allData={allData}
+//   />
+
+//   {/* <BootstrapTable
+//     keyField="id"
+//     columns={columnsFirst}
+//     data={firstTable}
+//     striped
+//     hover
+//     condensed
+//     selectRow={selectRowFirst}
+//     headerClasses="header-class "
+//   ></BootstrapTable> */}
+// </div>
+// </div>
+// <div className="row mt-3">
+// <div className="col-md-6 col-sm-12">
+//   <div style={{ maxHeight: "400px", overflow: "auto" }}>
+//     <SecondTable
+//       secondTableData={secondTableData}
+//       selectRowSecondFun={selectRowSecondFun}
+//       thirdTableData={thirdTableData}
+//     />
+//     {/* <BootstrapTable
+//       keyField="MtrlStockID"
+//       columns={columnsSecond}
+//       data={secondTable}
+//       striped
+//       hover
+//       condensed
+//       selectRow={selectRowSecond}
+//       headerClasses="header-class "
+//     ></BootstrapTable> */}
+//   </div>
+// </div>
+// <div className="col-md-6 col-sm-12">
+//   <div style={{ maxHeight: "400px", overflow: "auto" }}>
+//     <ThirdTable thirdTableData={thirdTableData} />
+//     {/* <BootstrapTable
+//       keyField="MtrlStockID"
+//       columns={columnsThird}
+//       data={thirdTable}
+//       striped
+//       hover
+//       condensed
+//       headerClasses="header-class "
+//     ></BootstrapTable> */}
+//   </div>
+// </div>
+// </div>
