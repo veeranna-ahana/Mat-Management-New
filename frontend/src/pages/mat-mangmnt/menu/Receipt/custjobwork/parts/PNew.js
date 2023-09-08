@@ -151,6 +151,7 @@ function PNew() {
   ];
 
   const changePartHandle = (e) => {
+    // debugger;
     const { value, name } = e.target;
     setInputPart((preValue) => {
       //console.log(preValue)
@@ -164,13 +165,15 @@ function PNew() {
     inputPart.rvId = formHeader.rvId;
     inputPart.qtyRejected = 0;
     inputPart.qtyUsed = 0;
+    inputPart.calcWeightVal = 0.0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
     setInputPart(inputPart);
-
+    console.log("imputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
+      console.log("data", data);
+      if (data?.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
       }
@@ -216,6 +219,7 @@ function PNew() {
       inputPart.partId = "";
       inputPart.qtyAccepted = 0;
       inputPart.qtyReceived = 0;
+      inputPart.calcWeightVal = 0.0;
       inputPart.qtyRejected = 0;
       inputPart.qtyUsed = 0;
       inputPart.qtyReturned = 0;
@@ -223,8 +227,7 @@ function PNew() {
       inputPart.unitWeight = 0;
       inputPart.custBomId = formHeader.customer;
 
-      console.log("partarray = ", partArray);
-
+      console.log("partarray = ", inputPart);
       //insert blank row in table
       postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
@@ -239,6 +242,7 @@ function PNew() {
 
           //let uniqueid = uuid();
           setPartUniqueId(id);
+
           let newRow = {
             id: id,
             partId: "",

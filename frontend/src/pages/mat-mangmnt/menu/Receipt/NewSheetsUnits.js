@@ -1022,7 +1022,7 @@ function NewSheetsUnits(props) {
   };
   // row selection
   const selectRow = {
-    mode: "checkbox",
+    mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
@@ -1046,9 +1046,12 @@ function NewSheetsUnits(props) {
         }
 
         // console.log("selectedRows", newSelectedRows); // Log the updated selected rows
+        console.log("selectedRows.id", newSelectedRows?.row?.id); // Log the updated selected rows
         setSelectedRows(newSelectedRows);
         return newSelectedRows; // Return the updated array to update the state
       });
+      // console.log("row.id", row.id);
+
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2.forEach((obj) => {
