@@ -15,53 +15,17 @@ export default function ThirdTable(props) {
             <th>Part ID</th>
             <th>Return</th>
             <th>Remarks</th>
-            {/* <th>Length</th>
-            <th>Weight</th> */}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>SL No</th>
-            <th>Part ID</th>
-            <th>Return</th>
-            <th>Remarks</th>
-            {/* <th>Length</th>
-            <th>Weight</th> */}
-          </tr>{" "}
-          <tr>
-            <th>SL No</th>
-            <th>Part ID</th>
-            <th>Return</th>
-            <th>Remarks</th>
-            {/* <th>Length</th>
-            <th>Weight</th> */}
-          </tr>{" "}
-          <tr>
-            <th>SL No</th>
-            <th>Part ID</th>
-            <th>Return</th>
-            <th>Remarks</th>
-            {/* <th>Length</th>
-            <th>Weight</th> */}
-          </tr>{" "}
-          <tr>
-            <th>SL No</th>
-            <th>Part ID</th>
-            <th>Return</th>
-            <th>Remarks</th>
-            {/* <th>Length</th>
-            <th>Weight</th> */}
-          </tr>
-          {/* {props.thirdTableData.map((val, key) => (
+          {props.thirdTableData.map((val, key) => (
             <tr>
               <td>{key + 1}</td>
-              <td>{val.MtrlStockID}</td>
-              <td>{val.Mtrl_Code}</td>
-              <td>{val.DynamicPara1}</td>
-              <td>{val.DynamicPara2}</td>
-              <td>{val.Weight}</td>
+              <td>{val.PartIdNew}</td>
+              <td>{val.QtyReturnedNew}</td>
+              <td>{val.Remarks}</td>
             </tr>
-          ))} */}
+          ))}
         </tbody>
       </Table>
     </>

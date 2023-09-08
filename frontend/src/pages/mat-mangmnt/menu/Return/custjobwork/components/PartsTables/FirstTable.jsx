@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Table from "react-bootstrap/Table";
 export default function FirstTable(props) {
-  //   console.log("props in frist table..", props);
+  // console.log("props in frist table..", props);
 
   return (
     <>
@@ -14,7 +14,6 @@ export default function FirstTable(props) {
         <thead className="text-white">
           <tr>
             <th>RV No</th>
-            {/* <th>Action</th> */}
           </tr>
         </thead>
         <tbody>
@@ -28,33 +27,8 @@ export default function FirstTable(props) {
               }
             >
               <td>{val.RV_No}</td>
-              {/* <th>
-                <input type="text" />
-            </th> */}
             </tr>
           ))}
-          {/* <tr>
-            <th>RV No</th>
-            <th>Action</th>
-          </tr>{" "}
-          <tr>
-            <th>RV No</th>
-            <th>Action</th>
-          </tr>{" "}
-          <tr>
-            <th>RV No</th>
-            <th>Action</th>
-          </tr> */}
-          {/* {props.thirdTableData.map((val, key) => (
-            <tr>
-              <td>{key + 1}</td>
-              <td>{val.MtrlStockID}</td>
-              <td>{val.Mtrl_Code}</td>
-              <td>{val.DynamicPara1}</td>
-              <td>{val.DynamicPara2}</td>
-              <td>{val.Weight}</td>
-            </tr>
-          ))} */}
         </tbody>
       </Table>
     </>

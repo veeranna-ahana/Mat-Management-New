@@ -36,14 +36,23 @@ function CreateReturnNewModal(props) {
   return (
     <>
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>IV No</Modal.Title>
+        <Modal.Header closeButton className="p-3 ">
+          {/* <Modal.Title>IV No </Modal.Title> */}
         </Modal.Header>
-        <Modal.Body>{props.IVNOVal}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        <Modal.Body className="p-3">
+          <span>IV No. {props.IVNOVal} Created Successfully</span>
+        </Modal.Body>
+        <Modal.Footer className="p-2 px-3">
+          <button
+            className="button-style m-0"
+            onClick={handleClose}
+            style={{ width: "15%" }}
+          >
             Ok
-          </Button>
+          </button>
+          {/* <Button variant="secondary" onClick={handleClose}>
+            Ok
+          </Button> */}
         </Modal.Footer>
       </Modal>
     </>
