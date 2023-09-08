@@ -14,7 +14,7 @@ function CreateReturnNewModal(props) {
         Iv_Id: props.srlIVID,
       };
       nav(
-        "/MaterialManagement/Return/CustomerJobWork/OutwordMaterialIssueVoucher",
+        "/MaterialManagement/Return/CustomerJobWork/OutwardMaterialIssueVoucher",
         {
           state: { selectData },
         }

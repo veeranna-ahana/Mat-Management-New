@@ -122,7 +122,7 @@ function ReturnListing(props) {
     console.log("data = ", selectData, "propType = ", propsType);
     if (selectData && selectData.Type !== "Parts") {
       nav(
-        "/MaterialManagement/Return/CustomerJobWork/OutwordMaterialIssueVoucher",
+        "/MaterialManagement/Return/CustomerJobWork/OutwardMaterialIssueVoucher",
         {
           state: { selectData, propsType },
         }
