@@ -92,7 +92,7 @@ function OutwordPartIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, (data) => {
-      console.log("out data = ", data);
+      // console.log("out data = ", data);
       setOutData(data);
     });
   }
@@ -164,7 +164,7 @@ function OutwordPartIssueVocher(props) {
       endpoints.updateDCWeight,
       { outData: outData, formHeader: formHeader, type: "part" },
       (data) => {
-        console.log("data = ", data);
+        // console.log("data = ", data);
         if (data.affectedRows !== 0) {
           toast.success("Record Updated Successfully");
         } else {
@@ -198,7 +198,7 @@ function OutwordPartIssueVocher(props) {
       flag = 1;
     }
     if (flag === 0) {
-      console.log("Valid");
+      // console.log("Valid");
       setShowCreateDC(true);
       //setBoolVal1(false);
       //setBoolVal2(true);
@@ -211,14 +211,14 @@ function OutwordPartIssueVocher(props) {
     //setShowCreateDC(true);
   };
   let getDCID = async (data) => {
-    console.log("get dc = ", data);
+    // console.log("get dc = ", data);
     setdcID(data);
 
     if (data !== "" && data !== 0 && data !== undefined) {
       //get data from dcregister
       let url3 = endpoints.getDCRegisterByID + "?id=" + data;
       getRequest(url3, (data) => {
-        console.log("dc register data = ", data);
+        // console.log("dc register data = ", data);
         setdcRegister(data);
       });
 

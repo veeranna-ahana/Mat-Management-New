@@ -108,7 +108,7 @@ function OutwordMaterialIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, async (data) => {
-      // console.log("mtrl issue details...", data);
+      // console.log("outdata.....", data);
       setOutData(data);
     });
   }
@@ -324,7 +324,7 @@ function OutwordMaterialIssueVocher(props) {
       // }
     }
 
-    console.log("new", newArray);
+    // console.log("new", newArray);
 
     setOutData(newArray);
   };
