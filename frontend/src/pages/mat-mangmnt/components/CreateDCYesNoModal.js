@@ -168,9 +168,9 @@ function CreateDCYesNoModal(props) {
                 "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
               );*/
 
-        props.setFormHeader({ ...props.formHeader, IVStatus: "Returned" });
+        // props.setFormHeader({ ...props.formHeader, IVStatus: "Returned" });
         toast.success("DC Created Successfully");
-        window.location.reload();
+        // window.location.reload();
         //setpnno("");
         //setShow(false);
       });

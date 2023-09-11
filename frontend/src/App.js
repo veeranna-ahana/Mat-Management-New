@@ -242,11 +242,11 @@ function App() {
                 />
                 <Route path="salesivlist" element={<ReturnSalesIVList />} />
                 <Route
-                  path="OutwordMaterialIssueVoucher"
+                  path="OutwardMaterialIssueVoucher"
                   element={<OutwordMaterialIssueVocher />}
                 />
                 <Route
-                  path="OutwordPartIssueVoucher"
+                  path="OutwardPartIssueVoucher"
                   element={<OutwordPartIssueVocher />}
                 />
                 <Route path="PrintMaterialDC" element={<PrintMaterialDC />} />

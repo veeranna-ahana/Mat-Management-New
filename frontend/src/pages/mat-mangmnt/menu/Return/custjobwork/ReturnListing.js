@@ -122,15 +122,18 @@ function ReturnListing(props) {
     console.log("data = ", selectData, "propType = ", propsType);
     if (selectData && selectData.Type !== "Parts") {
       nav(
-        "/MaterialManagement/Return/CustomerJobWork/OutwordMaterialIssueVoucher",
+        "/MaterialManagement/Return/CustomerJobWork/OutwardMaterialIssueVoucher",
         {
           state: { selectData, propsType },
         }
       );
     } else if (selectData && selectData.Type === "Parts") {
-      nav("/MaterialManagement/Return/CustomerJobWork/OutwordPartIssueVoucher", {
-        state: { selectData, propsType },
-      });
+      nav(
+        "/MaterialManagement/Return/CustomerJobWork/OutwardPartIssueVoucher",
+        {
+          state: { selectData, propsType },
+        }
+      );
     } else {
       toast.error("Select IV");
     }
@@ -198,23 +201,25 @@ function ReturnListing(props) {
         </div>
       </div>
       <div className="row">
-      <div className="col-md-4 col-sm-12 mt-3">
-      <div className="row">
-        <div className="col-md-1 col-sm-12 mt-1">
-        <input
-              className="form-check-input mt-2"
-              type="checkbox"
-              checked={checkboxVal === "on" ? true : false}
-              id="flexCheckDefault"
-              onChange={changeCheckbox}
-              disabled={checkboxDisable === "on" ? true : false}
-            />
+        <div className="col-md-4 col-sm-12 mt-3">
+          <div className="row">
+            <div className="col-md-1 col-sm-12 mt-1">
+              <input
+                className="form-check-input mt-2"
+                type="checkbox"
+                checked={checkboxVal === "on" ? true : false}
+                id="flexCheckDefault"
+                onChange={changeCheckbox}
+                disabled={checkboxDisable === "on" ? true : false}
+              />
+            </div>
+            <div className="col-md-1 col-sm-12">
+              <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                Filter Customer
+              </label>
+            </div>
+          </div>
         </div>
-        <div className="col-md-1 col-sm-12">
-        <label className="form-label" style={{whiteSpace:"nowrap"}}>Filter Customer</label>
-        </div>
-        </div>
-      </div>
         <div className="col-md-4">
           <div className="col-md-4 mt-2">
             <button className="button-style" onClick={openClick}>

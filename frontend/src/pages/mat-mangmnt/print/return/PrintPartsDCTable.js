@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   titleRight1: {
     //border: "1px",
-    padding: "5px",
+    // padding: "5px",
     width: "30%",
   },
 
@@ -132,9 +132,10 @@ const PrintPartsDCTable = ({
   outData,
   custdata,
   dcRegister,
-  totalqty,
+  totalQTYVar,
 }) => (
   <Document>
+    {/* {console.log("totalQtyFunc data...", totalQtyFunc)} */}
     <Page size="A4" style={styles.page}>
       <View style={styles.tableContainer}>
         {/* <Text style={styles.tableTitle}>Magod Laser Machining Pvt Ltd</Text>
@@ -157,16 +158,19 @@ const PrintPartsDCTable = ({
           <Text>TIN No : {custdata.TIN_No}</Text>
           <Text>ECC No : {custdata.ECC_No}</Text>
         </View>
-        <Text style={styles.titleRight1}>
-          {formatDate(
-            new Date(
+        <View style={{ ...styles.titleRight1 }}>
+          <Text>{formHeader.IV_No}</Text>
+          <Text>
+            {formatDate(
               new Date(
-                dcRegister.DC_Date.toString().substring(0, 10)
-              ).toDateString()
-            ),
-            1
-          )}
-        </Text>
+                new Date(
+                  formHeader.IV_Date.toString().substring(0, 10)
+                ).toDateString()
+              ),
+              1
+            )}
+          </Text>
+        </View>
         <Text style={styles.titleFull1}>
           {custdata.City} PIN - {custdata.Pin_Code}
         </Text>
@@ -195,7 +199,7 @@ const PrintPartsDCTable = ({
         <Text style={styles.titleLeft1}></Text>
         <Text style={styles.titleMiddle2}>Total Items : {outData.length}</Text>
         <Text style={styles.titleLeft1}></Text>
-        <Text style={styles.titleMiddle2}>Total Quantity : {totalqty}</Text>
+        <Text style={styles.titleMiddle2}>Total Quantity : {totalQTYVar}</Text>
       </View>
     </Page>
   </Document>
