@@ -132,6 +132,7 @@ const PrintMaterialDCTable = ({
   outData,
   custdata,
   dcRegister,
+  totalQTYVar,
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -152,17 +153,19 @@ const PrintMaterialDCTable = ({
           {custdata.Address} {custdata.City}
         </Text>
         <Text style={styles.titleMiddle1}>GST No : {custdata.GSTNo}</Text>
-        <Text style={styles.titleRight1}>
-          {" "}
-          {formatDate(
-            new Date(
+        <View style={{ ...styles.titleRight1 }}>
+          <Text>{formHeader.IV_No}</Text>
+          <Text>
+            {formatDate(
               new Date(
-                dcRegister.DC_Date.toString().substring(0, 10)
-              ).toDateString()
-            ),
-            1
-          )}
-        </Text>
+                new Date(
+                  formHeader.IV_Date.toString().substring(0, 10)
+                ).toDateString()
+              ),
+              1
+            )}
+          </Text>
+        </View>
         <Text style={styles.titleFull1}>
           {custdata.City} PIN - {custdata.Pin_Code}
         </Text>
@@ -190,6 +193,8 @@ const PrintMaterialDCTable = ({
         <Text style={styles.topspace}></Text>
         <Text style={styles.titleLeft1}></Text>
         <Text style={styles.titleMiddle2}>Total Items : {outData.length}</Text>
+        <Text style={styles.titleLeft1}></Text>
+        <Text style={styles.titleMiddle2}>Total Quantity : {totalQTYVar}</Text>
       </View>
     </Page>
   </Document>
