@@ -15,9 +15,10 @@ function CreateDCYesNoModal(props) {
 
   const handleSave = () => {
     //get running no
+    // debugger;
     let yyyy = formatDate(new Date(), 6).toString();
     const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
-    console.log(url);
+    // console.log(url);
     getRequest(url, (data) => {
       data.map((obj) => {
         let newNo = parseInt(obj.Running_No) + 1;
@@ -36,7 +37,7 @@ function CreateDCYesNoModal(props) {
         //get last 2 digit of year
         let yy = formatDate(new Date(), 6).toString().substring(2);
         let no = yy + "/" + series;
-        console.log("no = ", no);
+        // console.log("no = ", no);
         //toast.success("No = ", no);
 
         //get cust data
@@ -83,19 +84,19 @@ function CreateDCYesNoModal(props) {
               ),
           };
 
-          console.log("form header = ", props.formHeader);
-          console.log("table data = ", props.outData);
+          // console.log("form header = ", props.formHeader);
+          // console.log("table data = ", props.outData);
           //console.log("dcregister = ", DCRegister);
 
           //insert dc_register table
           postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
-            console.log("DC Register Inserted");
+            // console.log("DC Register Inserted");
           });
 
           //get the last insert id of dc details
           getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
             let dc_id = data.DC_ID + 1;
-            console.log("Last id = ", dc_id);
+            // console.log("Last id = ", dc_id);
             for (let i = 0; i < props.outData.length; i++) {
               //dc_id = dc_id + 1;
               let dcdetails = {
@@ -125,7 +126,7 @@ function CreateDCYesNoModal(props) {
                 endpoints.insertDCDetails,
                 dcdetails,
                 async (data) => {
-                  console.log("DC Details Inserted");
+                  // console.log("DC Details Inserted");
                 }
               );
 
@@ -139,7 +140,7 @@ function CreateDCYesNoModal(props) {
                 endpoints.updateStatusDCNoDCID,
                 dcupdatedetails,
                 async (data) => {
-                  console.log("material issue register Updated");
+                  // console.log("material issue register Updated");
                 }
               );
 
@@ -168,16 +169,34 @@ function CreateDCYesNoModal(props) {
                 "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
               );*/
 
-        // props.setFormHeader({ ...props.formHeader, IVStatus: "Returned" });
+        // props.setFormHeader({
+        //   ...props.formHeader,
+        //   IVStatus: "test",
+        //   text: "123",
+        // });
+        // props.setTest(true);
+
+        // props.setFormHeader
+
+        // props.setReturnValueFunc();
         toast.success("DC Created Successfully");
+        // props.setFormHeader({
+        //   ...props.formHeader,
+        //   IVStatus: "test",
+        //   text: "123",
+        // });
+
+        // window.location.reload();
         // window.location.reload();
         //setpnno("");
         //setShow(false);
       });
     });
+    // console.log("form header...", props.formHeader);
 
     // props.setFormHeader([])
   };
+  // console.log("propss....", props.formHeader);
 
   // console.log("form header..", props.formHeader);
 
@@ -192,9 +211,11 @@ function CreateDCYesNoModal(props) {
       toast.error("Serial Weight Cannot be Zero. Set Weight and try again");
     } else {
       //setShow(true);
-      handleSave();
+      props.handleSave();
     }
+
     setShowCreateDC(false);
+    // props.fetchData();
   };
 
   return (
