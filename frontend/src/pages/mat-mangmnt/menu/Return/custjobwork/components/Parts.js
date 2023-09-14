@@ -490,6 +490,7 @@ function Parts(props) {
                 Type: "Parts",
               };
 
+              // console.log("newwwwwwwwwww.....", newRowMaterialIssueRegister);
               //insert first table
               postRequest(
                 endpoints.insertMaterialIssueRegister,

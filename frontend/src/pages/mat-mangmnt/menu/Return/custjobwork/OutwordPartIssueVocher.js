@@ -450,7 +450,7 @@ function OutwordPartIssueVocher(props) {
     });
   };
 
-  console.log("status", formHeader.IVStatus);
+  // console.log("status", formHeader.IVStatus);
   return (
     <div>
       <ReturnCancelIVModal
@@ -496,7 +496,7 @@ function OutwordPartIssueVocher(props) {
                 <input
                   type="text"
                   name="IVDate"
-                  value={statusFormatter(formHeader.IV_Date)}
+                  value={formHeader.IV_Date}
                   disabled
                 />
               </div>

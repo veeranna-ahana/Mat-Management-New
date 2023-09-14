@@ -37,8 +37,8 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 });
 
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
-  console.log("......................................");
-  console.log("req.body.formHeader.PkngDcNo", req.body.formHeader.PkngDcNo);
+  // console.log("......................................");
+  // console.log("req.body.formHeader.PkngDcNo", req.body.formHeader.PkngDcNo);
 
   let pkngdcno = null;
   if (req.body.formHeader.PkngDcNo === null) {
