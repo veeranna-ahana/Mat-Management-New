@@ -108,7 +108,7 @@ function OutwordMaterialIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, async (data) => {
-      // console.log("outdata.....", data);
+      console.log("outdata.....", data);
       setOutData(data);
     });
   }
@@ -804,7 +804,7 @@ function OutwordMaterialIssueVocher(props) {
                       <input
                         type="number"
                         min={0}
-                        defaultValue={val.TotalWeightCalculated}
+                        defaultValue={parseFloat(val.TotalWeightCalculated)}
                         onChange={(e) => {
                           // console.log("eeeeeeeeee", e.target.value);
 

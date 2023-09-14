@@ -37,7 +37,8 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 });
 
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
-  // console.log("reqqqq..", req.body);
+  console.log("......................................");
+  console.log("reqqqq..", req.body);
 
   let flag = false;
   try {
@@ -57,11 +58,16 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
           if (data1.affectedRows !== 0) {
             for (let i = 0; i < req.body.outData.length; i++) {
               const element = req.body.outData[i];
-
+              console.log("element...", element);
               try {
                 misQueryMod(
-                  `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${element.TotalWeightCalculated}', UpDated = ${element.UpDated} WHERE (Iv_Id = '${element.Iv_Id}')`,
+                  `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
+                    element.TotalWeightCalculated
+                  )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
+                    element.Iv_Mtrl_Id
+                  }')`,
                   (err, data) => {
+                    console.log("data........", data);
                     if (err) logger.error(err);
                     // res.send(data)
                   }
