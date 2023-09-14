@@ -808,7 +808,7 @@ function PofilesMaterials(props) {
                 CustECCNo: props.custECC,
                 CustGSTNo: props.custGST,
                 EMail: "",
-                PkngDcNo: "",
+                PkngDcNo: null,
                 PkngDCDate: null,
                 TotalWeight: RVTotalWeight,
                 TotalCalculatedWeight: RVTotalCalWeight,

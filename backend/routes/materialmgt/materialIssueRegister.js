@@ -25,7 +25,7 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
     } = req.body;
 
     misQueryMod(
-      `insert into  material_issue_register (IV_No,IV_Date, Cust_code, Customer, CustCSTNo, CustTINNo, CustECCNo, CustGSTNo, EMail, PkngDcNo, PkngDCDate, TotalWeight, TotalCalculatedWeight, UpDated, IVStatus, Dc_ID, Type) values ("${IV_No}","${IV_Date}","${Cust_code}","${Customer}","${CustCSTNo}","${CustTINNo}","${CustECCNo}","${CustGSTNo}","${EMail}","${PkngDcNo}",${PkngDCDate},"${TotalWeight}","${TotalCalculatedWeight}","${UpDated}","${IVStatus}","${Dc_ID}","${Type}")`,
+      `insert into  material_issue_register (IV_No,IV_Date, Cust_code, Customer, CustCSTNo, CustTINNo, CustECCNo, CustGSTNo, EMail, PkngDcNo, PkngDCDate, TotalWeight, TotalCalculatedWeight, UpDated, IVStatus, Dc_ID, Type) values ("${IV_No}","${IV_Date}","${Cust_code}","${Customer}","${CustCSTNo}","${CustTINNo}","${CustECCNo}","${CustGSTNo}","${EMail}",${PkngDcNo},${PkngDCDate},"${TotalWeight}","${TotalCalculatedWeight}","${UpDated}","${IVStatus}","${Dc_ID}","${Type}")`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
@@ -47,7 +47,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
     pkngdcno = req.body.formHeader.PkngDcNo;
   }
 
-  console.log("pkngdcno", pkngdcno);
+  // console.log("pkngdcno", pkngdcno);
   let flag = false;
   try {
     // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
