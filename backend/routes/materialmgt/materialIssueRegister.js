@@ -38,8 +38,16 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
   console.log("......................................");
-  console.log("reqqqq..", req.body);
+  console.log("req.body.formHeader.PkngDcNo", req.body.formHeader.PkngDcNo);
 
+  let pkngdcno = null;
+  if (req.body.formHeader.PkngDcNo === null) {
+    pkngdcno = null;
+  } else {
+    pkngdcno = req.body.formHeader.PkngDcNo;
+  }
+
+  console.log("pkngdcno", pkngdcno);
   let flag = false;
   try {
     // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
@@ -49,7 +57,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
     // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
 
     misQueryMod(
-      `update  material_issue_register set PkngDcNo = "${req.body.formHeader.PkngDcNo}", TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+      `update  material_issue_register set PkngDcNo = ${pkngdcno}, TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
       (err, data1) => {
         if (err) logger.error(err);
 
@@ -58,7 +66,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
           if (data1.affectedRows !== 0) {
             for (let i = 0; i < req.body.outData.length; i++) {
               const element = req.body.outData[i];
-              console.log("element...", element);
+              // console.log("element...", element);
               try {
                 misQueryMod(
                   `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
@@ -67,7 +75,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
                     element.Iv_Mtrl_Id
                   }')`,
                   (err, data) => {
-                    console.log("data........", data);
+                    // console.log("data........", data);
                     if (err) logger.error(err);
                     // res.send(data)
                   }
