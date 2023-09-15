@@ -119,7 +119,7 @@ function ReturnListing(props) {
 
   let openClick = async (e) => {
     //console.log("selected data = ", selectData);
-    console.log("data = ", selectData, "propType = ", propsType);
+    // console.log("data = ", selectData, "propType = ", propsType);
     if (selectData && selectData.Type !== "Parts") {
       nav(
         "/MaterialManagement/Return/CustomerJobWork/OutwardMaterialIssueVoucher",
@@ -147,7 +147,7 @@ function ReturnListing(props) {
     );*/
   };
   let changeCheckbox = (e) => {
-    console.log("val = ", e.target.value);
+    // console.log("val = ", e.target.value);
     setdata(allData);
     setCheckboxVal("off");
   };
@@ -157,7 +157,7 @@ function ReturnListing(props) {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log(row);
+      // console.log(row);
       setSelectData({
         Iv_Id: row.Iv_Id,
         IV_No: row.IV_No,

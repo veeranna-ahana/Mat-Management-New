@@ -3,9 +3,11 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
-import { dateToShort } from "../../../../../utils";
+import { dateToShort, formatDate } from "../../../../../utils";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
+
+// formatDate
 
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
@@ -259,8 +261,436 @@ function OutwordPartIssueVocher(props) {
     }
   };
 
+  const handleSave = () => {
+    const type = "parts";
+    //get running no
+    // debugger;
+    let yyyy = formatDate(new Date(), 6).toString();
+    const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
+    // console.log(url);
+    getRequest(url, (data) => {
+      data.map((obj) => {
+        let newNo = parseInt(obj.Running_No) + 1;
+        //let no = "23/000" + newNo;
+        let series = "";
+        //add prefix zeros
+        for (
+          let i = 0;
+          i < parseInt(obj.Length) - newNo.toString().length;
+          i++
+        ) {
+          series = series + "0";
+        }
+        series = series + "" + newNo;
+
+        //get last 2 digit of year
+        let yy = formatDate(new Date(), 6).toString().substring(2);
+        let no = yy + "/" + series;
+        // console.log("no = ", no);
+        //toast.success("No = ", no);
+
+        //get cust data
+        let url1 =
+          endpoints.getCustomerByCustCode + "?code=" + formHeader.Cust_code;
+        // console.log("url = ", url1);
+        getRequest(url1, (data) => {
+          let DCRegister = {
+            DC_Type: "Material Return",
+            DC_No: no,
+            DC_Date: formatDate(new Date(), 2),
+            Cust_Code: formHeader.Cust_code,
+            Cust_Name: formHeader.Customer,
+            Cust_Address: data.Address,
+            Cust_Place: data.City,
+            Cust_State: data.State,
+            PIN_Code: data.Pin_Code,
+            GSTNo: type === "parts" ? "" : data.GSTNo,
+            ECC_No: type === "parts" ? data.ECC_No : "",
+            TIN_No: type === "parts" ? data.TIN_No : "",
+            CST_No: type === "parts" ? data.CST_No : "",
+            AuhtorisingDocu:
+              formHeader.IV_No +
+              " Dt " +
+              formatDate(
+                new Date(formHeader.IV_Date.toString().substring(0, 10)),
+                7
+              ),
+            Total_Wt: formHeader.TotalWeight,
+            ScarpWt: 0,
+            DCStatus: "Draft",
+            Remarks:
+              formHeader.IV_No +
+              " Dt " +
+              formatDate(
+                new Date(
+                  new Date(
+                    formHeader.IV_Date.toString().substring(0, 10)
+                  ).toDateString()
+                ),
+                7
+              ),
+          };
+
+          // console.log("form header = ", props.formHeader);
+          // console.log("table data = ", props.outData);
+          //console.log("dcregister = ", DCRegister);
+
+          //insert dc_register table
+          postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
+            // console.log("DC Register Inserted");
+          });
+
+          //get the last insert id of dc details
+          getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
+            let dc_id = data.DC_ID + 1;
+            // console.log("Last id = ", dc_id);
+            for (let i = 0; i < outData.length; i++) {
+              //dc_id = dc_id + 1;
+              let dcdetails = {
+                DC_ID: dc_id,
+                DC_Srl: i + 1,
+                Cust_Code: outData[i].Cust_Code,
+                cust_docu_No: formHeader.IV_No,
+                Item_Descrption:
+                  type === "parts"
+                    ? outData[i].PartId
+                    : outData[i].MtrlDescription,
+                Material:
+                  type === "parts" ? outData[i].Remarks : outData[i].Material,
+                Qty: type === "parts" ? outData[i].QtyReturned : outData[i].Qty,
+                Unit_Wt: type === "parts" ? outData[i].UnitWt : 0,
+                DC_Srl_Wt: outData[i].TotalWeight,
+                Excise_CL_no: null,
+                DespStatus: "Closed",
+              };
+              //insert dcdetails
+              postRequest(
+                endpoints.insertDCDetails,
+                dcdetails,
+                async (data) => {
+                  // console.log("DC Details Inserted");
+                }
+              );
+
+              let dcupdatedetails = {
+                Iv_Id: formHeader.Iv_Id,
+                PkngDcNo: no,
+                Dc_ID: dc_id,
+              };
+              //update material issue register
+              postRequest(
+                endpoints.updateStatusDCNoDCID,
+                dcupdatedetails,
+                async (data) => {
+                  // console.log("material issue register Updated");
+                }
+              );
+
+              //send dc id to main page
+              getDCID(dc_id);
+              // InputHeaderEvent("IVStatus", "Returned");
+
+              //update the running no
+              const inputData = {
+                SrlType: "Outward_DCNo",
+                Period: formatDate(new Date(), 6),
+                RunningNo: newNo,
+              };
+              postRequest(endpoints.updateRunningNo, inputData, (data) => {});
+            }
+
+            //console.log("dc details = ", dcdetails);
+          });
+          //insert dc details
+        });
+        /*props.type === "parts"
+            ? nav(
+                "/materialmanagement/return/customerjobwork/OutwordPartIssueVocher"
+              )
+            : nav(
+                "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
+              );*/
+
+        // props.setFormHeader({
+        //   ...props.formHeader,
+        //   IVStatus: "test",
+        //   text: "123",
+        // });
+        // props.setTest(true);
+
+        // props.setFormHeader
+
+        // props.setReturnValueFunc();
+        setFormHeader({
+          ...formHeader,
+          IVStatus: "Returned",
+        });
+        toast.success("DC Created Successfully");
+        // props.setFormHeader({
+        //   ...props.formHeader,
+        //   IVStatus: "test",
+        //   text: "123",
+        // });
+
+        // window.location.reload();
+        // window.location.reload();
+        //setpnno("");
+        //setShow(false);
+      });
+    });
+    // console.log("form header...", props.formHeader);
+
+    // props.setFormHeader([])
+  };
+
+  const setReturnValueFunc = () => {
+    setFormHeader({
+      ...formHeader,
+      IVStatus: "Returned",
+    });
+  };
+
+  // console.log("status", formHeader.IVStatus);
   return (
-    <div>
+    <>
+      {/* new */}
+      <div>
+        {/* header */}
+        <h4 className="title">Outward Part Issue Voucher</h4>
+        {/* content */}
+
+        <div>
+          <div className="row">
+            <div className="col-md-6 p-0">
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="form-label">IV No</label>
+                  <input
+                    type="text"
+                    name="IvId"
+                    value={formHeader.IV_No}
+                    disabled
+                    // onChange={InputHeaderEvent}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label">Status</label>
+                  <input
+                    type="text"
+                    name="reference"
+                    value={formHeader.IVStatus}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 p-0">
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="form-label">Customer</label>
+                  <input
+                    type="text"
+                    name="Customer"
+                    value={formHeader.Customer}
+                    disabled
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label">GST</label>
+                  <input
+                    type="text"
+                    name="reference"
+                    value={formHeader.CustGSTNo}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 p-0">
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="form-label">IV Date</label>
+
+                  <input
+                    type="text"
+                    name="IVDate"
+                    value={formHeader.IV_Date}
+                    disabled
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label">DC No / PN No</label>
+                  <input
+                    type="text"
+                    name="PkngDcNo"
+                    disabled
+                    value={
+                      formHeader.PkngDcNo
+                      // ? formHeader.PkngDcNo +
+                      //   "   Date : " +
+                      //   formHeader.PkngDCDate
+                      // : ""
+                    }
+                    // onChange={InputHeaderEvent}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="form-label">Actual Weight</label>
+                  <input
+                    type="number"
+                    name="TotalWeight"
+                    value={formHeader.TotalWeight}
+                    onChange={InputHeaderEvent}
+                    disabled={
+                      (formHeader.IVStatus === "Cancelled") |
+                      (formHeader.IVStatus === "Returned")
+                        ? true
+                        : false
+                    }
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label">Calculated Weight</label>
+                  <input
+                    type="text"
+                    name="Type"
+                    value={formHeader.TotalCalculatedWeight}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 p-0">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="d-flex flex-column">
+                    <label className="form-label">Address</label>
+                    <textarea
+                      cols="30"
+                      rows="3"
+                      value={custdata.Address}
+                      disabled
+                      style={{ height: "90px" }}
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* button */}
+
+        <div className="d-flex justify-content-between">
+          <button
+            className="button-style ms-3"
+            onClick={saveButtonState}
+            disabled={
+              // boolVal2 |
+              // boolVal3 |
+              // (location?.state?.propsType === "customerIVList")
+              //   ? true
+              //   : false |
+              //     (location.state?.propsType === "returnCancelled")
+              //   ? true
+              //   : false |
+              formHeader.IVStatus === "Cancelled"
+                ? true
+                : false | (formHeader.IVStatus === "Returned")
+                ? true
+                : false
+            }
+          >
+            Save
+          </button>
+          <button
+            className="button-style"
+            onClick={cancelIV}
+            disabled={
+              // boolVal2 | (location?.state?.propsType === "customerIVList")
+              //   ? true
+              //   : false | (location?.state?.propsType === "returnCancelled")
+              //   ? true
+              //   : false |
+              formHeader.IVStatus === "Cancelled"
+                ? true
+                : false | (formHeader.IVStatus === "Returned")
+                ? true
+                : false
+            }
+          >
+            Cancel IV
+          </button>
+          <button
+            className="button-style"
+            onClick={createDC}
+            disabled={
+              // boolVal2 | (location?.state?.propsType === "customerIVList")
+              //   ? true
+              //   : false | (location?.state?.propsType === "returnCancelled")
+              //   ? true
+              //   : false |
+              formHeader.IVStatus === "Cancelled"
+                ? true
+                : false | (formHeader.IVStatus === "Returned")
+                ? true
+                : false
+            }
+          >
+            Create DC
+          </button>
+          <button
+            className="button-style"
+            onClick={printDC}
+            disabled={
+              formHeader.IVStatus === "Cancelled"
+                ? true
+                : false | (formHeader.IVStatus === "Returned")
+                ? false
+                : true
+            }
+          >
+            Print DC
+          </button>
+          <button
+            className="button-style me-3"
+            id="btnclose"
+            type="submit"
+            onClick={() => nav("/MaterialManagement")}
+          >
+            Close
+          </button>
+        </div>
+
+        <div className="p-2"></div>
+
+        {/* table */}
+        <div className="row">
+          <div className="col-md-12">
+            <div style={{ maxHeight: "420px", overflow: "auto" }}>
+              <BootstrapTable
+                headerClasses="header-class "
+                keyField="IV_No"
+                //keyField="id"
+                columns={columns}
+                data={outData}
+                striped
+                hover
+                condensed
+                //pagination={paginationFactory()}
+                //selectRow={selectRow}
+              ></BootstrapTable>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* modals */}
       <ReturnCancelIVModal
         show={show}
         setShow={setShow}
@@ -278,299 +708,329 @@ function OutwordPartIssueVocher(props) {
         type="parts"
         getDCID={getDCID}
         setFormHeader={setFormHeader}
+        setReturnValueFunc={setReturnValueFunc}
+        // fetchData={fetchData}
+        handleSave={handleSave}
       />
-
-      <div>
-        <h4 className="title">Outward Part Issue Voucher</h4>
-
-        <div className="row">
-          <div className="col-md-12">
-            <div className="row">
-              <div className="col-md-3">
-                <label className="form-label">IV No</label>
-                <input
-                  type="text"
-                  name="IvId"
-                  value={formHeader.IV_No}
-                  disabled
-                  onChange={InputHeaderEvent}
-                />
-              </div>
-              <div className="col-md-3">
-                <label className="form-label">Date</label>
-                <input
-                  type="text"
-                  name="IVDate"
-                  value={statusFormatter(formHeader.IV_Date)}
-                  disabled
-                />
-              </div>
-              <div className="col-md-3">
-                <label className=" form-label mt-4 ms-3">
-                  {formHeader.IVStatus}
-                </label>
-                {/* <input
-                  type="text"
-                  name="status"
-                  value=
-                  disabled
-                /> */}
-              </div>
-
-              <div className="col-md-3">
-                <button
-                  className="button-style ms-1"
-                  onClick={saveButtonState}
-                  disabled={
-                    boolVal2 |
-                    boolVal3 |
-                    (location?.state?.propsType === "customerIVList")
-                      ? true
-                      : false |
-                        (location.state?.propsType === "returnCancelled")
-                      ? true
-                      : false | (formHeader.IVStatus === "Cancelled")
-                      ? true
-                      : false | (formHeader.IVStatus === "Returned")
-                      ? true
-                      : false
-                  }
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-6">
-            <div className="row">
-              <div className="col-md-12">
-                <label className="form-label">Customer</label>
-                <input
-                  type="text"
-                  name="Customer"
-                  value={formHeader.Customer}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <label className="form-label">GST No</label>
-                <input
-                  type="text"
-                  name="CSTNo"
-                  value={formHeader.CustGSTNo}
-                  disabled
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label">DC No / Ph No</label>
-                <input
-                  type="text"
-                  name="PkngDcNo"
-                  value={formHeader.PkngDcNo}
-                  onChange={InputHeaderEvent}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <label className="form-label">Actual Weight</label>
-                <input
-                  type="number"
-                  name="TotalWeight"
-                  value={formHeader.TotalWeight}
-                  onChange={InputHeaderEvent}
-                  disabled={
-                    formHeader.IVStatus === "Cancelled"
-                      ? true
-                      : false | (formHeader.IVStatus === "Returned")
-                      ? true
-                      : false
-                  }
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label">Calculated Weight</label>
-                <input
-                  type="text"
-                  name="Type"
-                  value={formHeader.TotalCalculatedWeight}
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-md-3 mt-3">
-            <label className="form-label"></label>
-            <textarea
-              id="exampleFormControlTextarea1"
-              rows="4  "
-              style={{ width: "240px" }}
-              value={custdata.Address}
-              disabled
-              readOnly
-            ></textarea>
-          </div>
-          <div className="col-md-3">
-            <div>
-              <button
-                className="button-style"
-                onClick={cancelIV}
-                disabled={
-                  boolVal2 | (location?.state?.propsType === "customerIVList")
-                    ? true
-                    : false | (location?.state?.propsType === "returnCancelled")
-                    ? true
-                    : false | (formHeader.IVStatus === "Cancelled")
-                    ? true
-                    : false | (formHeader.IVStatus === "Returned")
-                    ? true
-                    : false
-                }
-              >
-                Cancel IV
-              </button>
-            </div>
-            <div>
-              <button
-                className="button-style"
-                onClick={createDC}
-                disabled={
-                  boolVal2 | (location?.state?.propsType === "customerIVList")
-                    ? true
-                    : false | (location?.state?.propsType === "returnCancelled")
-                    ? true
-                    : false | (formHeader.IVStatus === "Cancelled")
-                    ? true
-                    : false | (formHeader.IVStatus === "Returned")
-                    ? true
-                    : false
-                }
-              >
-                Create DC
-              </button>
-            </div>
-            <div>
-              <button
-                className="button-style"
-                onClick={printDC}
-                disabled={
-                  formHeader.IVStatus === "Cancelled"
-                    ? true
-                    : false | (formHeader.IVStatus === "Returned")
-                    ? false
-                    : true
-                }
-              >
-                Print DC
-              </button>
-            </div>
-            <div>
-              <button
-                className="button-style mb-2"
-                id="btnclose"
-                type="submit"
-                onClick={() => nav("/MaterialManagement")}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-          {/* 
-          <div className="col-md-2">
-            <label className="form-label"></label>
-            <textarea
-              style={{ height: "110px" }}
-              className="form-control"
-              rowSpane="3"
-              //value={formHeader.address}
-              readOnly
-            ></textarea>
-          </div>
-          <div className="col-md-2">
-            <button className="button-style" onClick={cancelIV}>
-              Cancel IV
-            </button>
-          </div> */}
-        </div>
-        {/* <div className="row">
-          <div className="col-md-4">
-            <label className="form-label">GST No</label>
-            <input
-              type="text"
-              name="CSTNo"
-              value={formHeader.CustGSTNo}
-              disabled
-            />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">DC No / Ph No</label>
-            <input
-              type="text"
-              name="PkngDcNo"
-              value={formHeader.PkngDcNo}
-              onChange={InputHeaderEvent}
-            />
-          </div>
-          <div className="col-md-2">
-            <button className="button-style" onClick={createDC}>
-              Create DC
-            </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              type="text"
-              name="TotalWeight"
-              value={formHeader.TotalWeight}
-              onChange={InputHeaderEvent}
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Calculated Weight</label>
-            <input
-              type="text"
-              name="Type"
-              value={formHeader.TotalCalculatedWeight}
-              disabled
-            />
-          </div>
-          <div className="col-md-2">
-            <button className="button-style" onClick={printDC}>
-              Print DC
-            </button>
-          </div>
-        </div> */}
-      </div>
-
-      <div className="row">
-        <div className="col-md-12 col-sm-12">
-          <div style={{ height: "420px", overflowY: "scroll" }}>
-            <BootstrapTable
-              headerClasses="header-class "
-              keyField="IV_No"
-              //keyField="id"
-              columns={columns}
-              data={outData}
-              striped
-              hover
-              condensed
-              //pagination={paginationFactory()}
-              //selectRow={selectRow}
-            ></BootstrapTable>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 
 export default OutwordPartIssueVocher;
+
+// <div>
+//   <ReturnCancelIVModal
+//     show={show}
+//     setShow={setShow}
+//     IV_NO={IVNOValue}
+//     IV_ID={IVIDValue}
+//     type="parts"
+//     outData={outData}
+//   />
+
+//   <CreateDCYesNoModal
+//     showCreateDC={showCreateDC}
+//     setShowCreateDC={setShowCreateDC}
+//     formHeader={formHeader}
+//     outData={outData}
+//     type="parts"
+//     getDCID={getDCID}
+//     setFormHeader={setFormHeader}
+//     setReturnValueFunc={setReturnValueFunc}
+//     // fetchData={fetchData}
+//     handleSave={handleSave}
+//   />
+
+//   <div>
+//     <h4 className="title">Outward Part Issue Voucher</h4>
+
+//     <div className="row">
+//       <div className="col-md-12">
+//         <div className="row">
+//           <div className="col-md-3">
+//             <label className="form-label">IV No</label>
+//             <input
+//               type="text"
+//               name="IvId"
+//               value={formHeader.IV_No}
+//               disabled
+//               onChange={InputHeaderEvent}
+//             />
+//           </div>
+//           <div className="col-md-3">
+//             <label className="form-label">Date</label>
+//             <input
+//               type="text"
+//               name="IVDate"
+//               value={formHeader.IV_Date}
+//               disabled
+//             />
+//           </div>
+//           <div className="col-md-3">
+//             <label className=" form-label mt-4 ms-3">
+//               {formHeader.IVStatus}
+//             </label>
+//             {/* <input
+//           type="text"
+//           name="status"
+//           value=
+//           disabled
+//         /> */}
+//           </div>
+
+//           <div className="col-md-3">
+//             <button
+//               className="button-style ms-1"
+//               onClick={saveButtonState}
+//               disabled={
+//                 boolVal2 |
+//                 boolVal3 |
+//                 // (location?.state?.propsType === "customerIVList")
+//                 //   ? true
+//                 //   : false |
+//                 //     (location.state?.propsType === "returnCancelled")
+//                 //   ? true
+//                 //   : false |
+//                 (formHeader.IVStatus === "Cancelled")
+//                   ? true
+//                   : false | (formHeader.IVStatus === "Returned")
+//                   ? true
+//                   : false
+//               }
+//             >
+//               Save
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+
+//     <div className="row">
+//       <div className="col-md-6">
+//         <div className="row">
+//           <div className="col-md-12">
+//             <label className="form-label">Customer</label>
+//             <input
+//               type="text"
+//               name="Customer"
+//               value={formHeader.Customer}
+//               disabled
+//             />
+//           </div>
+//         </div>
+//         <div className="row">
+//           <div className="col-md-6">
+//             <label className="form-label">GST No</label>
+//             <input
+//               type="text"
+//               name="CSTNo"
+//               value={formHeader.CustGSTNo}
+//               disabled
+//             />
+//           </div>
+//           <div className="col-md-6">
+//             <label className="form-label">DC No / Ph No</label>
+//             <input
+//               type="text"
+//               name="PkngDcNo"
+//               value={formHeader.PkngDcNo}
+//               onChange={InputHeaderEvent}
+//               disabled
+//             />
+//           </div>
+//         </div>
+//         <div className="row">
+//           <div className="col-md-6">
+//             <label className="form-label">Actual Weight</label>
+//             <input
+//               type="number"
+//               name="TotalWeight"
+//               value={formHeader.TotalWeight}
+//               onChange={InputHeaderEvent}
+//               disabled={
+//                 formHeader.IVStatus === "Cancelled"
+//                   ? true
+//                   : false | (formHeader.IVStatus === "Returned")
+//                   ? true
+//                   : false
+//               }
+//             />
+//           </div>
+//           <div className="col-md-6">
+//             <label className="form-label">Calculated Weight</label>
+//             <input
+//               type="text"
+//               name="Type"
+//               value={formHeader.TotalCalculatedWeight}
+//               disabled
+//             />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="col-md-3 mt-3">
+//         <label className="form-label"></label>
+//         <textarea
+//           id="exampleFormControlTextarea1"
+//           rows="4  "
+//           style={{ width: "240px" }}
+//           value={custdata.Address}
+//           disabled
+//           readOnly
+//         ></textarea>
+//       </div>
+//       <div className="col-md-3">
+//         <div>
+//           <button
+//             className="button-style"
+//             onClick={cancelIV}
+//             disabled={
+//               // boolVal2 | (location?.state?.propsType === "customerIVList")
+//               //   ? true
+//               //   : false | (location?.state?.propsType === "returnCancelled")
+//               //   ? true
+//               //   : false |
+//               formHeader.IVStatus === "Cancelled"
+//                 ? true
+//                 : false | (formHeader.IVStatus === "Returned")
+//                 ? true
+//                 : false
+//             }
+//           >
+//             Cancel IV
+//           </button>
+//         </div>
+//         <div>
+//           <button
+//             className="button-style"
+//             onClick={createDC}
+//             disabled={
+//               // boolVal2 | (location?.state?.propsType === "customerIVList")
+//               //   ? true
+//               //   : false | (location?.state?.propsType === "returnCancelled")
+//               //   ? true
+//               //   : false |
+//               formHeader.IVStatus === "Cancelled"
+//                 ? true
+//                 : false | (formHeader.IVStatus === "Returned")
+//                 ? true
+//                 : false
+//             }
+//           >
+//             Create DC
+//           </button>
+//         </div>
+//         <div>
+//           <button
+//             className="button-style"
+//             onClick={printDC}
+//             disabled={
+//               formHeader.IVStatus === "Cancelled"
+//                 ? true
+//                 : false | (formHeader.IVStatus === "Returned")
+//                 ? false
+//                 : true
+//             }
+//           >
+//             Print DC
+//           </button>
+//         </div>
+//         <div>
+//           <button
+//             className="button-style mb-2"
+//             id="btnclose"
+//             type="submit"
+//             onClick={() => nav("/MaterialManagement")}
+//           >
+//             Close
+//           </button>
+//         </div>
+//       </div>
+//       {/*
+//   <div className="col-md-2">
+//     <label className="form-label"></label>
+//     <textarea
+//       style={{ height: "110px" }}
+//       className="form-control"
+//       rowSpane="3"
+//       //value={formHeader.address}
+//       readOnly
+//     ></textarea>
+//   </div>
+//   <div className="col-md-2">
+//     <button className="button-style" onClick={cancelIV}>
+//       Cancel IV
+//     </button>
+//   </div> */}
+//     </div>
+//     {/* <div className="row">
+//   <div className="col-md-4">
+//     <label className="form-label">GST No</label>
+//     <input
+//       type="text"
+//       name="CSTNo"
+//       value={formHeader.CustGSTNo}
+//       disabled
+//     />
+//   </div>
+//   <div className="col-md-4">
+//     <label className="form-label">DC No / Ph No</label>
+//     <input
+//       type="text"
+//       name="PkngDcNo"
+//       value={formHeader.PkngDcNo}
+//       onChange={InputHeaderEvent}
+//     />
+//   </div>
+//   <div className="col-md-2">
+//     <button className="button-style" onClick={createDC}>
+//       Create DC
+//     </button>
+//   </div>
+// </div>
+// <div className="row">
+//   <div className="col-md-4">
+//     <label className="form-label">Weight</label>
+//     <input
+//       type="text"
+//       name="TotalWeight"
+//       value={formHeader.TotalWeight}
+//       onChange={InputHeaderEvent}
+//     />
+//   </div>
+
+//   <div className="col-md-4">
+//     <label className="form-label">Calculated Weight</label>
+//     <input
+//       type="text"
+//       name="Type"
+//       value={formHeader.TotalCalculatedWeight}
+//       disabled
+//     />
+//   </div>
+//   <div className="col-md-2">
+//     <button className="button-style" onClick={printDC}>
+//       Print DC
+//     </button>
+//   </div>
+// </div> */}
+//   </div>
+
+//   <div className="row">
+//     <div className="col-md-12 col-sm-12">
+//       <div style={{ height: "420px", overflowY: "scroll" }}>
+//         <BootstrapTable
+//           headerClasses="header-class "
+//           keyField="IV_No"
+//           //keyField="id"
+//           columns={columns}
+//           data={outData}
+//           striped
+//           hover
+//           condensed
+//           //pagination={paginationFactory()}
+//           //selectRow={selectRow}
+//         ></BootstrapTable>
+//       </div>
+//     </div>
+//   </div>
+// </div>
