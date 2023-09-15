@@ -38,72 +38,182 @@ materialIssueRegisterRouter.post("/insert", async (req, res, next) => {
 
 materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
   // console.log("......................................");
-  // console.log("req.body.formHeader.PkngDcNo", req.body.formHeader.PkngDcNo);
+  // console.log("req.body.formHeader", req.body.formHeader);
 
-  let pkngdcno = null;
-  if (req.body.formHeader.PkngDcNo === null) {
-    pkngdcno = null;
-  } else {
-    pkngdcno = req.body.formHeader.PkngDcNo;
-  }
-
-  // console.log("pkngdcno", pkngdcno);
   let flag = false;
-  try {
-    // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
-    // console.log(
-    //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
-    // );
-    // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
 
-    misQueryMod(
-      `update  material_issue_register set PkngDcNo = ${pkngdcno}, TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
-      (err, data1) => {
-        if (err) logger.error(err);
+  // let pkngdcno = null;
+  if (req.body.formHeader.PkngDcNo === null) {
+    try {
+      // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
+      // console.log(
+      //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
+      // );
+      // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
 
-        if (req.body.type === "material") {
-          // type=material
-          if (data1.affectedRows !== 0) {
-            for (let i = 0; i < req.body.outData.length; i++) {
-              const element = req.body.outData[i];
-              // console.log("element...", element);
-              try {
-                misQueryMod(
-                  `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
-                    element.TotalWeightCalculated
-                  )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
-                    element.Iv_Mtrl_Id
-                  }')`,
-                  (err, data) => {
-                    // console.log("data........", data);
-                    if (err) logger.error(err);
-                    // res.send(data)
-                  }
-                );
-              } catch (error) {
-                next(error);
+      misQueryMod(
+        `update  material_issue_register set PkngDcNo = ${req.body.formHeader.PkngDcNo}, TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+        (err, data1) => {
+          if (err) logger.error(err);
+
+          if (req.body.type === "material") {
+            // type=material
+            if (data1.affectedRows !== 0) {
+              for (let i = 0; i < req.body.outData.length; i++) {
+                const element = req.body.outData[i];
+                // console.log("element...", element);
+                try {
+                  misQueryMod(
+                    `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
+                      element.TotalWeightCalculated
+                    )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
+                      element.Iv_Mtrl_Id
+                    }')`,
+                    (err, data) => {
+                      // console.log("data........", data);
+                      if (err) logger.error(err);
+                      // res.send(data)
+                    }
+                  );
+                } catch (error) {
+                  next(error);
+                }
+                flag = true;
               }
-              flag = true;
-            }
 
-            if (flag) {
-              res.send(data1);
-              // console.log("successfull");
+              if (flag) {
+                res.send(data1);
+                // console.log("successfull");
+              } else {
+                res.send("Error found while updating (BE001)");
+              }
             } else {
               res.send("Error found while updating (BE001)");
             }
           } else {
-            res.send("Error found while updating (BE001)");
+            // type=part or else...
+            res.send(data1);
           }
-        } else {
-          // type=part or else...
-          res.send(data1);
         }
-      }
-    );
-  } catch (error) {
-    next(error);
+      );
+    } catch (error) {
+      next(error);
+    }
+  } else if (req.body.formHeader.PkngDcNo.length > 0) {
+    try {
+      // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
+      // console.log(
+      //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
+      // );
+      // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
+
+      misQueryMod(
+        `update  material_issue_register set PkngDcNo = '${req.body.formHeader.PkngDcNo}', TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+        (err, data1) => {
+          if (err) logger.error(err);
+
+          if (req.body.type === "material") {
+            // type=material
+            if (data1.affectedRows !== 0) {
+              for (let i = 0; i < req.body.outData.length; i++) {
+                const element = req.body.outData[i];
+                // console.log("element...", element);
+                try {
+                  misQueryMod(
+                    `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
+                      element.TotalWeightCalculated
+                    )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
+                      element.Iv_Mtrl_Id
+                    }')`,
+                    (err, data) => {
+                      // console.log("data........", data);
+                      if (err) logger.error(err);
+                      // res.send(data)
+                    }
+                  );
+                } catch (error) {
+                  next(error);
+                }
+                flag = true;
+              }
+
+              if (flag) {
+                res.send(data1);
+                // console.log("successfull");
+              } else {
+                res.send("Error found while updating (BE001)");
+              }
+            } else {
+              res.send("Error found while updating (BE001)");
+            }
+          } else {
+            // type=part or else...
+            res.send(data1);
+          }
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    try {
+      // let { Iv_Id, PkngDcNo, TotalWeight } = req.body;
+      // console.log(
+      //   `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `
+      // );
+      // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
+
+      misQueryMod(
+        `update  material_issue_register set PkngDcNo = "", TotalWeight = '${req.body.formHeader.TotalWeight}' where Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+        (err, data1) => {
+          if (err) logger.error(err);
+
+          if (req.body.type === "material") {
+            // type=material
+            if (data1.affectedRows !== 0) {
+              for (let i = 0; i < req.body.outData.length; i++) {
+                const element = req.body.outData[i];
+                // console.log("element...", element);
+                try {
+                  misQueryMod(
+                    `UPDATE magodmis.mtrlissuedetails SET TotalWeightCalculated = '${parseFloat(
+                      element.TotalWeightCalculated
+                    )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
+                      element.Iv_Mtrl_Id
+                    }')`,
+                    (err, data) => {
+                      // console.log("data........", data);
+                      if (err) logger.error(err);
+                      // res.send(data)
+                    }
+                  );
+                } catch (error) {
+                  next(error);
+                }
+                flag = true;
+              }
+
+              if (flag) {
+                res.send(data1);
+                // console.log("successfull");
+              } else {
+                res.send("Error found while updating (BE001)");
+              }
+            } else {
+              res.send("Error found while updating (BE001)");
+            }
+          } else {
+            // type=part or else...
+            res.send(data1);
+          }
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
   }
+
+  // console.log("pkngdcno", pkngdcno);
 });
 
 materialIssueRegisterRouter.post(

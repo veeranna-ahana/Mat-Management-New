@@ -542,11 +542,16 @@ function OutwordPartIssueVocher(props) {
                 <div className="col-md-6">
                   <label className="form-label">Actual Weight</label>
                   <input
-                    type="text"
+                    type="number"
                     name="TotalWeight"
-                    disabled
                     value={formHeader.TotalWeight}
-                    // onChange={InputHeaderEvent}
+                    onChange={InputHeaderEvent}
+                    disabled={
+                      (formHeader.IVStatus === "Cancelled") |
+                      (formHeader.IVStatus === "Returned")
+                        ? true
+                        : false
+                    }
                   />
                 </div>
                 <div className="col-md-6">

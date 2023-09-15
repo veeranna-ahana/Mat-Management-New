@@ -172,10 +172,11 @@ function OutwordMaterialIssueVocher(props) {
     });
   }
   const InputHeaderEvent = (name, value) => {
-    // console.log("function.........", "name", name, "value", value);
+    console.log("function.........", "name", name, "value", value);
     // const { name, value } = e.target;
     setFormHeader({ ...formHeader, [name]: value });
   };
+  console.log("formHeader", formHeader);
 
   // console.log("formHeader", formHeader);
 
@@ -325,7 +326,7 @@ function OutwordMaterialIssueVocher(props) {
       if (i === key) {
         element[field] = value;
       }
-      console.log("element", element);
+      // console.log("element", element);
 
       newArray.push(element);
 
@@ -647,9 +648,20 @@ function OutwordMaterialIssueVocher(props) {
                   <input
                     type="text"
                     name="TotalWeight"
-                    disabled
-                    value={formHeader.TotalWeight}
-                    // onChange={InputHeaderEvent}
+                    // disabled
+                    disabled={
+                      (formHeader.IVStatus === "Cancelled") |
+                      (formHeader.IVStatus === "Returned")
+                        ? true
+                        : false
+                    }
+                    defaultValue={formHeader.TotalWeight}
+                    onChange={(e) => {
+                      InputHeaderEvent(
+                        e.target.name,
+                        parseFloat(e.target.value)
+                      );
+                    }}
                   />
                 </div>
                 <div className="col-md-6">
@@ -802,6 +814,12 @@ function OutwordMaterialIssueVocher(props) {
                       <input
                         type="number"
                         min={0}
+                        disabled={
+                          (formHeader.IVStatus === "Cancelled") |
+                          (formHeader.IVStatus === "Returned")
+                            ? true
+                            : false
+                        }
                         defaultValue={parseFloat(val.TotalWeightCalculated)}
                         onChange={(e) => {
                           // console.log("eeeeeeeeee", e.target.value);
@@ -828,6 +846,12 @@ function OutwordMaterialIssueVocher(props) {
                           type="checkbox"
                           name=""
                           id=""
+                          disabled={
+                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Returned")
+                              ? true
+                              : false
+                          }
                           onClick={() => updateChange(key, 1, "UpDated")}
                           // onChange={(e) => {
                           //   // console.log("checkbox clicked", e.target.value);
@@ -865,6 +889,12 @@ function OutwordMaterialIssueVocher(props) {
                           name=""
                           id=""
                           checked
+                          disabled={
+                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Returned")
+                              ? true
+                              : false
+                          }
                           onClick={() => updateChange(key, 0, "UpDated")}
 
                           // onChange={(e) => {
