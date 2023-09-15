@@ -575,13 +575,13 @@ function OutwordMaterialIssueVocher(props) {
                     // onChange={InputHeaderEvent}
                   />
                 </div>
-                <div className="col-md-6">
-                  <label className="form-label">IV Date</label>
 
+                <div className="col-md-6">
+                  <label className="form-label">Status</label>
                   <input
                     type="text"
-                    name="IVDate"
-                    value={formHeader.IV_Date}
+                    name="reference"
+                    value={formHeader.IVStatus}
                     disabled
                   />
                 </div>
@@ -615,11 +615,12 @@ function OutwordMaterialIssueVocher(props) {
             <div className="col-md-6 p-0">
               <div className="row">
                 <div className="col-md-6">
-                  <label className="form-label">Status</label>
+                  <label className="form-label">IV Date</label>
+
                   <input
                     type="text"
-                    name="reference"
-                    value={formHeader.IVStatus}
+                    name="IVDate"
+                    value={formHeader.IV_Date}
                     disabled
                   />
                 </div>
@@ -743,14 +744,11 @@ function OutwordMaterialIssueVocher(props) {
             className="button-style"
             onClick={printDC}
             disabled={
-              formHeader.IVStatus === "Cancelled" ? true : false
-              // boolVal1 |
-              // boolVal3 |
-              // (location.state.propsType === "customerIVList")
-              //   ? true
-              //   : false | (location.state.propsType === "returnCancelled")
-              //   ? true
-              //   : false
+              formHeader.IVStatus === "Cancelled"
+                ? true
+                : false | (formHeader.IVStatus === "Returned")
+                ? false
+                : true
             }
           >
             Print DC
