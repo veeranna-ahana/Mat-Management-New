@@ -480,7 +480,7 @@ function Parts(props) {
                 CustECCNo: props.custECC,
                 CustGSTNo: props.custGST,
                 EMail: "",
-                PkngDcNo: "",
+                PkngDcNo: null,
                 PkngDCDate: null,
                 TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
                 TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
@@ -489,6 +489,8 @@ function Parts(props) {
                 Dc_ID: 0,
                 Type: "Parts",
               };
+
+              // console.log("newwwwwwwwwww.....", newRowMaterialIssueRegister);
               //insert first table
               postRequest(
                 endpoints.insertMaterialIssueRegister,

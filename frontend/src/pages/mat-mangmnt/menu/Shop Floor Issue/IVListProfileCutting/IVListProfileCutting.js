@@ -21,6 +21,14 @@ function IVListProfileCutting(props) {
         : endpoints.getMaterialIssueVoucherList + "?status=Created";
     getRequest(url, (data) => {
       console.log("table data = ", data);
+      console.log("Qty Used", data[0].QtyUsed);
+
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].QtyUsed === null || data[i].QtyUsed === undefined) {
+          data[i].QtyUsed = 0;
+        }
+      }
+
       setTableData(data);
     });
   };

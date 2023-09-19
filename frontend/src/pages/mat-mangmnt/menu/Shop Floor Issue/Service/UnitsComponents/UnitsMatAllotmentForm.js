@@ -135,63 +135,57 @@ function UnitsMatAllotmentForm() {
       dataField: "",
     },
   ];
-  const selectRow1 = {
+
+  const handleRowSelect1 = (row, isSelect, rowIndex, e) => {
+    if (isSelect) {
+      if (formHeader.QtyAllottedTemp + firstTableRow.length < formHeader.Qty) {
+        const updatedFirstTableRow = [...firstTableRow, row];
+        setFirstTableRow(updatedFirstTableRow);
+        setSecondTableRow(updatedFirstTableRow);
+      } else {
+        // Handle case when the selection limit is reached.
+      }
+    } else {
+      const updatedFirstTableRow = firstTableRow.filter(
+        (obj) => obj.MtrlStockID !== row.MtrlStockID
+      );
+      setFirstTableRow(updatedFirstTableRow);
+      setSecondTableRow(updatedFirstTableRow);
+    }
+  };
+
+  const [selectRow1, setSelectRow1] = useState({
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
-    onSelect: (row, isSelect, rowIndex, e) => {
-      if (isSelect) {
-        console.log("formheader = ", formHeader);
-        console.log("firsttable = ", firstTableRow);
-        if (
-          formHeader.QtyAllottedTemp + firstTableRow.length <
-          formHeader.Qty
-        ) {
-          setFirstTableRow([...firstTableRow, row]);
-          setSecondTableRow([...firstTableRow, row]);
-        } else {
-          //isSelect = false;
-          //row.isSelect = false;
-        }
-      } else {
-        setFirstTableRow(
-          firstTableRow.filter((obj) => {
-            return obj.MtrlStockID !== row.MtrlStockID;
-          })
-        );
-        setSecondTableRow(
-          firstTableRow.filter((obj) => {
-            return obj.MtrlStockID !== row.MtrlStockID;
-          })
-        );
-      }
-      //delay(3000);
-      //console.log("isselect = ", isSelect);
-      //console.log("selected table row = ", firstTableRow);
-    },
-    onSelectAll: (isSelect, rows) => {
-      //console.log("rows = ", rows);
-      //setFirstTableRow(rows);
-      //console.log("selected table row = ", firstTableRow);
-    },
-  };
+    selected: [], // Initialize selected as an empty array
+    onSelect: handleRowSelect1, // Assign your row selection handler
+  });
+
   const selectRow2 = {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
-        //setSecondTableRow([...secondTableRow, row]);
-        setSecondTableRow(
-          secondTableRow.filter((obj) => {
-            return obj.MtrlStockID !== row.MtrlStockID;
-          })
+        // const updatedSecondTableRow = [...secondTableRow, row];
+        // setSecondTableRow(updatedSecondTableRow);
+        const updatedSecondTableRow = secondTableRow.filter(
+          (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
+        setSecondTableRow(updatedSecondTableRow);
       } else {
-        setSecondTableRow(secondTableRow);
+        // setSecondTableRow(secondTableRow);
+        const updatedSecondTableRow = secondTableRow.filter(
+          (obj) => obj.MtrlStockID !== row.MtrlStockID
+        );
+        setSecondTableRow(updatedSecondTableRow);
       }
     },
   };
+
+  console.log("firstTableRow", firstTableRow);
+  console.log("secondTableRow", secondTableRow);
 
   const allotMaterial = () => {
     setFormHeader({
@@ -200,6 +194,7 @@ function UnitsMatAllotmentForm() {
     });
     setSecondTable(firstTableRow);
   };
+
   const CancelAllotMaterial = () => {
     setSecondTable(secondTableRow);
 
@@ -353,7 +348,7 @@ function UnitsMatAllotmentForm() {
                   Period: formatDate(new Date(), 6),
                   RunningNo: newNo,
                 };
-                postRequest(endpoints.updateRunningNo, inputData, (data) => { });
+                postRequest(endpoints.updateRunningNo, inputData, (data) => {});
                 //console.log("Return id = ", issueidval);
                 //return data.insertId;
 
@@ -547,8 +542,8 @@ function UnitsMatAllotmentForm() {
                   className="button-style "
                   onClick={CancelAllotMaterial}
                   style={{ width: "180px" }}
-                //   disabled={true}
-                //   onClick={addToStock}
+                  //   disabled={true}
+                  //   onClick={addToStock}
                 >
                   Cancel Allot
                 </button>
@@ -588,7 +583,7 @@ function UnitsMatAllotmentForm() {
                 marginTop: "10px",
               }}
             >
-              <BootstrapTable
+              {/* <BootstrapTable
                 keyField="MtrlStockID"
                 columns={columns1}
                 data={firstTable}
@@ -598,7 +593,52 @@ function UnitsMatAllotmentForm() {
                 //pagination={paginationFactory()
                 selectRow={selectRow1}
                 headerClasses="header-class"
-              ></BootstrapTable>
+              ></BootstrapTable> */}
+
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Locked</th>
+                    <th>Stock Id</th>
+                    <th>Width</th>
+                    <th>Length</th>
+                    <th>Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {firstTable?.map((row) => (
+                    <tr
+                      key={row.MtrlStockID}
+                      key={row.MtrlStockID}
+                      onClick={() =>
+                        handleRowSelect1(
+                          row,
+                          !selectRow1.selected.includes(row)
+                        )
+                      }
+                      className={
+                        selectRow1.selected.includes(row) ? "selected-row" : ""
+                      }
+                    >
+                      <td>
+                        <div className="checkbox">
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={row.Locked === 0 ? false : true}
+                              readOnly
+                            />
+                          </label>
+                        </div>
+                      </td>
+                      <td>{row.MtrlStockID}</td>
+                      <td>{row.DynamicPara1}</td>
+                      <td>{row.DynamicPara2}</td>
+                      <td>{/* Your Location Data */}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div className="col-md-5">
