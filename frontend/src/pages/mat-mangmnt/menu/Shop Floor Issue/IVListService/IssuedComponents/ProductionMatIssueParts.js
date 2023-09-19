@@ -93,7 +93,6 @@ function ProductionMatIssueParts() {
     });
   };
 
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -186,8 +185,6 @@ function ProductionMatIssueParts() {
     setShow1(true);
   };
 
-
-
   const acceptReturn = () => {
     let flag = 0;
     for (let i = 0; i < tableData.length; i++) {
@@ -271,8 +268,9 @@ function ProductionMatIssueParts() {
               className="button-style "
               onClick={cancelButton}
               // disabled={show1 || formHeader.Status === "Closed" ? true : false}
-              disabled={show1 || formHeader.Status === "Cancelled" ? true : false}
-
+              disabled={
+                show1 || formHeader.Status === "Cancelled" ? true : false
+              }
             >
               Cancel
             </button>

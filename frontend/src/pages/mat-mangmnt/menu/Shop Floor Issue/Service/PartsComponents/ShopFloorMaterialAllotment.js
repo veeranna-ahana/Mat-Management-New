@@ -107,6 +107,7 @@ function ShopFloorMaterialAllotment(props) {
     {
       text: "Cust Name",
       dataField: "Cust_Name",
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "NCProgram No",
@@ -158,7 +159,6 @@ function ShopFloorMaterialAllotment(props) {
       setTableData(data);
     });
   };
-
 
   const treeViewclickProcess = (machine, process) => {
     //console.log("machine = ", machine, " process = ", process);
@@ -241,7 +241,7 @@ function ShopFloorMaterialAllotment(props) {
           className="button-style "
           style={{ width: "155px" }}
           onClick={allotMaterial}
-        // disabled={boolVal1 | boolVal4}
+          // disabled={boolVal1 | boolVal4}
         >
           Allot Material
         </button>
