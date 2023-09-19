@@ -46,11 +46,14 @@ function NewSheetsUnits(props) {
   const [boolVal7, setBoolVal7] = useState(true);
 
   // enable add to stock / remove stock
-  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  // const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [rmvBtn, setRmvBtn] = useState(false);
+  const [addBtn, setAddBtn] = useState(false);
 
   const [insCheck, setInsCheck] = useState(false);
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
+  const [shape, setShape] = useState();
 
   const [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -256,7 +259,9 @@ function NewSheetsUnits(props) {
         //update the mtrl_data related columns
         let url1 = endpoints.getRowByMtrlCode + "?code=" + value;
         getRequest(url1, async (mtrlData) => {
-          //console.log("mtrldata = ", mtrlData);
+          console.log("mtrldata= ", mtrlData.Shape);
+          let Mtrlshape = mtrlData.Shape;
+          setShape(Mtrlshape);
           inputPart.material = mtrlData.Mtrl_Type;
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
@@ -264,8 +269,18 @@ function NewSheetsUnits(props) {
             //console.log("shapedata = ", shapeData);
             inputPart.shapeID = shapeData.ShapeID;
             setInputPart(inputPart);
+
+            // if (shape !== material.Shape) {
+            //   toast.error("Please select a same type of part");
+            //   console.log("Please select a same type of part");
+            // }
           });
         });
+        console.log("material.Shape", material.Shape);
+
+        if (shape !== null && shape !== undefined && shape !== material.Shape) {
+          toast.error("Please select a same type of part");
+        }
 
         if (material.Shape === "Units") {
           setPara1Label("Qty"); //Nos
@@ -352,7 +367,7 @@ function NewSheetsUnits(props) {
     inputPart[name] = value;
     setInputPart(inputPart);
 
-    console.log("Before update = ", inputPart);
+    console.log("Before update = ", inputPart.shapeMtrlId);
 
     await delay(500);
     //update database row
@@ -618,6 +633,10 @@ function NewSheetsUnits(props) {
           flag1 = 5;
           console.log("Setting flag1 to 5");
         }
+        if (materialArray[i].qtyAccepted > materialArray[i].qtyReceived) {
+          flag1 = 6;
+          console.log("Setting flag1 to 6");
+        }
       }
 
       console.log("flag1 value:", flag1);
@@ -630,6 +649,8 @@ function NewSheetsUnits(props) {
         toast.error("Received and Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
         toast.error("Select Location");
+      } else if (flag1 === 6) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
       } else {
         // Show model form
         setShow(true);
@@ -748,8 +769,9 @@ function NewSheetsUnits(props) {
         let count = materialArray.length + 1;
         srl = "0" + count;
         // srl = count.toString();
-        console.log("srll", srl);
+        // console.log("srll", srl);
         //set inserted id
+        inputPart.srl = srl;
         setPartUniqueId(id);
         let newRow = {
           id: id,
@@ -763,8 +785,12 @@ function NewSheetsUnits(props) {
           locationNo: "",
           updated: "",
         };
+        console.log("materialArray", materialArray);
+        console.log("newRow", newRow);
+
         //setPartArray(newRow);
         setMaterialArray([...materialArray, newRow]);
+        console.log("materialArray", materialArray);
 
         // setMaterialArray([
         //   ...materialArray,
@@ -788,7 +814,7 @@ function NewSheetsUnits(props) {
       }
     });
 
-    //console.log("after = ", partArray);
+    console.log("after = ", inputPart);
   };
 
   //delete part
@@ -907,10 +933,10 @@ function NewSheetsUnits(props) {
               parseFloat(inputPart.dynamicPara3)
             );
 
-          // console.log("TotalWeightCalculated", TotalWeightCalculated);
+          console.log("TotalWeightCalculated", TotalWeightCalculated);
 
           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
-          console.log("TotalWeightCalculated", TotalWeightCalculated);
+          // console.log("TotalWeightCalculated", TotalWeightCalculated);
 
           inputPart.totalWeightCalculated = parseFloat(
             TotalWeightCalculated
@@ -921,7 +947,7 @@ function NewSheetsUnits(props) {
           inputPart["TotalWeight"] = TotalWeightCalculated;
 
           setInputPart(inputPart);
-
+          console.log("formHeader", formHeader);
           //update forheader in database
           postRequest(
             endpoints.updateHeaderMaterialReceiptRegister,
@@ -1011,6 +1037,10 @@ function NewSheetsUnits(props) {
     setMaterialArray(newArray);
     await delay(500);
 
+    // if (inputPart.qtyAccepted > inputPart.qtyReceived) {
+    //   toast.error("QtyAccepted should be less than or equal to QtyReceived");
+    // }
+    console.log("inputPart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
@@ -1026,35 +1056,21 @@ function NewSheetsUnits(props) {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // You need to keep track of selected rows in an array
       // setIsButtonEnabled(row.updated === 1);
-      setSelectedRows((prevSelectedRows) => {
-        // Create a new array with the selected rows from the previous state
-        const newSelectedRows = [...prevSelectedRows];
 
-        // Update the selected rows based on whether the row is being selected or deselected
-        if (isSelect) {
-          newSelectedRows.push(row);
-        } else {
-          // Filter out the deselected row
-          const indexToRemove = newSelectedRows.findIndex(
-            (selectedRow) => selectedRow.id === row.id
-          );
-          if (indexToRemove !== -1) {
-            newSelectedRows.splice(indexToRemove, 1);
-          }
-        }
+      console.log("row.updated", row.updated);
 
-        // console.log("selectedRows", newSelectedRows); // Log the updated selected rows
-        console.log("selectedRows.id", newSelectedRows?.row?.id); // Log the updated selected rows
-        setSelectedRows(newSelectedRows);
-        return newSelectedRows; // Return the updated array to update the state
-      });
-      // console.log("row.id", row.id);
+      if (row.updated === 1) {
+        setRmvBtn(true);
+        setAddBtn(false);
+      } else {
+        setRmvBtn(false);
+        setAddBtn(true);
+      }
 
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
-        data2.forEach((obj) => {
+        data2?.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.mtrlRvId = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -1080,14 +1096,16 @@ function NewSheetsUnits(props) {
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
+        console.log("data2", data2);
         setMtrlArray(data2);
-        data2.map(async (obj) => {
+        data2?.map(async (obj) => {
           if (obj.id == row.id) {
             setMtrlStock(obj);
           }
         });
       });
 
+      console.log("mtrlArray", mtrlArray);
       setInputPart({
         id: row.id,
         srl: row.srl,
@@ -1146,8 +1164,10 @@ function NewSheetsUnits(props) {
           //setBoolVal2(true);
           //setBoolVal3(false);
           setBoolValStock("on");
-          setBoolVal6(true);
-          setBoolVal7(false);
+          // setBoolVal6(true);
+          // setBoolVal7(false);
+          setRmvBtn(true);
+          setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
@@ -1169,73 +1189,309 @@ function NewSheetsUnits(props) {
 
   // console.log("selectedRows", selectedRows);
   //NEW ADD TO STOCK
-  // const addToStock = async (selectedRows) => {
-  //   console.log("selectedRowsArray", selectedRows);
-  //   if (selectedRows.length === 0) {
-  //     toast.error("Please Select Material");
-  //     return;
-  //   }
+  const addToStockk = async (selectedRows) => {
+    console.log("selectedRowsArray", selectedRows);
+    if (selectedRows.length === 0) {
+      toast.error("Please Select Material");
+      return;
+    }
 
-  //   const promises = selectedRows.map((selectedRow) => {
-  //     const newRow = {
-  //       mtrlRvId: selectedRow.Mtrl_Rv_id,
-  //       custCode: selectedRow.Cust_Code,
-  //       customer: formHeader.customerName,
-  //       custDocuNo: "",
-  //       rvNo: formHeader.rvNo,
-  //       mtrlCode: selectedRow.Mtrl_Code,
-  //       shapeID: selectedRow.shapeID,
-  //       shape: "",
-  //       material: selectedRow.material,
-  //       dynamicPara1: selectedRow.dynamicPara1,
-  //       dynamicPara2: selectedRow.dynamicPara2,
-  //       dynamicPara3: selectedRow.dynamicPara3,
-  //       dynamicPara4: "0.00",
-  //       locked: 0,
-  //       scrap: 0,
-  //       issue: 0,
-  //       weight: formHeader.weight,
-  //       scrapWeight: "0.00",
-  //       srl: selectedRow.Srl,
-  //       ivNo: "",
-  //       ncProgramNo: "",
-  //       locationNo: selectedRow.locationNo,
-  //       qtyAccepted: selectedRow.qtyAccepted,
-  //     };
+    const promises = selectedRows.map((selectedRow) => {
+      const newRow = {
+        mtrlRvId: selectedRow.Mtrl_Rv_id,
+        custCode: selectedRow.Cust_Code,
+        customer: formHeader.customerName,
+        custDocuNo: "",
+        rvNo: formHeader.rvNo,
+        mtrlCode: selectedRow.Mtrl_Code,
+        shapeID: selectedRow.shapeID,
+        shape: "",
+        material: selectedRow.material,
+        dynamicPara1: selectedRow.dynamicPara1,
+        dynamicPara2: selectedRow.dynamicPara2,
+        dynamicPara3: selectedRow.dynamicPara3,
+        dynamicPara4: "0.00",
+        locked: 0,
+        scrap: 0,
+        issue: 0,
+        weight: formHeader.weight,
+        scrapWeight: "0.00",
+        srl: selectedRow.Srl,
+        ivNo: "",
+        ncProgramNo: "",
+        locationNo: selectedRow.locationNo,
+        qtyAccepted: selectedRow.qtyAccepted,
+      };
 
-  //     return new Promise((resolve) => {
-  //       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
-  //         if (data.affectedRows !== 0) {
-  //           // enable remove stock buttons
-  //           toast.success("Stock Added Successfully");
-  //           // You can add any additional logic here for success
-  //           resolve();
-  //         } else {
-  //           toast.error("Stock Not Added");
-  //           // You can add any additional error handling here
-  //           resolve();
-  //         }
-  //       });
-  //     });
-  //   });
+      return new Promise((resolve) => {
+        postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
+          if (data.affectedRows !== 0) {
+            // enable remove stock buttons
+            toast.success("Stock Added Successfully");
+            // You can add any additional logic here for success
+            resolve();
+          } else {
+            toast.error("Stock Not Added");
+            // You can add any additional error handling here
+            resolve();
+          }
+        });
+      });
+    });
 
-  //   // Wait for all promises to resolve
-  //   await Promise.all(promises);
+    // Wait for all promises to resolve
+    await Promise.all(promises);
 
-  //   // Update the materialArray after all rows are added to stock
-  //   const updatedMaterialArray = materialArray.map((material) => {
-  //     if (
-  //       selectedRows.some(
-  //         (selectedRow) => selectedRow.Mtrl_Code === material.mtrlCode
-  //       )
-  //     ) {
-  //       return { ...material, updated: 1 };
-  //     }
-  //     return material;
-  //   });
+    // Update the materialArray after all rows are added to stock
+    const updatedMaterialArray = materialArray.map((material) => {
+      if (
+        selectedRows.some(
+          (selectedRow) => selectedRow.Mtrl_Code === material.mtrlCode
+        )
+      ) {
+        return { ...material, updated: 1 };
+      }
+      return material;
+    });
 
-  //   setMaterialArray(updatedMaterialArray);
-  // };
+    setMaterialArray(updatedMaterialArray);
+  };
+
+  //NEW NEW CODE
+  const addToStockkk = async () => {
+    if (selectedRows.length === 0) {
+      toast.error("Please Select Materials");
+    } else {
+      const rowsToAdd = selectedRows.map((rowId) => {
+        const selectedRow = mtrlArray.find((row) => row.id === rowId);
+        if (!selectedRow) {
+          console.log("No matching row for rowId:", rowId);
+        }
+        return {
+          mtrlRvId: selectedRow?.Mtrl_Rv_id,
+          custCode: selectedRow?.Cust_Code,
+          customer: formHeader?.customerName,
+          custDocuNo: "",
+          rvNo: formHeader?.rvNo,
+          mtrlCode: selectedRow?.Mtrl_Code,
+          shapeID: selectedRow?.ShapeID,
+          shape: "",
+          material: selectedRow?.Material,
+          dynamicPara1: selectedRow?.DynamicPara1,
+          dynamicPara2: selectedRow?.DynamicPara2,
+          dynamicPara3: selectedRow?.DynamicPara3,
+          dynamicPara4: "0.00",
+          locked: 0,
+          scrap: 0,
+          issue: 0,
+          weight: formHeader?.weight,
+          scrapWeight: "0.00",
+          srl: selectedRow?.Srl,
+          ivNo: "",
+          ncProgramNo: "",
+          locationNo: selectedRow?.locationNo,
+          qtyAccepted: selectedRow?.qtyAccepted,
+        };
+      });
+
+      console.log("newRows = ", rowsToAdd);
+
+      // You can send `rowsToAdd` to your API here, either one by one or in a single request
+      for (const newRow of rowsToAdd) {
+        await postRequest(
+          endpoints.insertMtrlStockList,
+          newRow,
+          async (data) => {
+            if (data.affectedRows !== 0) {
+              // Successful insertion
+              setBoolValStock("on");
+              setBoolVal6(true);
+              setBoolVal7(false);
+            } else {
+              // Insertion failed
+              toast.error("Stock Not Added");
+            }
+          }
+        );
+      }
+
+      // After adding rows, you can update the checkboxes and other UI logic here
+      for (let i = 0; i < materialArray.length; i++) {
+        if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+          materialArray[i].updated = 1;
+        }
+      }
+      await delay(500);
+      setMaterialArray(materialArray);
+    }
+  };
+
+  const addToStockkkkk = async () => {
+    console.log("selectedRows", selectedRows);
+    if (selectedRows.length === 0) {
+      toast.error("Please Select Materials");
+    } else {
+      const rowsToAdd = [];
+
+      for (const rowId of selectedRows) {
+        const selectedRow = mtrlArray.find((row) => row.id === rowId);
+
+        if (!selectedRow) {
+          console.log("No matching row for rowId:", rowId);
+          continue; // Skip invalid rows
+        }
+
+        const newRow = {
+          mtrlRvId: selectedRow?.Mtrl_Rv_id,
+          custCode: selectedRow?.Cust_Code,
+          customer: formHeader?.customerName,
+          custDocuNo: "",
+          rvNo: formHeader?.rvNo,
+          mtrlCode: selectedRow?.Mtrl_Code,
+          shapeID: selectedRow?.ShapeID,
+          shape: "",
+          material: selectedRow?.Material,
+          dynamicPara1: selectedRow?.DynamicPara1,
+          dynamicPara2: selectedRow?.DynamicPara2,
+          dynamicPara3: selectedRow?.DynamicPara3,
+          dynamicPara4: "0.00",
+          locked: 0,
+          scrap: 0,
+          issue: 0,
+          weight: formHeader?.weight,
+          scrapWeight: "0.00",
+          srl: selectedRow?.Srl,
+          ivNo: "",
+          ncProgramNo: "",
+          locationNo: selectedRow?.locationNo,
+          qtyAccepted: selectedRow?.qtyAccepted,
+        };
+
+        rowsToAdd.push(newRow);
+      }
+
+      console.log("newRows = ", rowsToAdd);
+
+      // You can send `rowsToAdd` to your API here, either one by one or in a single request
+      for (const newRow of rowsToAdd) {
+        await postRequest(
+          endpoints.insertMtrlStockList,
+          newRow,
+          async (data) => {
+            if (data.affectedRows !== 0) {
+              // Successful insertion
+              setBoolValStock("on");
+              setBoolVal6(true);
+              setBoolVal7(false);
+            } else {
+              // Insertion failed
+              toast.error("Stock Not Added");
+            }
+          }
+        );
+      }
+
+      // After adding rows, you can update the checkboxes and other UI logic here
+      for (let i = 0; i < materialArray.length; i++) {
+        if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+          materialArray[i].updated = 1;
+        }
+      }
+
+      await delay(500);
+      setMaterialArray(materialArray);
+    }
+  };
+
+  const addToStockkkkkk = async () => {
+    console.log("selectedRows", selectedRows);
+    console.log("mtrlArray", mtrlArray);
+    if (selectedRows.length === 0) {
+      toast.error("Please Select Materials");
+    } else {
+      const rowsToAdd = [];
+
+      for (const rowId of selectedRows) {
+        const selectedRow = mtrlArray?.find((row) => row.id === rowId);
+
+        if (!selectedRow) {
+          console.log("No matching row for rowId:", rowId);
+          continue; // Skip invalid rows
+        }
+
+        const newRow = {
+          mtrlRvId: selectedRow.Mtrl_Rv_id,
+          custCode: selectedRow.Cust_Code,
+          customer: formHeader.customerName,
+          custDocuNo: "",
+          rvNo: formHeader.rvNo,
+          mtrlCode: selectedRow.Mtrl_Code,
+          shapeID: selectedRow.ShapeID,
+          shape: "",
+          material: selectedRow.Material,
+          dynamicPara1: selectedRow.DynamicPara1,
+          dynamicPara2: selectedRow.DynamicPara2,
+          dynamicPara3: selectedRow.DynamicPara3,
+          dynamicPara4: "0.00",
+          locked: 0,
+          scrap: 0,
+          issue: 0,
+          weight: formHeader.weight,
+          scrapWeight: "0.00",
+          srl: selectedRow.Srl,
+          ivNo: "",
+          ncProgramNo: "",
+          locationNo: selectedRow.locationNo,
+          qtyAccepted: selectedRow.qtyAccepted,
+        };
+
+        rowsToAdd.push(newRow);
+      }
+
+      console.log("newRows = ", rowsToAdd);
+
+      // You can send `rowsToAdd` to your API here, either one by one or in a single request
+      const insertionPromises = rowsToAdd.map(async (newRow) => {
+        try {
+          const data = await postRequest(endpoints.insertMtrlStockList, newRow);
+          if (data.affectedRows !== 0) {
+            // Successful insertion
+            return true;
+          } else {
+            // Insertion failed
+            console.log("Stock Not Added for newRow:", newRow);
+            return false;
+          }
+        } catch (error) {
+          console.error("Error adding stock:", error);
+          return false;
+        }
+      });
+
+      const insertionResults = await Promise.all(insertionPromises);
+
+      if (insertionResults.every((result) => result === true)) {
+        // All insertions were successful
+        setBoolValStock("on");
+        setBoolVal6(true);
+        setBoolVal7(false);
+      } else {
+        // At least one insertion failed
+        toast.error("One or more stocks were not added");
+      }
+
+      // After adding rows, you can update the checkboxes and other UI logic here
+      const updatedMaterialArray = materialArray.map((material) => {
+        if (rowsToAdd.some((newRow) => newRow.mtrlCode === material.mtrlCode)) {
+          return { ...material, updated: 1 };
+        }
+        return material;
+      });
+
+      await delay(500);
+      setMaterialArray(updatedMaterialArray);
+    }
+  };
 
   // const removeToStock
   const removeStock = () => {
@@ -1250,8 +1506,10 @@ function NewSheetsUnits(props) {
           //setBoolVal2(false);
           //setBoolVal3(true);
           setBoolValStock("off");
-          setBoolVal6(false);
-          setBoolVal7(true);
+          // setBoolVal6(false);
+          // setBoolVal7(true);
+          setAddBtn(true);
+          setRmvBtn(false);
 
           //update checkbox
           for (let i = 0; i < materialArray.length; i++) {
@@ -1362,7 +1620,7 @@ function NewSheetsUnits(props) {
           <div className="col-md-4">
             <label className="form-label">Weight</label>
             <input
-              type="text"
+              type="number"
               name="weight"
               required
               value={formHeader.weight}
@@ -1386,7 +1644,7 @@ function NewSheetsUnits(props) {
           <div className="col-md-4">
             <label className="form-label">Calculated Weight</label>
             <input
-              type="text"
+              type="number"
               name="calculatedWeight"
               //value={formHeader.calcWeight}
               value={calcWeightVal}
@@ -1483,14 +1741,14 @@ function NewSheetsUnits(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={
-                      /*(props.type2 === "purchase" || props.type === "gas") &&
-                      boolValStock === "off"
-                        ? !boolVal4
-                        : true*/
-                      boolVal6
-                    }
-                    // disabled={isButtonEnabled && boolVal6}
+                    // disabled={
+                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
+                    //   boolValStock === "off"
+                    //     ? !boolVal4
+                    //     : true*/
+                    //   boolVal6
+                    // }
+                    disabled={rmvBtn | boolVal6}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -1500,14 +1758,14 @@ function NewSheetsUnits(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={
-                      /*(props.type2 === "purchase" || props.type === "gas") &&
-                      boolValStock === "on"
-                        ? !boolVal4
-                        : true*/
-                      boolVal7
-                    }
-                    // disabled={!isButtonEnabled && boolVal7}
+                    // disabled={
+                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
+                    //   boolValStock === "on"
+                    //     ? !boolVal4
+                    //     : true*/
+                    //   boolVal7
+                    // }
+                    disabled={addBtn | boolVal6}
                     onClick={removeStock}
                   >
                     Remove stock
@@ -1583,6 +1841,7 @@ function NewSheetsUnits(props) {
                     </div>
                     <div className="col-md-8 ">
                       <input
+                        type="number"
                         className="in-fields"
                         name="dynamicPara1"
                         value={inputPart.dynamicPara1}
@@ -1600,6 +1859,7 @@ function NewSheetsUnits(props) {
                     </div>
                     <div className="col-md-8 ">
                       <input
+                        type="number"
                         className="in-fields"
                         name="dynamicPara2"
                         value={inputPart.dynamicPara2}
@@ -1617,6 +1877,7 @@ function NewSheetsUnits(props) {
                     </div>
                     <div className="col-md-8 ">
                       <input
+                        type="number"
                         className="in-fields"
                         name="dynamicPara3"
                         value={inputPart.dynamicPara3}
@@ -1636,6 +1897,7 @@ function NewSheetsUnits(props) {
                     <div className="col-md-6 col-sm-12">
                       <label className="form-label">Received</label>
                       <input
+                        type="number"
                         className="in-field"
                         name="qtyReceived"
                         // defaultValue={0}
@@ -1673,6 +1935,7 @@ function NewSheetsUnits(props) {
                     <div className="col-md-6 col-sm-12">
                       <label className="form-label">Accepted</label>
                       <input
+                        type="number"
                         className="in-field"
                         name="qtyAccepted"
                         // defaultValue={0}
@@ -1723,6 +1986,7 @@ function NewSheetsUnits(props) {
                     <div className="col-md-6">
                       <label className="form-label">Weight</label>
                       <input
+                        type="number"
                         className="in-field"
                         name="totalWeight"
                         value={inputPart.totalWeight}

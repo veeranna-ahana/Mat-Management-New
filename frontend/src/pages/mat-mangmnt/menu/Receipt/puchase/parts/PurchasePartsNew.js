@@ -392,7 +392,30 @@ function PurchasePartsNew() {
       );
     } else {
       // show model form
-      setShow(true);
+
+      let flag1 = 0;
+      for (let i = 0; i < partArray.length; i++) {
+        if (
+          partArray[i].partId == "" ||
+          partArray[i].unitWeight == "" ||
+          partArray[i].qtyReceived == "" ||
+          partArray[i].qtyAccepted == ""
+        ) {
+          flag1 = 1;
+        }
+        if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
+          flag1 = 2;
+          console.log("Setting flag1 to 2");
+        }
+      }
+      if (flag1 == 1) {
+        toast.error("Please fill correct Part details");
+      } else if (flag1 === 2) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
+      } else {
+        //show model form
+        setShow(true);
+      }
     }
     // if (formHeader.weight == "0") {
     //   toast.error(

@@ -68,6 +68,7 @@ function PNew() {
     address: "",
   });
 
+  console.log("formHeader", formHeader);
   async function fetchCustData() {
     getRequest(endpoints.getCustomers, async (data) => {
       for (let i = 0; i < data.length; i++) {
@@ -198,7 +199,10 @@ function PNew() {
       //console.log(newWeight);
     });
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
   };
+
+  console.log(calcWeightVal);
 
   //add new part
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
@@ -254,11 +258,12 @@ function PNew() {
           //setPartArray(newRow);
           setPartArray([...partArray, newRow]);
           setInputPart(inputPart);
+          // setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
         } else {
           toast.error("Record Not Inserted");
         }
       });
-
+      console.log("updateddddformheader", formHeader);
       console.log("after = ", partArray);
     }
   };
@@ -289,9 +294,13 @@ function PNew() {
       //console.log(newWeight);
     });
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    //NEW CODE
+    setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
   };
 
-  console.log("calcWeightVal", calcWeightVal);
+  console.log("formHeader.cal", formHeader.calcWeight);
+
+  // let formHeader.calcWeight=calcWeightVal;
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
@@ -316,17 +325,20 @@ function PNew() {
       return {
         ...preValue,
         [name]: value,
+        [formHeader.calcWeight]: calcWeightVal,
       };
     });
+    // setFormHeader.calcWeight(calcWeightVal);
   };
 
+  // console.log("formHeader", formHeader);
   const insertHeaderFunction = () => {
     //to save data
     postRequest(
       endpoints.insertHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setFormHeader((preValue) => {
             return {
@@ -345,13 +357,27 @@ function PNew() {
     );
   };
 
+  // let totwt = 0;
+  // partArray.map((obj) => {
+  //   totwt =
+  //     parseFloat(totwt) +
+  //     parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //   //console.log(newWeight);
+  // });
+  // setCalcWeightVal(parseFloat(totwt).toFixed(2));
+  // //NEW CODE
+  // formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+  // setFormHeader(formHeader);
+  // delay(500);
+  console.log("update formheader = ", formHeader);
   const updateHeaderFunction = () => {
-    //console.log("update formheader = ", formHeader);
+    console.log("test");
+
     postRequest(
       endpoints.updateHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setSaveUpdateCount(saveUpdateCount + 1);
           toast.success("Record Updated Successfully");
@@ -557,7 +583,7 @@ function PNew() {
             <label className="form-label">Weight</label>
             <input
               required="required"
-              type="text"
+              type="number"
               name="weight"
               value={formHeader.weight}
               onChange={InputHeaderEvent}
@@ -579,7 +605,7 @@ function PNew() {
           <div className="col-md-4">
             <label className="form-label">Calculated Weight</label>
             <input
-              type="text"
+              type="number"
               name="calculatedWeight"
               value={calcWeightVal}
               readOnly
@@ -725,7 +751,7 @@ function PNew() {
                 <label className="form-label">Unit Wt</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="unitWeight"
                   value={inputPart.unitWeight}
                   onChange={changePartHandle}
@@ -740,7 +766,7 @@ function PNew() {
                 <label className="form-label">Qty Received</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyReceived"
                   //value={tempVal}
                   value={inputPart.qtyReceived}
@@ -755,7 +781,7 @@ function PNew() {
                 <label className="form-label">Qty Accepted</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyAccepted"
                   value={inputPart.qtyAccepted}
                   onChange={changePartHandle}
@@ -769,7 +795,7 @@ function PNew() {
                 <label className="form-label">Qty Rejected</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="nember"
                   name="qtyRejected"
                   readOnly
                 />

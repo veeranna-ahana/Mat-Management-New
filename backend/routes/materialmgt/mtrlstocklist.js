@@ -48,6 +48,8 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
       qtyAccepted,
     } = req.body;
 
+    console.log("reqqqqq", req.body);
+
     let returnData = null;
     //find shape
     misQueryMod(

@@ -76,7 +76,7 @@ function OpenButtonDraftPartList() {
       "?id=" +
       location.state.id;
     getRequest(url, (data) => {
-      //console.log("data = ", data);
+      console.log("data = ", data);
       formHeader.rvId = data.RvID;
       formHeader.receiptDate = formatDate(new Date(data.ReceiptDate), 4);
       formHeader.rvNo = data.RV_No;
@@ -230,6 +230,18 @@ function OpenButtonDraftPartList() {
     //console.log(newArray);
     setPartArray(newArray);
 
+    // let totwt = 0;
+    // partArray.map((obj) => {
+    //   totwt =
+    //     parseFloat(totwt) +
+    //     parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+    //   //console.log(newWeight);
+    // });
+    // setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    // setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
+
+    //NEW CODE
+
     let totwt = 0;
     partArray.map((obj) => {
       totwt =
@@ -238,8 +250,10 @@ function OpenButtonDraftPartList() {
       //console.log(newWeight);
     });
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
   };
 
+  console.log("calcWT", calcWeightVal);
   //add new part
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
   //let id = uuid();
@@ -377,7 +391,7 @@ function OpenButtonDraftPartList() {
       }
     );
   };
-
+  console.log("updatedformheader", formHeader);
   const updateHeaderFunction = () => {
     //console.log("update formheader = ", formHeader);
     postRequest(
@@ -582,7 +596,7 @@ function OpenButtonDraftPartList() {
           <div className="col-md-4">
             <label className="form-label">Weight</label>
             <input
-              type="text"
+              type="number"
               name="weight"
               value={formHeader.weight}
               onChange={InputHeaderEvent}
@@ -604,9 +618,10 @@ function OpenButtonDraftPartList() {
           <div className="col-md-4">
             <label className="form-label">Calculated Weight</label>
             <input
-              type="text"
+              type="number"
               name="calculatedWeight"
-              value={calcWeightVal}
+              value={formHeader.calcWeight}
+              // value={calcWeightVal}
               readOnly
             />
           </div>
@@ -760,7 +775,7 @@ function OpenButtonDraftPartList() {
               <div className="col-md-8 ">
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="unitWeight"
                   value={inputPart.unitWeight}
                   onChange={changePartHandle}
@@ -776,7 +791,7 @@ function OpenButtonDraftPartList() {
               <div className="col-md-8 ">
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyReceived"
                   //value={tempVal}
                   value={inputPart.qtyReceived}
@@ -792,7 +807,7 @@ function OpenButtonDraftPartList() {
               <div className="col-md-8 ">
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyAccepted"
                   value={inputPart.qtyAccepted}
                   onChange={changePartHandle}
@@ -807,7 +822,7 @@ function OpenButtonDraftPartList() {
               <div className="col-md-8 ">
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyRejected"
                   readOnly
                 />
