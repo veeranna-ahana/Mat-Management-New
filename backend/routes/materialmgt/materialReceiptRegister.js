@@ -59,6 +59,7 @@ materialReceiptRegisterRouter.get(
 materialReceiptRegisterRouter.post(
   "/insertHeaderMaterialReceiptRegister",
   async (req, res, next) => {
+    console.log(req.body);
     try {
       let {
         receiptDate,
@@ -72,6 +73,7 @@ materialReceiptRegisterRouter.post(
         calcWeight,
         type,
       } = req.body;
+      console.log("req.body", req.body);
       //convert date dd/mm/yyyy to yyyy-mm-dd
       //receiptDate = receiptDate.split("/").reverse().join("-");
       receiptDate = formatDate(new Date(), 5);
@@ -81,7 +83,7 @@ materialReceiptRegisterRouter.post(
         `insert into  material_receipt_register (ReceiptDate,RV_No,RV_Date,Cust_Code,Customer,CustDocuNo,RVStatus,TotalWeight,TotalCalculatedWeight,Type) values ("${receiptDate}","${rvNo}","${rvDate}","${customer}","${customerName}","${reference}","${status}","${weight}","${calcWeight}","${type}")`,
         (err, data) => {
           if (err) logger.error(err);
-          res.send(data);
+          res.json(data);
         }
       );
     } catch (error) {
@@ -108,6 +110,7 @@ materialReceiptRegisterRouter.post(
         type,
       } = req.body;
       //res.send(req.body);
+      // console.log("rqqqq", req.body);
       //convert date dd/mm/yyyy to yyyy-mm-dd
       receiptDate = formatDate(new Date(), 5);
       rvDate = rvDate.split("/").reverse().join("-");

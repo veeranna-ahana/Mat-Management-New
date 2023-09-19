@@ -40,8 +40,8 @@ function PNew() {
     id: "",
     partId: "",
     unitWeight: "",
-    qtyReceived: "",
-    qtyAccepted: "",
+    qtyReceived: 0,
+    qtyAccepted: 0,
     qtyRejected: "0",
   });
 
@@ -68,6 +68,7 @@ function PNew() {
     address: "",
   });
 
+  console.log("formHeader", formHeader);
   async function fetchCustData() {
     getRequest(endpoints.getCustomers, async (data) => {
       for (let i = 0; i < data.length; i++) {
@@ -115,6 +116,8 @@ function PNew() {
     });
   };
 
+  console.log("mtrlDetails", mtrlDetails);
+
   const columns = [
     {
       text: "#",
@@ -149,6 +152,7 @@ function PNew() {
   ];
 
   const changePartHandle = (e) => {
+    // debugger;
     const { value, name } = e.target;
     setInputPart((preValue) => {
       //console.log(preValue)
@@ -162,13 +166,15 @@ function PNew() {
     inputPart.rvId = formHeader.rvId;
     inputPart.qtyRejected = 0;
     inputPart.qtyUsed = 0;
+    inputPart.calcWeightVal = 0.0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
     setInputPart(inputPart);
-
+    console.log("imputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
+      console.log("data", data);
+      if (data?.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
       }
@@ -193,59 +199,73 @@ function PNew() {
       //console.log(newWeight);
     });
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
   };
+
+  console.log(calcWeightVal);
 
   //add new part
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
   //let id = uuid();
   const addNewPart = (e) => {
-    setBoolVal3(false);
+    // {
+    //   mtrlDetails.length === 0
+    //     ? toast.error("Customer has no Part registered to add ")
+    //     : null;
+    // }
+    if (mtrlDetails.length === 0) {
+      toast.error("Customer has no Part registered to add.");
+    } else {
+      setBoolVal3(false);
 
-    //clear all part fields
-    inputPart.rvId = formHeader.rvId;
-    inputPart.partId = "";
-    inputPart.qtyAccepted = 0;
-    inputPart.qtyReceived = 0;
-    inputPart.qtyRejected = 0;
-    inputPart.qtyUsed = 0;
-    inputPart.qtyReturned = 0;
-    inputPart.qtyIssued = 0;
-    inputPart.unitWeight = 0;
-    inputPart.custBomId = formHeader.customer;
+      //clear all part fields
+      inputPart.rvId = formHeader.rvId;
+      inputPart.partId = "";
+      inputPart.qtyAccepted = 0;
+      inputPart.qtyReceived = 0;
+      inputPart.calcWeightVal = 0.0;
+      inputPart.qtyRejected = 0;
+      inputPart.qtyUsed = 0;
+      inputPart.qtyReturned = 0;
+      inputPart.qtyIssued = 0;
+      inputPart.unitWeight = 0;
+      inputPart.custBomId = formHeader.customer;
 
-    // console.log("partarray = ", partArray);
+      console.log("partarray = ", inputPart);
+      //insert blank row in table
+      postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
+        if (data.affectedRows !== 0) {
+          let id = data.insertId;
+          inputPart.id = id;
+          setPartArray([
+            ...partArray,
+            { id, partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected },
+          ]);
+          //const newWeight = calcWeightVal + unitWeight * qtyReceived;
+          //setCalcWeightVal(parseFloat(newWeight).toFixed(2));
 
-    //insert blank row in table
-    postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
-        let id = data.insertId;
-        inputPart.id = id;
-        setPartArray([
-          ...partArray,
-          { id, partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected },
-        ]);
-        //const newWeight = calcWeightVal + unitWeight * qtyReceived;
-        //setCalcWeightVal(parseFloat(newWeight).toFixed(2));
+          //let uniqueid = uuid();
+          setPartUniqueId(id);
 
-        //let uniqueid = uuid();
-        setPartUniqueId(id);
-        let newRow = {
-          id: id,
-          partId: "",
-          unitWeight: "",
-          qtyReceived: "",
-          qtyAccepted: "",
-          qtyRejected: "",
-        };
-        //setPartArray(newRow);
-        setPartArray([...partArray, newRow]);
-        setInputPart(inputPart);
-      } else {
-        toast.error("Record Not Inserted");
-      }
-    });
-
-    //console.log("after = ", partArray);
+          let newRow = {
+            id: id,
+            partId: "",
+            unitWeight: "",
+            qtyReceived: "",
+            qtyAccepted: "",
+            qtyRejected: "",
+          };
+          //setPartArray(newRow);
+          setPartArray([...partArray, newRow]);
+          setInputPart(inputPart);
+          // setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
+        } else {
+          toast.error("Record Not Inserted");
+        }
+      });
+      console.log("updateddddformheader", formHeader);
+      console.log("after = ", partArray);
+    }
   };
 
   //delete part
@@ -274,8 +294,13 @@ function PNew() {
       //console.log(newWeight);
     });
     setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    //NEW CODE
+    setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
   };
 
+  console.log("formHeader.cal", formHeader.calcWeight);
+
+  // let formHeader.calcWeight=calcWeightVal;
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
@@ -300,17 +325,20 @@ function PNew() {
       return {
         ...preValue,
         [name]: value,
+        [formHeader.calcWeight]: calcWeightVal,
       };
     });
+    // setFormHeader.calcWeight(calcWeightVal);
   };
 
+  // console.log("formHeader", formHeader);
   const insertHeaderFunction = () => {
     //to save data
     postRequest(
       endpoints.insertHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setFormHeader((preValue) => {
             return {
@@ -329,13 +357,27 @@ function PNew() {
     );
   };
 
+  // let totwt = 0;
+  // partArray.map((obj) => {
+  //   totwt =
+  //     parseFloat(totwt) +
+  //     parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //   //console.log(newWeight);
+  // });
+  // setCalcWeightVal(parseFloat(totwt).toFixed(2));
+  // //NEW CODE
+  // formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+  // setFormHeader(formHeader);
+  // delay(500);
+  console.log("update formheader = ", formHeader);
   const updateHeaderFunction = () => {
-    //console.log("update formheader = ", formHeader);
+    console.log("test");
+
     postRequest(
       endpoints.updateHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setSaveUpdateCount(saveUpdateCount + 1);
           toast.success("Record Updated Successfully");
@@ -398,7 +440,7 @@ function PNew() {
         "Enter the Customer Material Weight as per Customer Document"
       );
     } else {
-      let flag1 = 1;
+      let flag1 = 0;
       for (let i = 0; i < partArray.length; i++) {
         if (
           partArray[i].partId == "" ||
@@ -541,7 +583,7 @@ function PNew() {
             <label className="form-label">Weight</label>
             <input
               required="required"
-              type="text"
+              type="number"
               name="weight"
               value={formHeader.weight}
               onChange={InputHeaderEvent}
@@ -563,7 +605,7 @@ function PNew() {
           <div className="col-md-4">
             <label className="form-label">Calculated Weight</label>
             <input
-              type="text"
+              type="number"
               name="calculatedWeight"
               value={calcWeightVal}
               readOnly
@@ -709,7 +751,7 @@ function PNew() {
                 <label className="form-label">Unit Wt</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="unitWeight"
                   value={inputPart.unitWeight}
                   onChange={changePartHandle}
@@ -724,7 +766,7 @@ function PNew() {
                 <label className="form-label">Qty Received</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyReceived"
                   //value={tempVal}
                   value={inputPart.qtyReceived}
@@ -739,7 +781,7 @@ function PNew() {
                 <label className="form-label">Qty Accepted</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="number"
                   name="qtyAccepted"
                   value={inputPart.qtyAccepted}
                   onChange={changePartHandle}
@@ -753,7 +795,7 @@ function PNew() {
                 <label className="form-label">Qty Rejected</label>
                 <input
                   className="in-field"
-                  type="text"
+                  type="nember"
                   name="qtyRejected"
                   readOnly
                 />

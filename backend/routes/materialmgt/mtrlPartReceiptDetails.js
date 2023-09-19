@@ -71,6 +71,7 @@ mtrlPartReceiptDetailsRouter.post(
         qtyAccepted,
         qtyIssued,
       } = req.body;
+      console.log("unitt wt", unitWeight);
       /*console.log(
         `update mtrl_part_receipt_details set RVId = "${rvId}", CustBOM_Id = "${custBomId}", UnitWt = "${unitWeight}", QtyReceived = "${qtyReceived}", QtyRejected = "${qtyRejected}", QtyUsed = "${qtyUsed}", QtyReturned = "${qtyReturned}", PartId = "${partId}",QtyAccepted = "${qtyAccepted}", QtyIssued = "${qtyIssued}" where id = "${id}"`
       );*/
@@ -78,7 +79,7 @@ mtrlPartReceiptDetailsRouter.post(
         `update mtrl_part_receipt_details set RVId = "${rvId}", CustBOM_Id = "${custBomId}", UnitWt = "${unitWeight}", QtyReceived = "${qtyReceived}", QtyRejected = "${qtyRejected}", QtyUsed = "${qtyUsed}", QtyReturned = "${qtyReturned}", PartId = "${partId}",QtyAccepted = "${qtyAccepted}", QtyIssued = "${qtyIssued}" where id = "${id}"`,
         (err, data) => {
           if (err) logger.error(err);
-          res.send(data);
+          res.json(data);
         }
       );
     } catch (error) {

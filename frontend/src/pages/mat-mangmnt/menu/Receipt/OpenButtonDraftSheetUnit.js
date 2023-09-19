@@ -41,6 +41,8 @@ function OpenButtonDraftSheetUnit(props) {
   //falg for add to stock and remove stock
   const [boolValStock, setBoolValStock] = useState("off");
 
+  // enable add to stock / remove stock
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   //after selecting material disable dynamic para 1 2 3
   const [boolPara1, setBoolPara1] = useState(false);
   const [boolPara2, setBoolPara2] = useState(false);
@@ -49,6 +51,9 @@ function OpenButtonDraftSheetUnit(props) {
   const [insCheck, setInsCheck] = useState(false);
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
+
+  const [rmvBtn, setRmvBtn] = useState(false);
+  const [addBtn, setAddBtn] = useState(false);
 
   const [mtrlArray, setMtrlArray] = useState([]);
   const [mtrlStock, setMtrlStock] = useState({});
@@ -147,7 +152,7 @@ function OpenButtonDraftSheetUnit(props) {
           <lable>
             <input
               type="checkbox"
-              checked={row.Inspected == 1 ? true : false}
+              checked={row.inspected == 1 ? true : false}
             />
           </lable>
         </div>
@@ -164,7 +169,7 @@ function OpenButtonDraftSheetUnit(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" checked={row.UpDated == 1 ? true : false} />
+            <input type="checkbox" checked={row.updated == 1 ? true : false} />
           </lable>
         </div>
       ),
@@ -216,8 +221,8 @@ function OpenButtonDraftSheetUnit(props) {
           obj.shapeMtrlId = obj.ShapeMtrlID;
           obj.shapeID = obj.ShapeID;
           obj.dynamicPara1 = obj.DynamicPara1;
-          obj.dynamicPara2 = obj.DynamicPara1;
-          obj.dynamicPara3 = obj.DynamicPara1;
+          obj.dynamicPara2 = obj.DynamicPara2;
+          obj.dynamicPara3 = obj.DynamicPara3;
           obj.qty = obj.Qty;
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
@@ -231,9 +236,8 @@ function OpenButtonDraftSheetUnit(props) {
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
-        //console.log("data 2 = ", data2);
+        console.log("data 2 = ", data2);
         setMaterialArray(data2);
-
         //find shape of material
         //console.log("data2 = ", data2);
         for (let i = 0; i < data2.length; i++) {
@@ -593,7 +597,7 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
-  console.log("part array = ", materialArray);
+  console.log("part arrayyyyyy = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
@@ -706,6 +710,10 @@ function OpenButtonDraftSheetUnit(props) {
           flag1 = 5;
           console.log("Setting flag1 to 5");
         }
+        if (materialArray[i].qtyAccepted > materialArray[i].qtyReceived) {
+          flag1 = 6;
+          console.log("Setting flag1 to 6");
+        }
       }
 
       console.log("flag1 value:", flag1);
@@ -718,6 +726,8 @@ function OpenButtonDraftSheetUnit(props) {
         toast.error("Received and Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
         toast.error("Select Location");
+      } else if (flag1 === 6) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
       } else {
         // Show model form
         setShow(true);
@@ -871,6 +881,7 @@ function OpenButtonDraftSheetUnit(props) {
     //console.log("after = ", partArray);
   };
 
+  console.log("inputpart10", inputPart);
   //delete part
   const handleDelete = () => {
     if (inputPart?.id?.length === 0) {
@@ -1025,7 +1036,7 @@ function OpenButtonDraftSheetUnit(props) {
         //inputPart[name] = value;
         //setInputPart(inputPart);
 
-        //console.log("inputPart : ", inputPart);
+        console.log("inputPart11 : ", inputPart);
       }
     }
     const newArray = materialArray.map((p) =>
@@ -1061,6 +1072,15 @@ function OpenButtonDraftSheetUnit(props) {
       console.log("Row = ", row);
       // console.log("Row = ", row.updated);
       // setIsButtonEnabled(row.updated === 1);
+
+      if (row.updated === 1) {
+        setRmvBtn(true);
+        setAddBtn(false);
+      } else {
+        setRmvBtn(false);
+        setAddBtn(true);
+      }
+
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2?.forEach((obj) => {
@@ -1117,6 +1137,8 @@ function OpenButtonDraftSheetUnit(props) {
       });
     },
   };
+
+  console.log("inpurtpart.srl", inputPart.srl);
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
@@ -1157,8 +1179,10 @@ function OpenButtonDraftSheetUnit(props) {
           //setBoolVal2(true);
           //setBoolVal3(false);
           setBoolValStock("on");
-          setBoolVal6(true);
-          setBoolVal7(false);
+          // setBoolVal6(true);
+          // setBoolVal7(false);
+          setRmvBtn(true);
+          setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
@@ -1190,8 +1214,10 @@ function OpenButtonDraftSheetUnit(props) {
           //setBoolVal2(false);
           //setBoolVal3(true);
           setBoolValStock("off");
-          setBoolVal6(false);
-          setBoolVal7(true);
+          // setBoolVal6(false);
+          // setBoolVal7(true);
+          setAddBtn(true);
+          setRmvBtn(false);
 
           //update checkbox
           for (let i = 0; i < materialArray.length; i++) {
@@ -1207,6 +1233,7 @@ function OpenButtonDraftSheetUnit(props) {
       });
     }
   };
+  console.log("materialArray", materialArray);
   return (
     <div>
       <CreateYesNoModal
@@ -1395,14 +1422,14 @@ function OpenButtonDraftSheetUnit(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={
-                      /*(props.type2 === "purchase" || props.type === "gas") &&
-                      boolValStock === "off"
-                        ? !boolVal4
-                        : true*/
-                      boolVal6
-                    }
-                    // disabled={isButtonEnabled && boolVal6}
+                    // disabled={
+                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
+                    //   boolValStock === "off"
+                    //     ? !boolVal4
+                    //     : true*/
+                    //   boolVal6
+                    // }
+                    disabled={rmvBtn | boolVal6}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -1412,14 +1439,14 @@ function OpenButtonDraftSheetUnit(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={
-                      /*(props.type2 === "purchase" || props.type === "gas") &&
-                      boolValStock === "on"
-                        ? !boolVal4
-                        : true*/
-                      boolVal7
-                    }
-                    // disabled={!isButtonEnabled && boolVal7}
+                    // disabled={
+                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
+                    //   boolValStock === "on"
+                    //     ? !boolVal4
+                    //     : true*/
+                    //   boolVal7
+                    // }
+                    disabled={addBtn | boolVal6}
                     onClick={removeStock}
                   >
                     Remove stock

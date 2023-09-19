@@ -94,7 +94,20 @@ function PurOtherOpenRVList() {
       <>
         <h4 className="title">Magod : Sheets Receipt List Received</h4>
         <div className="row">
-          <div className="col-md-7 text-center"></div>
+          {/* <div className="col-md-7 text-center"></div> */}
+          <div className="col-md-7">
+            <label className="form-label">Customer</label>
+            <select
+              className="ip-select"
+              name="customer"
+              disabled={true}
+              //onChange={changeCustomer}
+            >
+              <option value={data.customer} disabled selected>
+                {data.Customer}
+              </option>
+            </select>
+          </div>
           <div className="col-md-5 mb-2 text-center">
             <button
               className="button-style "
@@ -127,124 +140,102 @@ function PurOtherOpenRVList() {
 
           <div className="col-md-5 col-sm-12">
             <div className="ip-box form-bg">
-             
-                
-                  
-                  
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Receipt Date</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.ReceiptDate}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV No</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RV_No}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV Date</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RV_Date}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Cust Code</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.Cust_Code}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Customer</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.Customer}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Cust Docu No</label>
-                        </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Receipt Date</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.ReceiptDate}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV No</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RV_No} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV Date</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RV_Date} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Cust Code</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.Cust_Code} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Customer</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.Customer} readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Cust Docu No</label>
+                </div>
 
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.CustDocuNo}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">Total Weight</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.TotalWeight}
-                            readOnly
-                          />
-                        </div>
-                      </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.CustDocuNo}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">Total Weight</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.TotalWeight}
+                    readOnly
+                  />
+                </div>
+              </div>
 
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label" style={{whiteSpace:"nowrap"}}>Calculated Weight</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.TotalCalculatedWeight}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-4 mt-1">
-                          <label className="form-label">RV Status</label>
-                        </div>
-                        <div className="col-md-8 ">
-                          <input
-                            className="in-field"
-                            value={data.RVStatus}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                 
-                 
-             
-             
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label
+                    className="form-label"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Calculated Weight
+                  </label>
+                </div>
+                <div className="col-md-8 ">
+                  <input
+                    className="in-field"
+                    value={data.TotalCalculatedWeight}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4 mt-1">
+                  <label className="form-label">RV Status</label>
+                </div>
+                <div className="col-md-8 ">
+                  <input className="in-field" value={data.RVStatus} readOnly />
+                </div>
+              </div>
+
               <div className="row justify-content-center mt-4 mb-4">
                 <button
                   className="button-style "
