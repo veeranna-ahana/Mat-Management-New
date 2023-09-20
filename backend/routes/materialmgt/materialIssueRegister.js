@@ -237,12 +237,15 @@ materialIssueRegisterRouter.post(
 materialIssueRegisterRouter.post(
   "/updateStatusDCNoDCID",
   async (req, res, next) => {
+    console.log("here.......");
     try {
       let { Iv_Id, PkngDcNo, Dc_ID } = req.body;
+      console.log("IVID...", Iv_Id, "PKNGNO", PkngDcNo, "DCID", Dc_ID);
       misQueryMod(
         `update  material_issue_register set IVStatus='Returned', PkngDcNo = "${PkngDcNo}", PkngDCDate =now(), Dc_ID = "${Dc_ID}" where Iv_Id = ${Iv_Id} `,
         (err, data) => {
           if (err) logger.error(err);
+          console.log("data.....", data);
           res.send(data);
         }
       );
