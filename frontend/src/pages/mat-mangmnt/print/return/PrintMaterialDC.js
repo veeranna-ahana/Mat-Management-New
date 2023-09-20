@@ -15,7 +15,7 @@ function PrintMaterialDC() {
   // );
   let totalQTYVar = 0;
 
-  for (let i = 0; i < location.state.outData.length; i++) {
+  for (let i = 0; i < location?.state?.outData.length; i++) {
     const element = location.state.outData[i];
     // console.log("element", element.QtyReturned);
     totalQTYVar = totalQTYVar + parseInt(element.Qty);
@@ -28,10 +28,10 @@ function PrintMaterialDC() {
           //data={data}
           //selectedWeek={selectedWeek}
           //newData={newData}
-          formHeader={location.state.formHeader}
-          outData={location.state.outData}
-          custdata={location.state.custdata}
-          dcRegister={location.state.dcRegister}
+          formHeader={location?.state?.formHeader}
+          outData={location?.state?.outData}
+          custdata={location?.state?.custdata}
+          dcRegister={location?.state?.dcRegister}
           totalQTYVar={totalQTYVar}
         />
       </PDFViewer>

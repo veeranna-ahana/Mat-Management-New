@@ -9,11 +9,12 @@ const { getRequest, postRequest } = require("../../api/apiinstance");
 const { endpoints } = require("../../api/constants");
 
 function CreateDCYesNoModal(props) {
-  const { showCreateDC, setShowCreateDC, handleShow } = props;
+  const { showCreateDC, setShowCreateDC, handleShow, createDcResponse } = props;
   const [show, setShow] = useState(false);
   // const handleClose = () => setShowCreateDC(false);
 
   const handleSave = () => {
+    // debugger;
     //get running no
     // debugger;
     let yyyy = formatDate(new Date(), 6).toString();
@@ -175,6 +176,8 @@ function CreateDCYesNoModal(props) {
         //   text: "123",
         // });
         // props.setTest(true);
+        props.formHeader.IVStatus = "Returned";
+        createDcResponse(props.formHeader);
 
         // props.setFormHeader
 
@@ -211,7 +214,7 @@ function CreateDCYesNoModal(props) {
       toast.error("Serial Weight Cannot be Zero. Set Weight and try again");
     } else {
       //setShow(true);
-      props.handleSave();
+      handleSave();
     }
 
     setShowCreateDC(false);
