@@ -450,6 +450,13 @@ function OutwordPartIssueVocher(props) {
     });
   };
 
+  const createDcResponse = async (data) => {
+    //await delay(500);
+    setFormHeader(data);
+    //setBoolVal4(true);
+    //setBoolVal6(false);
+  };
+
   // console.log("status", formHeader.IVStatus);
   return (
     <>
@@ -710,7 +717,8 @@ function OutwordPartIssueVocher(props) {
         setFormHeader={setFormHeader}
         setReturnValueFunc={setReturnValueFunc}
         // fetchData={fetchData}
-        handleSave={handleSave}
+        // handleSave={handleSave}
+        createDcResponse={createDcResponse}
       />
     </>
   );

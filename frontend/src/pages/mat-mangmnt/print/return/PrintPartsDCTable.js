@@ -141,30 +141,30 @@ const PrintPartsDCTable = ({
         {/* <Text style={styles.tableTitle}>Magod Laser Machining Pvt Ltd</Text>
         <Text style={styles.title2}>Production Department</Text>
         <Text style={styles.shiftperiod}>
-          Shift Plan for Period From : {formHeader.Customer} and {outData}
+          Shift Plan for Period From : {formHeader?.Customer} and {outData}
         </Text> */}
         <Text style={styles.topspace}></Text>
         <Text style={styles.titleFull}>
-          {formHeader.Customer} ({formHeader.Cust_code})
+          {formHeader?.Customer} ({formHeader?.Cust_code})
         </Text>
-        <Text style={styles.titleLeft1}>Branch {custdata.Branch}</Text>
+        <Text style={styles.titleLeft1}>Branch {custdata?.Branch}</Text>
         <Text style={styles.titleMiddle1}></Text>
-        <Text style={styles.titleRight1}>{dcRegister.DC_No}</Text>
+        <Text style={styles.titleRight1}>{dcRegister?.DC_No}</Text>
         <Text style={styles.titleLeft1}>
-          {custdata.Address} {custdata.City}
+          {custdata?.Address} {custdata?.City}
         </Text>
         <View style={styles.titleMiddle1}>
-          <Text>CST No : {custdata.CST_No}</Text>
-          <Text>TIN No : {custdata.TIN_No}</Text>
-          <Text>ECC No : {custdata.ECC_No}</Text>
+          <Text>CST No : {custdata?.CST_No}</Text>
+          <Text>TIN No : {custdata?.TIN_No}</Text>
+          <Text>ECC No : {custdata?.ECC_No}</Text>
         </View>
         <View style={{ ...styles.titleRight1 }}>
-          <Text>{formHeader.IV_No}</Text>
+          <Text>{formHeader?.IV_No}</Text>
           <Text>
             {formatDate(
               new Date(
                 new Date(
-                  formHeader.IV_Date.toString().substring(0, 10)
+                  formHeader?.IV_Date.toString().substring(0, 10)
                 ).toDateString()
               ),
               1
@@ -172,16 +172,16 @@ const PrintPartsDCTable = ({
           </Text>
         </View>
         <Text style={styles.titleFull1}>
-          {custdata.City} PIN - {custdata.Pin_Code}
+          {custdata?.City} PIN - {custdata?.Pin_Code}
         </Text>
-        <Text style={styles.titleFull1}>{custdata.State}</Text>
+        <Text style={styles.titleFull1}>{custdata?.State}</Text>
         <Text style={styles.titleFull1}>
-          Authority : {dcRegister.AuhtorisingDocu}
+          Authority : {dcRegister?.AuhtorisingDocu}
         </Text>
 
         <Text style={styles.topspace}></Text>
 
-        {outData.map((item, index) => {
+        {outData?.map((item, index) => {
           return (
             <>
               <Text style={styles.tableCol1}>{index + 1}</Text>
@@ -197,7 +197,7 @@ const PrintPartsDCTable = ({
         <Text style={styles.topspace}></Text>
         <Text style={styles.topspace}></Text>
         <Text style={styles.titleLeft1}></Text>
-        <Text style={styles.titleMiddle2}>Total Items : {outData.length}</Text>
+        <Text style={styles.titleMiddle2}>Total Items : {outData?.length}</Text>
         <Text style={styles.titleLeft1}></Text>
         <Text style={styles.titleMiddle2}>Total Quantity : {totalQTYVar}</Text>
       </View>
