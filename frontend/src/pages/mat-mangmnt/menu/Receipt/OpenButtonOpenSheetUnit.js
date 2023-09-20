@@ -37,6 +37,9 @@ function OpenButtonOpenSheetUnit() {
   const [rmvBtn, setRmvBtn] = useState(false);
   const [addBtn, setAddBtn] = useState(false);
 
+  //falg for add to stock and remove stock
+  const [boolValStock, setBoolValStock] = useState("off");
+
   const [mtrlStock, setMtrlStock] = useState({});
   const [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -296,20 +299,36 @@ function OpenButtonOpenSheetUnit() {
         qtyAccepted: mtrlStock.qtyAccepted,
       };
       //console.log("before api");
+      // postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
+      //   //console.log("data = ", data);
+      //   if (data.affectedRows !== 0) {
+      //     //enable remove stock buttons
+      //     toast.success("Stock Added Successfully");
+      //     // setBoolVal2(true);
+      //     // setBoolVal3(false);
+      //     setRmvBtn(true);
+      //     setAddBtn(false);
+      //   } else {
+      //     toast.error("Stock Not Added");
+      //   }
+      // });
+
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
         //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Added Successfully");
-          setBoolVal2(true);
-          setBoolVal3(false);
+          //setBoolVal2(true);
+          //setBoolVal3(false);
+          setBoolValStock("on");
+          // setBoolVal6(true);
+          // setBoolVal7(false);
           setRmvBtn(true);
           setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
       });
-
       //update updated status = 1
       let updateObj = {
         id: mtrlStock.Mtrl_Rv_id,
@@ -355,17 +374,25 @@ function OpenButtonOpenSheetUnit() {
       toast.error("Please Select Material");
     } else {
       postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Removed Successfully");
-          setBoolVal2(false);
-          setBoolVal3(true);
-
+          // setBoolVal2(false);
+          // setBoolVal3(true);
+          setBoolValStock("off");
           setAddBtn(true);
           setRmvBtn(false);
+          //update checkbox
+          for (let i = 0; i < mtrlArray.length; i++) {
+            if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+              mtrlArray[i].upDated = 0;
+            }
+          }
+          await delay(500);
+          setMtrlArray(newArray);
         } else {
-          toast.error("Stock Not Removed");
+          toast.success("Stock Removed Successfully");
         }
       });
 
@@ -467,10 +494,10 @@ function OpenButtonOpenSheetUnit() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("isselect", isSelect);
+      // console.log("isselect", isSelect);
       console.log("row", row);
 
-      if (row.updated === 1) {
+      if (row.upDated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
       } else {
@@ -645,7 +672,7 @@ function OpenButtonOpenSheetUnit() {
             className="col-md-8 col-sm-12"
           >
             <BootstrapTable
-              keyField="Id"
+              keyField="id"
               columns={columns}
               data={mtrlArray}
               striped
@@ -679,7 +706,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={boolVal2}
+                    disabled={rmvBtn | boolVal2}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -689,7 +716,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={boolVal3}
+                    disabled={addBtn | boolVal2}
                     onClick={removeStock}
                   >
                     Remove stock
