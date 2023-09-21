@@ -10,7 +10,7 @@ shopfloorMaterialIssueRegisterRouter.post(
       let { IV_No, Issue_date, NC_ProgramNo, QtyIssued, QtyReturned, Ncid } =
         req.body;
       misQueryMod(
-        `INSERT INTO magodmis.\`shopfloor_material _issueregister\`
+        `INSERT INTO magodmis.shopfloor_material_issueregister
                 (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,Ncid) Values
                 (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${Ncid})`,
         (err, data) => {
@@ -30,7 +30,7 @@ shopfloorMaterialIssueRegisterRouter.post(
     try {
       let { id } = req.body;
       misQueryMod(
-        `UPDATE magodmis.\`shopfloor_material _issueregister\` s 
+        `UPDATE magodmis.shopfloor_material_issueregister s 
         SET s.QtyReturned= s.QtyReturned+1 
         WHERE s.IssueID = ${id}`,
         (err, data) => {

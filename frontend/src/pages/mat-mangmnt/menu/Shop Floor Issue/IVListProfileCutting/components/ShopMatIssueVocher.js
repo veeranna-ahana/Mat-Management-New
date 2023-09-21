@@ -97,15 +97,15 @@ function ShopMatIssueVocher() {
       dataField: "ShapeMtrlID",
     },
     {
-      text: "Para1",
+      text: "Width",
       dataField: "Para1",
     },
     {
-      text: "Para2",
+      text: "Length",
       dataField: "Para2",
     },
     {
-      text: "Para3",
+      text: "Height",
       dataField: "Para3",
     },
     {

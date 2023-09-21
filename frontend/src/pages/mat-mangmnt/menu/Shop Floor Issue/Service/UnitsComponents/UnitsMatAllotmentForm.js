@@ -136,31 +136,45 @@ function UnitsMatAllotmentForm() {
     },
   ];
 
-  const handleRowSelect1 = (row, isSelect, rowIndex, e) => {
-    if (isSelect) {
-      if (formHeader.QtyAllottedTemp + firstTableRow.length < formHeader.Qty) {
-        const updatedFirstTableRow = [...firstTableRow, row];
-        setFirstTableRow(updatedFirstTableRow);
-        setSecondTableRow(updatedFirstTableRow);
-      } else {
-        // Handle case when the selection limit is reached.
-      }
-    } else {
-      const updatedFirstTableRow = firstTableRow.filter(
-        (obj) => obj.MtrlStockID !== row.MtrlStockID
-      );
-      setFirstTableRow(updatedFirstTableRow);
-      setSecondTableRow(updatedFirstTableRow);
-    }
-  };
-
-  const [selectRow1, setSelectRow1] = useState({
+  const selectRow1 = {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
-    selected: [], // Initialize selected as an empty array
-    onSelect: handleRowSelect1, // Assign your row selection handler
-  });
+    onSelect: (row, isSelect, rowIndex, e) => {
+      if (isSelect) {
+        // console.log("formheader = ", formHeader);
+        // console.log("firsttableRow = ", firstTableRow);
+
+        if (
+          formHeader.QtyAllottedTemp + firstTableRow.length <
+          formHeader.Qty
+        ) {
+          const updatedFirstTableRow = [...firstTableRow, row];
+          setFirstTableRow(updatedFirstTableRow);
+          // setFirstTableRow([...firstTableRow, row]);
+          // setSecondTableRow([...firstTableRow, row]);
+          setSecondTableRow(updatedFirstTableRow);
+        } else {
+          //isSelect = false;
+          //row.isSelect = false;
+        }
+      } else {
+        const updatedFirstTableRow = firstTableRow.filter(
+          (obj) => obj.MtrlStockID !== row.MtrlStockID
+        );
+        setFirstTableRow(updatedFirstTableRow);
+        setSecondTableRow(updatedFirstTableRow);
+      }
+      //delay(3000);
+      //console.log("isselect = ", isSelect);
+      //console.log("selected table row = ", firstTableRow);
+    },
+    onSelectAll: (isSelect, rows) => {
+      //console.log("rows = ", rows);
+      //setFirstTableRow(rows);
+      //console.log("selected table row = ", firstTableRow);
+    },
+  };
 
   const selectRow2 = {
     mode: "checkbox",
@@ -193,6 +207,16 @@ function UnitsMatAllotmentForm() {
       QtyAllotted: parseInt(formHeader.QtyAllottedTemp) + firstTableRow.length,
     });
     setSecondTable(firstTableRow);
+    //setFirstTableRow()
+    // let newLockArray = firstTableRow.map((obj) => {
+    //   obj.Locked = 1;
+    // });
+
+    const newLockArray = firstTableRow.map((obj) => ({ ...obj, Locked: 1 }));
+
+    console.log("newLockArray", newLockArray);
+    setFirstTableRow(newLockArray);
+    console.log("first table row = ", firstTableRow);
   };
 
   const CancelAllotMaterial = () => {
@@ -583,7 +607,7 @@ function UnitsMatAllotmentForm() {
                 marginTop: "10px",
               }}
             >
-              {/* <BootstrapTable
+              <BootstrapTable
                 keyField="MtrlStockID"
                 columns={columns1}
                 data={firstTable}
@@ -593,52 +617,7 @@ function UnitsMatAllotmentForm() {
                 //pagination={paginationFactory()
                 selectRow={selectRow1}
                 headerClasses="header-class"
-              ></BootstrapTable> */}
-
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Locked</th>
-                    <th>Stock Id</th>
-                    <th>Width</th>
-                    <th>Length</th>
-                    <th>Location</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {firstTable?.map((row) => (
-                    <tr
-                      key={row.MtrlStockID}
-                      key={row.MtrlStockID}
-                      onClick={() =>
-                        handleRowSelect1(
-                          row,
-                          !selectRow1.selected.includes(row)
-                        )
-                      }
-                      className={
-                        selectRow1.selected.includes(row) ? "selected-row" : ""
-                      }
-                    >
-                      <td>
-                        <div className="checkbox">
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={row.Locked === 0 ? false : true}
-                              readOnly
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td>{row.MtrlStockID}</td>
-                      <td>{row.DynamicPara1}</td>
-                      <td>{row.DynamicPara2}</td>
-                      <td>{/* Your Location Data */}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              ></BootstrapTable>
             </div>
           </div>
           <div className="col-md-5">
