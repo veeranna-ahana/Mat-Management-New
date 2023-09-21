@@ -9,7 +9,7 @@ shopFloorIssueRouter.get("/getPartIssueVoucherList", async (req, res, next) => {
 
     misQueryMod(
       `SELECT n1.DwgName as AssyName, s.*, n.TaskNo, n.NcId, n.Machine, n.Operation, 
-      n.Mtrl_Code, n.CustMtrl, n.Cust_Code, c.Cust_Name FROM magodmis.\`shopfloor_part _issueregister\` s,
+      n.Mtrl_Code, n.CustMtrl, n.Cust_Code, c.Cust_Name FROM magodmis.shopfloor_part_issueregister s,
       magodmis.ncprograms n,magodmis.ncprogram_partslist n1,magodmis.cust_data c
       WHERE s.NcId=n.Ncid AND  n1.NcId=n.Ncid  AND s.Status="${status}" AND  n.Cust_Code= c.Cust_Code order by Issue_date DESC`,
       (err, data) => {
@@ -30,7 +30,7 @@ shopFloorIssueRouter.get(
 
       misQueryMod(
         `SELECT n1.DwgName as AssyName, s.*, n.TaskNo, n.NCProgramNo, n.NcId, n.Machine, n.Operation,
-      n.Mtrl_Code, n.CustMtrl, n.Cust_Code FROM magodmis.\`shopfloor_part _issueregister\` s,
+      n.Mtrl_Code, n.CustMtrl, n.Cust_Code FROM magodmis.shopfloor_part_issueregister s,
       magodmis.ncprograms n,magodmis.ncprogram_partslist n1 
       WHERE s.NcId=n.Ncid AND  n1.NcId=n.Ncid AND s.IssueID=${id}`,
         (err, data) => {
@@ -75,7 +75,7 @@ shopFloorIssueRouter.get(
       misQueryMod(
         `SELECT s.*, c.Cust_Name, n.TaskNo, n.NcId, n.Machine, n.Operation,
         n.Mtrl_Code, n.CustMtrl, n.Cust_Code
-    FROM magodmis.\`shopfloor_material _issueregister\` s,magodmis.cust_data c,magodmis.ncprograms n 
+    FROM magodmis.shopfloor_material_issueregister s,magodmis.cust_data c,magodmis.ncprograms n 
                     WHERE  s.Status="${status}" AND  n.Cust_Code= c.Cust_Code AND s.NcId=n.Ncid order by Issue_date DESC limit 100`,
         (err, data) => {
           if (err) logger.error(err);
@@ -97,7 +97,7 @@ shopFloorIssueRouter.get(
       misQueryMod(
         `SELECT s.*, n.TaskNo, n.Machine,n.Operation,
         n.MProcess, c.Cust_name, n.Qty,n.CustMtrl, n.Mtrl_Code, n.Para1, n.Para2, n.Para3
-        FROM magodmis.\`shopfloor_material _issueregister\` s, magodmis.ncprograms n,
+        FROM magodmis.shopfloor_material_issueregister s, magodmis.ncprograms n,
         magodmis.cust_data c WHERE s.IssueID=${id} AND s.NcId=n.NcId
         and s.Status <> 'Closed' AND n.Cust_Code=c.Cust_Code Order By s.Iv_No`,
         (err, data) => {

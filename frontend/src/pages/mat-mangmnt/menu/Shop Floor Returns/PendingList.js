@@ -35,7 +35,7 @@ function PendingList(props) {
 
   const fetchData = () => {
     getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
-      //console.log("table data = ", data);
+      console.log("table data = ", data);
       setFirstTable(data);
       setFirstTableAll(data);
       let newobj = {
@@ -85,37 +85,39 @@ function PendingList(props) {
     {
       text: "IV No",
       dataField: "IV_No",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "IV Date",
       dataField: "Issue_date",
       formatter: statusFormatter,
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Program No",
       dataField: "NC_ProgramNo",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Mtrl Code",
       dataField: "mtrl_code",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Issued",
       dataField: "QtyIssued",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Returned",
       dataField: "QtyReturned",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Used",
-      dataField: "",
+      dataField: "QtyUsed",
+      formatter: (cell, row) =>
+        cell !== null && cell !== undefined ? cell : 0,
     },
     {
       text: "Remarks",
@@ -128,12 +130,12 @@ function PendingList(props) {
       text: "NcPgmMtrlId",
       dataField: "NcPgmMtrlId",
       hidden: true,
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "ShapeMtrlID",
       dataField: "ShapeMtrlID",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Used",
@@ -160,12 +162,12 @@ function PendingList(props) {
     {
       text: "Balance Length",
       dataField: "RemPara1",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Balance Width",
       dataField: "RemPara2",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
 
@@ -216,6 +218,8 @@ function PendingList(props) {
       }
     },
   };
+
+  console.log("selectedSecondTableRows", selectedSecondTableRows);
 
   function tableRefresh() {
     //reset first table
@@ -476,19 +480,29 @@ function PendingList(props) {
       <h4 className="title">Shop Floor Material Issue List</h4>
       <div className="row">
         <div className="col-md-3">
-          <h4 className="form-title"><b>Shop Floor Material Return Form</b></h4>
+          <h4 className="form-title">
+            <b>Shop Floor Material Return Form</b>
+          </h4>
           {/* <button className="button-style ">custname</button> */}
         </div>
         <div className="col-md-9">
-          <button className="button-style mt-0" onClick={returnScrap} style={{width:"170px"}}>
+          <button
+            className="button-style mt-0"
+            onClick={returnScrap}
+            style={{ width: "170px" }}
+          >
             Return As Scrap
           </button>
-          <button className="button-style" onClick={returnToStock} style={{width:"170px"}}>
+          <button
+            className="button-style"
+            onClick={returnToStock}
+            style={{ width: "170px" }}
+          >
             Return To Stock
           </button>
           <button
             className="button-style mt-0"
-            style={{width:"170px"}}
+            style={{ width: "170px" }}
             onClick={() => {
               if (Object.keys(secondTableRow).length == 0) {
                 toast.error("Select Material to return to Stock");
@@ -512,7 +526,7 @@ function PendingList(props) {
             id="btnclose"
             type="submit"
             onClick={() => nav("/MaterialManagement")}
-            style={{width:"170px"}}
+            style={{ width: "170px" }}
           >
             Close
           </button>

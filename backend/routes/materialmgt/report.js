@@ -332,7 +332,7 @@ reportRouter.get("/getPartListReceiptAndUsageThird", async (req, res, next) => {
       `SELECT sum(s.QtyIssued) as QtyIssued, sum(s.QtyUsed) as QtyUsed , 
           sum(s.QtyReturned) as QtyReturned, s1.NC_ProgramNo as NCProgramNo 
           FROM magodmis.mtrl_part_receipt_details m,magodmis.shopfloor_bom_issuedetails s,
-          magodmis.\`shopfloor_part _issueregister\` s1 
+          magodmis.shopfloor_part_issueregister s1 
           WHERE m.Id=${id} AND s.PartReceipt_DetailsID=m.Id and s1.IssueID=s.IV_ID 
            GROUP BY s1.NC_ProgramNo`,
       (err, data) => {
@@ -353,7 +353,7 @@ reportRouter.get(
       let partid = req.query.id2;
       misQueryMod(
         `SELECT s.IV_No,s.Issue_date,s1.QtyIssued, s1.QtyUsed, s1.QtyReturned, s.Remarks 
-        FROM magodmis.\`shopfloor_part _issueregister\` s,magodmis.shopfloor_bom_issuedetails s1 
+        FROM magodmis.shopfloor_part_issueregister s,magodmis.shopfloor_bom_issuedetails s1 
         WHERE s.NC_ProgramNo =${ncno} AND s.IssueID=s1.IV_ID AND s1.PartReceipt_DetailsID=${partid}`,
         (err, data) => {
           if (err) logger.error(err);

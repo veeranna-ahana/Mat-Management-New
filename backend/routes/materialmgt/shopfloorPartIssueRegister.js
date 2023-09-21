@@ -9,7 +9,7 @@ shopfloorPartIssueRegisterRouter.post(
     try {
       let { Id, status } = req.body;
       misQueryMod(
-        `UPDATE magodmis.\`shopfloor_part _issueregister\` s SET s.Status='${status}' WHERE s.IssueID= ${Id}`,
+        `UPDATE magodmis.shopfloor_part_issueregister s SET s.Status='${status}' WHERE s.IssueID= ${Id}`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
@@ -35,7 +35,7 @@ shopfloorPartIssueRegisterRouter.post(
         Ncid,
       } = req.body;
       misQueryMod(
-        `INSERT INTO magodmis.\`shopfloor_part _issueregister\`
+        `INSERT INTO magodmis.shopfloor_part_issueregister
                 (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,QtyUsed,Ncid) Values
                 (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${QtyUsed},${Ncid})`,
         (err, data) => {

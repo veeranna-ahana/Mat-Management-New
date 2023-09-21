@@ -268,8 +268,13 @@ function ProductionMatIssueParts() {
               className="button-style "
               onClick={cancelButton}
               // disabled={show1 || formHeader.Status === "Closed" ? true : false}
+              // disabled={
+              //   show1 || formHeader.Status === "Cancelled" ? true : false
+              // }
               disabled={
-                show1 || formHeader.Status === "Cancelled" ? true : false
+                show1 ||
+                formHeader.Status === "Cancelled" ||
+                formHeader.Status === "Closed"
               }
             >
               Cancel
