@@ -261,7 +261,7 @@ function PendingList(props) {
   };
 
   const returnToStock = () => {
-    if (Object.keys(secondTableRow).length == 0) {
+    if (selectedSecondTableRows.length === 0) {
       toast.error("Select Material to return to Stock");
     } else {
       secondTableRow.ReminderPara1 = secondTableRow.RemPara1 - 10;
@@ -382,7 +382,7 @@ function PendingList(props) {
   };
 
   const returnScrap = () => {
-    if (Object.keys(secondTableRow).length == 0) {
+    if (selectedSecondTableRows.length === 0) {
       toast.error("Select Material to return to Stock");
     } else {
       setShow(true);
@@ -504,7 +504,7 @@ function PendingList(props) {
             className="button-style mt-0"
             style={{ width: "170px" }}
             onClick={() => {
-              if (Object.keys(secondTableRow).length == 0) {
+              if (selectedSecondTableRows.length === 0) {
                 toast.error("Select Material to return to Stock");
               } else {
                 nav(
