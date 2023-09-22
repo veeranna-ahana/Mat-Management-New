@@ -24,7 +24,11 @@ function LocationModel({ show, setShow, scrapModal }) {
     }
   };
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    toast.warning("Not saved as Scrap");
+    setShow(false);
+  };
+
   const [row, setRow] = useState({
     scrapWeight: "",
     location: "",
