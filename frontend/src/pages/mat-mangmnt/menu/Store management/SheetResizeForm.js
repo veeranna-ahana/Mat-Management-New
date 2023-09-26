@@ -69,22 +69,38 @@ function SheetResizeForm() {
     }
   };
 
-  const selectRow = {
-    mode: "checkbox",
-    clickToSelect: true,
-    bgColor: "#98A8F8",
-    onSelect: (row, isSelect, rowIndex, e) => {
-      if (isSelect) {
-        setSelectedTableRows([...selectedTableRows, row]);
-      } else {
-        setSelectedTableRows(
-          selectedTableRows.filter((obj) => {
-            return obj.MtrlStockID !== row.MtrlStockID;
-          })
-        );
-      }
-    },
+  const selectTableRow = (row) => {
+    // mode: "checkbox",
+    // clickToSelect: true,
+    // bgColor: "#98A8F8",
+    // onSelect: (row, isSelect, rowIndex, e) => {
+    //   if (isSelect) {
+
+    const found = selectedTableRows.some((obj) => {
+      return obj.MtrlStockID === row.MtrlStockID;
+    });
+    // console.log("foundddddd", found);
+
+    if (found) {
+      setSelectedTableRows(
+        selectedTableRows.filter((obj) => {
+          return obj.MtrlStockID !== row.MtrlStockID;
+        })
+      );
+    } else {
+      setSelectedTableRows([...selectedTableRows, row]);
+    }
+
+    // } else {
+    //   setSelectedTableRows(
+    //     selectedTableRows.filter((obj) => {
+    //       return obj.MtrlStockID !== row.MtrlStockID;
+    //     })
+    //   );
+    // }
   };
+
+  console.log("selectedTableRows", selectedTableRows);
 
   const resizeButton = () => {
     console.log("selected rows = ", selectedTableRows);
@@ -124,13 +140,14 @@ function SheetResizeForm() {
     }
   };
   return (
-    <div>
-      {" "}
-      <h4 className="title">Sheet Resize Form</h4>
-      <div className="row">
-        <div className="col-md-8">
-          <label className="form-label">Customer</label>
-          {/* <select
+    <>
+      <div>
+        {" "}
+        <h4 className="title">Sheet Resize Form</h4>
+        <div className="row">
+          <div className="col-md-8">
+            <label className="form-label">Customer</label>
+            {/* <select
             className="ip-select"
             name="customer"
             onChange={changeCustomer}
@@ -145,19 +162,19 @@ function SheetResizeForm() {
               </option>
             ))}
           </select> */}
-          <Typeahead
-            id="basic-example"
-            name="customer"
-            options={custdata}
-            placeholder="Select Customer"
-            onChange={(label) => changeCustomer(label)}
-          />
-        </div>
-        <div className="col-md-2">
-          <button
-            className="button-style"
-            onClick={resizeButton}
-            /*onClick={
+            <Typeahead
+              id="basic-example"
+              name="customer"
+              options={custdata}
+              placeholder="Select Customer"
+              onChange={(label) => changeCustomer(label)}
+            />
+          </div>
+          <div className="col-md-2">
+            <button
+              className="button-style"
+              onClick={resizeButton}
+              /*onClick={
               () =>
                 selectedTableRows.length !== 0
                   ? nav(
@@ -175,24 +192,97 @@ function SheetResizeForm() {
               //   "/MaterialManagement/StoreManagement/ResizeSheets/MaterialResizeAndSplittingForm"
               // )
             }*/
-          >
-            Resize
-          </button>
+            >
+              Resize
+            </button>
+          </div>
+          <div className="col-md-2">
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
+          </div>
         </div>
-        <div className="col-md-2">
-          <button
-            className="button-style "
-            id="btnclose"
-            type="submit"
-            onClick={() => nav("/MaterialManagement")}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div style={{ height: "300px", overflowY: "scroll" }}>
-          <BootstrapTable
+        <div className="row mt-4">
+          <div style={{ maxHeight: "300px", overflow: "auto" }}>
+            <Table
+              hover
+              condensed
+              className="table-data border header-class table-striped"
+            >
+              <thead className="text-white">
+                <tr>
+                  <th>Mtrl Stock</th>
+                  <th>Mtrl Code</th>
+                  <th>Shape </th>
+                  <th>Length </th>
+                  <th>Width </th>
+                  <th>Weight </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tabledata.map((val, key) => (
+                  <tr
+                    onClick={() => {
+                      selectTableRow(val);
+                    }}
+                    className={
+                      selectedTableRows.some(
+                        (ele) => ele.MtrlStockID === val.MtrlStockID
+                      )
+                        ? "rowSelectedClass"
+                        : ""
+                    }
+                  >
+                    <td>{val.MtrlStockID}</td>
+                    <td>{val.Mtrl_Code}</td>
+                    <td>{val.Shape} </td>
+                    <td>{val.DynamicPara1} </td>
+                    <td>{val.DynamicPara2} </td>
+                    <td>{val.Weight} </td>
+                  </tr>
+                ))}
+
+                {/* {props.firstTableData.map((val, k) => (
+            <tr
+              onClick={() => props.selectRowFirstFun(val)}
+              className={
+                val === props.firstTableSelectedRow[0] ? "rowSelectedClass" : ""
+              }
+            >
+              <td>{k + 1}</td>
+              <td>{val.RV_No}</td>
+              <td>{val.Cust_Docu_No}</td>
+              <td>{val.Mtrl_Code}</td>
+              <td>{val.DynamicPara1}</td>
+              <td>{val.DynamicPara2}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={val.Scrap === 0 ? false : true}
+                />
+              </td>
+              <td>{val.Weight}</td>
+              <td>{val.ScrapWeight}</td>
+              <td>{val.InStock}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  name=""
+                  id={`checkBoxFirstTable${k}`}
+                  onClick={() => firstTableCheckBoxClickFunc(val, k)}
+                />
+              </td>
+            </tr>
+          ))} */}
+              </tbody>
+            </Table>
+
+            {/* <BootstrapTable
             keyField="MtrlStockID"
             columns={columns}
             data={tabledata}
@@ -201,8 +291,8 @@ function SheetResizeForm() {
             condensed
             selectRow={selectRow}
             headerClasses="header-class"
-          ></BootstrapTable>
-          {/* <Table bordered>
+          ></BootstrapTable> */}
+            {/* <Table bordered>
             <thead
               style={{
                 textAlign: "center",
@@ -236,9 +326,10 @@ function SheetResizeForm() {
               </tr>
             </tbody>
           </Table> */}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
