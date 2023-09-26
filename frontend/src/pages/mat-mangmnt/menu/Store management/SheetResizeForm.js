@@ -63,7 +63,9 @@ function SheetResizeForm() {
       let url1 = endpoints.getResizeMtrlStockList + "?code=" + e[0].Cust_Code;
 
       getRequest(url1, (data) => {
+        setSelectedTableRows([]);
         setTabledata(data);
+
         //console.log("api call = ", data);
       });
     }
@@ -100,33 +102,37 @@ function SheetResizeForm() {
     // }
   };
 
-  console.log("selectedTableRows", selectedTableRows);
+  // console.log("selectedTableRows", selectedTableRows);
 
   const resizeButton = () => {
-    console.log("selected rows = ", selectedTableRows);
-    if (selectedTableRows.length == 0) {
+    // console.log("selected rows = ", selectedTableRows);
+    if (selectedTableRows.length === 0) {
       toast.error("Please select the row first");
     } else {
-      let flag = 0;
-      for (let i = 0; i < selectedTableRows; i++) {
+      const flagArray = [];
+      for (let i = 0; i < selectedTableRows.length; i++) {
+        const element = selectedTableRows[i];
+        // console.log(`element.... + ${i}`, element);
+
         if (
-          selectedTableRows[0].DynamicPara1 !==
-            selectedTableRows[i].DynamicPara1 ||
-          selectedTableRows[0].DynamicPara2 !==
-            selectedTableRows[i].DynamicPara2 ||
-          selectedTableRows[0].Mtrl_Code !== selectedTableRows[i].Mtrl_Code
+          selectedTableRows[0].DynamicPara1 !== element.DynamicPara1 ||
+          selectedTableRows[0].DynamicPara2 !== element.DynamicPara2 ||
+          selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code
         ) {
-          flag = 1;
-        }
-        if (selectedTableRows[0].Mtrl_Code !== selectedTableRows[i].Mtrl_Code) {
-          flag = 2;
+          // dimension err
+          flagArray.push(1);
+        } else if (selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code) {
+          // material err
+          flagArray.push(2);
+        } else {
+          // good to go
+          flagArray.push(0);
         }
       }
-      if (flag == 1) {
-        toast.error("Select Items with similar dimensions and Material Code");
-      } else if (flag == 2) {
-        toast.error("Select Items with similar Material Code");
-      } else {
+
+      if (flagArray.sort().reverse()[0] === 0) {
+        // good to go.................
+        // toast.success("go to go..000000000000");
         nav(
           "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
           {
@@ -136,7 +142,53 @@ function SheetResizeForm() {
             },
           }
         );
+      } else if (flagArray.sort().reverse()[0] === 1) {
+        // dimensions error..........
+        // toast.error("errrrr1111111");
+        toast.error("Select Items with similar dimensions and Material Code");
+      } else if (flagArray.sort().reverse()[0] === 2) {
+        // material error................
+        toast.error("Select Items with similar Material Code");
+        // toast.error("errrrr2222222");
+      } else {
+        toast.error("Uncaught Error Found...");
       }
+
+      // toast.warning("done......");
+
+      // const flag = 0;
+      // for (let i = 0; i < selectedTableRows.length; i++) {
+      //   const element = selectedTableRows[i];
+      //   if (
+      //     selectedTableRows[0].DynamicPara1 !== element.DynamicPara1 ||
+      //     selectedTableRows[0].DynamicPara2 !== element.DynamicPara2 ||
+      //     selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code
+      //   ) {
+      //     flag = 1;
+      //     break;
+      //   } else if (selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code) {
+      //     flag = 2;
+      //     break;
+      //   }
+      // }
+      // if (flag === 1) {
+      //   toast.error("Select Items with similar dimensions and Material Code");
+      // } else if (flag === 2) {
+      //   toast.error("Select Items with similar Material Code");
+      // } else if (flag === 0) {
+      //   toast.success("good to go............");
+      // nav(
+      //   "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+      //   {
+      //     state: {
+      //       secondTableRow: selectedTableRows,
+      //       type: "storeresize",
+      //     },
+      //   }
+      // );
+      // } else {
+      //   toast.error("Uncaught Error Found...");
+      // }
     }
   };
   return (
