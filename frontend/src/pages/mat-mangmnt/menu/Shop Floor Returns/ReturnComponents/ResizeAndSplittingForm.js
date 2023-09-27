@@ -378,7 +378,9 @@ function ResizeAndSplittingForm() {
               className="button-style "
               id="btnclose"
               type="submit"
-              onClick={() => nav("/MaterialManagement")}
+              onClick={() =>
+                nav("/MaterialManagement/ShoopFloorReturns/PendingList")
+              }
             >
               Close
             </button>
