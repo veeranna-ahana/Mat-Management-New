@@ -6,14 +6,16 @@ import { toast } from "react-toastify";
 import YesNoModal from "../../../components/YesNoModal";
 import { getWeight } from "../../../../../utils";
 import { useNavigate } from "react-router-dom";
+import SplitMaterialYesNoModal from "../../../components/SplitMaterialYesNoModal";
 
+import Axios from "axios";
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 function ResizeAndSplittingForm() {
   const nav = useNavigate();
   const location = useLocation();
-  console.log("row data = ", location?.state?.secondTableRow);
+  // console.log("row data = ", location?.state?.secondTableRow);
   const [formHeader, setFormHeader] = useState({
     materialCode: location?.state?.secondTableRow[0].Mtrl_Code,
     quantity: location?.state?.secondTableRow.length,
@@ -70,6 +72,8 @@ function ResizeAndSplittingForm() {
       dataField: "Weight",
     },
   ];
+
+  // const [flagTest, setFlagTest] = useState([]);
 
   const selectRow = {
     mode: "radio",
@@ -191,7 +195,7 @@ function ResizeAndSplittingForm() {
               parseFloat(0)
             );
 
-            tableData[i].Weight = Math.Round(0.000001 * totwt);
+            tableData[i].Weight = Math.round(0.000001 * totwt);
           });
         }
       }
@@ -200,10 +204,12 @@ function ResizeAndSplittingForm() {
         Exit Sub
     End If*/
     }
+    // console.log("clicked");
   };
+  // const flagTest = [];
 
   const modalYesNoResponse = (msg) => {
-    console.log("msg = ", msg);
+    // console.log("msg = ", msg);
     if (msg == "yes") {
       if (location?.state?.type == "return") {
         for (let i = 0; i < location?.state?.secondTableRow.length; i++) {
@@ -288,39 +294,137 @@ function ResizeAndSplittingForm() {
         toast.success("Spliting done Successfully");
         nav("/materialmanagement/ShoopFloorReturns/PendingList");
       } else if (location?.state?.type == "storeresize") {
+        // console.log("secondTableRow........", location?.state?.secondTableRow);
+        // console.log("resizeTableData........", tableData);
+        // console.log("location data...........", location.state);
         //insert mtrl stock list
         for (let i = 0; i < tableData.length; i++) {
+          const element0 = tableData[i];
+
+          // console.log('forrrr111111111..', element0);
+          for (let j = 0; j < location?.state?.secondTableRow.length; j++) {
+            const element1 = location?.state?.secondTableRow[j];
+            // console.log("forrrr111111111..", element0);
+            // console.log("forrrr222222222222..", element1);
+
+            // console.log("paraaaaaaaaa.......", paraData3);
+
+            let urlGet =
+              endpoints.getDataByMtrlStockIdResize +
+              "?MtrlStockID=" +
+              element1.MtrlStockID;
+            getRequest(urlGet, async (selectData) => {
+              // console.log("data from BE selecteData", selectData);
+
+              if (selectData.length > 0) {
+                let paraData3 = {
+                  MtrlStockID: element1.MtrlStockID + "/P" + (i + 1),
+                  MtrlStockIDOld: element1.MtrlStockID,
+
+                  Mtrl_Rv_id: selectData[0].Mtrl_Rv_id,
+                  Cust_Code: selectData[0].Cust_Code,
+                  Customer: selectData[0].Customer,
+                  RV_No: selectData[0].RV_No,
+                  Cust_Docu_No: null,
+                  Mtrl_Code: selectData[0].Mtrl_Code,
+                  Shape: selectData[0].Shape,
+                  Material: selectData[0].Material,
+                  DynamicPara1: element0.DynamicPara1,
+                  DynamicPara2: element0.DynamicPara2,
+                  DynamicPara3: 0,
+                  DynamicPara4: 0,
+                  Locked: 0,
+                  Scrap: 0,
+                  Issue: 1,
+                  Weight: element0.Weight,
+                  ScrapWeight: selectData[0].ScrapWeight,
+                  IV_No: selectData[0].IV_No,
+                  NCProgramNo: null,
+                  LocationNo: element0.Location,
+
+                  // DynamicPara1: element0.DynamicPara1,
+                  // DynamicPara2: element0.DynamicPara2,
+                  // DynamicPara3: 0,
+                  // DynamicPara4: 0,
+                  // LocationNo: element0.Location,
+                  // Weight: element0.Weight,
+                  // MtrlStockID: element1.MtrlStockID + "/P" + (i + 1),
+                  // MtrlStockIDOld: element1.MtrlStockID,
+                };
+
+                // console.log("paraData3...", paraData3);
+                postRequest(
+                  endpoints.insertByMtrlStockIDResize,
+                  paraData3,
+                  (data) => {
+                    if (data.affectedRows > 0) {
+                      // flagTest.push(1);
+                      // setFlagTest([...flagTest, 1]);
+                      // console.log("test...");
+                    }
+                    // console.log("inserted stock list.....", flagTest);
+                  }
+                );
+              } else {
+                toast.error("unaught error");
+              }
+            });
+          }
+        }
+
+        // //update stock list
+        // for (let i = 0; i < location?.state?.secondTableRow.length; i++) {
+        //   let paraData3 = {
+        //     LocationNo: "ScrapYard",
+        //     MtrlStockID: location?.state?.secondTableRow[i].ShapeMtrlID,
+        //   };
+        //   postRequest(endpoints.updateMtrlStockLock3, paraData3, (data) => {
+        //     // console.log("updated stock list");
+        //   });
+        // }
+
+        // update the old mtrl...
+
+        for (let j = 0; j < location?.state?.secondTableRow.length; j++) {
+          const element = location?.state?.secondTableRow[j];
+
+          // console.log("element", element.MtrlStockID);
+
           let paraData3 = {
-            DynamicPara1: tableData[i].DynamicPara1,
-            DynamicPara2: tableData[i].DynamicPara2,
-            DynamicPara3: 0,
-            LocationNo: tableData[i].Location,
-            Weight: tableData[i].Weight,
-            MtrlStockID:
-              location?.state?.secondTableRow[0].ShapeMtrlID + "/P" + (i + 1),
-            MtrlStockIDNew: location?.state?.secondTableRow[0].ShapeMtrlID,
+            LocationNo: "ScrapYard",
+            MtrlStockID: element.MtrlStockID,
           };
-          postRequest(endpoints.insertByMtrlStockID, paraData3, (data) => {
-            console.log("inserted stock list");
+          postRequest(endpoints.updateMtrlStockLock3, paraData3, (data) => {
+            // console.log("updated stock list", data);
+            if (data.affectedRows > 0) {
+              // flagTest.push(2);
+              // setFlagTest([...flagTest, 2]);
+            }
           });
         }
 
-        //update stock list
-        for (let i = 0; i < location?.state?.secondTableRow.length; i++) {
-          let paraData3 = {
-            LocationNo: "ScrapYard",
-            MtrlStockID: location?.state?.secondTableRow[i].ShapeMtrlID,
-          };
-          postRequest(endpoints.updateMtrlStockLock3, paraData3, (data) => {
-            console.log("updated stock list");
-          });
-        }
+        toast.success("Resize Successfull");
+        setTimeout(() => {
+          // document.getElementById("result").innerHTML = "Hello, I am here";
+          nav("/MaterialManagement/StoreManagement/ResizeSheets");
+        }, 500);
+        // flagTest.push(5);
+        // console.log("flagTest", flagTest.length);
+        // if (flagTest.sort().reverse()[0] === 0) {
+        //   toast.error("Error while inserting new material");
+        // } else if (flagTest.sort().reverse()[0] === 1) {
+        //   toast.error("Error while udating the material");
+        // } else if (flagTest.sort().reverse()[0] === 2) {
+        //   toast.success("Resize Successfull");
+        // } else {
+        //   toast.error("Uncaught error while updating Material");
+        // }
       }
     }
   };
   return (
     <div>
-      <YesNoModal
+      <SplitMaterialYesNoModal
         show={showYesNo}
         setShow={setShowYesNo}
         message="Do you wish to split the material as indicated and save it. Changes once done cannot be undone"
