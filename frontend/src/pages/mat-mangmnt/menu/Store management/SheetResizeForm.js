@@ -133,15 +133,12 @@ function SheetResizeForm() {
       if (flagArray.sort().reverse()[0] === 0) {
         // good to go.................
         // toast.success("go to go..000000000000");
-        nav(
-          "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
-          {
-            state: {
-              secondTableRow: selectedTableRows,
-              type: "storeresize",
-            },
-          }
-        );
+        nav("/MaterialManagement/StoreManagement/MaterialSplitter", {
+          state: {
+            selectedTableRows: selectedTableRows,
+            // type: "storeresize",
+          },
+        });
       } else if (flagArray.sort().reverse()[0] === 1) {
         // dimensions error..........
         // toast.error("errrrr1111111");
@@ -181,7 +178,7 @@ function SheetResizeForm() {
       //   "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
       //   {
       //     state: {
-      //       secondTableRow: selectedTableRows,
+      //       selectedTableRows: selectedTableRows,
       //       type: "storeresize",
       //     },
       //   }
@@ -233,7 +230,7 @@ function SheetResizeForm() {
                       "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
                       {
                         state: {
-                          secondTableRow: selectedTableRows,
+                          selectedTableRows: selectedTableRows,
                           type: "storeresize",
                         },
                       }
