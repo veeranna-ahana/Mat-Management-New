@@ -105,6 +105,8 @@ import PrintDailyReportInvoice from "./pages/mat-mangmnt/print/report/PrintDaily
 import PrintLocationStockDetailReport from "./pages/mat-mangmnt/print/store/PrintLocationStockDetailReport";
 import PrintLocationStockSummaryReport from "./pages/mat-mangmnt/print/store/PrintLocationStockSummaryReport";
 
+import ResizeAndSplittingStoreManagement from "./pages/mat-mangmnt/menu/Store management/ResizeAndSplittingStoreManagement";
+
 function App() {
   return (
     <BrowserRouter>
@@ -426,6 +428,10 @@ function App() {
               </Route>
               <Route path="LocationList" element={<LocationList />} />
               <Route path="LocationStock" element={<LocationStock />} />
+              <Route
+                path="MaterialSplitter"
+                element={<ResizeAndSplittingStoreManagement />}
+              />
             </Route>
           </Route>
         </Route>

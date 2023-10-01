@@ -48,7 +48,7 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
       qtyAccepted,
     } = req.body;
 
-    console.log("reqqqqq", req.body);
+    // console.log("reqqqqq", req.body);
 
     let returnData = null;
     //find shape
@@ -197,15 +197,30 @@ mtrlStockListRouter.post("/updateMtrlStockLock2", async (req, res, next) => {
 });
 
 mtrlStockListRouter.post("/updateMtrlStockLock3", async (req, res, next) => {
+  // console.log("upate data..........", req.body);
   try {
-    let { LocationNo, MtrlStockID } = req.body;
+    // let { LocationNo, MtrlStockID } = req.body;
     misQueryMod(
-      `UPDATE magodmis.mtrlstocklist m 
-      SET m.DynamicPara1=0,m.DynamicPara2=0,m.Weight=0, m.Scrap=-1, 
-      m.Locked=-1, m.LocationNo ='${LocationNo}' 
-      WHERE m.MtrlStockID='${MtrlStockID}'`,
+      `UPDATE magodmis.mtrlstocklist
+          SET
+              Scrap = - 1,
+              Locked = - 1,
+              LocationNo = '${req.body.LocationNo}'
+          WHERE
+              MtrlStockID = '${req.body.MtrlStockID}'`,
+
+      // DynamicPara1 = 0,
+      // DynamicPara2 = 0,
+      // Weight = 0,
+      // left.......................... for upadte....
+
+      // `UPDATE magodmis.mtrlstocklist m
+      // SET m.DynamicPara1=0,m.DynamicPara2=0,m.Weight=0, m.Scrap=-1,
+      // m.Locked=-1, m.LocationNo ='${LocationNo}'
+      // WHERE m.MtrlStockID='${MtrlStockID}'`,
       (err, data) => {
         if (err) logger.error(err);
+        // console.log("response", data);
         res.send(data);
       }
     );
@@ -258,6 +273,48 @@ mtrlStockListRouter.post("/insertByMtrlStockID", async (req, res, next) => {
     next(error);
   }
 });
+
+mtrlStockListRouter.get(
+  "/getDataByMtrlStockIdResize",
+  async (req, res, next) => {
+    // console.log("${req.query.MtrlStockID}", req.query.MtrlStockID);
+    try {
+      // let rvno = req.query.MtrlStockID;
+      misQueryMod(
+        `
+        SELECT * FROM magodmis.mtrlstocklist WHERE MtrlStockID = '${req.query.MtrlStockID}'`,
+        // `Select * from magodmis.mtrlstocklist where MtrlStockID = '${req.query.MtrlStockID}'`,
+        (err, data) => {
+          if (err) logger.error(err);
+          res.send(data);
+          // console.log("getDataByMtrlStockIdResize.....data.......", data);
+        }
+      );
+      //res.send(false);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+mtrlStockListRouter.post(
+  "/insertByMtrlStockIDResize",
+  async (req, res, next) => {
+    try {
+      misQueryMod(
+        `INSERT INTO magodmis.mtrlstocklist(MtrlStockID, Mtrl_Rv_id, Cust_Code, Customer, RV_No, Mtrl_Code, Shape, Material, DynamicPara1, DynamicPara2, DynamicPara3, DynamicPara4, Locked, Scrap, Issue, Weight, ScrapWeight, IV_No, LocationNo) VALUES ('${req.body.MtrlStockID}', ${req.body.Mtrl_Rv_id}, '${req.body.Cust_Code}', '${req.body.Customer}','${req.body.RV_No}','${req.body.Mtrl_Code}', '${req.body.Shape}', '${req.body.Material}', '${req.body.DynamicPara1}', '${req.body.DynamicPara2}', '${req.body.DynamicPara3}', '${req.body.DynamicPara4}', ${req.body.Locked}, ${req.body.Scrap}, ${req.body.Issue}, '${req.body.Weight}', '${req.body.ScrapWeight}', '${req.body.IV_No}', '${req.body.LocationNo}')`,
+
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("insert done.......", data);
+          res.send(data);
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 mtrlStockListRouter.get("/getCustomerDetails", async (req, res, next) => {
   try {
