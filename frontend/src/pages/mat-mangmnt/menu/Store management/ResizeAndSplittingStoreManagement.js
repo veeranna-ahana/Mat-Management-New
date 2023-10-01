@@ -128,12 +128,12 @@ export default function ResizeAndSplittingStoreManagement() {
       // console.log("element", element);
 
       if (i === selectedTableRow[0].SrlNo - 1) {
-        console.log("yesss");
+        // console.log("yesss");
 
         tableData[i][name] = value;
         setTableData(tableData);
       } else {
-        console.log("nooooo");
+        // console.log("nooooo");
         setTableData(tableData);
 
         // setTableData(tableData)
@@ -407,6 +407,42 @@ export default function ResizeAndSplittingStoreManagement() {
     }
   };
 
+  const deleteItem = () => {
+    // console.log("delete clicked...");
+    // console.log("selectedTableRow", selectedTableRow);
+    // console.log(
+    //   "tableData",
+    //   tableData[parseInt(selectedTableRow[0].SrlNo) - 1]
+    // );
+
+    // const newArray = tableData.filter(
+    //   (p) => p.MtrlStock_ID !== selectedRow.srlNo
+    // );
+
+    const newArray = [];
+    for (let i = 0; i < tableData.length; i++) {
+      const element = tableData[i];
+
+      if (i !== parseInt(selectedTableRow[0].SrlNo - 1)) {
+        // console.log(`table data... ${i + 1}`, tableData);
+
+        newArray.push(element);
+      }
+    }
+    // console.log("newArray", newArray);
+    setTableData(newArray);
+    setSelectedTableRow([]);
+    setInputData({
+      SrlNo: "",
+      DynamicPara1: "",
+      DynamicPara2: "",
+      InStock: "",
+      Weight: "",
+
+      Location: "",
+    });
+  };
+
   return (
     <>
       <SplitMaterialYesNoModal
@@ -554,7 +590,8 @@ export default function ResizeAndSplittingStoreManagement() {
               <button
                 className="button-style m-0"
                 style={{ width: "130px" }}
-                // onClick={deleteItem}
+                onClick={deleteItem}
+                disabled={selectedTableRow.length === 0}
               >
                 Delete
               </button>
@@ -580,7 +617,10 @@ export default function ResizeAndSplittingStoreManagement() {
             <div>
               <div className="row d-flex align-items-end">
                 <div className="col-md-3 p-0">
-                  <label className="form-label">Length</label>
+                  <label className="form-label">
+                    Length
+                    {/* <span className="text-danger">*</span> */}
+                  </label>
                 </div>
 
                 <div className="col-md-9 p-0">
@@ -592,6 +632,7 @@ export default function ResizeAndSplittingStoreManagement() {
                     onChange={changeHandler}
                     value={inputData.DynamicPara1}
                     onBlur={focusOutEvent}
+                    disabled={selectedTableRow.length === 0}
                   />
                 </div>
               </div>
@@ -611,6 +652,7 @@ export default function ResizeAndSplittingStoreManagement() {
                     onChange={changeHandler}
                     value={inputData.DynamicPara2}
                     onBlur={focusOutEvent}
+                    disabled={selectedTableRow.length === 0}
                   />
                 </div>
               </div>
@@ -630,6 +672,7 @@ export default function ResizeAndSplittingStoreManagement() {
                     onChange={changeHandler}
                     value={inputData.InStock}
                     // onBlur={focusOutEvent}
+                    disabled={selectedTableRow.length === 0}
                   />
                 </div>
               </div>
@@ -648,6 +691,7 @@ export default function ResizeAndSplittingStoreManagement() {
                     onChange={changeHandler}
                     value={inputData.Location}
                     //  onBlur={focusOutEvent}
+                    disabled={selectedTableRow.length === 0}
                   >
                     <option value="" disabled selected hidden>
                       Select Location
