@@ -119,18 +119,73 @@ export default function ResizeAndSplittingStoreManagement() {
     }
   };
 
+  // console.log("location", location?.state?.selectedTableRows[0].Weight);
+
   const changeHandler = (e) => {
     const { value, name } = e.target;
 
     for (let i = 0; i < tableData.length; i++) {
       const element = tableData[i];
 
+      // console.log(
+      //   "formaheader.........",
+      //   "para1...",
+      //   formHeader.para1,
+      //   "para2...",
+      //   formHeader.para2,
+      //   "amount...",
+
+      //   parseFloat(formHeader.para1) * parseFloat(formHeader.para2)
+      // );
       // console.log("element", element);
 
       if (i === selectedTableRow[0].SrlNo - 1) {
         // console.log("yesss");
 
         tableData[i][name] = value;
+        // setTableData(tableData);
+
+        // InStock
+        // DynamicPara2
+        // DynamicPara1
+        // console.log(
+        //   "selectedRow...",
+        //   "length...",
+        //   tableData[i].DynamicPara1,
+        //   "width...",
+        //   tableData[i].DynamicPara2,
+        //   "quantity...",
+        //   tableData[i].InStock
+        // );
+        // console.log(
+        //   "amount...",
+        //   tableData[i].DynamicPara1 *
+        //     tableData[i].DynamicPara2 *
+        //     tableData[i].InStock
+        // );
+
+        const percentage =
+          (parseFloat(tableData[i].DynamicPara1) *
+            parseFloat(tableData[i].DynamicPara2) *
+            parseFloat(tableData[i].InStock)) /
+          (parseFloat(formHeader.para1) * parseFloat(formHeader.para2));
+
+        let weightCalculated =
+          parseFloat(location?.state?.selectedTableRows[0].Weight) * percentage;
+        // console.log(
+        //   "percatage...",
+        //   percentage,
+        //   "weightCalculated",
+        //   weightCalculated
+        // );
+
+        if (weightCalculated >= 0) {
+          tableData[i].Weight = weightCalculated.toFixed(2);
+        } else {
+          tableData[i].Weight = 0.0;
+        }
+        // weightCalculated >= 0 ? (tableData[i].Weight = weightCalculated) : "";
+
         setTableData(tableData);
       } else {
         // console.log("nooooo");
