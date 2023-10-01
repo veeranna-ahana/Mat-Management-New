@@ -217,10 +217,10 @@ export default function ResizeAndSplittingStoreManagement() {
             );
 
             tableData[i].Weight = Math.round(0.000001 * totwt);
+            setShowYesNo(true);
           });
         }
       }
-      setShowYesNo(true);
       /*If MsgBox("Do you wish to split the material as indicated and save it. Changes once done cannot be undone", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
         Exit Sub
     End If*/
