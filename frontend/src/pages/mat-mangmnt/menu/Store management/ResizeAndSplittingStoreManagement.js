@@ -173,10 +173,13 @@ export default function ResizeAndSplittingStoreManagement() {
         let weightCalculated =
           parseFloat(location?.state?.selectedTableRows[0].Weight) * percentage;
         // console.log(
-        //   "percatage...",
-        //   percentage,
-        //   "weightCalculated",
-        //   weightCalculated
+        //   "get weight...",
+        //   getWeight(
+        //     data,
+        //     parseFloat(tableData[i].DynamicPara1),
+        //     parseFloat(tableData[i].DynamicPara2),
+        //     parseFloat(0)
+        //   )
         // );
 
         if (weightCalculated >= 0) {
@@ -187,6 +190,21 @@ export default function ResizeAndSplittingStoreManagement() {
         // weightCalculated >= 0 ? (tableData[i].Weight = weightCalculated) : "";
 
         setTableData(tableData);
+
+        // let url =
+        //   endpoints.getRowByMtrlCode + "?code=" + formHeader.materialCode;
+        // getRequest(url, async (data) => {
+        //   let totwt = 0;
+        //   totwt = getWeight(
+        //     data,
+        //     parseFloat(tableData[i].DynamicPara1),
+        //     parseFloat(tableData[i].DynamicPara2),
+        //     parseFloat(0)
+        //   );
+        //   console.log("totwt", Math.round(0.000001 * totwt));
+        // tableData[i].Weight = Math.round(0.000001 * totwt);
+        // setShowYesNo(true);
+        // });
       } else {
         // console.log("nooooo");
         setTableData(tableData);
@@ -260,20 +278,21 @@ export default function ResizeAndSplittingStoreManagement() {
           toast.error("Select Location for Resized Sheets");
         } else {
           //get mtrl_data by mtrl_code
-          let url =
-            endpoints.getRowByMtrlCode + "?code=" + formHeader.materialCode;
-          getRequest(url, async (data) => {
-            let totwt = 0;
-            totwt = getWeight(
-              data,
-              parseFloat(tableData[i].DynamicPara1),
-              parseFloat(tableData[i].DynamicPara2),
-              parseFloat(0)
-            );
+          // let url =
+          //   endpoints.getRowByMtrlCode + "?code=" + formHeader.materialCode;
+          // getRequest(url, async (data) => {
+          //   let totwt = 0;
+          //   totwt = getWeight(
+          //     data,
+          //     parseFloat(tableData[i].DynamicPara1),
+          //     parseFloat(tableData[i].DynamicPara2),
+          //     parseFloat(0)
+          //   );
 
-            tableData[i].Weight = Math.round(0.000001 * totwt);
-            setShowYesNo(true);
-          });
+          //   tableData[i].Weight = Math.round(0.000001 * totwt);
+          //   setShowYesNo(true);
+          // });
+          setShowYesNo(true);
         }
       }
       /*If MsgBox("Do you wish to split the material as indicated and save it. Changes once done cannot be undone", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
