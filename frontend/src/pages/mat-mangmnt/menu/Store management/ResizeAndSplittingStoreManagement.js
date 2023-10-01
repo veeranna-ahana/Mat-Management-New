@@ -235,77 +235,121 @@ export default function ResizeAndSplittingStoreManagement() {
       // console.log("resizeTableData........", tableData);
       // console.log("location data...........", location.state);
       //insert mtrl stock list
-      for (let i = 0; i < tableData.length; i++) {
-        const element0 = tableData[i];
+      for (let i = 0; i < location?.state?.selectedTableRows.length; i++) {
+        const element0 = location?.state?.selectedTableRows[i];
+        let counter = 1;
 
-        // console.log('forrrr111111111..', element0);
-        for (let j = 0; j < location?.state?.selectedTableRows.length; j++) {
-          const element1 = location?.state?.selectedTableRows[j];
+        // console.log("forrrr111111111..", element0);
+        for (let j = 0; j < tableData.length; j++) {
+          const element1 = tableData[j];
           // console.log("forrrr111111111..", element0);
           // console.log("forrrr222222222222..", element1);
 
           // console.log("paraaaaaaaaa.......", paraData3);
 
-          let urlGet =
-            endpoints.getDataByMtrlStockIdResize +
-            "?MtrlStockID=" +
-            element1.MtrlStockID;
-          getRequest(urlGet, async (selectData) => {
-            // console.log("data from BE selecteData", selectData);
+          for (let k = 1; k < parseInt(element1.InStock) + 1; k++) {
+            // console.log(
+            //   `meterial + ${i + 1} ...... quantity + ${
+            //     element1.InStock
+            //   }........ counter number + ${counter}`
+            // );
 
-            if (selectData.length > 0) {
-              let paraData3 = {
-                MtrlStockID: element1.MtrlStockID + "/P" + (i + 1),
-                MtrlStockIDOld: element1.MtrlStockID,
+            // console.log(
+            //   `meterial + ${i + 1} ...... quantity + ${
+            //     element1.InStock
+            //   }........ counter number + ${counter}`
+            // );
+            // counter = counter + 1;
+            // new....
 
-                Mtrl_Rv_id: selectData[0].Mtrl_Rv_id,
-                Cust_Code: selectData[0].Cust_Code,
-                Customer: selectData[0].Customer,
-                RV_No: selectData[0].RV_No,
-                Cust_Docu_No: null,
-                Mtrl_Code: selectData[0].Mtrl_Code,
-                Shape: selectData[0].Shape,
-                Material: selectData[0].Material,
-                DynamicPara1: element0.DynamicPara1,
-                DynamicPara2: element0.DynamicPara2,
-                DynamicPara3: 0,
-                DynamicPara4: 0,
-                Locked: 0,
-                Scrap: 0,
-                Issue: 1,
-                Weight: element0.Weight,
-                ScrapWeight: selectData[0].ScrapWeight,
-                IV_No: selectData[0].IV_No,
-                NCProgramNo: null,
-                LocationNo: element0.Location,
+            // const element = array[k];
 
-                // DynamicPara1: element0.DynamicPara1,
-                // DynamicPara2: element0.DynamicPara2,
-                // DynamicPara3: 0,
-                // DynamicPara4: 0,
-                // LocationNo: element0.Location,
-                // Weight: element0.Weight,
-                // MtrlStockID: element1.MtrlStockID + "/P" + (i + 1),
-                // MtrlStockIDOld: element1.MtrlStockID,
-              };
+            let urlGet =
+              endpoints.getDataByMtrlStockIdResize +
+              "?MtrlStockID=" +
+              element0.MtrlStockID;
+            getRequest(urlGet, async (selectData) => {
+              // console.log("data from BE selecteData", selectData);
 
-              // console.log("paraData3...", paraData3);
-              postRequest(
-                endpoints.insertByMtrlStockIDResize,
-                paraData3,
-                (data) => {
-                  if (data.affectedRows > 0) {
-                    // flagTest.push(1);
-                    // setFlagTest([...flagTest, 1]);
-                    // console.log("test...");
+              if (selectData.length > 0) {
+                let paraData3 = {
+                  MtrlStockID: `${element0.MtrlStockID}/P${counter}`,
+                  // element0.MtrlStockID + "/P" + counter,
+                  MtrlStockIDOld: element0.MtrlStockID,
+
+                  Mtrl_Rv_id: selectData[0].Mtrl_Rv_id,
+                  Cust_Code: selectData[0].Cust_Code,
+                  Customer: selectData[0].Customer,
+                  RV_No: selectData[0].RV_No,
+                  Cust_Docu_No: null,
+                  Mtrl_Code: selectData[0].Mtrl_Code,
+                  Shape: selectData[0].Shape,
+                  Material: selectData[0].Material,
+                  DynamicPara1: element1.DynamicPara1,
+                  DynamicPara2: element1.DynamicPara2,
+                  DynamicPara3: 0,
+                  DynamicPara4: 0,
+                  Locked: 0,
+                  Scrap: 0,
+                  Issue: 1,
+                  Weight: element1.Weight,
+                  ScrapWeight: selectData[0].ScrapWeight,
+                  IV_No: selectData[0].IV_No,
+                  NCProgramNo: null,
+                  LocationNo: element1.Location,
+
+                  // DynamicPara1: element0.DynamicPara1,
+                  // DynamicPara2: element0.DynamicPara2,
+                  // DynamicPara3: 0,
+                  // DynamicPara4: 0,
+                  // LocationNo: element0.Location,
+                  // Weight: element0.Weight,
+                  // MtrlStockID: element1.MtrlStockID + "/P" + (i + 1),
+                  // MtrlStockIDOld: element1.MtrlStockID,
+                };
+
+                // console.log(
+                //   `meterial + ${i + 1} ...... quantity + ${
+                //     element1.InStock
+                //   }........ counter number + ${counter}`
+                // );
+
+                // console.log("paraData...", paraData3);
+
+                // new
+
+                // console.log(
+                //   `meterial + ${i + 1} ...... quantity + ${
+                //     element1.InStock
+                //   }........ counter number + ${counter}`
+                // );
+
+                // console.log(
+                //   `material... + ${i + 1}, quantity... ${
+                //     element1.InStock
+                //   }, counter.... ${counter}`
+                // );
+
+                // console.log("paraa", paraData3);
+                postRequest(
+                  endpoints.insertByMtrlStockIDResize,
+                  paraData3,
+                  (data) => {
+                    if (data.affectedRows > 0) {
+                      // flagTest.push(1);
+                      // setFlagTest([...flagTest, 1]);
+                      // console.log("test...");
+                    }
+                    // console.log("inserted stock list.....", flagTest);
                   }
-                  // console.log("inserted stock list.....", flagTest);
-                }
-              );
-            } else {
-              toast.error("unaught error");
-            }
-          });
+                );
+
+                counter = counter + 1;
+              } else {
+                toast.error("unaught error");
+              }
+            });
+          }
         }
       }
 
@@ -322,6 +366,7 @@ export default function ResizeAndSplittingStoreManagement() {
 
       // update the old mtrl...
 
+      // new
       for (let j = 0; j < location?.state?.selectedTableRows.length; j++) {
         const element = location?.state?.selectedTableRows[j];
 
@@ -341,10 +386,13 @@ export default function ResizeAndSplittingStoreManagement() {
       }
 
       toast.success("Resize Successfull");
+      // new
       setTimeout(() => {
         // document.getElementById("result").innerHTML = "Hello, I am here";
         nav("/MaterialManagement/StoreManagement/ResizeSheets");
       }, 500);
+
+      //
       // flagTest.push(5);
       // console.log("flagTest", flagTest.length);
       // if (flagTest.sort().reverse()[0] === 0) {
