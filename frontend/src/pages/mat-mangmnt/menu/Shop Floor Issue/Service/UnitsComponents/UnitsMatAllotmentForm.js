@@ -14,7 +14,7 @@ const { endpoints } = require("../../../../../api/constants");
 function UnitsMatAllotmentForm() {
   const nav = useNavigate();
   const location = useLocation();
-  console.log("ncid = ", location?.state?.ncid);
+  //console.log("ncid = ", location?.state?.ncid);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const [formHeader, setFormHeader] = useState({});
@@ -23,7 +23,8 @@ function UnitsMatAllotmentForm() {
   const [firstTableRow, setFirstTableRow] = useState([]);
   const [secondTableRow, setSecondTableRow] = useState([]);
   const [issueidval, setissueidval] = useState("");
-  //const [firstTable, setFirstTable] = useState([]);
+  const [firstTableSelectIndex, setFirstTableSelectIndex] = useState([]);
+  const [secondTableSelectIndex, setSecondTableSelectIndex] = useState([]);
 
   const [selectedRowsInSecondTable, setSelectedRowsInSecondTable] = useState(
     []
@@ -65,8 +66,8 @@ function UnitsMatAllotmentForm() {
         "&para2=" +
         data.Para2;
       getRequest(url3, async (data2) => {
-        console.log("form header data = ", data);
-        console.log("table data = ", data2);
+        //console.log("form header data = ", data);
+        console.log("first table data = ", data2);
         setFirstTable(data2);
         if (data2.length == 0) {
           toast.warning(
@@ -144,23 +145,18 @@ function UnitsMatAllotmentForm() {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
+    selected: firstTableSelectIndex,
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
-        // console.log("formheader = ", formHeader);
-        // console.log("firsttableRow = ", firstTableRow);
-
+        setFirstTableSelectIndex([...firstTableSelectIndex, row.MtrlStockID]);
         if (
           formHeader.QtyAllottedTemp + firstTableRow.length <
           formHeader.Qty
         ) {
           const updatedFirstTableRow = [...firstTableRow, row];
           setFirstTableRow(updatedFirstTableRow);
-          // setFirstTableRow([...firstTableRow, row]);
-          // setSecondTableRow([...firstTableRow, row]);
           setSecondTableRow(updatedFirstTableRow);
         } else {
-          //isSelect = false;
-          //row.isSelect = false;
         }
       } else {
         const updatedFirstTableRow = firstTableRow.filter(
@@ -168,16 +164,12 @@ function UnitsMatAllotmentForm() {
         );
         setFirstTableRow(updatedFirstTableRow);
         setSecondTableRow(updatedFirstTableRow);
+        setFirstTableSelectIndex(
+          firstTableSelectIndex.filter((item) => item != row.MtrlStockID)
+        );
       }
-      //delay(3000);
-      //console.log("isselect = ", isSelect);
-      //console.log("selected table row = ", firstTableRow);
     },
-    onSelectAll: (isSelect, rows) => {
-      //console.log("rows = ", rows);
-      //setFirstTableRow(rows);
-      //console.log("selected table row = ", firstTableRow);
-    },
+    onSelectAll: (isSelect, rows) => {},
   };
 
   // const selectRow2 = {
@@ -206,8 +198,10 @@ function UnitsMatAllotmentForm() {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
+    selected: secondTableSelectIndex,
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
+        setSecondTableSelectIndex([...secondTableSelectIndex, row.MtrlStockID]);
         const updatedSecondTableRow = secondTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
@@ -235,26 +229,44 @@ function UnitsMatAllotmentForm() {
             (selectedRow) => selectedRow.MtrlStockID !== row.MtrlStockID
           );
         });
+        setSecondTableSelectIndex(
+          secondTableSelectIndex.filter((item) => item != row.MtrlStockID)
+        );
       }
     },
   };
 
-  console.log("firstTableRow", firstTableRow);
-  console.log("secondTableRow", secondTableRow);
+  //console.log("firstTableRow", firstTableRow);
+  //console.log("secondTableRow", secondTableRow);
 
-  const allotMaterial = () => {
+  const allotMaterial = async () => {
     setFormHeader({
       ...formHeader,
       QtyAllotted: parseInt(formHeader.QtyAllottedTemp) + firstTableRow.length,
     });
-    setSecondTable(firstTableRow);
+
+    //set second table
+    setSecondTable(secondTableRow);
+
+    // const filterSecond = secondTable.filter(
+    //     (obj) => obj.MtrlStockID !== row.MtrlStockID
+    //   );
+    //   setSecondTableRow(updatedSecondTableRow);
+
     // setFirstTableRow();
-    let newLockArray = firstTableRow.map((obj) => {
+    // let newLockArray = firstTableRow.map((obj) => {
+    //   console.log("obj = ", obj);
+    //   obj.Locked = 1;
+    // });
+
+    firstTableRow.forEach((obj) => {
+      console.log(obj);
       obj.Locked = 1;
     });
+    await delay(100);
+    setFirstTableRow(firstTableRow);
 
-    console.log("newLockArray", newLockArray);
-    setFirstTableRow(newLockArray);
+    setSecondTableSelectIndex([]);
     console.log("first table row = ", firstTableRow);
   };
 
@@ -285,7 +297,7 @@ function UnitsMatAllotmentForm() {
   const CancelAllotMaterial = () => {
     uncheckSelectedRows();
     setSecondTable(secondTableRow);
-
+    //setSecondTableRow(secondTable)
     setFormHeader({
       ...formHeader,
       // QtyAllotted:
@@ -295,6 +307,26 @@ function UnitsMatAllotmentForm() {
 
       QtyAllotted: secondTableRow.length,
     });
+    console.log("second table row = ", secondTableRow);
+    console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
+
+    //deselect first table checkbox
+    const secondTableMtrlId = [];
+    secondTableRow.map((obj) => {
+      secondTableMtrlId.push(obj.MtrlStockID);
+    });
+    setFirstTableSelectIndex(secondTableMtrlId);
+
+    //update firsttable row
+    let firstTableRowObj = [];
+    firstTable.forEach((obj1) => {
+      secondTableRow.forEach((obj2) => {
+        if (obj1.MtrlStockID === obj2.MtrlStockID) {
+          firstTableRowObj.push(obj1);
+        }
+      });
+    });
+    setFirstTableRow(firstTableRowObj);
   };
 
   let modalResponse = async (data) => {
