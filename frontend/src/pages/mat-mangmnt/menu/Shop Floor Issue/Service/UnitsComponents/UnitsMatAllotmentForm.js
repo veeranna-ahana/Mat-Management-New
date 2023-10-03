@@ -25,6 +25,10 @@ function UnitsMatAllotmentForm() {
   const [issueidval, setissueidval] = useState("");
   //const [firstTable, setFirstTable] = useState([]);
 
+  const [selectedRowsInSecondTable, setSelectedRowsInSecondTable] = useState(
+    []
+  );
+
   const [show, setShow] = useState(false);
   const [showok, setShowok] = useState(false);
   let [messageok, setmessageok] = useState("");
@@ -176,24 +180,61 @@ function UnitsMatAllotmentForm() {
     },
   };
 
+  // const selectRow2 = {
+  //   mode: "checkbox",
+  //   clickToSelect: true,
+  //   bgColor: "#98A8F8",
+  //   onSelect: (row, isSelect, rowIndex, e) => {
+  //     if (isSelect) {
+  //       // const updatedSecondTableRow = [...secondTableRow, row];
+  //       // setSecondTableRow(updatedSecondTableRow);
+  //       const updatedSecondTableRow = secondTableRow.filter(
+  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
+  //       );
+  //       setSecondTableRow(updatedSecondTableRow);
+  //     } else {
+  //       // setSecondTableRow(secondTableRow);
+  //       const updatedSecondTableRow = secondTableRow.filter(
+  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
+  //       );
+  //       setSecondTableRow(updatedSecondTableRow);
+  //     }
+  //   },
+  // };
+
   const selectRow2 = {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
-        // const updatedSecondTableRow = [...secondTableRow, row];
-        // setSecondTableRow(updatedSecondTableRow);
         const updatedSecondTableRow = secondTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
         setSecondTableRow(updatedSecondTableRow);
+        // Row is selected, add it to the selectedRowsInSecondTable
+        setSelectedRowsInSecondTable((prevSelectedRows) => {
+          // Check if the row is already in the selected list
+          if (
+            !prevSelectedRows.some(
+              (selectedRow) => selectedRow.MtrlStockID === row.MtrlStockID
+            )
+          ) {
+            return [...prevSelectedRows, row];
+          }
+          return prevSelectedRows; // Row is already selected, so no change
+        });
       } else {
-        // setSecondTableRow(secondTableRow);
         const updatedSecondTableRow = secondTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
         setSecondTableRow(updatedSecondTableRow);
+        // Row is deselected, remove it from selectedRowsInSecondTable
+        setSelectedRowsInSecondTable((prevSelectedRows) => {
+          return prevSelectedRows.filter(
+            (selectedRow) => selectedRow.MtrlStockID !== row.MtrlStockID
+          );
+        });
       }
     },
   };
@@ -207,27 +248,52 @@ function UnitsMatAllotmentForm() {
       QtyAllotted: parseInt(formHeader.QtyAllottedTemp) + firstTableRow.length,
     });
     setSecondTable(firstTableRow);
-    //setFirstTableRow()
-    // let newLockArray = firstTableRow.map((obj) => {
-    //   obj.Locked = 1;
-    // });
-
-    const newLockArray = firstTableRow.map((obj) => ({ ...obj, Locked: 1 }));
+    // setFirstTableRow();
+    let newLockArray = firstTableRow.map((obj) => {
+      obj.Locked = 1;
+    });
 
     console.log("newLockArray", newLockArray);
     setFirstTableRow(newLockArray);
     console.log("first table row = ", firstTableRow);
   };
 
+  const uncheckSelectedRows = () => {
+    const updatedFirstTable = firstTable.map((row) => {
+      if (
+        selectedRowsInSecondTable.some(
+          (selectedRow) => selectedRow.MtrlStockID === row.MtrlStockID
+        )
+      ) {
+        return {
+          ...row,
+
+          Locked: 0,
+        };
+      }
+      return row;
+    });
+
+    // const updatedFirstTableRow = firstTableRow.filter(
+    //   (obj) => obj.MtrlStockID !== row.MtrlStockID
+    // );
+    // setFirstTableRow(updatedFirstTableRow);
+    // setSecondTableRow(updatedFirstTableRow);
+    setFirstTable(updatedFirstTable);
+  };
+
   const CancelAllotMaterial = () => {
+    uncheckSelectedRows();
     setSecondTable(secondTableRow);
 
     setFormHeader({
       ...formHeader,
-      QtyAllotted:
-        parseInt(formHeader.QtyAllotted) +
-        secondTableRow.length -
-        firstTableRow.length,
+      // QtyAllotted:
+      //   parseInt(formHeader.QtyAllotted) +
+      //   secondTableRow.length -
+      //   firstTableRow.length,
+
+      QtyAllotted: secondTableRow.length,
     });
   };
 
