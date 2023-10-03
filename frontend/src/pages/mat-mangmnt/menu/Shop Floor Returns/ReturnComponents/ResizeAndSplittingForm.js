@@ -18,7 +18,6 @@ function ResizeAndSplittingForm() {
 
   console.log("row data = ", location?.state?.secondTableRow);
 
-
   const [formHeader, setFormHeader] = useState({
     materialCode: location?.state?.secondTableRow[0].Mtrl_Code,
     quantity: location?.state?.secondTableRow.length,

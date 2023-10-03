@@ -346,7 +346,7 @@ function App() {
               </Route>
             </Route>
             {/* shoopfloorreturns/pendinglist/returnasscrap/location */}R
-            <Route path="ShoopFloorReturns">
+            <Route path="ShopFloorReturns">
               <Route index={true} element={<ShoopFloorreturns />} />
               <Route path="PendingList">
                 <Route index={true} element={<PendingList />} />

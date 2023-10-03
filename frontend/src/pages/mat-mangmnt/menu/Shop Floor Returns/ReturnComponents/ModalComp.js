@@ -23,12 +23,27 @@ function ModalComp({ open, setOpen, setShow, row, scrapModal }) {
           <Form>The Material will be altered as SCRAP, Continue?</Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleYes}>
+          {/* <Button variant="secondary" onClick={handleYes}>
             yes
           </Button>
           <Button variant="primary" onClick={handleClose}>
             No
-          </Button>
+          </Button> */}
+
+          <button
+            className="button-style"
+            style={{ width: "80px" }}
+            onClick={handleYes}
+          >
+            Yes
+          </button>
+          <button
+            className="button-style"
+            style={{ width: "80px", backgroundColor: "gray" }}
+            onClick={handleClose}
+          >
+            No
+          </button>
         </Modal.Footer>
       </Modal>
     </>
