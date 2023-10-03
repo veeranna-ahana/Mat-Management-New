@@ -15,7 +15,10 @@ const { endpoints } = require("../../../../api/constants");
 function ResizeAndSplittingForm() {
   const nav = useNavigate();
   const location = useLocation();
-  // console.log("row data = ", location?.state?.secondTableRow);
+
+  console.log("row data = ", location?.state?.secondTableRow);
+
+
   const [formHeader, setFormHeader] = useState({
     materialCode: location?.state?.secondTableRow[0].Mtrl_Code,
     quantity: location?.state?.secondTableRow.length,
@@ -482,9 +485,9 @@ function ResizeAndSplittingForm() {
               className="button-style "
               id="btnclose"
               type="submit"
-              onClick={() =>
-                nav("/MaterialManagement/ShoopFloorReturns/PendingList")
-              }
+              onClick={() => {
+                nav("/MaterialManagement/ShoopFloorReturns/PendingList");
+              }}
             >
               Close
             </button>

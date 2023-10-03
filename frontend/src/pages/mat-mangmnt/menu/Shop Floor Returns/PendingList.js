@@ -33,6 +33,8 @@ function PendingList(props) {
   const [treeData, setTreeData] = useState([]);
   let [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
 
+  const [filteredMachine, setFilteredMachine] = useState(null);
+
   const fetchData = () => {
     getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
       console.log("table data = ", data);
@@ -199,6 +201,7 @@ function PendingList(props) {
       });
     },
   };
+
   const selectRow2 = {
     mode: "checkbox",
     clickToSelect: true,
@@ -217,17 +220,60 @@ function PendingList(props) {
         );
       }
     },
+    onSelectAll: (isSelect, rows, e) => {
+      // Handle select all rows
+      if (isSelect) {
+        setSelectedSecondTableRows([...selectedSecondTableRows, ...rows]);
+      } else {
+        setSelectedSecondTableRows([]);
+      }
+    },
   };
 
   console.log("selectedSecondTableRows", selectedSecondTableRows);
 
+  const treeViewclickMachine = (machine) => {
+    setSecondTable([]);
+    setSelectedSecondTableRows([]);
+    setFilteredMachine(machine);
+
+    if (machine === "Machine") {
+      setFirstTable(firstTableAll);
+    } else {
+      const newTable = firstTableAll.filter((obj) => obj.Machine === machine);
+      setFirstTable(newTable);
+
+      console.log("newTable", newTable);
+    }
+  };
+
   function tableRefresh() {
     //reset first table
-    getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
-      setFirstTable(data);
-      setFirstTableAll(data);
-      console.log("first table refresh");
-    });
+    // getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+    //   setFirstTable(data);
+    //   setFirstTableAll(data);
+    //   console.log("first table refresh");
+    // });
+
+    // Reset first table based on the selected machine
+
+    if (filteredMachine) {
+      getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+        const filteredData = data.filter(
+          (obj) => obj.Machine === filteredMachine
+        );
+        setFirstTable(filteredData);
+        setFirstTableAll(data);
+        console.log("first table refresh");
+      });
+    } else {
+      // If no machine is selected, set the first table to the entire data
+      getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+        setFirstTable(data);
+        setFirstTableAll(data);
+        console.log("first table refresh");
+      });
+    }
 
     //reset second table data
     let row = firstRowSelected;
@@ -250,15 +296,6 @@ function PendingList(props) {
       setSecondTable(data);
     });
   }
-
-  const treeViewclickMachine = (machine) => {
-    if (machine === "Machine") {
-      setFirstTable(firstTableAll);
-    } else {
-      const newTable = firstTableAll.filter((obj) => obj.Machine === machine);
-      setFirstTable(newTable);
-    }
-  };
 
   const returnToStock = () => {
     if (selectedSecondTableRows.length === 0) {
