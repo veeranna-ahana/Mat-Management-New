@@ -88,6 +88,8 @@ export const endpoints = {
   updateMtrlStockLock3: `${API}/mtrlStockList/updateMtrlStockLock3`,
   insertByReturnDetails: `${API}/mtrlStockList/insertByReturnDetails`,
   insertByMtrlStockID: `${API}/mtrlStockList/insertByMtrlStockID`,
+  insertByMtrlStockIDResize: `${API}/mtrlStockList/insertByMtrlStockIDResize`,
+  getDataByMtrlStockIdResize: `${API}/mtrlStockList/getDataByMtrlStockIdResize`,
 
   //material Return Details
   insertmaterialReturnDetails: `${API}/materialReturnDetails/insert`,
