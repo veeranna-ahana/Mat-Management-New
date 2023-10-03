@@ -7,7 +7,7 @@ shopFloorReturnRouter.get("/getFirstMainTable", async (req, res, next) => {
   try {
     let status = req.query.status;
     misQueryMod(
-      `SELECT s.*, n.Machine, n.shape, n.mtrl_code,c.cust_name FROM magodmis.\`shopfloor_material _issueregister\` s, 
+      `SELECT s.*, n.Machine, n.shape, n.mtrl_code,c.cust_name FROM magodmis.shopfloor_material_issueregister s, 
         magodmis.ncprograms n,magodmis.cust_data c
         WHERE n.NcId=s.NcId And s.QtyReturned < s.QtyIssued
         AND s.Status not like 'Closed' AND n.Machine is not null AND  c.cust_code=n.Cust_code`,

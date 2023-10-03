@@ -629,7 +629,7 @@ function PurchasePartsNew() {
             hover
             condensed
             selectRow={selectRow}
-            headerClasses="header-class "
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable>
         </div>
         {/*<div className="col-md-6 col-sm-12">

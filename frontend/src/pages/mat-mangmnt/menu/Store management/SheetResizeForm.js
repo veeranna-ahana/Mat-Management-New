@@ -200,7 +200,7 @@ function SheetResizeForm() {
             hover
             condensed
             selectRow={selectRow}
-            headerClasses="header-class"
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable>
           {/* <Table bordered>
             <thead

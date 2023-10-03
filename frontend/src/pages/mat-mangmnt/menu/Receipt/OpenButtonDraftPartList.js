@@ -240,8 +240,6 @@ function OpenButtonDraftPartList() {
     // setCalcWeightVal(parseFloat(totwt).toFixed(2));
     // setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
 
-    //NEW CODE
-
     let totwt = 0;
     partArray.map((obj) => {
       totwt =
@@ -324,6 +322,7 @@ function OpenButtonDraftPartList() {
             p.id !== inputPart.id
         );
         setPartArray(newArray);
+        toast.success("Material Deleted");
       }
     });
 
@@ -684,7 +683,7 @@ function OpenButtonDraftPartList() {
       <div className="row">
         <div
           style={{ height: "330px", overflowY: "scroll" }}
-          className="col-md-6 col-sm-12"
+          className="col-md-8 col-sm-12"
         >
           <BootstrapTable
             keyField="id"
@@ -694,7 +693,7 @@ function OpenButtonDraftPartList() {
             hover
             condensed
             selectRow={selectRow}
-            headerClasses="header-class "
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable>
         </div>
         {/*<div className="col-md-6 col-sm-12">
@@ -732,7 +731,7 @@ function OpenButtonDraftPartList() {
             </tbody>
           </table> 
         </div>*/}
-        <div className="col-md-6 col-sm-12">
+        <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
             <div className="row justify-content-center mt-1 mb-2">
               <button
@@ -746,10 +745,10 @@ function OpenButtonDraftPartList() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11">
                 <label className="form-label">Part ID</label>
-              </div>
-              <div className="col-md-8" style={{ marginTop: "8px" }}>
+                {/* </div>
+              <div className="col-md-8" style={{ marginTop: "8px" }}> */}
                 <select
                   className="ip-select dropdown-field"
                   name="partId"
@@ -767,12 +766,12 @@ function OpenButtonDraftPartList() {
                   ))}
                 </select>
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Unit Wt</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -783,12 +782,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Received</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -799,12 +798,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Accepted</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -814,12 +813,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Rejected</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -827,6 +826,7 @@ function OpenButtonDraftPartList() {
                   readOnly
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
 
             <div className="row justify-content-center mt-3 mb-4">

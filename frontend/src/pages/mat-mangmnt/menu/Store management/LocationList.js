@@ -241,7 +241,7 @@ function LocationList(props) {
               hover
               condensed
               selectRow={selectRow}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

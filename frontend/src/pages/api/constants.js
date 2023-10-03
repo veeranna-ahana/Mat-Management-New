@@ -69,6 +69,7 @@ export const endpoints = {
   updateMtrlReceiptDetails: `${API}/mtrlReceiptDetails/updateMtrlReceiptDetails`,
   deleteMtrlReceiptDetails: `${API}/mtrlReceiptDetails/deleteMtrlReceiptDetails`,
   updateMtrlReceiptDetailsUpdated: `${API}/mtrlReceiptDetails/updateMtrlReceiptDetailsUpdated`,
+  updateSelectedRowMtrlReceiptDetails: `${API}/mtrlReceiptDetails/updateSelectedRowMtrlReceiptDetails`,
 
   //running no
   getRunningNo: `${API}/runningNo/getRunningNoBySrlType`,

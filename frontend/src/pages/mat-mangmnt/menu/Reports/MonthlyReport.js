@@ -314,7 +314,6 @@ function MonthlyReport() {
       {" "}
       <h4 className="title">Raw Material Daily Report</h4>
       <div className="row">
-     
         <div className="col-md-2">
           <label className="form-label">Select Month</label>
           <input
@@ -348,9 +347,12 @@ function MonthlyReport() {
         </div>
       </div>
       <div className="row mt-4">
-       
         <div className="col-md-12">
-          <Tabs id="controlled-tab-example" className="mb-3 mt-3 tab_font" style={{width:"1200px"}}>
+          <Tabs
+            id="controlled-tab-example"
+            className="mb-3 mt-3 tab_font"
+            style={{ width: "1200px" }}
+          >
             <Tab eventKey="mat_rece" title="Material Purchase Details">
               {/* <MonthlyMatPurDetails /> */}
               <div style={{ height: "400px", overflowY: "scroll" }}>
@@ -362,7 +364,7 @@ function MonthlyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -377,7 +379,7 @@ function MonthlyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -392,7 +394,7 @@ function MonthlyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -407,7 +409,7 @@ function MonthlyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -426,7 +428,7 @@ function MonthlyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>

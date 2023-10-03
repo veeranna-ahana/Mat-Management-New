@@ -916,7 +916,7 @@ function OutwordMaterialIssueVocher(props) {
             </Table>
 
             {/* <BootstrapTable
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
               keyField="IV_No"
               //keyField="id"
               columns={columns}
@@ -1360,7 +1360,7 @@ export default OutwordMaterialIssueVocher;
 //       </Table>
 
 //       {/* <BootstrapTable
-//       headerClasses="header-class "
+//       headerClasses="header-class tableHeaderBGColor"
 //       keyField="IV_No"
 //       //keyField="id"
 //       columns={columns}

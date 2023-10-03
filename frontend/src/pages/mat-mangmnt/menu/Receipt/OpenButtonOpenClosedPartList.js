@@ -225,55 +225,38 @@ function OpenButtonOpenClosedPartList() {
           <div className="col-md-8 justify-content-center">
             <div className="row">
               <div className="col-md-3 col-sm-12">
-              <button
-              className="button-style"
-           
-              disabled={boolVal}
-            >
-              Save
-            </button>
+                <button className="button-style" disabled={boolVal}>
+                  Save
+                </button>
               </div>
               <div className="col-md-3 col-sm-12">
-              <button
-              className="button-style"
-         
-              disabled={boolVal}
-            >
-              Allot RV No
-            </button>
+                <button className="button-style" disabled={boolVal}>
+                  Allot RV No
+                </button>
               </div>
               <div className="col-md-3 col-sm-12">
-              <button
-              className="button-style"
-             
-              disabled={boolVal}
-            >
-              Delete RV
-            </button>
+                <button className="button-style" disabled={boolVal}>
+                  Delete RV
+                </button>
               </div>
               <div className="col-md-3 col-sm-12">
-              <button
-              className="button-style "
-              id="btnclose"
-              type="submit"
-              onClick={() => nav("/MaterialManagement")}
-            >
-              Close
-            </button>
+                <button
+                  className="button-style "
+                  id="btnclose"
+                  type="submit"
+                  onClick={() => nav("/MaterialManagement")}
+                >
+                  Close
+                </button>
               </div>
-
             </div>
-            
-            
-           
-            
           </div>
           <div className="col-md-4 mb-3">
             <label className="form-label"></label>
             <textarea
-             id="exampleFormControlTextarea1"
-             rows="4"
-             style={{ width: "330px" }}
+              id="exampleFormControlTextarea1"
+              rows="4"
+              style={{ width: "330px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -283,7 +266,7 @@ function OpenButtonOpenClosedPartList() {
       <div className="row">
         <div
           style={{ height: "330px", overflowY: "scroll" }}
-          className="col-md-6 col-sm-12"
+          className="col-md-8 col-sm-12"
         >
           <BootstrapTable
             keyField="Id"
@@ -292,107 +275,101 @@ function OpenButtonOpenClosedPartList() {
             striped
             hover
             condensed
-            headerClasses="header-class "
+            headerClasses="header-class tableHeaderBGColor"
             //selectRow={selectRow}
           ></BootstrapTable>
         </div>
-        <div className="col-md-6 col-sm-12">
+        <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
-        
-            
-               
-                 
-                    <div className="row justify-content-center mt-1 mb-2">
-                      <button
-                        className="button-style "
-                        style={{ width: "155px" }}
-                        disabled={boolVal}
-                      >
-                        Add New
-                      </button>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-4 mt-1 ">
-                        <label className="form-label">Part ID</label>
-                      </div>
-                      <div className="col-md-8" style={{ marginTop: "8px" }}>
-                        <select
-                          className="ip-select dropdown-field"
-                          name="partId"
-                          value={inputPart.partId}
-                          disabled={boolVal}
-                        >
-                          <option value="" disabled selected>
-                            Select Part
-                          </option>
-                          {mtrlDetails.map((part, index) => (
-                            <option key={index} value={part.PartId}>
-                              {part.PartId}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-4 mt-1 ">
-                        <label className="form-label">Unit Wt</label>
-                      </div>
-                      <div className="col-md-8 ">
-                        <input
-                          className="in-field"
-                          type="text"
-                          name="unitWeight"
-                          value={inputPart.unitWeight}
-                          disabled={boolVal}
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-4 mt-1 ">
-                        <label className="form-label">Qty Received</label>
-                      </div>
-                      <div className="col-md-8 ">
-                        <input
-                          className="in-field"
-                          type="text"
-                          name="qtyReceived"
-                          //value={tempVal}
-                          value={inputPart.qtyReceived}
-                          disabled={boolVal}
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-4 mt-1 ">
-                        <label className="form-label">Qty Accepted</label>
-                      </div>
-                      <div className="col-md-8 ">
-                        <input
-                          className="in-field"
-                          type="text"
-                          name="qtyAccepted"
-                          value={inputPart.qtyAccepted}
-                          disabled={boolVal}
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-4 mt-1 ">
-                        <label className="form-label">Qty Rejected</label>
-                      </div>
-                      <div className="col-md-8 ">
-                        <input
-                          className="in-field"
-                          type="text"
-                          name="qtyRejected"
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  
-             
-             
-           
+            <div className="row justify-content-center mt-1 mb-2">
+              <button
+                className="button-style "
+                style={{ width: "155px" }}
+                disabled={boolVal}
+              >
+                Add New
+              </button>
+            </div>
+            <div className="row">
+              <div className="col-md-11 mt-1 ">
+                <label className="form-label">Part ID</label>
+                {/* </div>
+              <div className="col-md-8" style={{ marginTop: "8px" }}> */}
+                <select
+                  className="ip-select dropdown-field"
+                  name="partId"
+                  value={inputPart.partId}
+                  disabled={boolVal}
+                >
+                  <option value="" disabled selected>
+                    Select Part
+                  </option>
+                  {mtrlDetails.map((part, index) => (
+                    <option key={index} value={part.PartId}>
+                      {part.PartId}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-8 "></div>
+            </div>
+            <div className="row">
+              <div className="col-md-11 mt-1 ">
+                <label className="form-label">Unit Wt</label>
+
+                <input
+                  className="in-field"
+                  type="text"
+                  name="unitWeight"
+                  value={inputPart.unitWeight}
+                  disabled={boolVal}
+                />
+              </div>
+              <div className="col-md-8 "></div>
+            </div>
+            <div className="row">
+              <div className="col-md-11 mt-1 ">
+                <label className="form-label">Qty Received</label>
+
+                <input
+                  className="in-field"
+                  type="text"
+                  name="qtyReceived"
+                  //value={tempVal}
+                  value={inputPart.qtyReceived}
+                  disabled={boolVal}
+                />
+              </div>
+              <div className="col-md-8 "></div>
+            </div>
+            <div className="row">
+              <div className="col-md-11 mt-1 ">
+                <label className="form-label">Qty Accepted</label>
+
+                <input
+                  className="in-field"
+                  type="text"
+                  name="qtyAccepted"
+                  value={inputPart.qtyAccepted}
+                  disabled={boolVal}
+                />
+              </div>
+              <div className="col-md-8 "></div>
+            </div>
+            <div className="row">
+              <div className="col-md-11 mt-1 ">
+                <label className="form-label">Qty Rejected</label>
+
+                <input
+                  className="in-field"
+                  type="text"
+                  name="qtyRejected"
+                  readOnly
+                />
+              </div>
+              <div className="col-md-8 "></div>
+            </div>
+
             <div className="row justify-content-center mt-3 mb-4">
               <button
                 className="button-style "

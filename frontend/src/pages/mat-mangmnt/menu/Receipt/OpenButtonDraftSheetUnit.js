@@ -791,7 +791,6 @@ function OpenButtonDraftSheetUnit(props) {
     locationNo,
     upDated,
   } = inputPart;
-
   const addNewMaterial = (e) => {
     setBoolVal3(false);
 
@@ -838,6 +837,7 @@ function OpenButtonDraftSheetUnit(props) {
         //count total record in material Array
         let count = materialArray.length + 1;
         srl = "0" + count;
+        inputPart.srl = srl;
 
         //set inserted id
         setPartUniqueId(id);
@@ -922,17 +922,26 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
-  const changeMaterialHandle = async (e) => {
+  const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
+    // console.log("eventvalue....", e.target.value, "id....", id);
+    for (let i = 0; i < materialArray.length; i++) {
+      const element = materialArray[i];
 
-    setInputPart((preValue) => {
-      //console.log(preValue)
-      return {
-        ...preValue,
-        [name]: value,
-      };
-    });
-    inputPart[name] = value;
+      if (element.id === id) {
+        element[name] = value;
+
+        // console.log("element..................", element);
+      }
+    }
+    // setInputPart((preValue) => {
+    //   //console.log(preValue)
+    //   return {
+    //     ...preValue,
+    //     [name]: value,
+    //   };
+    // });
+    // inputPart[name] = value;
     //inputPart.custCode = formHeader.customer;
     //inputPart.rvId = formHeader.rvId;
 
@@ -1041,21 +1050,22 @@ function OpenButtonDraftSheetUnit(props) {
     }
     const newArray = materialArray.map((p) =>
       //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-      p.id === partUniqueId
+      p.id === id
         ? {
             ...p,
             [name]: value,
-            qty: inputPart.qtyReceived,
-            inspected: inputPart.inspected == "on" ? 1 : 0,
+            //qty: inputPart.qtyReceived,
+            //inspected: inputPart.inspected,
           }
         : p
     );
 
     setMaterialArray(newArray);
     await delay(500);
-
+    // debugger
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
+      console.log("update .......");
       if (data.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
@@ -1063,6 +1073,186 @@ function OpenButtonDraftSheetUnit(props) {
     });
     await delay(500);
   };
+
+  // const changeMaterialHandle = async (e, id) => {
+  //   const { value, name } = e.target;
+
+  //   // console.log("eventvalue....", e.target.value, "id....", id);
+  //   for (let i = 0; i < materialArray.length; i++) {
+  //     const element = materialArray[i];
+
+  //     if (element.id === id) {
+  //       element[name] = value;
+
+  //       // console.log("element..................", element);
+  //     }
+  //   }
+
+  //   // setInputPart((preValue) => {
+  //   //   //console.log(preValue)
+  //   //   return {
+  //   //     ...preValue,
+  //   //     [name]: value,
+  //   //   };
+  //   // });
+  //   // inputPart[name] = value;
+  //   //inputPart.custCode = formHeader.customer;
+  //   //inputPart.rvId = formHeader.rvId;
+
+  //   //checkbox update
+  //   if (name === "inspected") {
+  //     if (e.target.checked) {
+  //       inputPart.inspected = 1;
+  //       setBoolVal5(true);
+  //       setInsCheck(true);
+  //     } else {
+  //       inputPart.inspected = 0;
+  //       setBoolVal5(false);
+  //       setInsCheck(false);
+  //     }
+  //   }
+
+  //   inputPart[name] = value;
+  //   setInputPart(inputPart);
+  //   //console.log(inputPart);
+
+  //   //calculate weight
+  //   if (name === "qtyAccepted") {
+  //     if (e.target.value) {
+  //       let val = e.target.value;
+  //       //get mtrl_data by mtrl_code
+  //       let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+  //       getRequest(url, async (data) => {
+  //         //setCustdata(data);
+  //         console.log("weight", data);
+  //         let TotalWeightCalculated =
+  //           parseFloat(inputPart.qtyAccepted) *
+  //           getWeight(
+  //             data,
+  //             parseFloat(inputPart.dynamicPara1),
+  //             parseFloat(inputPart.dynamicPara2),
+  //             parseFloat(inputPart.dynamicPara3)
+  //           );
+
+  //         console.log("TotalWeightCalculated", TotalWeightCalculated);
+
+  //         TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
+  //         // console.log("TotalWeightCalculated", TotalWeightCalculated);
+
+  //         inputPart.totalWeightCalculated = parseFloat(
+  //           TotalWeightCalculated
+  //         ).toFixed(2);
+
+  //         inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(2);
+  //         inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
+  //         inputPart["TotalWeight"] = TotalWeightCalculated;
+
+  //         setInputPart(inputPart);
+  //         console.log("formHeader", formHeader);
+  //         //update forheader in database
+  //         postRequest(
+  //           endpoints.updateHeaderMaterialReceiptRegister,
+  //           formHeader,
+  //           (data) => {}
+  //         );
+
+  //         //update material array:
+  //         const newArray = materialArray.map((p) =>
+  //           //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //           p.id === id
+  //             ? {
+  //                 ...p,
+  //                 [name]: value,
+  //                 //qty: inputPart.qtyReceived,
+  //                 //inspected: inputPart.inspected,
+  //               }
+  //             : p
+  //         );
+  //         setMaterialArray(newArray);
+  //         console.log("material array = ", materialArray);
+  //         await delay(500);
+
+  //         //find calculateweight
+  //         let totwt = 0;
+  //         materialArray.map((obj) => {
+  //           if (obj.id === partUniqueId) {
+  //             totwt =
+  //               parseFloat(totwt) +
+  //               (parseFloat(value) *
+  //                 getWeight(
+  //                   data,
+  //                   parseFloat(obj.dynamicPara1),
+  //                   parseFloat(obj.dynamicPara2),
+  //                   parseFloat(obj.dynamicPara3)
+  //                 )) /
+  //                 (1000 * 1000);
+  //           } else {
+  //             totwt =
+  //               parseFloat(totwt) +
+  //               (parseFloat(obj.qtyAccepted) *
+  //                 getWeight(
+  //                   data,
+  //                   parseFloat(obj.dynamicPara1),
+  //                   parseFloat(obj.dynamicPara2),
+  //                   parseFloat(obj.dynamicPara3)
+  //                 )) /
+  //                 (1000 * 1000);
+  //           }
+  //           //parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //           //console.log(newWeight);
+  //         });
+  //         setCalcWeightVal(parseFloat(totwt).toFixed(2));
+
+  //         formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+  //         setFormHeader(formHeader);
+  //         delay(500);
+  //         console.log("form header = ", formHeader);
+  //         //update calc weight in header
+  //         postRequest(
+  //           endpoints.updateHeaderMaterialReceiptRegister,
+  //           formHeader,
+  //           (data) => {
+  //             if (data.affectedRows !== 0) {
+  //             }
+  //           }
+  //         );
+  //       });
+  //       //inputPart[name] = value;
+  //       //setInputPart(inputPart);
+
+  //       //console.log("inputPart : ", inputPart);
+  //     }
+  //   }
+  //   const newArray = materialArray.map((p) =>
+  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //     p.id === id
+  //       ? {
+  //           ...p,
+  //           [name]: value,
+  //           qty: inputPart.qtyReceived,
+  //           inspected: inputPart.inspected == "on" ? 1 : 0,
+  //         }
+  //       : p
+  //   );
+
+  //   setMaterialArray(newArray);
+  //   await delay(500);
+
+  //   // if (inputPart.qtyAccepted > inputPart.qtyReceived) {
+  //   //   toast.error("QtyAccepted should be less than or equal to QtyReceived");
+  //   // }
+
+  //   // console.log("selectedRowss:", selectedRows);
+  //   console.log("inputPart", inputPart);
+  //   //update blank row with respected to modified part textfield
+  //   postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
+  //     if (data.affectedRows !== 0) {
+  //     } else {
+  //       toast.error("Record Not Updated");
+  //     }
+  //   });
+  //   await delay(500);
+  // };
 
   const selectRow = {
     mode: "radio",
@@ -1072,7 +1262,7 @@ function OpenButtonDraftSheetUnit(props) {
       console.log("Row = ", row);
       // console.log("Row = ", row.updated);
       // setIsButtonEnabled(row.updated === 1);
-
+      setInputPart(row);
       if (row.updated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
@@ -1392,7 +1582,7 @@ function OpenButtonDraftSheetUnit(props) {
                 hover
                 condensed
                 selectRow={selectRow}
-                headerClasses="header-class "
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>
             </div>
 
@@ -1526,7 +1716,12 @@ function OpenButtonDraftSheetUnit(props) {
                         name="dynamicPara1"
                         value={inputPart.dynamicPara1}
                         disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                       />
                     </div>
                     <div className="col-md-3">
@@ -1542,7 +1737,12 @@ function OpenButtonDraftSheetUnit(props) {
                         className="in-fields"
                         name="dynamicPara2"
                         value={inputPart.dynamicPara2}
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                         disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
                       />
                     </div>
@@ -1559,7 +1759,12 @@ function OpenButtonDraftSheetUnit(props) {
                         className="in-fields"
                         name="dynamicPara3"
                         value={inputPart.dynamicPara3}
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                         disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
                       />
                     </div>
@@ -1580,7 +1785,12 @@ function OpenButtonDraftSheetUnit(props) {
                         // defaultValue={0}
                         value={inputPart.qtyReceived}
                         disabled={boolVal3 | boolVal4}
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                       />
                     </div>
 
@@ -1597,7 +1807,12 @@ function OpenButtonDraftSheetUnit(props) {
                                 inputPart.inspected === "1" ? true : false
                               }*/
                             disabled={boolVal3 | boolVal4}
-                            onChange={changeMaterialHandle}
+                            // onChange={changeMaterialHandle}
+
+                            min="0"
+                            onChange={(e) => {
+                              changeMaterialHandle(e, inputPart.id);
+                            }}
                           />
                         </div>
                         <div className="col-md-8 col-sm-12">
@@ -1617,7 +1832,12 @@ function OpenButtonDraftSheetUnit(props) {
                         // defaultValue={0}
                         value={inputPart.qtyAccepted}
                         disabled={boolVal3 | boolVal4 | !boolVal5}
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                       />
                     </div>
 
@@ -1675,7 +1895,12 @@ function OpenButtonDraftSheetUnit(props) {
                       <label className="form-label">Location</label>
                       <select
                         className="ip-select dropdown-field"
-                        onChange={changeMaterialHandle}
+                        // onChange={changeMaterialHandle}
+
+                        min="0"
+                        onChange={(e) => {
+                          changeMaterialHandle(e, inputPart.id);
+                        }}
                         value={inputPart.locationNo}
                         disabled={boolVal3 | boolVal4}
                         name="locationNo"

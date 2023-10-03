@@ -280,10 +280,18 @@ function DailyReport() {
             Load Data
           </button>
           <button className="button-style">Save Data</button>
-          <button className="button-style" style={{width:"200px"}} onClick={printReceipt}>
+          <button
+            className="button-style"
+            style={{ width: "200px" }}
+            onClick={printReceipt}
+          >
             Print Receipt Report
           </button>
-          <button className="button-style" style={{width:"200px"}} onClick={printInvoice}>
+          <button
+            className="button-style"
+            style={{ width: "200px" }}
+            onClick={printInvoice}
+          >
             Print Invoice Dispatch
           </button>
           <button
@@ -309,7 +317,7 @@ function DailyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -325,7 +333,7 @@ function DailyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -341,7 +349,7 @@ function DailyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>
@@ -357,7 +365,7 @@ function DailyReport() {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </Tab>

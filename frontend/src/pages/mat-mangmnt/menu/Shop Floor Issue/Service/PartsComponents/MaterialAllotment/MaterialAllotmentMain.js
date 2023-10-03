@@ -723,7 +723,7 @@ function MaterialAllotmentMain() {
           condensed
           //pagination={paginationFactory()
           selectRow={selectRow1}
-          headerClasses="header-class"
+           headerClasses="header-class tableHeaderBGColor"
         ></BootstrapTable> */}
 
         <Table className="table custom-table" striped bordered hover>
@@ -787,7 +787,7 @@ function MaterialAllotmentMain() {
               rowStyle={rowStyle2}
               //pagination={paginationFactory()}
               selectRow={selectRow2}
-              headerClasses="header-class"
+               headerClasses="header-class tableHeaderBGColor"
               cellEdit={cellEditFactory({
                 mode: 'click',
                 blurToSave: true,

@@ -592,7 +592,7 @@ function UnitsMatAllotmentForm() {
                 condensed
                 //pagination={paginationFactory()
                 selectRow={selectRow1}
-                headerClasses="header-class"
+                 headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable> */}
 
               <table className="table">
@@ -608,7 +608,7 @@ function UnitsMatAllotmentForm() {
                 <tbody>
                   {firstTable?.map((row) => (
                     <tr
-                      key={row.MtrlStockID}
+                      // key={row.MtrlStockID}
                       key={row.MtrlStockID}
                       onClick={() =>
                         handleRowSelect1(
@@ -658,7 +658,7 @@ function UnitsMatAllotmentForm() {
                 condensed
                 //pagination={paginationFactory()
                 selectRow={selectRow2}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>
             </div>
           </div>
