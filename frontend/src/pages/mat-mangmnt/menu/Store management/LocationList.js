@@ -34,13 +34,13 @@ function LocationList(props) {
       setShape(data);
     });
 
-    console.log("shapes", shape);
+    //console.log("shapes", shape);
     getRequest(endpoints.getMaterialLocationList, (data) => {
       for (let i = 0; i < data.length; i++) {
         data[i].id = i + 1;
       }
       setTableData(data);
-      console.log("table data = ", data);
+      //console.log("table data = ", data);
     });
   };
 
@@ -88,7 +88,7 @@ function LocationList(props) {
       "?location=" +
       selectedRow.LocationNo;
     getRequest(url1, async (data) => {
-      console.log("count = " + data.count);
+      //console.log("count = " + data.count);
       if (data.count > 0) {
         toast.error(
           selectedRow.LocationNo +
@@ -100,13 +100,13 @@ function LocationList(props) {
     });
   };
   const modalResponse = (msg) => {
-    console.log("msg = ", msg);
+    //console.log("msg = ", msg);
     if (msg === "yes") {
       let paraData1 = {
         LocationNo: selectedRow.LocationNo,
       };
       postRequest(endpoints.deleteMaterialLocationList, paraData1, (data) => {
-        console.log("Location Deleted");
+        //console.log("Location Deleted");
         toast.success("Location Deleted");
         getRequest(endpoints.getMaterialLocationList, (data) => {
           for (let i = 0; i < data.length; i++) {
@@ -137,6 +137,7 @@ function LocationList(props) {
       id: tableData.length + 1,
     });
     setTableData(tableData);
+    //console.log("formHeader", formHeader);
   };
   const saveButton = () => {
     setBtnState("save");
@@ -148,7 +149,7 @@ function LocationList(props) {
       Capacity: formHeader.capacity,
     };
     postRequest(endpoints.updateMaterialLocationList, paraData1, (data) => {
-      console.log("Location Updated");
+      //console.log("Location Updated");
       toast.success("Location Updated");
       getRequest(endpoints.getMaterialLocationList, (data) => {
         for (let i = 0; i < data.length; i++) {
@@ -160,7 +161,7 @@ function LocationList(props) {
     });
   };
   const insertData = () => {
-    console.log("blur");
+    //console.log("blur");
     if (btnState === "add") {
       let paraData1 = {
         LocationNo: formHeader.location,
@@ -208,7 +209,7 @@ function LocationList(props) {
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
-        console.log("row = ", row);
+        //console.log("row = ", row);
         setSelectedRow(row);
         setFormHeader((preValue) => {
           return {
