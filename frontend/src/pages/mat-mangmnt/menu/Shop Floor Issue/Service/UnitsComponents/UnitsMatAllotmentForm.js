@@ -205,7 +205,7 @@ function UnitsMatAllotmentForm() {
         const updatedSecondTableRow = secondTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
-        setSecondTableRow(updatedSecondTableRow);
+        //setSecondTableRow(updatedSecondTableRow);
         // Row is selected, add it to the selectedRowsInSecondTable
         setSelectedRowsInSecondTable((prevSelectedRows) => {
           // Check if the row is already in the selected list
@@ -222,7 +222,7 @@ function UnitsMatAllotmentForm() {
         const updatedSecondTableRow = secondTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
-        setSecondTableRow(updatedSecondTableRow);
+        //setSecondTableRow(updatedSecondTableRow);
         // Row is deselected, remove it from selectedRowsInSecondTable
         setSelectedRowsInSecondTable((prevSelectedRows) => {
           return prevSelectedRows.filter(
@@ -236,9 +236,6 @@ function UnitsMatAllotmentForm() {
     },
   };
 
-  //console.log("firstTableRow", firstTableRow);
-  //console.log("secondTableRow", secondTableRow);
-
   const allotMaterial = async () => {
     setFormHeader({
       ...formHeader,
@@ -247,17 +244,6 @@ function UnitsMatAllotmentForm() {
 
     //set second table
     setSecondTable(secondTableRow);
-
-    // const filterSecond = secondTable.filter(
-    //     (obj) => obj.MtrlStockID !== row.MtrlStockID
-    //   );
-    //   setSecondTableRow(updatedSecondTableRow);
-
-    // setFirstTableRow();
-    // let newLockArray = firstTableRow.map((obj) => {
-    //   console.log("obj = ", obj);
-    //   obj.Locked = 1;
-    // });
 
     firstTableRow.forEach((obj) => {
       console.log(obj);
@@ -285,34 +271,44 @@ function UnitsMatAllotmentForm() {
       }
       return row;
     });
-
-    // const updatedFirstTableRow = firstTableRow.filter(
-    //   (obj) => obj.MtrlStockID !== row.MtrlStockID
-    // );
-    // setFirstTableRow(updatedFirstTableRow);
-    // setSecondTableRow(updatedFirstTableRow);
     setFirstTable(updatedFirstTable);
   };
 
-  const CancelAllotMaterial = () => {
+  const CancelAllotMaterial = async () => {
+    console.log("second table row = ", secondTableRow);
+    console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
     uncheckSelectedRows();
-    setSecondTable(secondTableRow);
     //setSecondTableRow(secondTable)
     setFormHeader({
       ...formHeader,
-      // QtyAllotted:
-      //   parseInt(formHeader.QtyAllotted) +
-      //   secondTableRow.length -
-      //   firstTableRow.length,
-
       QtyAllotted: secondTableRow.length,
     });
-    console.log("second table row = ", secondTableRow);
-    console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
+
+    //second table
+    //setSecondTable(secondTableRow);
+    let secondTableRowObj = [];
+    secondTableRow.forEach((obj1) => {
+      let flag = 0;
+      selectedRowsInSecondTable.forEach((obj2) => {
+        if (obj1.MtrlStockID === obj2.MtrlStockID) {
+          flag = 1;
+        }
+      });
+      if (flag == 0) {
+        secondTableRowObj.push(obj1);
+      }
+    });
+    console.log("secondTableRowObj = ", secondTableRowObj);
+
+    setSecondTable(secondTableRowObj);
+    setSecondTableRow(secondTableRowObj);
+    setSelectedRowsInSecondTable([]);
+    setSecondTableSelectIndex([]);
+    await delay(200);
 
     //deselect first table checkbox
     const secondTableMtrlId = [];
-    secondTableRow.map((obj) => {
+    secondTableRowObj.map((obj) => {
       secondTableMtrlId.push(obj.MtrlStockID);
     });
     setFirstTableSelectIndex(secondTableMtrlId);
@@ -320,13 +316,19 @@ function UnitsMatAllotmentForm() {
     //update firsttable row
     let firstTableRowObj = [];
     firstTable.forEach((obj1) => {
-      secondTableRow.forEach((obj2) => {
+      secondTableRowObj.forEach((obj2) => {
         if (obj1.MtrlStockID === obj2.MtrlStockID) {
           firstTableRowObj.push(obj1);
         }
       });
     });
     setFirstTableRow(firstTableRowObj);
+    //await delay(500);
+    console.log("After second table row = ", secondTableRow);
+    console.log(
+      "After selectedRowsInSecondTable = ",
+      selectedRowsInSecondTable
+    );
   };
 
   let modalResponse = async (data) => {
