@@ -294,7 +294,7 @@ function ResizeAndSplittingForm() {
           });
         }
         toast.success("Spliting done Successfully");
-        nav("/materialmanagement/ShoopFloorReturns/PendingList");
+        nav("/materialmanagement/ShopFloorReturns/PendingList");
       } else if (location?.state?.type == "storeresize") {
         // console.log("secondTableRow........", location?.state?.secondTableRow);
         // console.log("resizeTableData........", tableData);
@@ -485,7 +485,7 @@ function ResizeAndSplittingForm() {
               id="btnclose"
               type="submit"
               onClick={() => {
-                nav("/MaterialManagement/ShoopFloorReturns/PendingList");
+                nav("/MaterialManagement/ShopFloorReturns/PendingList");
               }}
             >
               Close

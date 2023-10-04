@@ -224,7 +224,7 @@ function ShopFloorMaterialAllotment(props) {
         );
       } else if (props.formtype == "Units" || props.formtype == "Others") {
         nav(
-          "/MaterialManagement/ShopFloorIssue/service/Units/MaterialAllotmentForm", //UnitsMatAllotmentForm
+          "/MaterialManagement/ShopFloorIssue/Service/Units/MaterialAllotmentForm", //UnitsMatAllotmentForm
           {
             state: { ncid },
           }
