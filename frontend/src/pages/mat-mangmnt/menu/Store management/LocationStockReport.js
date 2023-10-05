@@ -517,7 +517,7 @@ function LocationStockReport() {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>{" "}
           </div>
         </div>
@@ -539,7 +539,7 @@ function LocationStockReport() {
                 hover
                 condensed
                 selectRow={selectRow2}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>{" "}
             </div>
           </div>
@@ -560,7 +560,7 @@ function LocationStockReport() {
                 hover
                 condensed
                 //selectRow={selectRow1}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>{" "}
             </div>
           </div>

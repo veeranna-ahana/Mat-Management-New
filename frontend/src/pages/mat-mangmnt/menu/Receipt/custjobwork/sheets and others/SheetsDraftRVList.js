@@ -164,7 +164,7 @@ export default function SheetsDraftRVList() {
               condensed
               //pagination={paginationFactory()}
               selectRow={selectRow}
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
 

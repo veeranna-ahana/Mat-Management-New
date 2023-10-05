@@ -451,7 +451,7 @@ function MaterialMoverForm(props) {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
@@ -466,7 +466,7 @@ function MaterialMoverForm(props) {
               hover
               condensed
               //selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

@@ -37,6 +37,9 @@ function OpenButtonOpenSheetUnit() {
   const [rmvBtn, setRmvBtn] = useState(false);
   const [addBtn, setAddBtn] = useState(false);
 
+  //falg for add to stock and remove stock
+  const [boolValStock, setBoolValStock] = useState("off");
+
   const [mtrlStock, setMtrlStock] = useState({});
   const [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -139,7 +142,7 @@ function OpenButtonOpenSheetUnit() {
           obj.shapeMtrlId = obj.ShapeMtrlID;
           obj.shapeID = obj.ShapeID;
           obj.dynamicPara1 = obj.DynamicPara1;
-          obj.dynamicPara2 = obj.DynamicPar2;
+          obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
           obj.qty = obj.Qty;
           obj.inspected = obj.Inspected;
@@ -147,7 +150,7 @@ function OpenButtonOpenSheetUnit() {
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
           obj.totalWeight = obj.TotalWeight;
           obj.locationNo = obj.LocationNo;
-          obj.upDated = obj.UpDated;
+          obj.updated = obj.UpDated;
           obj.qtyAccepted = obj.QtyAccepted;
           obj.qtyReceived = obj.QtyReceived;
           obj.qtyRejected = obj.QtyRejected;
@@ -296,20 +299,36 @@ function OpenButtonOpenSheetUnit() {
         qtyAccepted: mtrlStock.qtyAccepted,
       };
       //console.log("before api");
+      // postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
+      //   //console.log("data = ", data);
+      //   if (data.affectedRows !== 0) {
+      //     //enable remove stock buttons
+      //     toast.success("Stock Added Successfully");
+      //     // setBoolVal2(true);
+      //     // setBoolVal3(false);
+      //     setRmvBtn(true);
+      //     setAddBtn(false);
+      //   } else {
+      //     toast.error("Stock Not Added");
+      //   }
+      // });
+
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
         //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Added Successfully");
-          setBoolVal2(true);
-          setBoolVal3(false);
+          //setBoolVal2(true);
+          //setBoolVal3(false);
+          setBoolValStock("on");
+          // setBoolVal6(true);
+          // setBoolVal7(false);
           setRmvBtn(true);
           setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
       });
-
       //update updated status = 1
       let updateObj = {
         id: mtrlStock.Mtrl_Rv_id,
@@ -355,17 +374,25 @@ function OpenButtonOpenSheetUnit() {
       toast.error("Please Select Material");
     } else {
       postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Removed Successfully");
-          setBoolVal2(false);
-          setBoolVal3(true);
-
+          // setBoolVal2(false);
+          // setBoolVal3(true);
+          setBoolValStock("off");
           setAddBtn(true);
           setRmvBtn(false);
+          //update checkbox
+          for (let i = 0; i < mtrlArray.length; i++) {
+            if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+              mtrlArray[i].upDated = 0;
+            }
+          }
+          await delay(500);
+          setMtrlArray(newArray);
         } else {
-          toast.error("Stock Not Removed");
+          toast.success("Stock Removed Successfully");
         }
       });
 
@@ -467,10 +494,10 @@ function OpenButtonOpenSheetUnit() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("isselect", isSelect);
+      // console.log("isselect", isSelect);
       console.log("row", row);
 
-      if (row.updated === 1) {
+      if (row.upDated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
       } else {
@@ -645,14 +672,14 @@ function OpenButtonOpenSheetUnit() {
             className="col-md-8 col-sm-12"
           >
             <BootstrapTable
-              keyField="Id"
+              keyField="id"
               columns={columns}
               data={mtrlArray}
               striped
               hover
               condensed
               selectRow={selectRow}
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
           {/* <div className="col-md-6 col-sm-12">
@@ -679,7 +706,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={boolVal2}
+                    disabled={rmvBtn}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -689,7 +716,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={boolVal3}
+                    disabled={addBtn}
                     onClick={removeStock}
                   >
                     Remove stock
@@ -714,17 +741,13 @@ function OpenButtonOpenSheetUnit() {
                         <option value="" disabled selected>
                           Select Material
                         </option>
-                        {/* <option value="option 1">001</option>
-                          <option value="option 1">002</option>
-                          <option value="option 1">003</option>
-                          <option value="option 1">004</option> */}
                       </select>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 1</label>
+                      <label className="form-label">{para1Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -733,10 +756,13 @@ function OpenButtonOpenSheetUnit() {
                         disabled={boolVal}
                       />
                     </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel1}</label>
+                    </div>
                   </div>
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 2</label>
+                      <label className="form-label">{para2Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -745,10 +771,13 @@ function OpenButtonOpenSheetUnit() {
                         value={inputPart.dynamicPara2}
                       />
                     </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel2}</label>
+                    </div>
                   </div>
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 3</label>
+                      <label className="form-label">{para3Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -756,6 +785,9 @@ function OpenButtonOpenSheetUnit() {
                         disabled={boolVal}
                         value={inputPart.dynamicPara3}
                       />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel3}</label>
                     </div>
                   </div>
                   <div className="col-md-12  mt-3">
@@ -784,7 +816,7 @@ function OpenButtonOpenSheetUnit() {
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
-                           <label className="form-label">Inspected</label>
+                          <label className="form-label">Inspected</label>
                         </div>
                       </div>
                     </div>
