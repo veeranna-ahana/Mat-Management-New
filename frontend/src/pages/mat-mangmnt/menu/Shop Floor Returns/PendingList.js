@@ -163,12 +163,12 @@ function PendingList(props) {
     },
     {
       text: "Balance Length",
-      dataField: "RemPara1",
+      dataField: "Para1",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Balance Width",
-      dataField: "RemPara2",
+      dataField: "Para2",
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
