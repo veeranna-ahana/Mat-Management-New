@@ -151,8 +151,58 @@ function PNew() {
     },
   ];
 
+  // const changePartHandle = (e) => {
+  //   // debugger;
+  //   const { value, name } = e.target;
+  //   setInputPart((preValue) => {
+  //     //console.log(preValue)
+  //     return {
+  //       ...preValue,
+  //       [name]: value,
+  //     };
+  //   });
+  //   inputPart[name] = value;
+  //   inputPart.custBomId = formHeader.customer;
+  //   inputPart.rvId = formHeader.rvId;
+  //   inputPart.qtyRejected = 0;
+  //   inputPart.qtyUsed = 0;
+  //   inputPart.calcWeightVal = 0.0;
+  //   inputPart.qtyReturned = 0;
+  //   inputPart.qtyIssued = 0;
+  //   setInputPart(inputPart);
+  //   console.log("imputpart", inputPart);
+  //   //update blank row with respected to modified part textfield
+  //   postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
+  //     console.log("data", data);
+  //     if (data?.affectedRows !== 0) {
+  //     } else {
+  //       toast.error("Record Not Updated");
+  //     }
+  //   });
+
+  //   const newArray = partArray.map((p) =>
+  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //     p.id === partUniqueId
+  //       ? {
+  //           ...p,
+  //           [name]: value,
+  //         }
+  //       : p
+  //   );
+  //   setPartArray(newArray);
+
+  //   let totwt = 0;
+  //   partArray.map((obj) => {
+  //     totwt =
+  //       parseFloat(totwt) +
+  //       parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //     //console.log(newWeight);
+  //   });
+  //   setCalcWeightVal(parseFloat(totwt).toFixed(2));
+  //   setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
+  // };
+
   const changePartHandle = (e) => {
-    // debugger;
     const { value, name } = e.target;
     setInputPart((preValue) => {
       //console.log(preValue)
@@ -166,15 +216,13 @@ function PNew() {
     inputPart.rvId = formHeader.rvId;
     inputPart.qtyRejected = 0;
     inputPart.qtyUsed = 0;
-    inputPart.calcWeightVal = 0.0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
     setInputPart(inputPart);
-    console.log("imputpart", inputPart);
+
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      console.log("data", data);
-      if (data?.affectedRows !== 0) {
+      if (data.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
       }
@@ -189,7 +237,18 @@ function PNew() {
           }
         : p
     );
+    //console.log(newArray);
     setPartArray(newArray);
+
+    // let totwt = 0;
+    // partArray.map((obj) => {
+    //   totwt =
+    //     parseFloat(totwt) +
+    //     parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+    //   //console.log(newWeight);
+    // });
+    // setCalcWeightVal(parseFloat(totwt).toFixed(2));
+    // setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
 
     let totwt = 0;
     partArray.map((obj) => {
@@ -282,6 +341,7 @@ function PNew() {
             p.id !== inputPart.id
         );
         setPartArray(newArray);
+        toast.success("Material Deleted");
       }
     });
 
@@ -306,6 +366,7 @@ function PNew() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
+      setPartUniqueId(row.id);
       setInputPart({
         id: row.id,
         partId: row.partId,

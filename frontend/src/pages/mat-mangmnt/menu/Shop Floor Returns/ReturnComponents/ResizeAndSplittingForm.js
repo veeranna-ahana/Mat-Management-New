@@ -573,7 +573,6 @@ export default function ResizeAndSplittingForm() {
           </div>
         </div>
       </div>
-
       <div className="p-2"></div>
 
       <div className="row">

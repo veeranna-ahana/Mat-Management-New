@@ -230,7 +230,7 @@ function StockList(props) {
     {
       text: "Scrap Weight",
       dataField: "ScrapWeight",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
   const selectRow1 = {
@@ -372,15 +372,15 @@ function StockList(props) {
         {/* <h4 className="form-title">Customer Material Stock List</h4> */}
         <div className="row">
           <div className="col-md-6 col-sm-12">
-          <div
-            className={props.type === "customer" ? "col-md-1 mt-2" : "d-none"}
-          >
-            <label className="form-label">Customer</label>
-          </div>
-          <div
-            className={props.type === "customer" ? "col-md-6 mt-2" : "d-none"}
-          >
-            {/* <select
+            <div
+              className={props.type === "customer" ? "col-md-1 mt-2" : "d-none"}
+            >
+              <label className="form-label">Customer</label>
+            </div>
+            <div
+              className={props.type === "customer" ? "col-md-6 mt-2" : "d-none"}
+            >
+              {/* <select
               className="ip-select dropdown-field"
               onChange={customerChange}
             >
@@ -393,18 +393,16 @@ function StockList(props) {
                 </option>
               ))}
             </select> */}
-            <Typeahead
-              id="basic-example"
-              name="customer"
-              options={custdata}
-              placeholder="Select Customer"
-              onChange={(label) => changeCustomer(label)}
-              
-            />
+              <Typeahead
+                id="basic-example"
+                name="customer"
+                options={custdata}
+                placeholder="Select Customer"
+                onChange={(label) => changeCustomer(label)}
+              />
+            </div>
           </div>
-          </div>
-         
-         
+
           <div className="col-md-2 col-sm-12">
             <button className="button-style" onClick={selectedStock}>
               Selected Stock
@@ -441,7 +439,7 @@ function StockList(props) {
                   hover
                   condensed
                   selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </div>
@@ -456,7 +454,7 @@ function StockList(props) {
                   hover
                   condensed
                   selectRow={selectRow2}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </div>
@@ -472,7 +470,7 @@ function StockList(props) {
                 hover
                 condensed
                 //selectRow={selectRow1}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>
             </div>
           </div>

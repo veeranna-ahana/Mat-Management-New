@@ -681,7 +681,7 @@ function OutwordPartIssueVocher(props) {
           <div className="col-md-12">
             <div style={{ maxHeight: "420px", overflow: "auto" }}>
               <BootstrapTable
-                headerClasses="header-class "
+                headerClasses="header-class tableHeaderBGColor"
                 keyField="IV_No"
                 //keyField="id"
                 columns={columns}
@@ -1027,7 +1027,7 @@ export default OutwordPartIssueVocher;
 //     <div className="col-md-12 col-sm-12">
 //       <div style={{ height: "420px", overflowY: "scroll" }}>
 //         <BootstrapTable
-//           headerClasses="header-class "
+//           headerClasses="header-class tableHeaderBGColor"
 //           keyField="IV_No"
 //           //keyField="id"
 //           columns={columns}

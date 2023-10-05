@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import CreateYesNoModal from "../../components/CreateYesNoModal";
 import { useNavigate } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
-import { Typeahead } from "react-bootstrap-typeahead";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -41,19 +40,9 @@ function NewSheetsUnits(props) {
   //after clicking inspected checkbox
   const [boolVal5, setBoolVal5] = useState(false);
 
-  //after clicking alllotrv enable add to stock / remove stock
-  const [boolVal6, setBoolVal6] = useState(true);
-  const [boolVal7, setBoolVal7] = useState(true);
-
-  // enable add to stock / remove stock
-  // const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [rmvBtn, setRmvBtn] = useState(false);
-  const [addBtn, setAddBtn] = useState(false);
-
   const [insCheck, setInsCheck] = useState(false);
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
-  const [shape, setShape] = useState();
 
   const [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -81,9 +70,6 @@ function NewSheetsUnits(props) {
   const [unitLabel2, setUnitLabel2] = useState("");
   const [unitLabel3, setUnitLabel3] = useState("");
 
-  // State to keep track of selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
-
   const [partUniqueId, setPartUniqueId] = useState();
   const [materialArray, setMaterialArray] = useState([]);
   const [inputPart, setInputPart] = useState({
@@ -104,7 +90,7 @@ function NewSheetsUnits(props) {
     totalWeightCalculated: "",
     totalWeight: "",
     locationNo: "",
-    updated: "",
+    upDated: "",
     qtyAccepted: 0,
     qtyReceived: 0,
     qtyRejected: 0,
@@ -166,7 +152,7 @@ function NewSheetsUnits(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" checked={row.updated == 1 ? true : false} />
+            <input type="checkbox" checked={row.UpDated == 1 ? true : false} />
           </lable>
         </div>
       ),
@@ -175,13 +161,6 @@ function NewSheetsUnits(props) {
 
   async function fetchData() {
     getRequest(endpoints.getCustomers, (data) => {
-      if (props.type2 === "purchase") {
-        data = data.filter((obj) => obj.Cust_Code == 0);
-      }
-      //Cust_Code == 0
-      for (let i = 0; i < data.length; i++) {
-        data[i].label = data[i].Cust_name;
-      }
       setCustdata(data);
     });
     getRequest(endpoints.getMaterialLocationList, (data) => {
@@ -203,30 +182,6 @@ function NewSheetsUnits(props) {
   // }, [formHeader]); //[inputPart]);
 
   let changeCustomer = async (e) => {
-    //e.preventDefault();
-    //const { value, name } = e.target;
-
-    const found = custdata.find((obj) => obj.Cust_Code === e[0].Cust_Code);
-    //setCustDetailVal(found.Address);
-
-    setFormHeader((preValue) => {
-      //console.log(preValue)
-      return {
-        ...preValue,
-        //[name]: value,
-        customerName: found.Cust_name,
-        customer: found.Cust_Code,
-        address: found.Address,
-      };
-    });
-
-    // getRequest(endpoints.getCustBomList, (data) => {
-    //   const foundPart = data.filter((obj) => obj.Cust_code == value);
-    //   setMtrlDetails(foundPart);
-    // });
-  };
-
-  let changeCustomer1 = async (e) => {
     e.preventDefault();
     const { value, name } = e.target;
 
@@ -259,9 +214,7 @@ function NewSheetsUnits(props) {
         //update the mtrl_data related columns
         let url1 = endpoints.getRowByMtrlCode + "?code=" + value;
         getRequest(url1, async (mtrlData) => {
-          // console.log("mtrldata= ", mtrlData.Shape);
-          let Mtrlshape = mtrlData.Shape;
-          setShape(Mtrlshape);
+          //console.log("mtrldata = ", mtrlData);
           inputPart.material = mtrlData.Mtrl_Type;
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
@@ -269,18 +222,8 @@ function NewSheetsUnits(props) {
             //console.log("shapedata = ", shapeData);
             inputPart.shapeID = shapeData.ShapeID;
             setInputPart(inputPart);
-
-            // if (shape !== material.Shape) {
-            //   toast.error("Please select a same type of part");
-            //   console.log("Please select a same type of part");
-            // }
           });
         });
-        // console.log("material.Shape", material.Shape);
-
-        if (shape !== null && shape !== undefined && shape !== material.Shape) {
-          toast.error("Please select a same type of part");
-        }
 
         if (material.Shape === "Units") {
           setPara1Label("Qty"); //Nos
@@ -367,8 +310,7 @@ function NewSheetsUnits(props) {
     inputPart[name] = value;
     setInputPart(inputPart);
 
-    // console.log("Before update = ", inputPart.shapeMtrlId);
-    console.log("inputPart ..... ", inputPart);
+    console.log("Before update = ", inputPart);
 
     await delay(500);
     //update database row
@@ -471,7 +413,7 @@ function NewSheetsUnits(props) {
       endpoints.updateHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        console.log("data = ", data);
+        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setSaveUpdateCount(saveUpdateCount + 1);
           toast.success("Record Updated Successfully");
@@ -499,183 +441,29 @@ function NewSheetsUnits(props) {
         insertHeaderFunction();
         setBoolVal2(true);
       } else {
-        // console.log("part array = ", materialArray);
-        let flag1 = 0;
-        for (let i = 0; i < materialArray.length; i++) {
-          if (
-            materialArray[i].mtrlCode == "" ||
-            materialArray[i].locationNo == "" ||
-            materialArray[i].qtyReceived == "" ||
-            materialArray[i].qtyAccepted == ""
-          ) {
-            flag1 = 1;
-          }
-        }
-        if (flag1 == 1) {
-          toast.error("Please fill correct Material details");
-        } else {
-          //to update data
-          updateHeaderFunction();
-        }
+        //to update data
+        updateHeaderFunction();
       }
     }
   };
 
-  // console.log("part array = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
-    if (materialArray.length === 0) {
-      toast.error("Add Details Before Saving");
-    } else if (materialArray.length !== 0 && formHeader.weight == "0") {
+    if (formHeader.weight == "0") {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
     } else {
-      //   let flag1 = 0;
-      //   for (let i = 0; i < materialArray.length; i++) {
-      //     if (
-      //       materialArray[i].qtyAccepted == "" ||
-      //       materialArray[i].qtyAccepted == "0" ||
-      //       materialArray[i].qtyAccepted == 0.0 ||
-      //       materialArray[i].qtyAccepted === undefined
-      //     ) {
-      //       flag1 = 3;
-      //     }
-      //     if (materialArray[i].locationNo == "") {
-      //       flag1 = 7;
-      //     }
-
-      //     if (
-      //       materialArray[i].dynamicPara1 == "" ||
-      //       materialArray[i].dynamicPara1 == "0" ||
-      //       materialArray[i].dynamicPara1 == 0.0
-      //     ) {
-      //       flag1 = 5;
-      //     }
-      //     if (materialArray[i].mtrlCode == "") {
-      //       flag1 = 6;
-      //     }
-      //     if (
-      //       materialArray[i].qtyReceived === "" ||
-      //       materialArray[i].qtyReceived === "0" ||
-      //       materialArray[i].qtyReceived === 0.0
-      //       // Number(materialArray[i].qtyReceived <= 0) ||
-      //       // materialArray[i].qtyReceived === null ||
-      //       // materialArray[i].qtyReceived === undefined
-      //     ) {
-      //       flag1 = 4;
-      //     }
-      //     if (materialArray[i].qtyReceived === undefined) {
-      //       flag1 = 8;
-      //       break;
-      //     }
-      //   }
-
-      //   console.log("flag1 value:", flag1);
-      //   if (flag1 === 6) {
-      //     toast.error("select Material");
-      //   } else if (flag1 === 5) {
-      //     toast.error("Parameters cannot be Zero");
-      //   } else if (flag1 === 8) {
-      //     toast.error("Received Qty cannot be Zero");
-      //   } else if (flag1 === 4) {
-      //   } else if (flag1 == 2) {
-      //     toast.error("Select Material First");
-      //   } else if (flag1 == 3) {
-      //     toast.error("Accepted Qty cannot be Zero");
-      //   } else if (flag1 == 7) {
-      //     toast.error("Select Location");
-      //   } else {
-      //     //show model form
-      //     setShow(true);
-      //   }
-      // }
-
-      //NEW CODE FOR FORM VALIDATION
-      let flag1 = 0;
-      for (let i = 0; i < materialArray.length; i++) {
-        if (materialArray[i].mtrlCode == "") {
-          flag1 = 1;
-          break;
-        }
-
-        if (
-          materialArray[i].dynamicPara1 == "" ||
-          materialArray[i].dynamicPara1 == "0" ||
-          materialArray[i].dynamicPara1 == 0.0
-        ) {
-          flag1 = 2;
-          // console.log("Setting flag1 to 2");
-          break; // Add a break to ensure this condition is not overwritten by subsequent checks
-        }
-
-        if (
-          materialArray[i].qtyReceived === "" ||
-          materialArray[i].qtyReceived === "0" ||
-          materialArray[i].qtyReceived === 0.0 ||
-          materialArray[i].qtyReceived === undefined
-        ) {
-          flag1 = 3;
-          // console.log("Setting flag1 to 3");
-        }
-
-        if (
-          materialArray[i].qtyAccepted == "" ||
-          materialArray[i].qtyAccepted == "0" ||
-          materialArray[i].qtyAccepted == 0.0 ||
-          materialArray[i].qtyAccepted === undefined
-        ) {
-          flag1 = 4;
-          // console.log("Setting flag1 to 4");
-        }
-
-        if (materialArray[i].locationNo == "") {
-          flag1 = 5;
-        }
-        if (materialArray[i].qtyAccepted > materialArray[i].qtyReceived) {
-          flag1 = 6;
-        }
-      }
-
-      if (flag1 === 1) {
-        toast.error("Select Material");
-      } else if (flag1 === 2) {
-        toast.error("Parameters cannot be Zero");
-      } else if (flag1 === 4) {
-        toast.error("Received and Accepted Qty cannot be Zero");
-      } else if (flag1 === 5) {
-        toast.error("Select Location");
-      } else if (flag1 === 6) {
-        toast.error("QtyAccepted should be less than or equal to QtyReceived");
-      } else {
-        // Show model form
-        setShow(true);
-      }
+      //show model form
+      setShow(true);
     }
-
-    // if (formHeader.weight == "0") {
-    //   toast.error(
-    //     "Enter the Customer Material Weight as per Customer Document"
-    //   );
-    // } else {
-    //   //show model form
-    //   setShow(true);
-    // }
-
-    //ADDED POPUP FOR ALLOTRVNO
-    // if (materialArray.length === 0) {
-    //   toast.error("Add Details Before Saving");
-    // } else {
-    //   setShow(true);
-    // }
   };
 
   const allotRVYesButton = async (data) => {
     await delay(500);
     setFormHeader(data);
     setBoolVal4(true);
-    setBoolVal6(false);
   };
 
   const deleteRVButtonState = () => {
@@ -684,22 +472,14 @@ function NewSheetsUnits(props) {
       formHeader,
       (data) => {
         if (data.affectedRows !== 0) {
-          if (props.type === "units") {
-            toast.success("Record is Deleted");
-            nav("/MaterialManagement/Receipt/CustomerJobWork/Units/New", {
+          toast.success("Record is Deleted");
+          nav(
+            "/materialmanagement/receipt/customerjobwork/sheetsandothers/new",
+            {
               replace: true,
-            });
-            window.location.reload();
-          } else {
-            toast.success("Record is Deleted");
-            nav(
-              "/MaterialManagement/Receipt/CustomerJobWork/SheetsAndOthers/New",
-              {
-                replace: true,
-              }
-            );
-            window.location.reload();
-          }
+            }
+          );
+          window.location.reload();
         }
       }
     );
@@ -715,7 +495,7 @@ function NewSheetsUnits(props) {
     qty,
     inspected,
     locationNo,
-    updated,
+    upDated,
   } = inputPart;
 
   const addNewMaterial = (e) => {
@@ -723,7 +503,7 @@ function NewSheetsUnits(props) {
 
     //clear all part fields
     inputPart.rvId = formHeader.rvId;
-    inputPart.srl = "0";
+    inputPart.srl = "01";
     inputPart.custCode = formHeader.customer;
     inputPart.mtrlCode = "";
     inputPart.material = "";
@@ -738,7 +518,7 @@ function NewSheetsUnits(props) {
     inputPart.totalWeightCalculated = 0.0;
     inputPart.totalWeight = 0.0;
     inputPart.locationNo = "";
-    inputPart.updated = 0;
+    inputPart.upDated = 0.0;
     inputPart.qtyAccepted = 0.0;
     inputPart.qtyReceived = 0.0;
     inputPart.qtyRejected = 0.0;
@@ -750,7 +530,6 @@ function NewSheetsUnits(props) {
     inputPart.inspected = 0;
     setBoolVal5(false);
     // console.log("partarray = ", partArray);
-    console.log("inputPart = ", inputPart);
 
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
@@ -765,10 +544,8 @@ function NewSheetsUnits(props) {
         //count total record in material Array
         let count = materialArray.length + 1;
         srl = "0" + count;
-        // srl = count.toString();
-        // console.log("srll", srl);
+
         //set inserted id
-        inputPart.srl = srl;
         setPartUniqueId(id);
         let newRow = {
           id: id,
@@ -780,14 +557,10 @@ function NewSheetsUnits(props) {
           qty: "",
           inspected: "",
           locationNo: "",
-          updated: "",
+          upDated: "",
         };
-        // console.log("materialArray", materialArray);
-        // console.log("newRow", newRow);
-
         //setPartArray(newRow);
         setMaterialArray([...materialArray, newRow]);
-        // console.log("materialArray", materialArray);
 
         // setMaterialArray([
         //   ...materialArray,
@@ -811,7 +584,7 @@ function NewSheetsUnits(props) {
       }
     });
 
-    // console.log("after = ", inputPart);
+    //console.log("after = ", partArray);
   };
 
   //delete part
@@ -820,7 +593,7 @@ function NewSheetsUnits(props) {
       toast.error("Select Material");
     } else {
       //console.log("id = ", inputPart.id);
-      // console.log("input part = ", inputPart);
+      console.log("input part = ", inputPart);
       postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
           const newArray = materialArray.filter(
@@ -830,33 +603,6 @@ function NewSheetsUnits(props) {
           );
           setMaterialArray(newArray);
           toast.success("Material Deleted");
-          //reset all fields
-          //Object.keys(inputPart).forEach((key) => (inputPart[key] = null));
-          setInputPart({
-            id: "",
-            rvId: "",
-            srl: "",
-            custCode: "",
-            mtrlCode: "",
-            material: "",
-            shapeMtrlId: "",
-            shapeID: "",
-            dynamicPara1: "",
-            dynamicPara2: "",
-            dynamicPara3: "",
-            qty: "",
-            inspected: "",
-            accepted: "",
-            totalWeightCalculated: "",
-            totalWeight: "",
-            locationNo: "",
-            updated: "",
-            qtyAccepted: 0,
-            qtyReceived: 0,
-            qtyRejected: 0,
-            qtyUsed: 0,
-            qtyReturned: 0,
-          });
         }
       });
 
@@ -881,28 +627,17 @@ function NewSheetsUnits(props) {
     }
   };
 
-  const changeMaterialHandle = async (e, id) => {
+  const changeMaterialHandle = async (e) => {
     const { value, name } = e.target;
 
-    // console.log("eventvalue....", e.target.value, "id....", id);
-    for (let i = 0; i < materialArray.length; i++) {
-      const element = materialArray[i];
-
-      if (element.id === id) {
-        element[name] = value;
-
-        // console.log("element..................", element);
-      }
-    }
-
-    // setInputPart((preValue) => {
-    //   //console.log(preValue)
-    //   return {
-    //     ...preValue,
-    //     [name]: value,
-    //   };
-    // });
-    // inputPart[name] = value;
+    setInputPart((preValue) => {
+      //console.log(preValue)
+      return {
+        ...preValue,
+        [name]: value,
+      };
+    });
+    inputPart[name] = value;
     //inputPart.custCode = formHeader.customer;
     //inputPart.rvId = formHeader.rvId;
 
@@ -931,7 +666,6 @@ function NewSheetsUnits(props) {
         let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
         getRequest(url, async (data) => {
           //setCustdata(data);
-          // console.log("weight", data);
           let TotalWeightCalculated =
             parseFloat(inputPart.qtyAccepted) *
             getWeight(
@@ -941,21 +675,15 @@ function NewSheetsUnits(props) {
               parseFloat(inputPart.dynamicPara3)
             );
 
-          // console.log("TotalWeightCalculated", TotalWeightCalculated);
-
           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
-          // console.log("TotalWeightCalculated", TotalWeightCalculated);
-
           inputPart.totalWeightCalculated = parseFloat(
             TotalWeightCalculated
           ).toFixed(2);
-
           inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(2);
           inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
           inputPart["TotalWeight"] = TotalWeightCalculated;
-
           setInputPart(inputPart);
-          // console.log("formHeader", formHeader);
+
           //update forheader in database
           postRequest(
             endpoints.updateHeaderMaterialReceiptRegister,
@@ -966,17 +694,17 @@ function NewSheetsUnits(props) {
           //update material array:
           const newArray = materialArray.map((p) =>
             //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-            p.id === id
+            p.id === partUniqueId
               ? {
                   ...p,
                   [name]: value,
-                  qty: inputPart.qtyReceived,
+                  //qty: inputPart.qtyReceived,
                   //inspected: inputPart.inspected,
                 }
               : p
           );
           setMaterialArray(newArray);
-          // console.log("material array = ", materialArray);
+          console.log("material array = ", materialArray);
           await delay(500);
 
           //find calculateweight
@@ -1013,7 +741,7 @@ function NewSheetsUnits(props) {
           formHeader.calcWeight = parseFloat(totwt).toFixed(2);
           setFormHeader(formHeader);
           delay(500);
-          // console.log("form header = ", formHeader);
+          console.log("form header = ", formHeader);
           //update calc weight in header
           postRequest(
             endpoints.updateHeaderMaterialReceiptRegister,
@@ -1032,7 +760,7 @@ function NewSheetsUnits(props) {
     }
     const newArray = materialArray.map((p) =>
       //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-      p.id === id
+      p.id === partUniqueId
         ? {
             ...p,
             [name]: value,
@@ -1045,12 +773,6 @@ function NewSheetsUnits(props) {
     setMaterialArray(newArray);
     await delay(500);
 
-    // if (inputPart.qtyAccepted > inputPart.qtyReceived) {
-    //   toast.error("QtyAccepted should be less than or equal to QtyReceived");
-    // }
-
-    // console.log("selectedRowss:", selectedRows);
-    console.log("inputPart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
@@ -1060,29 +782,16 @@ function NewSheetsUnits(props) {
     });
     await delay(500);
   };
-  // row selection
+
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // setIsButtonEnabled(row.updated === 1);
-
-      console.log("row", row);
-      setSelectedRows(row);
-      setInputPart(row);
-
-      if (row.updated === 1) {
-        setRmvBtn(true);
-        setAddBtn(false);
-      } else {
-        setRmvBtn(false);
-        setAddBtn(true);
-      }
-
+      console.log("Row = ", row);
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
-        data2?.forEach((obj) => {
+        data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.mtrlRvId = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -1101,24 +810,28 @@ function NewSheetsUnits(props) {
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
           obj.totalWeight = obj.TotalWeight;
           obj.locationNo = obj.LocationNo;
-          obj.updated = obj.Updated;
+          obj.upDated = obj.UpDated;
           obj.qtyAccepted = obj.QtyAccepted;
           obj.qtyReceived = obj.QtyReceived;
           obj.qtyRejected = obj.QtyRejected;
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
-        console.log("data2", data2);
         setMtrlArray(data2);
-        data2?.map(async (obj) => {
+        data2.map(async (obj) => {
           if (obj.id == row.id) {
             setMtrlStock(obj);
           }
         });
       });
 
-      // console.log("mtrlArray", mtrlArray);
       setInputPart({
+        // id: row.id,
+        // partId: row.partId,
+        // unitWeight: row.unitWeight,
+        // qtyAccepted: row.qtyAccepted,
+        // qtyRejected: row.qtyRejected,
+        // qtyReceived: row.qtyReceived,
         id: row.id,
         srl: row.srl,
         mtrlCode: row.mtrlCode,
@@ -1128,16 +841,15 @@ function NewSheetsUnits(props) {
         qty: row.qty,
         inspected: row.inspected,
         locationNo: row.locationNo,
-        updated: row.updated,
+        upDated: row.upDated,
       });
     },
   };
 
-  // console.log("selectedRowss:", selectedRows);
-  // console.log("inputpart:", inputPart);
+  // const addToStock = () => {};
 
-  // const addToStock
-  const addToStock = async () => {
+  // const removeToStock = () => {};
+  const addToStock = () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
@@ -1167,7 +879,7 @@ function NewSheetsUnits(props) {
         locationNo: mtrlStock.locationNo,
         qtyAccepted: mtrlStock.qtyAccepted,
       };
-      // console.log("newrow = ", newRow);
+      console.log("newrow = ", newRow);
       //console.log("before api");
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
         //console.log("data = ", data);
@@ -1177,30 +889,13 @@ function NewSheetsUnits(props) {
           //setBoolVal2(true);
           //setBoolVal3(false);
           setBoolValStock("on");
-          // setBoolVal6(true);
-          // setBoolVal7(false);
-          setRmvBtn(true);
-          setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
       });
-      //console.log("mtrlstock = ", mtrlStock);
-      //console.log("before materialArray = ", materialArray);
-
-      //update checkbox
-      for (let i = 0; i < materialArray.length; i++) {
-        if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-          materialArray[i].updated = 1;
-        }
-      }
-      await delay(500);
-      setMaterialArray(materialArray);
-      //console.log("after materialArray = ", materialArray);
     }
   };
 
-  // const removeToStock
   const removeStock = () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
@@ -1213,19 +908,6 @@ function NewSheetsUnits(props) {
           //setBoolVal2(false);
           //setBoolVal3(true);
           setBoolValStock("off");
-          // setBoolVal6(false);
-          // setBoolVal7(true);
-          setAddBtn(true);
-          setRmvBtn(false);
-
-          //update checkbox
-          for (let i = 0; i < materialArray.length; i++) {
-            if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-              materialArray[i].updated = 0;
-            }
-          }
-          await delay(500);
-          setMaterialArray(materialArray);
         } else {
           toast.error("Stock Not Removed");
         }
@@ -1247,7 +929,7 @@ function NewSheetsUnits(props) {
 
         <div className="row">
           <div className="col-md-3">
-            <label className="form-label">Receipt Date</label>
+            <label className="">Receipt Date</label>
             <input
               type="text"
               name="receiptDate"
@@ -1256,11 +938,11 @@ function NewSheetsUnits(props) {
             />
           </div>
           <div className="col-md-3">
-            <label className="form-label">RV No</label>
+            <label className="">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
           <div className="col-md-3">
-            <label className="form-label">RV Date</label>
+            <label className="">RV Date</label>
             <input
               type="text"
               name="rvDate"
@@ -1269,7 +951,7 @@ function NewSheetsUnits(props) {
             />
           </div>
           <div className="col-md-3">
-            <label className="form-label">Status</label>
+            <label className="">status</label>
             <input
               type="text"
               name="status"
@@ -1281,53 +963,41 @@ function NewSheetsUnits(props) {
         <div className="row">
           <div className="col-md-8">
             <label className="form-label">Customer</label>
-            {props.type2 !== "purchase" ? (
-              <Typeahead
-                id="basic-example"
-                name="customer"
-                options={custdata}
-                //disabled={props.type2 === "purchase" ? true : boolVal2}
-                placeholder="Select Customer"
-                onChange={(label) => changeCustomer(label)}
-                disabled={boolVal2}
-              />
-            ) : (
-              <select
-                className="ip-select"
-                name="customer"
-                disabled={props.type2 === "purchase" ? true : boolVal2}
-                onChange={changeCustomer1}
-              >
-                {props.type2 === "purchase" ? (
-                  ""
-                ) : (
-                  <option value="" disabled selected>
-                    Select Customer
-                  </option>
-                )}
+            <select
+              className="ip-select"
+              name="customer"
+              disabled={props.type2 === "purchase" ? true : boolVal2}
+              onChange={changeCustomer}
+            >
+              {props.type2 === "purchase" ? (
+                ""
+              ) : (
+                <option value="" disabled selected>
+                  Select Customer
+                </option>
+              )}
 
-                {props.type2 === "purchase"
-                  ? custdata.map((customer, index) =>
-                      customer.Cust_Code == 0 ? (
-                        <option key={index} value={customer.Cust_Code}>
-                          {customer.Cust_name}
-                        </option>
-                      ) : (
-                        ""
-                      )
-                    )
-                  : custdata.map((customer, index) => (
+              {props.type2 === "purchase"
+                ? custdata.map((customer, index) =>
+                    customer.Cust_Code == 0 ? (
                       <option key={index} value={customer.Cust_Code}>
                         {customer.Cust_name}
                       </option>
-                    ))}
-              </select>
-            )}
+                    ) : (
+                      ""
+                    )
+                  )
+                : custdata.map((customer, index) => (
+                    <option key={index} value={customer.Cust_Code}>
+                      {customer.Cust_name}
+                    </option>
+                  ))}
+            </select>
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
+            <label className="">Weight</label>
             <input
-              type="number"
+              type="text"
               name="weight"
               required
               value={formHeader.weight}
@@ -1339,7 +1009,7 @@ function NewSheetsUnits(props) {
 
         <div className="row">
           <div className="col-md-8">
-            <label className="form-label">Reference</label>
+            <label className="">Reference</label>
             <input
               type="text"
               name="reference"
@@ -1349,9 +1019,9 @@ function NewSheetsUnits(props) {
             />
           </div>
           <div className="col-md-4">
-            <label className="form-label">Calculated Weight</label>
+            <label className="">Calculated Weight</label>
             <input
-              type="number"
+              type="text"
               name="calculatedWeight"
               //value={formHeader.calcWeight}
               value={calcWeightVal}
@@ -1360,11 +1030,11 @@ function NewSheetsUnits(props) {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-4">
           <div className="col-md-8 justify-content-center">
             <button
               className="button-style"
-              // style={{ width: "120px" }}
+              style={{ width: "196px" }}
               onClick={saveButtonState}
               disabled={boolVal4}
             >
@@ -1372,7 +1042,7 @@ function NewSheetsUnits(props) {
             </button>
             <button
               className="button-style"
-              // style={{ width: "150px" }}
+              style={{ width: "196px" }}
               disabled={boolVal1 | boolVal4}
               onClick={allotRVButtonState}
             >
@@ -1380,7 +1050,7 @@ function NewSheetsUnits(props) {
             </button>
             <button
               className="button-style"
-              // style={{ width: "196px" }}
+              style={{ width: "196px" }}
               disabled={boolVal1 | boolVal4}
               onClick={deleteRVButtonState}
             >
@@ -1390,18 +1060,16 @@ function NewSheetsUnits(props) {
               className="button-style "
               id="btnclose"
               type="submit"
-              onClick={() => nav("/MaterialManagement")}
+              onClick={() => nav("/materialmanagement")}
             >
               Close
             </button>
           </div>
-          <div className="col-md-4 mb-3 mt-3">
+          <div className="col-md-4">
             <label className="form-label"></label>
             <textarea
-              id="exampleFormControlTextarea1"
-              rows="4"
-              style={{ width: "320px" }}
-              // className="form-control"
+              style={{ height: "110px" }}
+              className="form-control"
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -1418,7 +1086,6 @@ function NewSheetsUnits(props) {
                 hover
                 condensed
                 selectRow={selectRow}
-                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>
             </div>
 
@@ -1434,7 +1101,7 @@ function NewSheetsUnits(props) {
               <div className="row justify-content-center mt-2">
                 <button
                   className="button-style "
-                  style={{ width: "155px" }}
+                  style={{ width: "260px" }}
                   //onClick={addNewPart}
                   disabled={boolVal1 | boolVal4}
                   onClick={addNewMaterial}
@@ -1442,326 +1109,290 @@ function NewSheetsUnits(props) {
                   Add Serial
                 </button>
               </div>
-
-              <div className="row  justify-content-center">
-                <div className="col-md-6 col-sm-12">
-                  <button
-                    className="button-style "
-                    style={{ width: "155px" }}
-                    // disabled={
-                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
-                    //   boolValStock === "off"
-                    //     ? !boolVal4
-                    //     : true*/
-                    //   boolVal6
-                    // }
-                    disabled={rmvBtn | boolVal6}
-                    onClick={addToStock}
-                  >
-                    Add to stock
-                  </button>
-                </div>
-                <div className="col-md-6 col-sm-12">
-                  <button
-                    className="button-style "
-                    style={{ width: "155px" }}
-                    // disabled={
-                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
-                    //   boolValStock === "on"
-                    //     ? !boolVal4
-                    //     : true*/
-                    //   boolVal7
-                    // }
-                    disabled={addBtn | boolVal6}
-                    onClick={removeStock}
-                  >
-                    Remove stock
-                  </button>
-                </div>
+              <div className="row justify-content-center mt-2">
+                <button
+                  className="button-style "
+                  style={{ width: "120px" }}
+                  disabled={
+                    (props.type2 === "purchase" || props.type === "gas") &&
+                    boolValStock === "off"
+                      ? !boolVal4
+                      : true
+                  }
+                  onClick={addToStock}
+                >
+                  Add to stock
+                </button>
+                <button
+                  className="button-style "
+                  style={{ width: "130px" }}
+                  disabled={
+                    (props.type2 === "purchase" || props.type === "gas") &&
+                    boolValStock === "on"
+                      ? !boolVal4
+                      : true
+                  }
+                  onClick={removeStock}
+                >
+                  Remove stock
+                </button>
               </div>
-
               <div className="row">
-                <div className="ip-box form-bg">
-                  <p className="form-title-deco mt-2">
-                    <h5>Serial Details</h5>
-                  </p>
-                  <div className="row">
-                    <div className="col-md-4 ">
-                      <label className="form-label">Part ID</label>
-                    </div>
-                    <div className="col-md-8" style={{ marginTop: "8px" }}>
-                      <select
-                        className="ip-select dropdown-field"
-                        onChange={changeMtrl}
-                        defaultValue={" "}
-                        value={inputPart.mtrlCode}
-                        name="mtrlCode"
-                        disabled={boolVal3 | boolVal4 | boolVal5}
-                      >
-                        <option value="" disabled selected>
-                          Select Material
-                        </option>
+                <div className="col-md-12 col-sm-12">
+                  <div className="ip-box form-bg">
+                    <div className="row">
+                      <p className="form-title-deco">Serial Details</p>
 
-                        {props.type === "sheets"
-                          ? mtrlDetails.map((material, index) =>
-                              (material.Shape !== "Units") &
-                              (material.Shape !== "Cylinder") &
-                              (material.Shape !== null) &
-                              (material.Mtrl_Code !== "") ? (
-                                <option key={index} value={material.Mtrl_Code}>
-                                  {material.Mtrl_Code}
-                                </option>
-                              ) : (
-                                ""
+                      <div className="col-md-3 ">
+                        <label className="">Part ID</label>
+                      </div>
+                      <div className="col-md-6" style={{ marginTop: "8px" }}>
+                        <select
+                          className="ip-select dropdown-field"
+                          onChange={changeMtrl}
+                          name="mtrlCode"
+                          disabled={boolVal3 | boolVal4 | boolVal5}
+                        >
+                          <option value="" disabled selected>
+                            Select Material
+                          </option>
+
+                          {props.type === "sheets"
+                            ? mtrlDetails.map((material, index) =>
+                                (material.Shape !== "Units") &
+                                (material.Shape !== "Cylinder") &
+                                (material.Shape !== null) &
+                                (material.Mtrl_Code !== "") ? (
+                                  <option
+                                    key={index}
+                                    value={material.Mtrl_Code}
+                                  >
+                                    {material.Mtrl_Code}
+                                  </option>
+                                ) : (
+                                  ""
+                                )
                               )
-                            )
-                          : props.type === "units"
-                          ? mtrlDetails.map((material, index) =>
-                              (material.Shape === "Units") &
-                              //(material.Shape !== "Cylinder") &
-                              (material.Shape !== null) &
-                              (material.Mtrl_Code !== "") ? (
-                                <option key={index} value={material.Mtrl_Code}>
-                                  {material.Mtrl_Code}
-                                </option>
-                              ) : (
-                                ""
+                            : props.type === "units"
+                            ? mtrlDetails.map((material, index) =>
+                                (material.Shape === "Units") &
+                                //(material.Shape !== "Cylinder") &
+                                (material.Shape !== null) &
+                                (material.Mtrl_Code !== "") ? (
+                                  <option
+                                    key={index}
+                                    value={material.Mtrl_Code}
+                                  >
+                                    {material.Mtrl_Code}
+                                  </option>
+                                ) : (
+                                  ""
+                                )
                               )
-                            )
-                          : mtrlDetails.map((material, index) =>
-                              (material.Shape !== null) &
-                              (material.Mtrl_Code !== "") ? (
-                                <option key={index} value={material.Mtrl_Code}>
-                                  {material.Mtrl_Code}
-                                </option>
-                              ) : (
-                                ""
-                              )
-                            )}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="row mt-3">
-                    <div className="col-md-4">
-                      <label className="form-label">{para1Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        type="number"
-                        className="in-fields"
-                        name="dynamicPara1"
-                        value={inputPart.dynamicPara1}
-                        disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel1}</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para2Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        type="number"
-                        className="in-fields"
-                        name="dynamicPara2"
-                        value={inputPart.dynamicPara2}
-                        disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel2}</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para3Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        type="number"
-                        className="in-fields"
-                        name="dynamicPara3"
-                        value={inputPart.dynamicPara3}
-                        disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel3}</label>
-                    </div>
-                  </div>
-
-                  <p className="form-title-deco">
-                    <h5>Quantity Details</h5>
-                  </p>
-                  <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Received</label>
-                      <input
-                        type="number"
-                        className="in-field"
-                        name="qtyReceived"
-                        // defaultValue={0}
-                        value={inputPart.qtyReceived}
-                        disabled={boolVal3 | boolVal4}
-                        // min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
+                            : mtrlDetails.map((material, index) =>
+                                (material.Shape !== null) &
+                                (material.Mtrl_Code !== "") ? (
+                                  <option
+                                    key={index}
+                                    value={material.Mtrl_Code}
+                                  >
+                                    {material.Mtrl_Code}
+                                  </option>
+                                ) : (
+                                  ""
+                                )
+                              )}
+                        </select>
+                      </div>
                     </div>
 
-                    <div className="col-md-6 col-sm-12">
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="">{para1Label}</label>
+                      </div>
+                      <div className="col-md-4 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara1"
+                          value={inputPart.dynamicPara1}
+                          disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
+                          onChange={changeMaterialHandle}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="">{unitLabel1}</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="">{para2Label}</label>
+                      </div>
+                      <div className="col-md-4 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara2"
+                          value={inputPart.dynamicPara2}
+                          onChange={changeMaterialHandle}
+                          disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="">{unitLabel2}</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="">{para3Label}</label>
+                      </div>
+                      <div className="col-md-4 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara3"
+                          value={inputPart.dynamicPara3}
+                          onChange={changeMaterialHandle}
+                          disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="">{unitLabel3}</label>
+                      </div>
+                    </div>
+                    <div className="col-md-12 ">
+                      <p className="form-title-deco">Quantity Details</p>
                       <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
+                        <div className="col-md-3">
+                          <label className="">Received</label>
+                        </div>
+                        <div className="col-md-4 ">
                           <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="inspected"
-                            checked={insCheck}
-                            /*checked={
+                            className="in-field"
+                            name="qtyReceived"
+                            value={inputPart.qtyReceived}
+                            disabled={boolVal3 | boolVal4}
+                            onChange={changeMaterialHandle}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <div
+                            className="col-md-12 mt-2"
+                            style={{ display: "flex", gap: "5px" }}
+                          >
+                            <input
+                              className="form-check-input mt-2"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              name="inspected"
+                              checked={insCheck}
+                              /*checked={
                                 inputPart.inspected === "1" ? true : false
                               }*/
-                            disabled={boolVal3 | boolVal4}
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                            }}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Inspected</label>
+                              disabled={boolVal3 | boolVal4}
+                              onChange={changeMaterialHandle}
+                            />
+                             <label className="">Inspected</label>
+                          </div>
                         </div>
                       </div>
-                       
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Accepted</label>
-                      <input
-                        type="number"
-                        className="in-field"
-                        name="qtyAccepted"
-                        // defaultValue={0}
-                        value={inputPart.qtyAccepted}
-                        disabled={boolVal3 | boolVal4 | !boolVal5}
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
-                    </div>
-
-                    <div className="col-md-6 col-sm-12">
                       <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
+                        <div className="col-md-3">
+                          <label className="">Accepted</label>
+                        </div>
+                        <div className="col-md-4 ">
                           <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="updated"
-                            value={inputPart.updated}
-                            //disabled={boolVal3 | boolVal4}
-                            disabled={true}
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                            }}
+                            className="in-field"
+                            name="qtyAccepted"
+                            value={inputPart.qtyAccepted}
+                            disabled={boolVal3 | boolVal4 | !boolVal5}
+                            onChange={changeMaterialHandle}
                           />
                         </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Updated</label>
+                        <div className="col-md-4">
+                          <div
+                            className="col-md-12 mt-2"
+                            style={{ display: "flex", gap: "5px" }}
+                          >
+                            <input
+                              className="form-check-input mt-2"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              name="updated"
+                              value={inputPart.upDated}
+                              //disabled={boolVal3 | boolVal4}
+                              disabled={true}
+                              onChange={changeMaterialHandle}
+                            />
+                             <label className="">Updated</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-3">
+                          <label className="">Wt Calculated 2</label>
+                        </div>
+                        <div className="col-md-4 ">
+                          <input
+                            className="in-field"
+                            name="totalWeightCalculated"
+                            value={inputPart.totalWeightCalculated}
+                            disabled={true}
+                          />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-3">
+                          <label className="">Weight</label>
+                        </div>
+                        <div className="col-md-4 ">
+                          <input
+                            className="in-field"
+                            name="totalWeight"
+                            value={inputPart.totalWeight}
+                            onChange={changeMaterialHandle}
+                            disabled={boolVal3 | boolVal4}
+                          />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-3 ">
+                          <label className="">Location</label>
+                        </div>
+                        <div className="col-md-6" style={{ marginTop: "8px" }}>
+                          <select
+                            className="ip-select dropdown-field"
+                            onChange={changeMaterialHandle}
+                            disabled={boolVal3 | boolVal4}
+                            name="locationNo"
+                          >
+                            <option value="" disabled selected>
+                              Select Location
+                            </option>
+                            {locationData.map((location, index) => (
+                              <option key={index} value={location.LocationNo}>
+                                {location.LocationNo}
+                              </option>
+                            ))}
+
+                            {/* <option value="option 1">001</option>
+                            <option value="option 1">002</option>
+                            <option value="option 1">003</option>
+                            <option value="option 1">004</option> */}
+                          </select>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-6">
-                      <label
-                        className="form-label"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        Wt Calculated 2
-                      </label>
-                      <input
-                        className="in-field"
-                        name="totalWeightCalculated"
-                        value={inputPart.totalWeightCalculated}
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={true}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <label className="form-label">Weight</label>
-                      <input
-                        type="number"
-                        className="in-field"
-                        name="totalWeight"
-                        value={inputPart.totalWeight}
-                        // onChange={changeMaterialHandle}
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={boolVal3 | boolVal4}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6 ">
-                      <label className="form-label">Location</label>
-                      <select
-                        className="ip-select dropdown-field"
-                        // onChange={changeMaterialHandle}
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        value={inputPart.locationNo}
-                        disabled={boolVal3 | boolVal4}
-                        name="locationNo"
-                      >
-                        <option value="" disabled selected>
-                          Select Location
-                        </option>
-                        {locationData.map((location, index) => (
-                          <option key={index} value={location.LocationNo}>
-                            {location.LocationNo}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="row justify-content-center mt-3 mb-4">
-                    <button
-                      className="button-style "
-                      style={{ width: "155px" }}
-                      disabled={boolVal3 | boolVal4}
-                      onClick={handleDelete}
-                    >
-                      Delete
-                    </button>
                   </div>
                 </div>
+              </div>
+              <div className="row justify-content-center mt-2">
+                <button
+                  className="button-style "
+                  style={{ width: "120px" }}
+                  disabled={boolVal3 | boolVal4}
+                  onClick={handleDelete}
+                >
+                  Delete Serial
+                </button>
               </div>
             </div>
           </div>

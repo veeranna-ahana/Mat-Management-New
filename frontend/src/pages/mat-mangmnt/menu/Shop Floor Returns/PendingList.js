@@ -29,6 +29,7 @@ function PendingList(props) {
   const [firstTableAll, setFirstTableAll] = useState([]);
   const [secondTable, setSecondTable] = useState([]);
   const [secondTableRow, setSecondTableRow] = useState({});
+  const [selectSecondAll, setSelectSecondAll] = useState(false);
   const [rowValResize, setRowValResize] = useState({});
   const [treeData, setTreeData] = useState([]);
   let [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
@@ -209,7 +210,8 @@ function PendingList(props) {
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
         setSecondTableRow(row);
-
+        // console.log(isSelect);
+        // console.log(row);
         //store selected row data
         setSelectedSecondTableRows([...selectedSecondTableRows, row]);
       } else {
@@ -246,6 +248,7 @@ function PendingList(props) {
       console.log("newTable", newTable);
     }
   };
+  // console.log("setSelectedSecondTableRows", SelectedSecondTableRows);
 
   function tableRefresh() {
     //reset first table
@@ -630,7 +633,7 @@ function PendingList(props) {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
@@ -644,7 +647,7 @@ function PendingList(props) {
               hover
               condensed
               selectRow={selectRow2}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

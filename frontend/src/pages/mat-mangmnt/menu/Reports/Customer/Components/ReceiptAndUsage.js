@@ -67,7 +67,7 @@ function ReceiptAndUsage(props) {
     {
       text: "Part ID",
       dataField: "PartId",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Received",
@@ -92,7 +92,7 @@ function ReceiptAndUsage(props) {
     {
       text: "Returned Unused",
       dataField: "QtyReturned",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
   const columns3 = [
@@ -219,28 +219,33 @@ function ReceiptAndUsage(props) {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
         <div className="col-md-7">
-         
-            <div style={{ height: "375px", overflow: "scroll" }}>
-              <BootstrapTable
-                keyField="id"
-                columns={columns2}
-                data={secondTable}
-                striped
-                hover
-                condensed
-                selectRow={selectRow2}
-                headerClasses="header-class"
-              ></BootstrapTable>
-            </div>
-         
+          <div style={{ height: "375px", overflow: "scroll" }}>
+            <BootstrapTable
+              keyField="id"
+              columns={columns2}
+              data={secondTable}
+              striped
+              hover
+              condensed
+              selectRow={selectRow2}
+              headerClasses="header-class tableHeaderBGColor"
+            ></BootstrapTable>
+          </div>
+
           <div className="row mt-3">
             <div className="col-md-6">
-              <div style={{ height: "375px", overflowX: "scroll",overflowY: "scroll" }}>
+              <div
+                style={{
+                  height: "375px",
+                  overflowX: "scroll",
+                  overflowY: "scroll",
+                }}
+              >
                 <BootstrapTable
                   keyField="id"
                   columns={columns3}
@@ -249,12 +254,18 @@ function ReceiptAndUsage(props) {
                   hover
                   condensed
                   selectRow={selectRow3}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </div>
             <div className="col-md-6">
-              <div style={{ height: "375px",  overflowX: "scroll",overflowY: "scroll"}}>
+              <div
+                style={{
+                  height: "375px",
+                  overflowX: "scroll",
+                  overflowY: "scroll",
+                }}
+              >
                 <BootstrapTable
                   keyField="id"
                   columns={columns4}
@@ -263,7 +274,7 @@ function ReceiptAndUsage(props) {
                   hover
                   condensed
                   //selectRow={selectRow1}
-                  headerClasses="header-class"
+                  headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </div>

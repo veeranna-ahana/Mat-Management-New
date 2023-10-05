@@ -24,6 +24,7 @@ function MaterialMoverForm(props) {
   let [selectedRows, setSelectedRows] = useState([]);
   let [firstTable, setFirstTable] = useState([]);
   let [secondTable, setSecondTable] = useState([]);
+  let [selectedIndex, setSelectedIndex] = useState([]);
 
   const fetchData = async () => {
     getRequest(endpoints.getCustomers, async (data) => {
@@ -141,6 +142,7 @@ function MaterialMoverForm(props) {
             });
 
             setSelectedRows(selectedRows);
+            setSelectedIndex([]);
           }
         );
       }
@@ -254,11 +256,16 @@ function MaterialMoverForm(props) {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
+    selected: selectedIndex,
     onSelect: (row, isSelect, rowIndex, e) => {
       //console.log("first row = ", row);
       if (isSelect) {
         setSelectedRows([...selectedRows, row]);
+        setSelectedIndex([...selectedIndex, row.MtrlStockID]);
       } else {
+        setSelectedIndex(
+          selectedIndex.filter((item) => item != row.MtrlStockID)
+        );
         setSelectedRows(
           selectedRows.filter((obj) => {
             return obj.MtrlStockID !== row.MtrlStockID;
@@ -271,8 +278,20 @@ function MaterialMoverForm(props) {
       if (isSelect) {
         // console.log("select all", selectedRows);
         // console.log("row", row);
+        // console.log(
+        //   "mtrlstckid",
+        //   row.map((val, i) => {
+        //     return val.MtrlStockID;
+        //   })
+        // );
         setSelectedRows(row);
+        setSelectedIndex(
+          row.map((val, i) => {
+            return val.MtrlStockID;
+          })
+        );
       } else {
+        setSelectedIndex([]);
         setSelectedRows([]);
       }
     },
@@ -432,7 +451,7 @@ function MaterialMoverForm(props) {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
@@ -447,7 +466,7 @@ function MaterialMoverForm(props) {
               hover
               condensed
               //selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
