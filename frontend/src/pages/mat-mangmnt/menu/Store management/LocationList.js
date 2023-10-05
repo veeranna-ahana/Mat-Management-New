@@ -121,28 +121,41 @@ export default function LocationList() {
   // };
 
   const addButton = () => {
-    if (inputData.location && inputData.storage && inputData.capacity) {
-      let paraData1 = {
-        LocationNo: inputData.location,
-        StorageType: inputData.storage,
-        Capacity: inputData.capacity,
-      };
-      postRequest(endpoints.insertMaterialLocationList, paraData1, (data) => {
-        getRequest(endpoints.getMaterialLocationList, (data) => {
-          for (let i = 0; i < data.length; i++) {
-            data[i].id = i + 1;
-          }
-          setTableData(data);
-        });
-        setInputData({
-          location: "",
-          storage: "",
-          capacity: "",
-        });
-        toast.success("Location data added successfully");
-      });
+    // console.log("inputData.location", inputData.location);
+    // console.log("dataaaa..", tableData);
+
+    const found = tableData.some((obj) => {
+      return obj.LocationNo === inputData.location;
+    });
+
+    // console.log("found", found);
+
+    if (found) {
+      toast.error("The location number already exist");
     } else {
-      toast.error("Please fill the data before adding");
+      if (inputData.location && inputData.storage && inputData.capacity) {
+        let paraData1 = {
+          LocationNo: inputData.location,
+          StorageType: inputData.storage,
+          Capacity: inputData.capacity,
+        };
+        postRequest(endpoints.insertMaterialLocationList, paraData1, (data) => {
+          getRequest(endpoints.getMaterialLocationList, (data) => {
+            for (let i = 0; i < data.length; i++) {
+              data[i].id = i + 1;
+            }
+            setTableData(data);
+          });
+          setInputData({
+            location: "",
+            storage: "",
+            capacity: "",
+          });
+          toast.success("Location data added successfully");
+        });
+      } else {
+        toast.error("Please fill the data before adding");
+      }
     }
 
     // setBtnState("");
