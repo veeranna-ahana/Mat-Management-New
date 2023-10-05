@@ -8,6 +8,7 @@
   margin-top: 10px;
   border-radius: 6px;
   text-indent: 5px;
+  background-color: white;
 }
 
 .dropdown-field {
@@ -36,5 +37,5 @@
 }
 
 .rbt-input-hint-container input {
-border: none !important;
+  border: none !important;
 }

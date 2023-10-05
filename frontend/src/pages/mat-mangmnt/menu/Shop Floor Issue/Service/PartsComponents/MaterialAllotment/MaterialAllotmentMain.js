@@ -922,6 +922,12 @@ function MaterialAllotmentMain() {
                         type="number"
                         value={row.issueNow}
                         onChange={(e) => handleIssueNowChange(e, row)}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
                       />
                     </td>
                   </tr>

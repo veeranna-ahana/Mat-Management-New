@@ -194,7 +194,7 @@ function OpenButtonDraftSheetUnit(props) {
       formHeader.calcWeight = data.TotalCalculatedWeight;
       formHeader.type = data.Type;
 
-      console.log("data = ", data);
+      // console.log("data = ", data);
       //data.ReceiptDate = formatDate(new Date(data.ReceiptDate), 4);
       //data.RV_Date = formatDate(new Date(data.RV_Date), 3);
       //setFormHeader(formHeader);
@@ -210,7 +210,7 @@ function OpenButtonDraftSheetUnit(props) {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        console.log("data2  = ", data2);
+        // console.log("data2  = ", data2);
         data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -236,7 +236,7 @@ function OpenButtonDraftSheetUnit(props) {
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
-        console.log("data 2 = ", data2);
+        // console.log("data 2 = ", data2);
         setMaterialArray(data2);
         //find shape of material
         //console.log("data2 = ", data2);
@@ -349,16 +349,22 @@ function OpenButtonDraftSheetUnit(props) {
         //update the mtrl_data related columns
         let url1 = endpoints.getRowByMtrlCode + "?code=" + value;
         getRequest(url1, async (mtrlData) => {
-          //console.log("mtrldata = ", mtrlData);
+          // console.log("mtrldata = ", mtrlData);
           inputPart.material = mtrlData.Mtrl_Type;
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
           getRequest(url2, async (shapeData) => {
-            //console.log("shapedata = ", shapeData);
+            // console.log("shapedata = ", shapeData);
             inputPart.shapeID = shapeData.ShapeID;
             setInputPart(inputPart);
           });
         });
+
+        console.log("1st inputPart", inputPart);
+
+        // if (shape !== null && shape !== undefined && shape !== material.Shape) {
+        //   toast.error("Please select a same type of part");
+        // }
 
         if (material.Shape === "Units") {
           setPara1Label("Qty"); //Nos
@@ -445,7 +451,7 @@ function OpenButtonDraftSheetUnit(props) {
     inputPart[name] = value;
     setInputPart(inputPart);
 
-    console.log("Before update = ", inputPart);
+    console.log("2nd inputPart update = ", inputPart);
 
     await delay(500);
     //update database row
@@ -469,41 +475,42 @@ function OpenButtonDraftSheetUnit(props) {
     setMaterialArray(newArray);
   };
 
-  let changeLocation = async (e) => {
-    e.preventDefault();
-    const { value, name } = e.target;
+  // let changeLocation = async (e) => {
+  //   e.preventDefault();
+  //   const { value, name } = e.target;
 
-    //update input Array set material code
-    setInputPart((preValue) => {
-      //console.log(preValue)
-      return {
-        ...preValue,
-        [name]: value,
-      };
-    });
-    inputPart[name] = value;
-    setInputPart(inputPart);
+  //   //update input Array set material code
+  //   setInputPart((preValue) => {
+  //     //console.log(preValue)
+  //     return {
+  //       ...preValue,
+  //       [name]: value,
+  //     };
+  //   });
+  //   inputPart[name] = value;
+  //   setInputPart(inputPart);
 
-    //update databse row
-    postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
-      } else {
-        toast.error("Record Not Updated");
-      }
-    });
+  //   //update databse row
+  //   postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
+  //     if (data.affectedRows !== 0) {
+  //     } else {
+  //       toast.error("Record Not Updated");
+  //     }
+  //   });
 
-    //update table grid
-    const newArray = materialArray.map((p) =>
-      //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-      p.id === partUniqueId
-        ? {
-            ...p,
-            [name]: value,
-          }
-        : p
-    );
-    setMaterialArray(newArray);
-  };
+  //   //update table grid
+  //   const newArray = materialArray.map((p) =>
+  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //     p.id === partUniqueId
+  //       ? {
+  //           ...p,
+  //           [name]: value,
+  //         }
+  //       : p
+  //   );
+  //   setMaterialArray(newArray);
+  // };
+
   //input header change event
   const InputHeaderEvent = (e) => {
     const { value, name } = e.target;
@@ -597,7 +604,7 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
-  console.log("part arrayyyyyy = ", materialArray);
+  // console.log("part arrayyyyyy = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
@@ -791,6 +798,7 @@ function OpenButtonDraftSheetUnit(props) {
     locationNo,
     upDated,
   } = inputPart;
+
   const addNewMaterial = (e) => {
     setBoolVal3(false);
 
@@ -823,7 +831,7 @@ function OpenButtonDraftSheetUnit(props) {
     inputPart.inspected = 0;
     setBoolVal5(false);
     // console.log("partarray = ", partArray);
-
+    console.log("inputPart = ", inputPart);
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
@@ -881,7 +889,7 @@ function OpenButtonDraftSheetUnit(props) {
     //console.log("after = ", partArray);
   };
 
-  console.log("inputpart10", inputPart);
+  console.log("3rd inputPart", inputPart);
   //delete part
   const handleDelete = () => {
     if (inputPart?.id?.length === 0) {
@@ -960,7 +968,7 @@ function OpenButtonDraftSheetUnit(props) {
 
     inputPart[name] = value;
     setInputPart(inputPart);
-    //console.log(inputPart);
+    console.log("4th inputPart", inputPart);
 
     //calculate weight
     if (name === "qtyAccepted") {
@@ -1002,8 +1010,8 @@ function OpenButtonDraftSheetUnit(props) {
               ? {
                   ...p,
                   [name]: value,
-                  //qty: inputPart.qtyReceived,
-                  //inspected: inputPart.inspected,
+                  qty: inputPart.qtyReceived,
+                  inspected: inputPart.inspected,
                 }
               : p
           );
@@ -1048,6 +1056,8 @@ function OpenButtonDraftSheetUnit(props) {
         console.log("inputPart11 : ", inputPart);
       }
     }
+
+    console.log("5th inputPart", inputPart);
     const newArray = materialArray.map((p) =>
       //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
       p.id === id
@@ -1063,9 +1073,10 @@ function OpenButtonDraftSheetUnit(props) {
     setMaterialArray(newArray);
     await delay(500);
     // debugger
+
+    // console.log("inputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
-      console.log("update .......");
       if (data.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
@@ -1073,6 +1084,97 @@ function OpenButtonDraftSheetUnit(props) {
     });
     await delay(500);
   };
+
+  const selectRow = {
+    mode: "radio",
+    clickToSelect: true,
+    bgColor: "#8A92F0",
+    onSelect: (row, isSelect, rowIndex, e) => {
+      console.log("Row = ", row);
+      // console.log("Row = ", row.updated);
+      // setIsButtonEnabled(row.updated === 1);
+      // setInputPart(row);
+      // updated = upDated;
+      if (row.updated === 1) {
+        setRmvBtn(true);
+        setAddBtn(false);
+      } else {
+        setRmvBtn(false);
+        setAddBtn(true);
+      }
+
+      const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
+      getRequest(url1, async (data2) => {
+        data2?.forEach((obj) => {
+          obj.id = obj.Mtrl_Rv_id;
+          obj.mtrlRvId = obj.Mtrl_Rv_id;
+          obj.rvId = obj.RvID;
+          obj.srl = obj.Srl;
+          obj.custCode = obj.Cust_Code;
+          obj.mtrlCode = obj.Mtrl_Code;
+          obj.material = obj.Material;
+          obj.shapeMtrlId = obj.ShapeMtrlID;
+          obj.shapeID = obj.ShapeID;
+          obj.dynamicPara1 = obj.DynamicPara1;
+          obj.dynamicPara2 = obj.DynamicPara1;
+          obj.dynamicPara3 = obj.DynamicPara1;
+          obj.qty = obj.Qty;
+          obj.inspected = obj.Inspected;
+          obj.accepted = obj.Accepted;
+          obj.totalWeightCalculated = obj.TotalWeightCalculated;
+          obj.totalWeight = obj.TotalWeight;
+          obj.locationNo = obj.LocationNo;
+          obj.updated = obj.Updated;
+          obj.qtyAccepted = obj.QtyAccepted;
+          obj.qtyReceived = obj.QtyReceived;
+          obj.qtyRejected = obj.QtyRejected;
+          obj.qtyUsed = obj.QtyUsed;
+          obj.qtyReturned = obj.QtyReturned;
+        });
+        setMtrlArray(data2);
+        data2?.map(async (obj) => {
+          if (obj.id == row.id) {
+            setMtrlStock(obj);
+          }
+        });
+      });
+
+      setInputPart({
+        // id: row.id,
+        // partId: row.partId,
+        // unitWeight: row.unitWeight,
+        // qtyAccepted: row.qtyAccepted,
+        // qtyRejected: row.qtyRejected,
+        // qtyReceived: row.qtyReceived,
+        id: row.id,
+        srl: row.srl,
+        mtrlCode: row.mtrlCode,
+        dynamicPara1: row.dynamicPara1,
+        dynamicPara2: row.dynamicPara2,
+        dynamicPara3: row.dynamicPara3,
+        qty: row.qty,
+        inspected: row.inspected,
+        locationNo: row.locationNo,
+        updated: row.updated,
+        accepted: row.accepted,
+        custCode: row.custCode,
+        material: row.material,
+        mtrlCode: row.mtrlCode,
+        qtyAccepted: row.qtyAccepted,
+        qtyRejected: row.qtyRejected,
+        qtyReceived: row.qtyReceived,
+        qtyUsed: row.qtyUsed,
+        rvId: row.rvId,
+        shapeID: row.shapeID,
+        shapeMtrlId: row.shapeMtrlId,
+        totalWeight: row.totalWeight,
+        totalWeightCalculated: row.totalWeightCalculated,
+        updated: row.updated,
+      });
+    },
+  };
+
+  console.log("asdfghjkjhgfdfgjkjvcvnjkjh", inputPart);
 
   // const changeMaterialHandle = async (e, id) => {
   //   const { value, name } = e.target;
@@ -1254,81 +1356,7 @@ function OpenButtonDraftSheetUnit(props) {
   //   await delay(500);
   // };
 
-  const selectRow = {
-    mode: "radio",
-    clickToSelect: true,
-    bgColor: "#8A92F0",
-    onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("Row = ", row);
-      // console.log("Row = ", row.updated);
-      // setIsButtonEnabled(row.updated === 1);
-      setInputPart(row);
-      if (row.updated === 1) {
-        setRmvBtn(true);
-        setAddBtn(false);
-      } else {
-        setRmvBtn(false);
-        setAddBtn(true);
-      }
-
-      const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
-      getRequest(url1, async (data2) => {
-        data2?.forEach((obj) => {
-          obj.id = obj.Mtrl_Rv_id;
-          obj.mtrlRvId = obj.Mtrl_Rv_id;
-          obj.rvId = obj.RvID;
-          obj.srl = obj.Srl;
-          obj.custCode = obj.Cust_Code;
-          obj.mtrlCode = obj.Mtrl_Code;
-          obj.material = obj.Material;
-          obj.shapeMtrlId = obj.ShapeMtrlID;
-          obj.shapeID = obj.ShapeID;
-          obj.dynamicPara1 = obj.DynamicPara1;
-          obj.dynamicPara2 = obj.DynamicPara1;
-          obj.dynamicPara3 = obj.DynamicPara1;
-          obj.qty = obj.Qty;
-          obj.inspected = obj.Inspected;
-          obj.accepted = obj.Accepted;
-          obj.totalWeightCalculated = obj.TotalWeightCalculated;
-          obj.totalWeight = obj.TotalWeight;
-          obj.locationNo = obj.LocationNo;
-          obj.updated = obj.Updated;
-          obj.qtyAccepted = obj.QtyAccepted;
-          obj.qtyReceived = obj.QtyReceived;
-          obj.qtyRejected = obj.QtyRejected;
-          obj.qtyUsed = obj.QtyUsed;
-          obj.qtyReturned = obj.QtyReturned;
-        });
-        setMtrlArray(data2);
-        data2?.map(async (obj) => {
-          if (obj.id == row.id) {
-            setMtrlStock(obj);
-          }
-        });
-      });
-
-      setInputPart({
-        // id: row.id,
-        // partId: row.partId,
-        // unitWeight: row.unitWeight,
-        // qtyAccepted: row.qtyAccepted,
-        // qtyRejected: row.qtyRejected,
-        // qtyReceived: row.qtyReceived,
-        id: row.id,
-        srl: row.srl,
-        mtrlCode: row.mtrlCode,
-        dynamicPara1: row.dynamicPara1,
-        dynamicPara2: row.dynamicPara2,
-        dynamicPara3: row.dynamicPara3,
-        qty: row.qty,
-        inspected: row.inspected,
-        locationNo: row.locationNo,
-        updated: row.updated,
-      });
-    },
-  };
-
-  console.log("inpurtpart.srl", inputPart.srl);
+  // console.log("inpurtpart.srl", inputPart.srl);
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
@@ -1423,7 +1451,7 @@ function OpenButtonDraftSheetUnit(props) {
       });
     }
   };
-  console.log("materialArray", materialArray);
+  // console.log("materialArray", materialArray);
   return (
     <div>
       <CreateYesNoModal
@@ -1803,9 +1831,7 @@ function OpenButtonDraftSheetUnit(props) {
                             id="flexCheckDefault"
                             name="inspected"
                             checked={insCheck}
-                            /*checked={
-                                inputPart.inspected === "1" ? true : false
-                              }*/
+                            // checked={inputPart.inspected === "1" ? true : false}
                             disabled={boolVal3 | boolVal4}
                             // onChange={changeMaterialHandle}
 

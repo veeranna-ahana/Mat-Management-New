@@ -9,7 +9,7 @@ shopFloorIssueRouter.get("/getPartIssueVoucherList", async (req, res, next) => {
 
     misQueryMod(
       `SELECT n1.DwgName as AssyName, s.*, n.TaskNo, n.NcId, n.Machine, n.Operation, 
-      n.Mtrl_Code, n.CustMtrl, n.Cust_Code, c.Cust_Name FROM magodmis.\`shopfloor_part _issueregister\` s,
+      n.Mtrl_Code, n.CustMtrl, n.Cust_Code, c.Cust_Name FROM magodmis.shopfloor_part_issueregister s,
       magodmis.ncprograms n,magodmis.ncprogram_partslist n1,magodmis.cust_data c
       WHERE s.NcId=n.Ncid AND  n1.NcId=n.Ncid  AND s.Status="${status}" AND  n.Cust_Code= c.Cust_Code order by Issue_date DESC`,
       (err, data) => {
@@ -30,7 +30,7 @@ shopFloorIssueRouter.get(
 
       misQueryMod(
         `SELECT n1.DwgName as AssyName, s.*, n.TaskNo, n.NCProgramNo, n.NcId, n.Machine, n.Operation,
-      n.Mtrl_Code, n.CustMtrl, n.Cust_Code FROM magodmis.\`shopfloor_part _issueregister\` s,
+      n.Mtrl_Code, n.CustMtrl, n.Cust_Code FROM magodmis.shopfloor_part_issueregister s,
       magodmis.ncprograms n,magodmis.ncprogram_partslist n1 
       WHERE s.NcId=n.Ncid AND  n1.NcId=n.Ncid AND s.IssueID=${id}`,
         (err, data) => {

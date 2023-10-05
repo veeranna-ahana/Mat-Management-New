@@ -34,9 +34,11 @@ function PendingList(props) {
   const [treeData, setTreeData] = useState([]);
   let [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
 
+  const [filteredMachine, setFilteredMachine] = useState(null);
+
   const fetchData = () => {
     getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
-      //console.log("table data = ", data);
+      console.log("table data = ", data);
       setFirstTable(data);
       setFirstTableAll(data);
       let newobj = {
@@ -116,7 +118,9 @@ function PendingList(props) {
     },
     {
       text: "Used",
-      dataField: "",
+      dataField: "QtyUsed",
+      formatter: (cell, row) =>
+        cell !== null && cell !== undefined ? cell : 0,
     },
     {
       text: "Remarks",
@@ -198,6 +202,7 @@ function PendingList(props) {
       });
     },
   };
+
   const selectRow2 = {
     mode: "checkbox",
     clickToSelect: true,
@@ -217,16 +222,61 @@ function PendingList(props) {
         );
       }
     },
+    onSelectAll: (isSelect, rows, e) => {
+      // Handle select all rows
+      if (isSelect) {
+        setSelectedSecondTableRows([...selectedSecondTableRows, ...rows]);
+      } else {
+        setSelectedSecondTableRows([]);
+      }
+    },
+  };
+
+  console.log("selectedSecondTableRows", selectedSecondTableRows);
+
+  const treeViewclickMachine = (machine) => {
+    setSecondTable([]);
+    setSelectedSecondTableRows([]);
+    setFilteredMachine(machine);
+
+    if (machine === "Machine") {
+      setFirstTable(firstTableAll);
+    } else {
+      const newTable = firstTableAll.filter((obj) => obj.Machine === machine);
+      setFirstTable(newTable);
+
+      console.log("newTable", newTable);
+    }
   };
   // console.log("setSelectedSecondTableRows", SelectedSecondTableRows);
 
   function tableRefresh() {
     //reset first table
-    getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
-      setFirstTable(data);
-      setFirstTableAll(data);
-      console.log("first table refresh");
-    });
+    // getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+    //   setFirstTable(data);
+    //   setFirstTableAll(data);
+    //   console.log("first table refresh");
+    // });
+
+    // Reset first table based on the selected machine
+
+    if (filteredMachine) {
+      getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+        const filteredData = data.filter(
+          (obj) => obj.Machine === filteredMachine
+        );
+        setFirstTable(filteredData);
+        setFirstTableAll(data);
+        console.log("first table refresh");
+      });
+    } else {
+      // If no machine is selected, set the first table to the entire data
+      getRequest(endpoints.getFirstTableShopFloorReturn, (data) => {
+        setFirstTable(data);
+        setFirstTableAll(data);
+        console.log("first table refresh");
+      });
+    }
 
     //reset second table data
     let row = firstRowSelected;
@@ -250,17 +300,8 @@ function PendingList(props) {
     });
   }
 
-  const treeViewclickMachine = (machine) => {
-    if (machine === "Machine") {
-      setFirstTable(firstTableAll);
-    } else {
-      const newTable = firstTableAll.filter((obj) => obj.Machine === machine);
-      setFirstTable(newTable);
-    }
-  };
-
   const returnToStock = () => {
-    if (Object.keys(secondTableRow).length == 0) {
+    if (selectedSecondTableRows.length === 0) {
       toast.error("Select Material to return to Stock");
     } else {
       secondTableRow.ReminderPara1 = secondTableRow.RemPara1 - 10;
@@ -381,7 +422,7 @@ function PendingList(props) {
   };
 
   const returnScrap = () => {
-    if (Object.keys(secondTableRow).length == 0) {
+    if (selectedSecondTableRows.length === 0) {
       toast.error("Select Material to return to Stock");
     } else {
       setShow(true);
@@ -503,7 +544,7 @@ function PendingList(props) {
             className="button-style mt-0"
             style={{ width: "170px" }}
             onClick={() => {
-              if (Object.keys(secondTableRow).length == 0) {
+              if (selectedSecondTableRows.length === 0) {
                 toast.error("Select Material to return to Stock");
               } else {
                 nav(

@@ -34,6 +34,7 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
     }
   };
   const handleCancel = () => {
+    toast.warning("Not saved to Stock");
     resizeModal("cancel", row);
     setOpen1(false);
   };
@@ -65,7 +66,9 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
                 <label className="form-label">Para1</label>
               </div>
               <div className="col-md-3 mt-3 ">
-                <label><b>Previous</b></label>
+                <label>
+                  <b>Previous</b>
+                </label>
                 <input
                   className="in-field"
                   name="Para1"
@@ -74,7 +77,9 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
                 />
               </div>
               <div className="col-md-3 mt-3 ">
-                <label><b>Resize To</b></label>
+                <label>
+                  <b>Resize To</b>
+                </label>
                 <input
                   className="in-field"
                   name="ReminderPara1"

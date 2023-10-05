@@ -142,7 +142,7 @@ function OpenButtonOpenSheetUnit() {
           obj.shapeMtrlId = obj.ShapeMtrlID;
           obj.shapeID = obj.ShapeID;
           obj.dynamicPara1 = obj.DynamicPara1;
-          obj.dynamicPara2 = obj.DynamicPar2;
+          obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
           obj.qty = obj.Qty;
           obj.inspected = obj.Inspected;
@@ -150,7 +150,7 @@ function OpenButtonOpenSheetUnit() {
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
           obj.totalWeight = obj.TotalWeight;
           obj.locationNo = obj.LocationNo;
-          obj.upDated = obj.UpDated;
+          obj.updated = obj.UpDated;
           obj.qtyAccepted = obj.QtyAccepted;
           obj.qtyReceived = obj.QtyReceived;
           obj.qtyRejected = obj.QtyRejected;
@@ -706,7 +706,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={rmvBtn | boolVal2}
+                    disabled={rmvBtn}
                     onClick={addToStock}
                   >
                     Add to stock
@@ -716,7 +716,7 @@ function OpenButtonOpenSheetUnit() {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    disabled={addBtn | boolVal2}
+                    disabled={addBtn}
                     onClick={removeStock}
                   >
                     Remove stock
@@ -741,17 +741,13 @@ function OpenButtonOpenSheetUnit() {
                         <option value="" disabled selected>
                           Select Material
                         </option>
-                        {/* <option value="option 1">001</option>
-                          <option value="option 1">002</option>
-                          <option value="option 1">003</option>
-                          <option value="option 1">004</option> */}
                       </select>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 1</label>
+                      <label className="form-label">{para1Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -760,10 +756,13 @@ function OpenButtonOpenSheetUnit() {
                         disabled={boolVal}
                       />
                     </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel1}</label>
+                    </div>
                   </div>
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 2</label>
+                      <label className="form-label">{para2Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -772,10 +771,13 @@ function OpenButtonOpenSheetUnit() {
                         value={inputPart.dynamicPara2}
                       />
                     </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel2}</label>
+                    </div>
                   </div>
                   <div className="row">
                     <div className="col-md-4">
-                      <label className="form-label">Para 3</label>
+                      <label className="form-label">{para3Label}</label>
                     </div>
                     <div className="col-md-8 ">
                       <input
@@ -783,6 +785,9 @@ function OpenButtonOpenSheetUnit() {
                         disabled={boolVal}
                         value={inputPart.dynamicPara3}
                       />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label">{unitLabel3}</label>
                     </div>
                   </div>
                   <div className="col-md-12  mt-3">
@@ -811,7 +816,7 @@ function OpenButtonOpenSheetUnit() {
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
-                           <label className="form-label">Inspected</label>
+                          <label className="form-label">Inspected</label>
                         </div>
                       </div>
                     </div>
