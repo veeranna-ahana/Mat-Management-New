@@ -145,12 +145,27 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancel}>
+          {/* <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>
           <Button variant="primary" onClick={handlSave}>
             Save
-          </Button>
+          </Button> */}
+
+          <button
+            className="button-style"
+            style={{ width: "80px", backgroundColor: "gray" }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button
+            className="button-style"
+            style={{ width: "80px" }}
+            onClick={handlSave}
+          >
+            Save
+          </button>
         </Modal.Footer>
       </Modal>
     </>

@@ -164,12 +164,12 @@ function PendingList(props) {
     },
     {
       text: "Balance Length",
-      dataField: "RemPara1",
+      dataField: "Para1",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Balance Width",
-      dataField: "RemPara2",
+      dataField: "Para2",
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
@@ -540,15 +540,48 @@ function PendingList(props) {
           >
             Return To Stock
           </button>
+          {/* <button
+            className="button-style mt-0"
+            style={{ width: "170px" }}
+            onClick={() => {
+              if (selectedSecondTableRows.length === 0) {
+                toast.error("Select Material to return to Stock");
+              }
+              else {
+                nav(
+                  "/MaterialManagement/ShopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+                  {
+                    state: {
+                      secondTableRow: selectedSecondTableRows,
+                      type: "return",
+                    },
+                  }
+                );
+              }
+            }}
+          >
+            Resize and Return
+          </button> */}
+
           <button
             className="button-style mt-0"
             style={{ width: "170px" }}
             onClick={() => {
               if (selectedSecondTableRows.length === 0) {
                 toast.error("Select Material to return to Stock");
+              } else if (
+                selectedSecondTableRows.some(
+                  (row) =>
+                    row.Para1 <= 0 ||
+                    row.Para2 <= 0 ||
+                    row.Para1 < 10 ||
+                    row.Para2 < 10
+                )
+              ) {
+                toast.error("Selected materials cannot be split.");
               } else {
                 nav(
-                  "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+                  "/MaterialManagement/ShopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
                   {
                     state: {
                       secondTableRow: selectedSecondTableRows,
@@ -561,6 +594,7 @@ function PendingList(props) {
           >
             Resize and Return
           </button>
+
           <button
             className="button-style "
             id="btnclose"

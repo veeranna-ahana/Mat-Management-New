@@ -12,7 +12,9 @@ function MaterialResizeAndSplittingForm(props) {
   return (
     <div>
       <SplitMatModal open={open} setOpen={setOpen} />
-      <h4 className="form-title"><b>Material Resize and Splitting Form</b></h4>
+      <h4 className="form-title">
+        <b>Material Resize and Splitting Form</b>
+      </h4>
       <hr className="horizontal-line" />
       <div className="table_top_style">
         <form action="">
@@ -57,11 +59,13 @@ function MaterialResizeAndSplittingForm(props) {
                 marginTop: "30px",
               }}
             >
-              <Table  striped
-            className="table-data border"
-            style={{ border: "1px"}}>
+              <Table
+                striped
+                className="table-data border"
+                style={{ border: "1px" }}
+              >
                 <thead
-                className="tableHeaderBGColor"
+                  className="tableHeaderBGColor"
                   style={{
                     textAlign: "center",
                     position: "sticky",
@@ -96,73 +100,76 @@ function MaterialResizeAndSplittingForm(props) {
           </div>
           <div className="col-md-4 mt-4 ">
             <div className="ip-box form-bg">
-             
-                <div className="row">
-                  <div className="col-md-3 mt-1 ">
-                    <label className="form-label" style={{whiteSpace:"nowrap"}}>Srl No</label>
-                  </div>
+              <div className="row">
+                <div className="col-md-3 mt-1 ">
+                  <label
+                    className="form-label"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Srl No
+                  </label>
+                </div>
 
-                  <div className="col-md-4 ">
-                    <input className="in-field" readOnly />
-                  </div>
-                  <div className="col-md-3 ">
-                    <button
-                      className="button-style mt-3"
-                      style={{ width: "130px" }}
-                    >
-                      Add New
-                    </button>
-                  </div>
+                <div className="col-md-4 ">
+                  <input className="in-field" readOnly />
                 </div>
-                <div className="row">
-                  <div className="col-md-3 mt-1 ">
-                    <label className="form-label">Para1</label>
-                  </div>
+                <div className="col-md-3 ">
+                  <button
+                    className="button-style mt-3"
+                    style={{ width: "130px" }}
+                  >
+                    Add New
+                  </button>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-3 mt-1 ">
+                  <label className="form-label">Para1</label>
+                </div>
 
-                  <div className="col-md-4 ">
-                    <input className="in-field" readOnly />
-                  </div>
-                  <div className="col-md-3 ">
-                    <button
-                      className="button-style mt-3"
-                      style={{ width: "130px" }}
-                    >
-                      Delete Item
-                    </button>
-                  </div>
+                <div className="col-md-4 ">
+                  <input className="in-field" readOnly />
                 </div>
-                <div className="row">
-                  <div className="col-md-3 mt-1">
-                    <label className="form-label">Para2</label>
-                  </div>
-                  <div className="col-md-9">
-                    <input className="in-field" readOnly />
-                  </div>
+                <div className="col-md-3 ">
+                  <button
+                    className="button-style mt-3"
+                    style={{ width: "130px" }}
+                  >
+                    Delete Item
+                  </button>
                 </div>
-                <div className="row">
-                  <div className="col-md-3 mt-1">
-                    <label className="form-label">Quantity</label>
-                  </div>
-                  <div className="col-md-9 ">
-                    <input className="in-field" readOnly />
-                  </div>
+              </div>
+              <div className="row">
+                <div className="col-md-3 mt-1">
+                  <label className="form-label">Para2</label>
                 </div>
-                <div className="row mt-2 mb-3">
+                <div className="col-md-9">
+                  <input className="in-field" readOnly />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-3 mt-1">
+                  <label className="form-label">Quantity</label>
+                </div>
+                <div className="col-md-9 ">
+                  <input className="in-field" readOnly />
+                </div>
+              </div>
+              <div className="row mt-2 mb-3">
+                {" "}
+                <div className="col-md-3 mt-1 ">
+                  <label className="form-label">Location</label>{" "}
+                </div>{" "}
+                <div className="col-md-9" style={{ marginTop: "8px" }}>
                   {" "}
-                  <div className="col-md-3 mt-1 ">
-                    <label className="form-label">Location</label>{" "}
-                  </div>{" "}
-                  <div className="col-md-9" style={{ marginTop: "8px" }}>
-                    {" "}
-                    <select className="ip-select dropdown-field">
-                      <option value="option 1">001</option>
-                      <option value="option 1">002</option>
-                      <option value="option 1">003</option>
-                      <option value="option 1">004</option>{" "}
-                    </select>{" "}
-                  </div>{" "}
-                </div>
-              
+                  <select className="ip-select dropdown-field">
+                    <option value="option 1">001</option>
+                    <option value="option 1">002</option>
+                    <option value="option 1">003</option>
+                    <option value="option 1">004</option>{" "}
+                  </select>{" "}
+                </div>{" "}
+              </div>
             </div>
           </div>
         </div>
