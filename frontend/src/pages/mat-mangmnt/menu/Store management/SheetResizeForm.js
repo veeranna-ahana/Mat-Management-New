@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import BootstrapTable from "react-bootstrap-table-next";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
@@ -10,10 +10,16 @@ const { endpoints } = require("../../../api/constants");
 
 function SheetResizeForm() {
   const nav = useNavigate();
+  const location = useLocation();
+
+  const state = location.state;
+
   let [custdata, setCustdata] = useState([]);
   let [tabledata, setTabledata] = useState([]);
   let [selectedTableRows, setSelectedTableRows] = useState([]);
+  const [selectedCust, setSelectedCust] = useState();
 
+  // console.log("location state value", location?.state?.selectedCust);
   async function fetchData() {
     getRequest(endpoints.getCustomers, async (data) => {
       for (let i = 0; i < data.length; i++) {
@@ -29,32 +35,32 @@ function SheetResizeForm() {
     fetchData();
   }, []);
 
-  const columns = [
-    {
-      text: "Mtrl Stock",
-      dataField: "MtrlStockID",
-    },
-    {
-      text: "Mtrl Code",
-      dataField: "Mtrl_Code",
-    },
-    {
-      text: "Shape",
-      dataField: "Shape",
-    },
-    {
-      text: "Length",
-      dataField: "DynamicPara1",
-    },
-    {
-      text: "Width",
-      dataField: "DynamicPara2",
-    },
-    {
-      text: "Weight",
-      dataField: "Weight",
-    },
-  ];
+  // const columns = [
+  //   {
+  //     text: "Mtrl Stock",
+  //     dataField: "MtrlStockID",
+  //   },
+  //   {
+  //     text: "Mtrl Code",
+  //     dataField: "Mtrl_Code",
+  //   },
+  //   {
+  //     text: "Shape",
+  //     dataField: "Shape",
+  //   },
+  //   {
+  //     text: "Length",
+  //     dataField: "DynamicPara1",
+  //   },
+  //   {
+  //     text: "Width",
+  //     dataField: "DynamicPara2",
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "Weight",
+  //   },
+  // ];
 
   const changeCustomer = (e) => {
     //e.preventDefault();
@@ -66,6 +72,7 @@ function SheetResizeForm() {
         setSelectedTableRows([]);
         setTabledata(data);
 
+        setSelectedCust(e[0].Cust_Code);
         //console.log("api call = ", data);
       });
     }
@@ -136,6 +143,7 @@ function SheetResizeForm() {
         nav("/MaterialManagement/StoreManagement/MaterialSplitter", {
           state: {
             selectedTableRows: selectedTableRows,
+            selectedCust: selectedCust,
             // type: "storeresize",
           },
         });
