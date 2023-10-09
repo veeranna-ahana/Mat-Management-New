@@ -18,6 +18,7 @@ export default function ResizeAndSplittingStoreManagement() {
     quantity: location?.state?.selectedTableRows.length,
     para1: location?.state?.selectedTableRows[0].DynamicPara1,
     para2: location?.state?.selectedTableRows[0].DynamicPara2,
+    selectedCust: location?.state?.selectedCust,
   });
 
   const [tableData, setTableData] = useState([]);
@@ -463,7 +464,12 @@ export default function ResizeAndSplittingStoreManagement() {
       // new
       setTimeout(() => {
         // document.getElementById("result").innerHTML = "Hello, I am here";
-        nav("/MaterialManagement/StoreManagement/ResizeSheets");
+        nav("/MaterialManagement/StoreManagement/ResizeSheets", {
+          state: {
+            selectedCust: formHeader.selectedCust,
+            // type: "storeresize",
+          },
+        });
       }, 500);
 
       //
@@ -516,6 +522,8 @@ export default function ResizeAndSplittingStoreManagement() {
       Location: "",
     });
   };
+
+  // console.log("selectedCust", formHeader.selectedCust);
 
   return (
     <>
