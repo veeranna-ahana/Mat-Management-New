@@ -190,7 +190,7 @@ function NewSheetsUnits(props) {
     getRequest(endpoints.getMtrlData, (data) => {
       setMtrlDetails(data);
     });
-    //console.log("data = ", custdata);
+    // console.log("data = ", custdata);
   }
 
   useEffect(() => {
@@ -201,14 +201,14 @@ function NewSheetsUnits(props) {
   // useEffect(() => {
   //   setFormHeader(formHeader);
   // }, [formHeader]); //[inputPart]);
-
+  console.log(custdata);
+  console.log(formHeader);
   let changeCustomer = async (e) => {
     //e.preventDefault();
     //const { value, name } = e.target;
 
     const found = custdata.find((obj) => obj.Cust_Code === e[0].Cust_Code);
     //setCustDetailVal(found.Address);
-
     setFormHeader((preValue) => {
       //console.log(preValue)
       return {
@@ -250,6 +250,7 @@ function NewSheetsUnits(props) {
     // });
   };
 
+  // console.log("customerName", formHeader);
   let changeMtrl = async (e) => {
     e.preventDefault();
     const { value, name } = e.target;
@@ -446,7 +447,7 @@ function NewSheetsUnits(props) {
       endpoints.insertHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
+        // console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setFormHeader((preValue) => {
             return {
@@ -455,6 +456,7 @@ function NewSheetsUnits(props) {
             };
           });
           setSaveUpdateCount(saveUpdateCount + 1);
+
           toast.success("Record Saved Successfully");
           //enable part section and other 2 buttons
           setBoolVal1(false);
@@ -464,14 +466,13 @@ function NewSheetsUnits(props) {
       }
     );
   };
-
   const updateHeaderFunction = () => {
     //console.log("update formheader = ", formHeader);
     postRequest(
       endpoints.updateHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        console.log("data = ", data);
+        // console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setSaveUpdateCount(saveUpdateCount + 1);
           toast.success("Record Updated Successfully");
@@ -483,9 +484,9 @@ function NewSheetsUnits(props) {
       }
     );
   };
-
   const saveButtonState = async (e) => {
     e.preventDefault();
+
     if (formHeader.customer.length == 0) {
       toast.error("Please Select Customer");
     } else if (formHeader.reference.length == 0)
@@ -520,6 +521,7 @@ function NewSheetsUnits(props) {
       }
     }
   };
+  // console.log("formheader", formHeader);
 
   // console.log("part array = ", materialArray);
   const allotRVButtonState = (e) => {
@@ -1041,18 +1043,14 @@ function NewSheetsUnits(props) {
           }
         : p
     );
-
     setMaterialArray(newArray);
     await delay(500);
 
-    // if (inputPart.qtyAccepted > inputPart.qtyReceived) {
-    //   toast.error("QtyAccepted should be less than or equal to QtyReceived");
-    // }
-
+    console.log("materialarray.......:", materialArray);
     // console.log("selectedRowss:", selectedRows);
     console.log("inputPart", inputPart);
     //update blank row with respected to modified part textfield
-    postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
+    postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
       if (data.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
@@ -1080,6 +1078,8 @@ function NewSheetsUnits(props) {
         setAddBtn(true);
       }
 
+      // let accepted = "";
+      // let totalWeightCalculated = "";
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
         data2?.forEach((obj) => {
@@ -1093,8 +1093,8 @@ function NewSheetsUnits(props) {
           obj.shapeMtrlId = obj.ShapeMtrlID;
           obj.shapeID = obj.ShapeID;
           obj.dynamicPara1 = obj.DynamicPara1;
-          obj.dynamicPara2 = obj.DynamicPara1;
-          obj.dynamicPara3 = obj.DynamicPara1;
+          obj.dynamicPara2 = obj.DynamicPara2;
+          obj.dynamicPara3 = obj.DynamicPara3;
           obj.qty = obj.Qty;
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
@@ -1113,23 +1113,45 @@ function NewSheetsUnits(props) {
         data2?.map(async (obj) => {
           if (obj.id == row.id) {
             setMtrlStock(obj);
+            setInputPart({
+              qtyAccepted: row.qtyAccepted,
+              qtyRejected: obj.qtyRejected,
+              qtyReceived: row.qtyReceived,
+              id: row.id,
+              srl: row.srl,
+              mtrlCode: row.mtrlCode,
+              dynamicPara1: row.dynamicPara1,
+              dynamicPara2: row.dynamicPara2,
+              dynamicPara3: row.dynamicPara3,
+              qty: row.qty,
+              inspected: row.inspected,
+              locationNo: row.locationNo,
+              updated: row.updated,
+              accepted: obj.accepted,
+              totalWeightCalculated: obj.totalWeightCalculated,
+            });
           }
         });
       });
 
       // console.log("mtrlArray", mtrlArray);
-      setInputPart({
-        id: row.id,
-        srl: row.srl,
-        mtrlCode: row.mtrlCode,
-        dynamicPara1: row.dynamicPara1,
-        dynamicPara2: row.dynamicPara2,
-        dynamicPara3: row.dynamicPara3,
-        qty: row.qty,
-        inspected: row.inspected,
-        locationNo: row.locationNo,
-        updated: row.updated,
-      });
+      // setInputPart({
+      //   qtyAccepted: row.qtyAccepted,
+      //   qtyRejected: row.qtyRejected,
+      //   qtyReceived: row.qtyReceived,
+      //   id: row.id,
+      //   srl: row.srl,
+      //   mtrlCode: row.mtrlCode,
+      //   dynamicPara1: row.dynamicPara1,
+      //   dynamicPara2: row.dynamicPara2,
+      //   dynamicPara3: row.dynamicPara3,
+      //   qty: row.qty,
+      //   inspected: row.inspected,
+      //   locationNo: row.locationNo,
+      //   updated: row.updated,
+      //   accepted: row.accepted,
+      //   totalWeightCalculated: row.totalWeightCalculated,
+      // });
     },
   };
 
