@@ -153,12 +153,20 @@ function UnitsMatAllotmentForm() {
           formHeader.QtyAllottedTemp + firstTableRow.length <
           formHeader.Qty
         ) {
-          const updatedFirstTableRow = [...firstTableRow, row];
+          //const updatedFirstTableRow = [...firstTableRow, row];
+          const updatedFirstTableRow = [row, ...firstTableRow];
           setFirstTableRow(updatedFirstTableRow);
           setSecondTableRow(updatedFirstTableRow);
         } else {
         }
       } else {
+        firstTableRow.forEach((obj) => {
+          //console.log(obj);
+          if (obj == row) {
+            obj.Locked = 0;
+          }
+        });
+
         const updatedFirstTableRow = firstTableRow.filter(
           (obj) => obj.MtrlStockID !== row.MtrlStockID
         );
@@ -169,7 +177,46 @@ function UnitsMatAllotmentForm() {
         );
       }
     },
-    onSelectAll: (isSelect, rows) => {},
+    onSelectAll: async (isSelect, rows) => {
+      if (isSelect) {
+        console.log("rows =  selectall");
+        //setFirstTableSelectIndex([...firstTableSelectIndex, row.MtrlStockID]);
+        let tempIndex = [];
+        for (let i = 0; i < rows.length; i++) {
+          tempIndex.push(rows[i].MtrlStockID);
+        }
+
+        let firstno = formHeader.QtyAllottedTemp + firstTableRow.length;
+        let secondno = formHeader.Qty;
+        let updatedFirstTableRow = [];
+        console.log("initial first = ", firstno, " second = ", secondno);
+        for (
+          let i = rows.length - 1;
+          i >= 0 && firstno < secondno;
+          i--, firstno++
+        ) {
+          //console.log("i = ", i, " secondno = ", secondno);
+          updatedFirstTableRow.push(rows[i]);
+        }
+        await delay(100);
+        setFirstTableSelectIndex(tempIndex);
+        console.log("index = ", firstTableSelectIndex);
+        console.log("updated = ", updatedFirstTableRow);
+        setFirstTableRow(updatedFirstTableRow);
+        setSecondTableRow(updatedFirstTableRow);
+      } else {
+        console.log("rows =  deselectall");
+
+        firstTableRow.forEach((obj) => {
+          console.log(obj);
+          obj.Locked = 0;
+        });
+
+        setFirstTableRow([]);
+        setSecondTableRow([]);
+        setFirstTableSelectIndex([]);
+      }
+    },
   };
 
   // const selectRow2 = {
