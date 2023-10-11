@@ -1,0 +1,391 @@
+import React, { useEffect, useState } from "react";
+import Table from "react-bootstrap/Table";
+import BootstrapTable from "react-bootstrap-table-next";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { Typeahead } from "react-bootstrap-typeahead";
+
+const { getRequest, postRequest } = require("../../../api/apiinstance");
+const { endpoints } = require("../../../api/constants");
+
+function SheetResizeForm() {
+  const nav = useNavigate();
+  let [custdata, setCustdata] = useState([]);
+  let [tabledata, setTabledata] = useState([]);
+  let [selectedTableRows, setSelectedTableRows] = useState([]);
+
+  async function fetchData() {
+    getRequest(endpoints.getCustomers, async (data) => {
+      for (let i = 0; i < data.length; i++) {
+        data[i].label = data[i].Cust_name;
+      }
+
+      //console.log("cust data = ", custdata);
+      setCustdata(data);
+    });
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const columns = [
+    {
+      text: "Mtrl Stock",
+      dataField: "MtrlStockID",
+    },
+    {
+      text: "Mtrl Code",
+      dataField: "Mtrl_Code",
+    },
+    {
+      text: "Shape",
+      dataField: "Shape",
+    },
+    {
+      text: "Length",
+      dataField: "DynamicPara1",
+    },
+    {
+      text: "Width",
+      dataField: "DynamicPara2",
+    },
+    {
+      text: "Weight",
+      dataField: "Weight",
+    },
+  ];
+
+  const changeCustomer = (e) => {
+    //e.preventDefault();
+    //const { value, name } = e.target;
+    if (e.length !== 0) {
+      let url1 = endpoints.getResizeMtrlStockList + "?code=" + e[0].Cust_Code;
+
+      getRequest(url1, (data) => {
+        setSelectedTableRows([]);
+        setTabledata(data);
+
+        //console.log("api call = ", data);
+      });
+    }
+  };
+
+  const selectTableRow = (row) => {
+    // mode: "checkbox",
+    // clickToSelect: true,
+    // bgColor: "#98A8F8",
+    // onSelect: (row, isSelect, rowIndex, e) => {
+    //   if (isSelect) {
+
+    const found = selectedTableRows.some((obj) => {
+      return obj.MtrlStockID === row.MtrlStockID;
+    });
+    // console.log("foundddddd", found);
+
+    if (found) {
+      setSelectedTableRows(
+        selectedTableRows.filter((obj) => {
+          return obj.MtrlStockID !== row.MtrlStockID;
+        })
+      );
+    } else {
+      setSelectedTableRows([...selectedTableRows, row]);
+    }
+
+    // } else {
+    //   setSelectedTableRows(
+    //     selectedTableRows.filter((obj) => {
+    //       return obj.MtrlStockID !== row.MtrlStockID;
+    //     })
+    //   );
+    // }
+  };
+
+  // console.log("selectedTableRows", selectedTableRows);
+
+  const resizeButton = () => {
+    // console.log("selected rows = ", selectedTableRows);
+    if (selectedTableRows.length === 0) {
+      toast.error("Please select the row first");
+    } else {
+      const flagArray = [];
+      for (let i = 0; i < selectedTableRows.length; i++) {
+        const element = selectedTableRows[i];
+        // console.log(`element.... + ${i}`, element);
+
+        if (
+          selectedTableRows[0].DynamicPara1 !== element.DynamicPara1 ||
+          selectedTableRows[0].DynamicPara2 !== element.DynamicPara2 ||
+          selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code
+        ) {
+          // dimension err
+          flagArray.push(1);
+        } else if (selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code) {
+          // material err
+          flagArray.push(2);
+        } else {
+          // good to go
+          flagArray.push(0);
+        }
+      }
+
+      if (flagArray.sort().reverse()[0] === 0) {
+        // good to go.................
+        // toast.success("go to go..000000000000");
+        nav("/MaterialManagement/StoreManagement/MaterialSplitter", {
+          state: {
+            selectedTableRows: selectedTableRows,
+            // type: "storeresize",
+          },
+        });
+      } else if (flagArray.sort().reverse()[0] === 1) {
+        // dimensions error..........
+        // toast.error("errrrr1111111");
+        toast.error("Select Items with similar dimensions and Material Code");
+      } else if (flagArray.sort().reverse()[0] === 2) {
+        // material error................
+        toast.error("Select Items with similar Material Code");
+        // toast.error("errrrr2222222");
+      } else {
+        toast.error("Uncaught Error Found...");
+      }
+
+      // toast.warning("done......");
+
+      // const flag = 0;
+      // for (let i = 0; i < selectedTableRows.length; i++) {
+      //   const element = selectedTableRows[i];
+      //   if (
+      //     selectedTableRows[0].DynamicPara1 !== element.DynamicPara1 ||
+      //     selectedTableRows[0].DynamicPara2 !== element.DynamicPara2 ||
+      //     selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code
+      //   ) {
+      //     flag = 1;
+      //     break;
+      //   } else if (selectedTableRows[0].Mtrl_Code !== element.Mtrl_Code) {
+      //     flag = 2;
+      //     break;
+      //   }
+      // }
+      // if (flag === 1) {
+      //   toast.error("Select Items with similar dimensions and Material Code");
+      // } else if (flag === 2) {
+      //   toast.error("Select Items with similar Material Code");
+      // } else if (flag === 0) {
+      //   toast.success("good to go............");
+      // nav(
+      //   "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+      //   {
+      //     state: {
+      //       selectedTableRows: selectedTableRows,
+      //       type: "storeresize",
+      //     },
+      //   }
+      // );
+      // } else {
+      //   toast.error("Uncaught Error Found...");
+      // }
+    }
+  };
+  return (
+    <>
+      <div>
+        {" "}
+        <h4 className="title">Sheet Resize Form</h4>
+        <div className="row">
+          <div className="col-md-8">
+            <label className="form-label">Customer</label>
+            {/* <select
+            className="ip-select"
+            name="customer"
+            onChange={changeCustomer}
+            // disabled={boolVal1}
+          >
+            <option value="" disabled selected>
+              Select Customer
+            </option>
+            {custdata.map((customer, index) => (
+              <option key={index} value={customer.Cust_Code}>
+                {customer.Cust_name}
+              </option>
+            ))}
+          </select> */}
+            <Typeahead
+              id="basic-example"
+              name="customer"
+              options={custdata}
+              placeholder="Select Customer"
+              onChange={(label) => changeCustomer(label)}
+            />
+          </div>
+          <div className="col-md-2">
+            <button
+              className="button-style"
+              onClick={resizeButton}
+              /*onClick={
+              () =>
+                selectedTableRows.length !== 0
+                  ? nav(
+                      "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+                      {
+                        state: {
+                          selectedTableRows: selectedTableRows,
+                          type: "storeresize",
+                        },
+                      }
+                    )
+                  : toast.error("Please select the row first")
+
+              // nav(
+              //   "/MaterialManagement/StoreManagement/ResizeSheets/MaterialResizeAndSplittingForm"
+              // )
+            }*/
+            >
+              Resize
+            </button>
+          </div>
+          <div className="col-md-2">
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div className="row mt-4">
+          <div style={{ maxHeight: "300px", overflow: "auto" }}>
+            <Table
+              hover
+              condensed
+              className="table-data border header-class table-striped"
+            >
+              <thead className="text-white">
+                <tr>
+                  <th>Mtrl Stock</th>
+                  <th>Mtrl Code</th>
+                  <th>Shape </th>
+                  <th>Length </th>
+                  <th>Width </th>
+                  <th>Weight </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tabledata.map((val, key) => (
+                  <tr
+                    onClick={() => {
+                      selectTableRow(val);
+                    }}
+                    className={
+                      selectedTableRows.some(
+                        (ele) => ele.MtrlStockID === val.MtrlStockID
+                      )
+                        ? "rowSelectedClass"
+                        : ""
+                    }
+                  >
+                    <td>{val.MtrlStockID}</td>
+                    <td>{val.Mtrl_Code}</td>
+                    <td>{val.Shape} </td>
+                    <td>{val.DynamicPara1} </td>
+                    <td>{val.DynamicPara2} </td>
+                    <td>{val.Weight} </td>
+                  </tr>
+                ))}
+
+                {/* {props.firstTableData.map((val, k) => (
+            <tr
+              onClick={() => props.selectRowFirstFun(val)}
+              className={
+                val === props.firstTableSelectedRow[0] ? "rowSelectedClass" : ""
+              }
+            >
+              <td>{k + 1}</td>
+              <td>{val.RV_No}</td>
+              <td>{val.Cust_Docu_No}</td>
+              <td>{val.Mtrl_Code}</td>
+              <td>{val.DynamicPara1}</td>
+              <td>{val.DynamicPara2}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={val.Scrap === 0 ? false : true}
+                />
+              </td>
+              <td>{val.Weight}</td>
+              <td>{val.ScrapWeight}</td>
+              <td>{val.InStock}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  name=""
+                  id={`checkBoxFirstTable${k}`}
+                  onClick={() => firstTableCheckBoxClickFunc(val, k)}
+                />
+              </td>
+            </tr>
+          ))} */}
+              </tbody>
+            </Table>
+
+            {/* <BootstrapTable
+            keyField="MtrlStockID"
+            columns={columns}
+            data={tabledata}
+            striped
+            hover
+            condensed
+            selectRow={selectRow}
+<<<<<<< HEAD
+            headerClasses="header-class tableHeaderBGColor"
+          ></BootstrapTable>
+          {/* <Table bordered>
+=======
+            headerClasses="header-class"
+          ></BootstrapTable> */}
+            {/* <Table bordered>
+>>>>>>> fde7a6a1fded53021821a2cfcbdd3aa14bfbe56c
+            <thead
+              style={{
+                textAlign: "center",
+                position: "sticky",
+                top: "-1px",
+              }}
+            >
+              <tr>
+                <th>Mtrl Stock</th>
+                <th>Mtrl Code</th>
+                <th>Shape</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Weight</th>
+              </tr>
+            </thead>
+
+            <tbody className="tablebody">
+              <tr
+              // onClick={() => selectedRowFn(item, key)}
+              // className={
+              //   key === selectedRow?.index ? "selcted-row-clr" : ""
+              // }
+              >
+                <td>asdfghj</td>
+                <td>asdfghj</td>
+                <td>asdfghj</td>
+                <td>asdfghj</td>
+                <td>asdfghj</td>
+                <td>asdfghj</td>
+              </tr>
+            </tbody>
+          </Table> */}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default SheetResizeForm;

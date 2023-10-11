@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
 import CreateYesNoModal from "../../../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../../../components/DeleteRVModal";
 import BootstrapTable from "react-bootstrap-table-next";
 import Table from "react-bootstrap/Table";
 import { formatDate } from "../../../../../../utils";
@@ -14,6 +16,8 @@ const { endpoints } = require("../../../../../api/constants");
 function PNew() {
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const currDate = new Date()
@@ -240,16 +244,6 @@ function PNew() {
     //console.log(newArray);
     setPartArray(newArray);
 
-    // let totwt = 0;
-    // partArray.map((obj) => {
-    //   totwt =
-    //     parseFloat(totwt) +
-    //     parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-    //   //console.log(newWeight);
-    // });
-    // setCalcWeightVal(parseFloat(totwt).toFixed(2));
-    // setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
-
     let totwt = 0;
     partArray.map((obj) => {
       totwt =
@@ -326,7 +320,9 @@ function PNew() {
       console.log("after = ", partArray);
     }
   };
-
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
   //delete part
   const handleDelete = () => {
     //minus calculated weight
@@ -455,9 +451,9 @@ function PNew() {
     e.preventDefault();
     if (formHeader.customer.length == 0) {
       toast.error("Please Select Customer");
-    } else if (formHeader.reference.length == 0)
+    } else if (formHeader.reference.length == 0) {
       toast.error("Please Enter Customer Document Material Reference");
-    else {
+    } else {
       if (saveUpdateCount == 0) {
         formHeader.receiptDate = formatDate(new Date(), 4);
         formHeader.rvDate = currDate;
@@ -480,8 +476,11 @@ function PNew() {
           ) {
             flag1 = 1;
           }
+          if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
+            flag1 = 2;
+          }
         }
-        if (flag1 == 1) {
+        if (flag1 === 1) {
           toast.error("Please fill correct Part details");
         } else {
           //to update data
@@ -496,7 +495,13 @@ function PNew() {
 
     if (partArray.length === 0) {
       toast.error("Add Details Before Saving");
-    } else if (partArray.length !== 0 && formHeader.weight == "0") {
+    } else if (
+      partArray.length !== 0 &&
+      (formHeader.weight == 0.0 ||
+        formHeader.weight == "0" ||
+        formHeader.weight === null ||
+        formHeader.weight === undefined)
+    ) {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
@@ -511,9 +516,14 @@ function PNew() {
         ) {
           flag1 = 1;
         }
+        if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
+          flag1 = 2;
+        }
       }
-      if (flag1 == 1) {
+      if (flag1 === 1) {
         toast.error("Please fill correct Part details");
+      } else if (flag1 === 2) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
       } else {
         //show model form
         setShow(true);
@@ -551,6 +561,9 @@ function PNew() {
   //   setBoolVal4(true);
   //   console.log("formheader = ", formHeader);
   // };
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
+  };
 
   const deleteRVButtonState = () => {
     postRequest(
@@ -567,7 +580,14 @@ function PNew() {
       }
     );
   };
-
+  const handleYes = () => {
+    handleDelete();
+    setModalOpen(false);
+  };
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
   return (
     <div>
       <CreateYesNoModal
@@ -575,6 +595,18 @@ function PNew() {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
       <div>
         <h4 className="title">Customer Parts Receipt Voucher</h4>
@@ -695,7 +727,7 @@ function PNew() {
               className="button-style"
               // disabled={boolVal1}
               disabled={boolVal1 | boolVal4}
-              onClick={deleteRVButtonState}
+              onClick={deleteRVButton}
             >
               Delete RV
             </button>
@@ -869,7 +901,7 @@ function PNew() {
                 className="button-style "
                 style={{ width: "155px" }}
                 disabled={boolVal3 | boolVal4}
-                onClick={handleDelete}
+                onClick={deleteButtonState}
               >
                 Delete
               </button>
