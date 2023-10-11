@@ -14,7 +14,11 @@ export default function SplitMaterialYesNoModal(props) {
   };
   return (
     <>
-      <Modal show={show} onHide={handleNo}>
+      <Modal
+        show={show}
+        onHide={handleNo}
+        style={{ backgroundColor: "#0000005e" }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Please Confirm</Modal.Title>
         </Modal.Header>
