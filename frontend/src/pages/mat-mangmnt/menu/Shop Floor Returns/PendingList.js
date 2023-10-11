@@ -10,6 +10,7 @@ import { formatDate, getWeight } from "../../../../utils";
 import { toast } from "react-toastify";
 import YesNoModal from "../../components/YesNoModal";
 import TreeView from "react-treeview";
+import ResizeReturnModal from "./ReturnComponents/ResizeReturnModal";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -23,6 +24,8 @@ function PendingList(props) {
 
   const [open1, setOpen1] = useState(false);
   const handleOpen1 = () => setOpen1(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [firstTable, setFirstTable] = useState([]);
   const [firstRowSelected, setFirstRowSelected] = useState([]);
@@ -511,6 +514,14 @@ function PendingList(props) {
         modalResponse={modalYesNoResponse}
       />
       <LocationModel show={show} setShow={setShow} scrapModal={scrapModal} />
+
+      <ResizeReturnModal
+        isOpen={isModalOpen}
+        secondTableRow={selectedSecondTableRows}
+        setSelectedSecondTableRows={setSelectedSecondTableRows}
+        onClose={(isOpen) => setIsModalOpen(isOpen)}
+      />
+
       <ResizeModal
         open1={open1}
         setOpen1={setOpen1}
@@ -580,15 +591,7 @@ function PendingList(props) {
               ) {
                 toast.error("Selected materials cannot be split.");
               } else {
-                nav(
-                  "/MaterialManagement/ShopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
-                  {
-                    state: {
-                      secondTableRow: selectedSecondTableRows,
-                      type: "return",
-                    },
-                  }
-                );
+                setIsModalOpen(true); // Open the modal
               }
             }}
           >

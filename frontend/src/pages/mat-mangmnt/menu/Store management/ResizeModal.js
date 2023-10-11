@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+
 import BootstrapTable from "react-bootstrap-table-next";
 import { toast } from "react-toastify";
 // import YesNoModal from "../../../components/YesNoModal";
@@ -9,16 +13,51 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getRequest, postRequest } from "../../../api/apiinstance";
 import { endpoints } from "../../../api/constants";
 
-export default function ResizeAndSplittingStoreManagement() {
+// const style = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: 400,
+//   bgcolor: "background.paper",
+//   border: "2px solid #000",
+//   boxShadow: 24,
+//   p: 4,
+// };
+
+export default function ResizeModal(props) {
+  const handleClose = () => {
+    setTableData([]);
+    setSelectedTableRow([
+      {
+        SrlNo: "",
+        DynamicPara1: "",
+        DynamicPara2: "",
+        InStock: "",
+        Weight: "",
+        Location: "",
+      },
+    ]);
+
+    setLocationData([]);
+    setInputData([]);
+
+    props.setOpen(false);
+  };
+  //   const [open, setOpen] = useState(false);
+  // const handleOpen = () => props.setOpen(true);
+
+  // console.log("props", props);
+  // if(props.open)
   const nav = useNavigate();
   const location = useLocation();
 
   const [formHeader, setFormHeader] = useState({
-    materialCode: location?.state?.selectedTableRows[0].Mtrl_Code,
-    quantity: location?.state?.selectedTableRows.length,
-    para1: location?.state?.selectedTableRows[0].DynamicPara1,
-    para2: location?.state?.selectedTableRows[0].DynamicPara2,
-    selectedCust: location?.state?.selectedCust,
+    materialCode: props?.selectedTableRows[0]?.Mtrl_Code,
+    quantity: props?.selectedTableRows?.length,
+    para1: props?.selectedTableRows[0]?.DynamicPara1,
+    para2: props?.selectedTableRows[0]?.DynamicPara2,
+    selectedCust: props?.selectedCust,
   });
 
   const [tableData, setTableData] = useState([]);
@@ -169,10 +208,11 @@ export default function ResizeAndSplittingStoreManagement() {
           (parseFloat(tableData[i].DynamicPara1) *
             parseFloat(tableData[i].DynamicPara2) *
             parseFloat(tableData[i].InStock)) /
-          (parseFloat(formHeader.para1) * parseFloat(formHeader.para2));
+          (parseFloat(props?.selectedTableRows[0]?.DynamicPara1) *
+            parseFloat(props?.selectedTableRows[0]?.DynamicPara2));
 
         let weightCalculated =
-          parseFloat(location?.state?.selectedTableRows[0].Weight) * percentage;
+          parseFloat(props?.selectedTableRows[0].Weight) * percentage;
         // console.log(
         //   "get weight...",
         //   getWeight(
@@ -255,7 +295,9 @@ export default function ResizeAndSplittingStoreManagement() {
   };
 
   const splitMaterialButton = () => {
-    let SheetArea = formHeader.para1 * formHeader.para2;
+    let SheetArea =
+      parseFloat(props?.selectedTableRows[0]?.DynamicPara1) *
+      parseFloat(props?.selectedTableRows[0]?.DynamicPara2);
 
     var totalSplitArea = 0;
     for (let i = 0; i < tableData.length; i++) {
@@ -263,21 +305,33 @@ export default function ResizeAndSplittingStoreManagement() {
         tableData[i].DynamicPara1 *
         tableData[i].DynamicPara2 *
         tableData[i].InStock;
+      // console.log(`totalSplitArea +${i + 1}`, totalSplitArea);
     }
 
+    // console.log("SheetArea", SheetArea);
+    // console.log("new", totalSplitArea);
     if (SheetArea !== totalSplitArea) {
       toast.error("Split Sheet area does not add up to original sheet area");
     } else {
+      const tesFlagArray = [];
       for (let i = 0; i < tableData.length; i++) {
         if (
           tableData[i].DynamicPara1 < 10 ||
           tableData[i].DynamicPara2 < 10 ||
           tableData[i].InStock < 1
         ) {
-          toast.error("Check Parameters for Resizing");
+          tesFlagArray.push(1);
+          // toast.error("Check Parameters for Resizing");
+          // break;
         } else if (tableData[i].Location.length === 0) {
-          toast.error("Select Location for Resized Sheets");
+          tesFlagArray.push(2);
+
+          // toast.error("Select Location for Resized Sheets");
+          // break;
         } else {
+          tesFlagArray.push(3);
+
+          // setShowYesNo(true);
           //get mtrl_data by mtrl_code
           // let url =
           //   endpoints.getRowByMtrlCode + "?code=" + formHeader.materialCode;
@@ -293,12 +347,21 @@ export default function ResizeAndSplittingStoreManagement() {
           //   tableData[i].Weight = Math.round(0.000001 * totwt);
           //   setShowYesNo(true);
           // });
-          setShowYesNo(true);
         }
       }
       /*If MsgBox("Do you wish to split the material as indicated and save it. Changes once done cannot be undone", MsgBoxStyle.YesNo) = MsgBoxResult.No Then
         Exit Sub
     End If*/
+      // console.log("tesFlagArray", tesFlagArray);
+      if (tesFlagArray.sort()[0] === 1) {
+        toast.error("Check Parameters for Resizing");
+      } else if (tesFlagArray.sort()[0] === 2) {
+        toast.error("Select Location for Resized Sheets");
+      } else if (tesFlagArray.sort()[0] === 3) {
+        setShowYesNo(true);
+      } else {
+        toast.error("Uncaught Error");
+      }
     }
     // console.log("clicked");
   };
@@ -310,8 +373,8 @@ export default function ResizeAndSplittingStoreManagement() {
       // console.log("resizeTableData........", tableData);
       // console.log("location data...........", location.state);
       //insert mtrl stock list
-      for (let i = 0; i < location?.state?.selectedTableRows.length; i++) {
-        const element0 = location?.state?.selectedTableRows[i];
+      for (let i = 0; i < props?.selectedTableRows.length; i++) {
+        const element0 = props?.selectedTableRows[i];
         let counter = 1;
 
         // console.log("forrrr111111111..", element0);
@@ -442,8 +505,8 @@ export default function ResizeAndSplittingStoreManagement() {
       // update the old mtrl...
 
       // new
-      for (let j = 0; j < location?.state?.selectedTableRows.length; j++) {
-        const element = location?.state?.selectedTableRows[j];
+      for (let j = 0; j < props?.selectedTableRows.length; j++) {
+        const element = props?.selectedTableRows[j];
 
         // console.log("element", element.MtrlStockID);
 
@@ -462,15 +525,21 @@ export default function ResizeAndSplittingStoreManagement() {
 
       toast.success("Resize Successfull");
       // new
-      setTimeout(() => {
-        // document.getElementById("result").innerHTML = "Hello, I am here";
-        nav("/MaterialManagement/StoreManagement/ResizeSheets", {
-          state: {
-            selectedCust: formHeader.selectedCust,
-            // type: "storeresize",
-          },
-        });
-      }, 500);
+      props.setSelectedTableRows([]);
+      props.changeCustomer(props.selectedCust);
+      handleClose();
+      // setTimeout(() => {
+      //   // document.getElementById("result").innerHTML = "Hello, I am here";
+      //   // nav("/MaterialManagement/StoreManagement/ResizeSheets", {
+      //   //   state: {
+      //   //     selectedCust: formHeader.selectedCust,
+      //   //     // type: "storeresize",
+      //   //   },
+      //   // });
+      //   props.setSelectedTableRows([]);
+      //   props.changeCustomer(props.selectedCust);
+      //   handleClose();
+      // }, 500);
 
       //
       // flagTest.push(5);
@@ -523,273 +592,296 @@ export default function ResizeAndSplittingStoreManagement() {
     });
   };
 
-  // console.log("selectedCust", formHeader.selectedCust);
-
   return (
     <>
+      <Modal
+        show={props.open}
+        onHide={handleClose}
+        size="xl"
+        style={{ backgroundColor: "#0000005e" }}
+
+        // fullscreen={true}
+        // dialogClassName="d-flex justify-content-content"
+        // aria-labelledby="example-custom-modal-styling-title"
+
+        // dialogStyle=''
+        // contentClassName="w-100"
+        // contentClassName="modalContentStyle"
+      >
+        {/* <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Custom Modal Styling
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Ipsum molestiae natus adipisci modi eligendi? Debitis amet quae unde
+            commodi aspernatur enim, consectetur. Cumque deleniti temporibus
+            ipsam atque a dolores quisquam quisquam adipisci possimus
+            laboriosam. Quibusdam facilis doloribus debitis! Sit quasi quod
+            accusamus eos quod. Ab quos consequuntur eaque quo rem! Mollitia
+            reiciendis porro quo magni incidunt dolore amet atque facilis ipsum
+            deleniti rem!
+          </p>
+        </Modal.Body> */}
+        <Modal.Body>
+          <div>
+            <h4 className="title">Material Resize and Splitting Form</h4>
+            {/* {console.log("formHeader?.materialCode", formHeader)} */}
+            <div>
+              <div className="row">
+                <div className="col-md-10">
+                  <label className="form-label">Material Code</label>
+                  <input
+                    className="form-label"
+                    name="materialCode"
+                    value={props?.selectedTableRows[0]?.Mtrl_Code}
+                    disabled
+                  />
+                </div>
+
+                <div className="col-md-2 d-flex align-items-center">
+                  <button
+                    className="button-style m-0"
+                    onClick={splitMaterialButton}
+                  >
+                    Split Material
+                  </button>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-10 p-0">
+                  <div className="row">
+                    <div className="col-md-4">
+                      <label className="form-label">Quantity</label>
+                      <input
+                        className="form-label"
+                        name="quantity"
+                        value={props?.selectedTableRows?.length}
+                        disabled
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label">Length</label>
+                      <input
+                        className="form-label"
+                        name="para1"
+                        value={props?.selectedTableRows[0]?.DynamicPara1}
+                        disabled
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label">Width</label>
+                      <input
+                        className="form-label"
+                        name="para2"
+                        value={props?.selectedTableRows[0]?.DynamicPara2}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-2 d-flex align-items-center">
+                  <button
+                    className="button-style m-0"
+                    id="btnclose"
+                    type="submit"
+                    onClick={() => nav("/MaterialManagement")}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-2"></div>
+
+            <div className="row">
+              {/* table */}
+              <div
+                className="col-md-8"
+                style={{
+                  maxHeight: "350px",
+                  overflow: "auto",
+                }}
+              >
+                <Table
+                  hover
+                  condensed
+                  className="table-data border header-class table-striped"
+                >
+                  <thead className="text-white">
+                    <tr>
+                      <th>SL No</th>
+                      <th>Length</th>
+                      <th>Width</th>
+                      <th>Quantity</th>
+                      <th>Weight</th>
+                      <th>Location</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {tableData.map((val, key) => (
+                      <tr
+                        onClick={() => {
+                          selectRow(val, key + 1);
+                        }}
+                        className={
+                          selectedTableRow?.some(
+                            (el) => parseInt(el.SrlNo) === parseInt(key + 1)
+                          )
+                            ? "rowSelectedClass"
+                            : ""
+                        }
+                      >
+                        <td>{key + 1}</td>
+                        <td>{val.DynamicPara1}</td>
+                        <td>{val.DynamicPara2}</td>
+                        <td>{val.InStock}</td>
+                        <td>{val.Weight}</td>
+                        <td>{val.Location}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              {/* form */}
+              <div
+                className="col-md-4 p-3"
+                style={{ backgroundColor: "#e6e6e6" }}
+              >
+                <div className="row">
+                  <div className="d-flex justify-content-between">
+                    <button
+                      className="button-style m-0"
+                      style={{ width: "130px" }}
+                      onClick={addNew}
+                    >
+                      Add
+                    </button>
+                    <button
+                      className="button-style m-0"
+                      style={{ width: "130px" }}
+                      onClick={deleteItem}
+                      disabled={selectedTableRow.length === 0}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+                <div className="row">
+                  <div>
+                    <div className="row d-flex align-items-end">
+                      <div className="col-md-3 p-0">
+                        <label className="form-label">SL No</label>
+                      </div>
+
+                      <div className="col-md-9 p-0">
+                        <input
+                          type="text"
+                          className="in-field rounded-0"
+                          disabled
+                          value={inputData.SrlNo}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="row d-flex align-items-end">
+                      <div className="col-md-3 p-0">
+                        <label className="form-label">Length</label>
+                      </div>
+
+                      <div className="col-md-9 p-0">
+                        <input
+                          type="number"
+                          className="in-field rounded-0"
+                          name="DynamicPara1"
+                          onChange={changeHandler}
+                          value={inputData.DynamicPara1}
+                          onBlur={focusOutEvent}
+                          disabled={selectedTableRow.length === 0}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="row d-flex align-items-end">
+                      <div className="col-md-3 p-0">
+                        <label className="form-label">Width</label>
+                      </div>
+
+                      <div className="col-md-9 p-0">
+                        <input
+                          type="number"
+                          className="in-field rounded-0"
+                          name="DynamicPara2"
+                          onChange={changeHandler}
+                          value={inputData.DynamicPara2}
+                          onBlur={focusOutEvent}
+                          disabled={selectedTableRow.length === 0}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="row d-flex align-items-end">
+                      <div className="col-md-3 p-0">
+                        <label className="form-label">Quantity</label>
+                      </div>
+
+                      <div className="col-md-9 p-0">
+                        <input
+                          type="number"
+                          className="in-field rounded-0"
+                          name="InStock"
+                          onChange={changeHandler}
+                          value={inputData.InStock}
+                          disabled={selectedTableRow.length === 0}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="row d-flex align-items-end">
+                      <div className="col-md-3 p-0">
+                        <label className="form-label">Location</label>
+                      </div>
+
+                      <div className="col-md-9 p-0">
+                        <select
+                          className="in-field ip-select dropdown-field rounded-0"
+                          name="Location"
+                          onChange={changeHandler}
+                          value={inputData.Location}
+                          disabled={selectedTableRow.length === 0}
+                        >
+                          <option value="" disabled selected hidden>
+                            Select Location
+                          </option>
+                          {locationData.map((location, index) => (
+                            <option key={index} value={location.LocationNo}>
+                              {location.LocationNo}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
       <SplitMaterialYesNoModal
         show={showYesNo}
         setShow={setShowYesNo}
         message="Do you wish to split the material as indicated and save it. Changes once done cannot be undone"
         modalResponse={modalYesNoResponse}
       />
-      <h4 className="title">Material Resize and Splitting Form</h4>
-
-      <div>
-        <div className="row">
-          <div className="col-md-10">
-            <label className="form-label">Material Code</label>
-            <input
-              className="form-label"
-              name="materialCode"
-              value={formHeader.materialCode}
-              disabled
-            />
-          </div>
-
-          <div className="col-md-2 d-flex align-items-center">
-            <button className="button-style m-0" onClick={splitMaterialButton}>
-              Split Material
-            </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-10 p-0">
-            <div className="row">
-              <div className="col-md-4">
-                <label className="form-label">Quantity</label>
-                <input
-                  className="form-label"
-                  name="quantity"
-                  value={formHeader.quantity}
-                  disabled
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label">Length</label>
-                <input
-                  className="form-label"
-                  name="para1"
-                  value={formHeader.para1}
-                  disabled
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label">Width</label>
-                <input
-                  className="form-label"
-                  name="para2"
-                  value={formHeader.para2}
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-2 d-flex align-items-center">
-            <button
-              className="button-style m-0"
-              id="btnclose"
-              type="submit"
-              onClick={() => nav("/MaterialManagement")}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-2"></div>
-
-      <div className="row">
-        {/* table */}
-        <div
-          className="col-md-8"
-          style={{
-            maxHeight: "350px",
-            overflow: "auto",
-          }}
-        >
-          <Table
-            hover
-            condensed
-            className="table-data border header-class table-striped"
-          >
-            <thead className="text-white">
-              <tr>
-                <th>SL No</th>
-                <th>Length</th>
-                <th>Width</th>
-                <th>Quantity</th>
-                <th>Weight</th>
-                <th>Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((val, key) => (
-                <tr
-                  onClick={() => {
-                    selectRow(val, key + 1);
-                  }}
-                  className={
-                    selectedTableRow?.some(
-                      (el) => parseInt(el.SrlNo) === parseInt(key + 1)
-                      // &&
-                      // parseInt(el.DynamicPara1) ===
-                      //   parseInt(val.DynamicPara1) &&
-                      // parseInt(el.DynamicPara2) ===
-                      //   parseInt(val.DynamicPara2) &&
-                      // parseInt(el.InStock) === parseInt(val.InStock) &&
-                      // parseInt(el.Weight) === parseInt(val.Weight) &&
-                      // parseInt(el.Location) === parseInt(val.Location)
-                    )
-                      ? "rowSelectedClass"
-                      : ""
-                  }
-                >
-                  <td>{key + 1}</td>
-                  <td>{val.DynamicPara1}</td>
-                  <td>{val.DynamicPara2}</td>
-                  <td>{val.InStock}</td>
-                  <td>{val.Weight}</td>
-                  <td>{val.Location}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-        {/* form */}
-        <div className="col-md-4 p-3" style={{ backgroundColor: "#e6e6e6" }}>
-          <div className="row">
-            <div className="d-flex justify-content-between">
-              <button
-                className="button-style m-0"
-                style={{ width: "130px" }}
-                onClick={addNew}
-              >
-                Add
-              </button>
-              <button
-                className="button-style m-0"
-                style={{ width: "130px" }}
-                onClick={deleteItem}
-                disabled={selectedTableRow.length === 0}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-          <div className="row">
-            <div>
-              <div className="row d-flex align-items-end">
-                <div className="col-md-3 p-0">
-                  <label className="form-label">SL No</label>
-                </div>
-
-                <div className="col-md-9 p-0">
-                  <input
-                    type="text"
-                    className="in-field rounded-0"
-                    disabled
-                    value={inputData.SrlNo}
-                  />
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="row d-flex align-items-end">
-                <div className="col-md-3 p-0">
-                  <label className="form-label">
-                    Length
-                    {/* <span className="text-danger">*</span> */}
-                  </label>
-                </div>
-
-                <div className="col-md-9 p-0">
-                  <input
-                    type="number"
-                    className="in-field rounded-0"
-                    name="DynamicPara1"
-                    // value={selectedTableRow[0].DynamicPara1}
-                    onChange={changeHandler}
-                    value={inputData.DynamicPara1}
-                    onBlur={focusOutEvent}
-                    disabled={selectedTableRow.length === 0}
-                  />
-                </div>
-              </div>
-            </div>{" "}
-            <div>
-              <div className="row d-flex align-items-end">
-                <div className="col-md-3 p-0">
-                  <label className="form-label">Width</label>
-                </div>
-
-                <div className="col-md-9 p-0">
-                  <input
-                    type="number"
-                    className="in-field rounded-0"
-                    name="DynamicPara2"
-                    // value={selectedTableRow[0].DynamicPara1}
-                    onChange={changeHandler}
-                    value={inputData.DynamicPara2}
-                    onBlur={focusOutEvent}
-                    disabled={selectedTableRow.length === 0}
-                  />
-                </div>
-              </div>
-            </div>{" "}
-            <div>
-              <div className="row d-flex align-items-end">
-                <div className="col-md-3 p-0">
-                  <label className="form-label">Quantity</label>
-                </div>
-
-                <div className="col-md-9 p-0">
-                  <input
-                    type="number"
-                    className="in-field rounded-0"
-                    name="InStock"
-                    // value={selectedTableRow[0].DynamicPara1}
-                    onChange={changeHandler}
-                    value={inputData.InStock}
-                    // onBlur={focusOutEvent}
-                    disabled={selectedTableRow.length === 0}
-                  />
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="row d-flex align-items-end">
-                <div className="col-md-3 p-0">
-                  <label className="form-label">Location</label>
-                </div>
-
-                <div className="col-md-9 p-0">
-                  <select
-                    className="in-field ip-select dropdown-field rounded-0"
-                    name="Location"
-                    // value={selectedTableRow[0].DynamicPara1}
-                    onChange={changeHandler}
-                    value={inputData.Location}
-                    //  onBlur={focusOutEvent}
-                    disabled={selectedTableRow.length === 0}
-                  >
-                    <option value="" disabled selected hidden>
-                      Select Location
-                    </option>
-                    {locationData.map((location, index) => (
-                      <option key={index} value={location.LocationNo}>
-                        {location.LocationNo}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }
