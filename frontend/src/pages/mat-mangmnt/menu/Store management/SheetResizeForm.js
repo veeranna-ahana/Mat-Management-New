@@ -4,15 +4,19 @@ import BootstrapTable from "react-bootstrap-table-next";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
+import ResizeModal from "./ResizeModal";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
+
+// ResizeModal
 
 function SheetResizeForm() {
   const nav = useNavigate();
   const location = useLocation();
 
   const state = location.state;
+  const [open, setOpen] = useState(false);
 
   let [custdata, setCustdata] = useState([]);
   let [tabledata, setTabledata] = useState([]);
@@ -62,20 +66,20 @@ function SheetResizeForm() {
   //   },
   // ];
 
-  const changeCustomer = (e) => {
+  const changeCustomer = (custCode) => {
     //e.preventDefault();
     //const { value, name } = e.target;
-    if (e.length !== 0) {
-      let url1 = endpoints.getResizeMtrlStockList + "?code=" + e[0].Cust_Code;
+    // if (e.length !== 0) {
+    let url1 = endpoints.getResizeMtrlStockList + "?code=" + custCode;
 
-      getRequest(url1, (data) => {
-        setSelectedTableRows([]);
-        setTabledata(data);
+    getRequest(url1, (data) => {
+      setSelectedTableRows([]);
+      setTabledata(data);
 
-        setSelectedCust(e[0].Cust_Code);
-        //console.log("api call = ", data);
-      });
-    }
+      setSelectedCust(custCode);
+      //console.log("api call = ", data);
+    });
+    // }
   };
 
   const selectTableRow = (row) => {
@@ -139,14 +143,15 @@ function SheetResizeForm() {
 
       if (flagArray.sort().reverse()[0] === 0) {
         // good to go.................
+        setOpen(true);
         // toast.success("go to go..000000000000");
-        nav("/MaterialManagement/StoreManagement/MaterialSplitter", {
-          state: {
-            selectedTableRows: selectedTableRows,
-            selectedCust: selectedCust,
-            // type: "storeresize",
-          },
-        });
+        // nav("/MaterialManagement/StoreManagement/MaterialSplitter", {
+        //   state: {
+        //     selectedTableRows: selectedTableRows,
+        //     selectedCust: selectedCust,
+        //     // type: "storeresize",
+        //   },
+        // });
       } else if (flagArray.sort().reverse()[0] === 1) {
         // dimensions error..........
         // toast.error("errrrr1111111");
@@ -199,7 +204,6 @@ function SheetResizeForm() {
   return (
     <>
       <div>
-        {" "}
         <h4 className="title">Sheet Resize Form</h4>
         <div className="row">
           <div className="col-md-8">
@@ -224,7 +228,11 @@ function SheetResizeForm() {
               name="customer"
               options={custdata}
               placeholder="Select Customer"
-              onChange={(label) => changeCustomer(label)}
+              onChange={(label) => {
+                if (label.length !== 0) {
+                  changeCustomer(label[0].Cust_Code);
+                }
+              }}
             />
           </div>
           <div className="col-md-2">
@@ -392,6 +400,24 @@ function SheetResizeForm() {
           </div>
         </div>
       </div>
+      {/* <button
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Open modal
+      </button> */}
+
+      <ResizeModal
+        setOpen={setOpen}
+        open={open}
+        selectedTableRows={selectedTableRows}
+        selectedCust={selectedCust}
+        setSelectedTableRows={setSelectedTableRows}
+        changeCustomer={changeCustomer}
+        //  selectedTableRows,
+        // selectedCust: selectedCust,
+      />
     </>
   );
 }
