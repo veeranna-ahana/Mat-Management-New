@@ -174,10 +174,13 @@ function ProductionMatIssueParts() {
         update4,
         (data) => {
           console.log("update4");
+          setFormHeader({ ...formHeader, Status: "Cancelled" });
         }
       );
+
       toast.success("Parts Cancelled Successfully");
     }
+    console.log("formHeader.Status after updates:", formHeader.Status);
   };
 
   const cancelButton = () => {
@@ -221,6 +224,7 @@ function ProductionMatIssueParts() {
         showYN={showYN}
         setShowYN={setShowYN}
         formHeader={formHeader}
+        setFormHeader={setFormHeader}
         tableData={tableData}
       />
       <OkModal
@@ -271,10 +275,17 @@ function ProductionMatIssueParts() {
               // disabled={
               //   show1 || formHeader.Status === "Cancelled" ? true : false
               // }
+              // disabled={
+              //   show1 ||
+              //   formHeader.Status === "Cancelled" ||
+              //   formHeader.Status === "Closed"
+              // }
               disabled={
-                show1 ||
                 formHeader.Status === "Cancelled" ||
-                formHeader.Status === "Closed"
+                formHeader.Status === "Closed" ||
+                formHeader.Status !== "Created" ||
+                formHeader.QtyReturned > 0 ||
+                formHeader.QtyUsed > 0
               }
             >
               Cancel
@@ -295,7 +306,12 @@ function ProductionMatIssueParts() {
             <button
               className="button-style "
               onClick={acceptReturn}
-              disabled={show2 || formHeader.Status === "Closed" ? true : false}
+              // disabled={show2 || formHeader.Status === "Closed" ? true : false}
+              disabled={
+                formHeader.Status !== "Created" ||
+                formHeader.QtyReturned === 0 ||
+                formHeader.Status === "Closed"
+              }
             >
               Accept Return
             </button>

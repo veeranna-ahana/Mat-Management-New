@@ -6,6 +6,10 @@ function OkModal(props) {
   const { show, setShow, handleShow, modalMessage, modalResponseok } = props;
 
   const handleClose = () => {
+    setShow(false);
+  };
+
+  const handleOk = () => {
     modalResponseok("ok");
     setShow(false);
   };
@@ -18,9 +22,21 @@ function OkModal(props) {
         </Modal.Header>
         <Modal.Body>{modalMessage}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Ok
-          </Button>
+          {/* <Button variant="secondary" onClick={handleClose}> */}
+          <button
+            className="button-style "
+            style={{ width: "50px" }}
+            onClick={handleOk}
+          >
+            Yes
+          </button>
+          <button
+            className="button-style"
+            style={{ width: "50px", backgroundColor: "gray" }}
+            onClick={handleClose}
+          >
+            No
+          </button>
         </Modal.Footer>
       </Modal>
     </>
