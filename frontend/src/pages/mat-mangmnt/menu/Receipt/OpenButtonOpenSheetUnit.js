@@ -499,7 +499,8 @@ function OpenButtonOpenSheetUnit() {
     onSelect: (row, isSelect, rowIndex, e) => {
       // console.log("isselect", isSelect);
       console.log("row", row);
-
+      // setSelectedRows(row);
+      setInputPart(row);
       if (row.upDated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
@@ -511,29 +512,32 @@ function OpenButtonOpenSheetUnit() {
       mtrlArray?.map((obj) => {
         if (obj.id == row.id) {
           setMtrlStock(obj);
+          setInputPart({
+            qtyAccepted: row.qtyAccepted,
+            qtyRejected: obj.qtyRejected,
+            qtyReceived: row.qtyReceived,
+            id: row.id,
+            srl: row.srl,
+            mtrlCode: row.mtrlCode,
+            dynamicPara1: row.dynamicPara1,
+            dynamicPara2: row.dynamicPara2,
+            dynamicPara3: row.dynamicPara3,
+            qty: row.qty,
+            inspected: row.inspected,
+            locationNo: row.locationNo,
+            updated: row.updated,
+            accepted: obj.accepted,
+            totalWeightCalculated: obj.totalWeightCalculated,
+          });
         }
-      });
-
-      setInputPart({
-        // id: row.id,
-        // partId: row.partId,
-        // unitWeight: row.unitWeight,
-        // qtyAccepted: row.qtyAccepted,
-        // qtyRejected: row.qtyRejected,
-        // qtyReceived: row.qtyReceived,
-        id: row.id,
-        srl: row.srl,
-        mtrlCode: row.mtrlCode,
-        dynamicPara1: row.dynamicPara1,
-        dynamicPara2: row.dynamicPara2,
-        dynamicPara3: row.dynamicPara3,
-        qty: row.qty,
-        inspected: row.inspected,
-        locationNo: row.locationNo,
-        upDated: row.upDated,
       });
     },
   };
+
+  console.log("inputPart....", inputPart);
+  console.log("inputPart....", inputPart.mtrlCode);
+  console.log("inputPart....", inputPart.locationNo);
+  // console.log("inputPart....", inputPart.totalWeight);
 
   return (
     <div>
@@ -740,6 +744,9 @@ function OpenButtonOpenSheetUnit() {
                       <select
                         className="ip-select dropdown-field"
                         disabled={boolVal}
+                        // defaultValue={" "}
+                        value={inputPart.mtrlCode}
+                        name="mtrlCode"
                       >
                         <option value="" disabled selected>
                           Select Material
@@ -881,12 +888,9 @@ function OpenButtonOpenSheetUnit() {
                         <select
                           className="ip-select dropdown-field"
                           disabled={boolVal}
-                        >
-                          {/* <option value="option 1">001</option>
-                            <option value="option 1">002</option>
-                            <option value="option 1">003</option>
-                            <option value="option 1">004</option> */}
-                        </select>
+                          value={inputPart.locationNo}
+                          name="locationNo"
+                        ></select>
                       </div>
                     </div>
                   </div>

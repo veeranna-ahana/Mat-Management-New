@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
 import CreateYesNoModal from "../../../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../../../components/DeleteRVModal";
 import BootstrapTable from "react-bootstrap-table-next";
 import Table from "react-bootstrap/Table";
 import { formatDate } from "../../../../../../utils";
@@ -13,6 +15,8 @@ const { endpoints } = require("../../../../../api/constants");
 function PurchasePartsNew() {
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const currDate = new Date()
@@ -259,6 +263,9 @@ function PurchasePartsNew() {
     //console.log("after = ", partArray);
   };
 
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
   //delete part
   const handleDelete = () => {
     //minus calculated weight
@@ -273,6 +280,7 @@ function PurchasePartsNew() {
             p.id !== inputPart.id
         );
         setPartArray(newArray);
+        toast.success("Material Deleted");
       }
     });
 
@@ -364,9 +372,9 @@ function PurchasePartsNew() {
     e.preventDefault();
     if (formHeader.customer.length == 0) {
       toast.error("Please Select Customer");
-    } else if (formHeader.reference.length == 0)
+    } else if (formHeader.reference.length === 0) {
       toast.error("Please Enter Customer Document Material Reference");
-    else {
+    } else {
       if (saveUpdateCount == 0) {
         formHeader.receiptDate = formatDate(new Date(), 4);
         formHeader.rvDate = currDate;
@@ -388,7 +396,13 @@ function PurchasePartsNew() {
 
     if (partArray.length === 0) {
       toast.error("Add Details Before Saving");
-    } else if (partArray.length !== 0 && formHeader.weight == "0") {
+    } else if (
+      partArray.length !== 0 &&
+      (formHeader.weight == 0.0 ||
+        formHeader.weight == "0" ||
+        formHeader.weight === null ||
+        formHeader.weight === undefined)
+    ) {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
@@ -458,6 +472,9 @@ function PurchasePartsNew() {
 
     //console.log("formHeader = ", formHeader);
   };
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
+  };
 
   const deleteRVButtonState = () => {
     postRequest(
@@ -474,6 +491,14 @@ function PurchasePartsNew() {
       }
     );
   };
+  const handleYes = () => {
+    handleDelete();
+    setModalOpen(false);
+  };
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
   return (
     <div>
       <CreateYesNoModal
@@ -481,6 +506,18 @@ function PurchasePartsNew() {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
       <div>
         <h4 className="title">Customer Parts Receipt Voucher</h4>
@@ -593,7 +630,7 @@ function PurchasePartsNew() {
               className="button-style"
               style={{ width: "196px" }}
               disabled={boolVal1 | boolVal4}
-              onClick={deleteRVButtonState}
+              onClick={deleteRVButton}
             >
               Delete RV
             </button>
@@ -621,7 +658,7 @@ function PurchasePartsNew() {
       <div className="row">
         <div
           style={{ height: "330px", overflowY: "scroll" }}
-          className="col-md-6 col-sm-12"
+          className="col-md-8 col-sm-12"
         >
           <BootstrapTable
             keyField="id"
@@ -669,7 +706,7 @@ function PurchasePartsNew() {
             </tbody>
           </table> 
         </div>*/}
-        <div className="col-md-6 col-sm-12">
+        <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
             <div className="row justify-content-center mt-2 mb-2">
               <button
@@ -682,7 +719,7 @@ function PurchasePartsNew() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-6 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Part ID</label>
                 <select
                   className="ip-select dropdown-field mt-1"
@@ -701,7 +738,7 @@ function PurchasePartsNew() {
                   ))}
                 </select>
               </div>
-              <div className="col-md-6">
+              <div className="col-md-11">
                 <label className="form-label">Unit Wt</label>
                 <input
                   className="in-field"
@@ -715,7 +752,7 @@ function PurchasePartsNew() {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-6 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Received</label>
                 <input
                   className="in-field"
@@ -727,7 +764,7 @@ function PurchasePartsNew() {
                   disabled={boolVal3 | boolVal4}
                 />
               </div>
-              <div className="col-md-6">
+              <div className="col-md-11">
                 <label className="form-label">Qty Accepted</label>
                 <input
                   className="in-field"
@@ -740,7 +777,7 @@ function PurchasePartsNew() {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-6">
+              <div className="col-md-11">
                 <label className="form-label">Qty Rejected</label>
                 <input
                   className="in-field"
@@ -756,7 +793,7 @@ function PurchasePartsNew() {
                 className="button-style "
                 style={{ width: "155px" }}
                 disabled={boolVal3 | boolVal4}
-                onClick={handleDelete}
+                onClick={deleteButtonState}
               >
                 Delete
               </button>

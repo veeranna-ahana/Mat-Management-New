@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { formatDate, getWeight } from "../../../../utils";
 import { toast } from "react-toastify";
 import CreateYesNoModal from "../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../components/DeleteRVModal";
 import { useNavigate } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useLocation } from "react-router-dom";
@@ -11,11 +13,13 @@ const { endpoints } = require("../../../api/constants");
 
 function OpenButtonDraftSheetUnit(props) {
   const location = useLocation();
+  // console.log("location.state", location?.state?.type);
 
   const nav = useNavigate();
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const [show, setShow] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const currDate = new Date()
     .toJSON()
     .slice(0, 10)
@@ -43,6 +47,10 @@ function OpenButtonDraftSheetUnit(props) {
 
   // enable add to stock / remove stock
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+
+  // inspected checkbox
+  const [boolVal8, setBoolVal8] = useState(false);
+
   //after selecting material disable dynamic para 1 2 3
   const [boolPara1, setBoolPara1] = useState(false);
   const [boolPara2, setBoolPara2] = useState(false);
@@ -150,10 +158,7 @@ function OpenButtonDraftSheetUnit(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input
-              type="checkbox"
-              checked={row.inspected == 1 ? true : false}
-            />
+            <input type="checkbox" checked={row.inspected} />
           </lable>
         </div>
       ),
@@ -210,7 +215,7 @@ function OpenButtonDraftSheetUnit(props) {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        console.log("data2  = ", data2);
+        // console.log("data2  = ", data2);
         data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -236,7 +241,7 @@ function OpenButtonDraftSheetUnit(props) {
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
-        console.log("data 2 = ", data2);
+        // console.log("data 2 = ", data2);
         setMaterialArray(data2);
         //find shape of material
         //console.log("data2 = ", data2);
@@ -244,7 +249,7 @@ function OpenButtonDraftSheetUnit(props) {
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
           getRequest(url2, (data3) => {
-            //console.log("data3 = ", data3);
+            console.log("data3 = ", data3);
 
             if (data3.Shape === "Block") {
               setPara1Label("Length");
@@ -309,7 +314,7 @@ function OpenButtonDraftSheetUnit(props) {
     });
     //console.log("data = ", custdata);
     await delay(500);
-    console.log("para1 label = ", para1Label);
+    // console.log("para1 label = ", para1Label);
   }
 
   useEffect(() => {
@@ -361,11 +366,12 @@ function OpenButtonDraftSheetUnit(props) {
           });
         });
 
-        console.log("1st inputPart", inputPart);
+        // console.log("1st inputPart", inputPart);
 
         // if (shape !== null && shape !== undefined && shape !== material.Shape) {
         //   toast.error("Please select a same type of part");
         // }
+        console.log("material.Shape", material.Shape);
 
         if (material.Shape === "Units") {
           setPara1Label("Qty"); //Nos
@@ -452,7 +458,7 @@ function OpenButtonDraftSheetUnit(props) {
     inputPart[name] = value;
     setInputPart(inputPart);
 
-    console.log("2nd inputPart update = ", inputPart);
+    // console.log("2nd inputPart update = ", inputPart);
 
     await delay(500);
     //update database row
@@ -580,10 +586,12 @@ function OpenButtonDraftSheetUnit(props) {
         formHeader.rvDate = currDate;
         setFormHeader(formHeader);
         await delay(500);
-        insertHeaderFunction();
+        // insertHeaderFunction();
+        updateHeaderFunction();
+        // toast.success("Record Updated Successfully");
         setBoolVal2(true);
       } else {
-        console.log("part array = ", materialArray);
+        // console.log("part array = ", materialArray);
         let flag1 = 0;
         for (let i = 0; i < materialArray.length; i++) {
           if (
@@ -600,82 +608,28 @@ function OpenButtonDraftSheetUnit(props) {
         } else {
           //to update data
           updateHeaderFunction();
+          toast.success("Record Updated Successfully");
         }
       }
     }
   };
-
   // console.log("part arrayyyyyy = ", materialArray);
+  console.log("formheader.... = ", formHeader);
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
     if (materialArray.length === 0) {
       toast.error("Add Details Before Saving");
-    } else if (materialArray.length !== 0 && formHeader.weight == "0") {
+    } else if (
+      materialArray.length !== 0 &&
+      (formHeader.weight == 0.0 ||
+        formHeader.weight === null ||
+        formHeader.weight === undefined)
+    ) {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
     } else {
-      //   let flag1 = 0;
-      //   for (let i = 0; i < materialArray.length; i++) {
-      //     if (
-      //       materialArray[i].qtyAccepted == "" ||
-      //       materialArray[i].qtyAccepted == "0" ||
-      //       materialArray[i].qtyAccepted == 0.0 ||
-      //       materialArray[i].qtyAccepted === undefined
-      //     ) {
-      //       flag1 = 3;
-      //     }
-      //     if (materialArray[i].locationNo == "") {
-      //       flag1 = 7;
-      //     }
-
-      //     if (
-      //       materialArray[i].dynamicPara1 == "" ||
-      //       materialArray[i].dynamicPara1 == "0" ||
-      //       materialArray[i].dynamicPara1 == 0.0
-      //     ) {
-      //       flag1 = 5;
-      //     }
-      //     if (materialArray[i].mtrlCode == "") {
-      //       flag1 = 6;
-      //     }
-      //     if (
-      //       materialArray[i].qtyReceived === "" ||
-      //       materialArray[i].qtyReceived === "0" ||
-      //       materialArray[i].qtyReceived === 0.0
-      //       // Number(materialArray[i].qtyReceived <= 0) ||
-      //       // materialArray[i].qtyReceived === null ||
-      //       // materialArray[i].qtyReceived === undefined
-      //     ) {
-      //       flag1 = 4;
-      //     }
-      //     if (materialArray[i].qtyReceived === undefined) {
-      //       flag1 = 8;
-      //       break;
-      //     }
-      //   }
-
-      //   console.log("flag1 value:", flag1);
-      //   if (flag1 === 6) {
-      //     toast.error("select Material");
-      //   } else if (flag1 === 5) {
-      //     toast.error("Parameters cannot be Zero");
-      //   } else if (flag1 === 8) {
-      //     toast.error("Received Qty cannot be Zero");
-      //   } else if (flag1 === 4) {
-      //   } else if (flag1 == 2) {
-      //     toast.error("Select Material First");
-      //   } else if (flag1 == 3) {
-      //     toast.error("Accepted Qty cannot be Zero");
-      //   } else if (flag1 == 7) {
-      //     toast.error("Select Location");
-      //   } else {
-      //     //show model form
-      //     setShow(true);
-      //   }
-      // }
-
       //NEW CODE FOR FORM VALIDATION
       let flag1 = 0;
       for (let i = 0; i < materialArray.length; i++) {
@@ -690,8 +644,8 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].dynamicPara1 == 0.0
         ) {
           flag1 = 2;
-          console.log("Setting flag1 to 2");
-          break; // Add a break to ensure this condition is not overwritten by subsequent checks
+          // console.log("Setting flag1 to 2");
+          break;
         }
 
         if (
@@ -701,7 +655,7 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].qtyReceived === undefined
         ) {
           flag1 = 3;
-          console.log("Setting flag1 to 3");
+          // console.log("Setting flag1 to 3");
         }
 
         if (
@@ -711,20 +665,20 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].qtyAccepted === undefined
         ) {
           flag1 = 4;
-          console.log("Setting flag1 to 4");
+          // console.log("Setting flag1 to 4");
         }
 
         if (materialArray[i].locationNo == "") {
           flag1 = 5;
-          console.log("Setting flag1 to 5");
+          // console.log("Setting flag1 to 5");
         }
         if (materialArray[i].qtyAccepted > materialArray[i].qtyReceived) {
           flag1 = 6;
-          console.log("Setting flag1 to 6");
+          // console.log("Setting flag1 to 6");
         }
       }
 
-      console.log("flag1 value:", flag1);
+      // console.log("flag1 value:", flag1);
 
       if (flag1 === 1) {
         toast.error("Select Material");
@@ -741,22 +695,6 @@ function OpenButtonDraftSheetUnit(props) {
         setShow(true);
       }
     }
-
-    // if (formHeader.weight == "0") {
-    //   toast.error(
-    //     "Enter the Customer Material Weight as per Customer Document"
-    //   );
-    // } else {
-    //   //show model form
-    //   setShow(true);
-    // }
-
-    //ADDED POPUP FOR ALLOTRVNO
-    // if (materialArray.length === 0) {
-    //   toast.error("Add Details Before Saving");
-    // } else {
-    //   setShow(true);
-    // }
   };
   const allotRVYesButton = async (data) => {
     //console.log("data = ", formHeader);
@@ -764,10 +702,10 @@ function OpenButtonDraftSheetUnit(props) {
     setFormHeader(data);
     setBoolVal4(true);
     setBoolVal6(false);
-    //console.log("formheader = ", formHeader);
-    //console.log("formheader = ", formHeader);
   };
-
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
+  };
   const deleteRVButtonState = () => {
     postRequest(
       endpoints.deleteHeaderMaterialReceiptRegisterAndDetails,
@@ -831,7 +769,6 @@ function OpenButtonDraftSheetUnit(props) {
     setInsCheck(false);
     inputPart.inspected = 0;
     setBoolVal5(false);
-    // console.log("partarray = ", partArray);
     console.log("inputPart = ", inputPart);
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
@@ -890,7 +827,10 @@ function OpenButtonDraftSheetUnit(props) {
     //console.log("after = ", partArray);
   };
 
-  console.log("3rd inputPart", inputPart);
+  // console.log("3rd inputPart", inputPart);
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
   //delete part
   const handleDelete = () => {
     if (inputPart?.id?.length === 0) {
@@ -932,6 +872,7 @@ function OpenButtonDraftSheetUnit(props) {
   };
 
   const changeMaterialHandle = async (e, id) => {
+    // console.log("materialArray..........", materialArray);
     const { value, name } = e.target;
     // console.log("eventvalue....", e.target.value, "id....", id);
     for (let i = 0; i < materialArray.length; i++) {
@@ -953,23 +894,34 @@ function OpenButtonDraftSheetUnit(props) {
     // inputPart[name] = value;
     //inputPart.custCode = formHeader.customer;
     //inputPart.rvId = formHeader.rvId;
-
+    inputPart[name] = value;
     //checkbox update
     if (name === "inspected") {
       if (e.target.checked) {
-        inputPart.inspected = 1;
+        inputPart.inspected = true;
         setBoolVal5(true);
         setInsCheck(true);
       } else {
-        inputPart.inspected = 0;
+        inputPart.inspected = false;
         setBoolVal5(false);
         setInsCheck(false);
       }
     }
+    if (name === "qtyReceived") {
+      // setInsCheck(false);
+      setBoolVal5(false);
+      setInsCheck(false);
+      inputPart.inspected = false;
+      inputPart.qtyAccepted = 0;
+    }
+    // if (materialArray[0].qty <= 0) {
+    //   setBoolVal8(false);
+    // } else {
+    //   setBoolVal8(true);
+    // }
 
-    inputPart[name] = value;
     setInputPart(inputPart);
-    console.log("4th inputPart", inputPart);
+    // console.log("4th inputPart", inputPart);
 
     //calculate weight
     if (name === "qtyAccepted") {
@@ -1017,7 +969,7 @@ function OpenButtonDraftSheetUnit(props) {
               : p
           );
           setMaterialArray(newArray);
-          console.log("material array = ", materialArray);
+          // console.log("material array = ", materialArray);
           await delay(500);
 
           //find calculateweight
@@ -1054,11 +1006,11 @@ function OpenButtonDraftSheetUnit(props) {
         //inputPart[name] = value;
         //setInputPart(inputPart);
 
-        console.log("inputPart11 : ", inputPart);
+        // console.log("inputPart11 : ", inputPart);
       }
     }
 
-    console.log("5th inputPart", inputPart);
+    // console.log("5th inputPart", inputPart);
     const newArray = materialArray.map((p) =>
       //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
       p.id === id
@@ -1066,18 +1018,16 @@ function OpenButtonDraftSheetUnit(props) {
             ...p,
             [name]: value,
             qty: inputPart.qtyReceived,
-            inspected: inputPart.inspected == "on" ? 1 : 0,
+            inspected: inputPart.inspected,
           }
         : p
     );
-
-    console.log("qty", qty);
 
     setMaterialArray(newArray);
     await delay(500);
     // debugger
 
-    // console.log("inputpart", inputPart);
+    console.log("inputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
       if (data.affectedRows !== 0) {
@@ -1088,13 +1038,13 @@ function OpenButtonDraftSheetUnit(props) {
     await delay(500);
   };
 
-  console.log("setMaterialArray...", materialArray);
+  // console.log("setMaterialArray...", materialArray);
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("Row = ", row);
+      // console.log("Row = ", row);
       // console.log("Row = ", row.updated);
       // setIsButtonEnabled(row.updated === 1);
       // setInputPart(row);
@@ -1195,7 +1145,7 @@ function OpenButtonDraftSheetUnit(props) {
     },
   };
 
-  console.log("asdfghjkjhgfdfgjkjvcvnjkjh", inputPart);
+  // console.log("asdfghjkjhgfdfgjkjvcvnjkjh", inputPart);
 
   // const changeMaterialHandle = async (e, id) => {
   //   const { value, name } = e.target;
@@ -1377,6 +1327,7 @@ function OpenButtonDraftSheetUnit(props) {
   //   await delay(500);
   // };
 
+  console.log("props...................", props);
   // console.log("inpurtpart.srl", inputPart.srl);
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
@@ -1408,7 +1359,7 @@ function OpenButtonDraftSheetUnit(props) {
         locationNo: mtrlStock.locationNo,
         qtyAccepted: mtrlStock.qtyAccepted,
       };
-      console.log("newrow = ", newRow);
+      // console.log("newrow = ", newRow);
       //console.log("before api");
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
         //console.log("data = ", data);
@@ -1472,6 +1423,75 @@ function OpenButtonDraftSheetUnit(props) {
       });
     }
   };
+
+  const handleYes = () => {
+    if (inputPart?.id?.length === 0) {
+      toast.error("Select Material");
+    } else {
+      //console.log("id = ", inputPart.id);
+      // console.log("input part = ", inputPart);
+      postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
+        if (data.affectedRows !== 0) {
+          const newArray = materialArray.filter(
+            (p) =>
+              //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+              p.id !== inputPart.id
+          );
+          setMaterialArray(newArray);
+          toast.success("Material Deleted");
+          setInputPart({
+            id: "",
+            rvId: "",
+            srl: "",
+            custCode: "",
+            mtrlCode: "",
+            material: "",
+            shapeMtrlId: "",
+            shapeID: "",
+            dynamicPara1: "",
+            dynamicPara2: "",
+            dynamicPara3: "",
+            qty: "",
+            inspected: "",
+            accepted: "",
+            totalWeightCalculated: "",
+            totalWeight: "",
+            locationNo: "",
+            updated: "",
+            qtyAccepted: 0,
+            qtyReceived: 0,
+            qtyRejected: 0,
+            qtyUsed: 0,
+            qtyReturned: 0,
+          });
+        }
+      });
+
+      //get mtrl_data by mtrl_code
+      let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+      getRequest(url, async (data) => {
+        let totwt = 0;
+        materialArray.map((obj) => {
+          totwt =
+            parseFloat(totwt) +
+            (parseFloat(obj.qtyAccepted) *
+              getWeight(
+                data,
+                parseFloat(obj.dynamicPara1),
+                parseFloat(obj.dynamicPara2),
+                parseFloat(obj.dynamicPara3)
+              )) /
+              (1000 * 1000);
+        });
+        setCalcWeightVal(parseFloat(totwt).toFixed(2));
+      });
+    }
+    setModalOpen(false);
+  };
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
   // console.log("materialArray", materialArray);
   return (
     <div>
@@ -1480,6 +1500,19 @@ function OpenButtonDraftSheetUnit(props) {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
 
       <div>
@@ -1592,7 +1625,7 @@ function OpenButtonDraftSheetUnit(props) {
                 <button
                   className="button-style"
                   disabled={boolVal4}
-                  onClick={deleteRVButtonState}
+                  onClick={deleteRVButton}
                 >
                   Delete RV
                 </button>
@@ -1653,6 +1686,14 @@ function OpenButtonDraftSheetUnit(props) {
                   onClick={addNewMaterial}
                 >
                   Add Serial
+                </button>
+                <button
+                  className="button-style "
+                  style={{ width: "155px" }}
+                  disabled={boolVal3 | boolVal4}
+                  onClick={deleteButtonState}
+                >
+                  Delete Serial
                 </button>
               </div>
 
@@ -1715,7 +1756,7 @@ function OpenButtonDraftSheetUnit(props) {
                           Select Material
                         </option>
 
-                        {props.type === "sheets"
+                        {location?.state?.type === "sheets"
                           ? mtrlDetails.map((material, index) =>
                               (material.Shape !== "Units") &
                               (material.Shape !== "Cylinder") &
@@ -1728,7 +1769,7 @@ function OpenButtonDraftSheetUnit(props) {
                                 ""
                               )
                             )
-                          : props.type === "units"
+                          : location?.state?.type === "units"
                           ? mtrlDetails.map((material, index) =>
                               (material.Shape === "Units") &
                               //(material.Shape !== "Cylinder") &
@@ -1968,16 +2009,16 @@ function OpenButtonDraftSheetUnit(props) {
                       </select>
                     </div>
                   </div>
-                  <div className="row justify-content-center mt-3 mb-4">
+                  {/* <div className="row justify-content-center mt-3 mb-4">
                     <button
                       className="button-style "
                       style={{ width: "155px" }}
                       disabled={boolVal3 | boolVal4}
-                      onClick={handleDelete}
+                      onClick={deleteButtonState}
                     >
-                      Delete
+                      Delete Serial
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

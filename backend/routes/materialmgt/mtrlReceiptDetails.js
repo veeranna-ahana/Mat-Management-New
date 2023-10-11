@@ -148,7 +148,7 @@ mtrlReceiptDetailsRouter.post(
         srl,
         totalWeightCalculated,
       } = req.body;
-      inspected = inspected == "on" ? "1" : "0";
+      inspected = inspected == true ? "1" : "0";
 
       if (dynamicPara3 || updated === "") {
         console.log(`UPDATE mtrlreceiptdetails SET 

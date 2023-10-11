@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import BootstrapTable from "react-bootstrap-table-next";
 import Table from "react-bootstrap/Table";
 import CreateYesNoModal from "../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../components/DeleteRVModal";
 import { formatDate } from "../../../../utils";
 import { useLocation } from "react-router-dom";
 
@@ -16,6 +18,8 @@ function OpenButtonDraftPartList() {
 
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const currDate = new Date()
@@ -307,7 +311,9 @@ function OpenButtonDraftPartList() {
 
     //console.log("after = ", partArray);
   };
-
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
   //delete part
   const handleDelete = () => {
     //minus calculated weight
@@ -432,7 +438,12 @@ function OpenButtonDraftPartList() {
 
     if (partArray.length === 0) {
       toast.error("Add Details Before Saving");
-    } else if (partArray.length !== 0 && formHeader.weight == "0") {
+    } else if (
+      partArray.length !== 0 &&
+      (formHeader.weight == 0.0 ||
+        formHeader.weight === null ||
+        formHeader.weight === undefined)
+    ) {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
@@ -479,6 +490,9 @@ function OpenButtonDraftPartList() {
           flag1 = 5;
           console.log("Setting flag1 to 5");
         }
+        if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
+          flag1 = 6;
+        }
       }
 
       console.log("flag1 value:", flag1);
@@ -491,6 +505,8 @@ function OpenButtonDraftPartList() {
         toast.error("Received and Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
         toast.error("Select Location");
+      } else if (flag1 === 6) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
       } else {
         // Show model form
         setShow(true);
@@ -518,7 +534,9 @@ function OpenButtonDraftPartList() {
 
     //console.log("formHeader = ", formHeader);
   };
-
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
+  };
   const deleteRVButtonState = () => {
     postRequest(
       endpoints.deleteHeaderMaterialReceiptRegisterAndDetails,
@@ -534,6 +552,14 @@ function OpenButtonDraftPartList() {
       }
     );
   };
+  const handleYes = () => {
+    handleDelete();
+    setModalOpen(false);
+  };
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
   return (
     <div>
       <CreateYesNoModal
@@ -541,6 +567,18 @@ function OpenButtonDraftPartList() {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
       <div>
         <h4 className="title">Customer Parts Receipt Voucher</h4>
@@ -651,7 +689,7 @@ function OpenButtonDraftPartList() {
                 <button
                   className="button-style"
                   disabled={boolVal4}
-                  onClick={deleteRVButtonState}
+                  onClick={deleteRVButton}
                 >
                   Delete RV
                 </button>
@@ -834,7 +872,7 @@ function OpenButtonDraftPartList() {
                 className="button-style "
                 style={{ width: "155px" }}
                 disabled={boolVal4}
-                onClick={handleDelete}
+                onClick={deleteButtonState}
               >
                 Delete
               </button>

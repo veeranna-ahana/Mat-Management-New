@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { formatDate, getWeight } from "../../../../utils";
 import { toast } from "react-toastify";
 import CreateYesNoModal from "../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../components/DeleteRVModal";
 import { useNavigate } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -12,6 +14,8 @@ const { endpoints } = require("../../../api/constants");
 function NewSheetsUnits(props) {
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const currDate = new Date()
     .toJSON()
@@ -54,7 +58,7 @@ function NewSheetsUnits(props) {
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
   const [shape, setShape] = useState();
-
+  console.log("propss...............................", props);
   const [formHeader, setFormHeader] = useState({
     rvId: "",
     receiptDate: "", //formatDate(new Date(), 4),
@@ -62,7 +66,9 @@ function NewSheetsUnits(props) {
     rvDate: "", //currDate,
     status: "Created",
     customer: props.type2 === "purchase" ? "0000" : "",
-    customerName: "",
+    customerName:
+      props.type2 === "purchase" ? "MAGOD LASER MACHINING PVT LTD" : "",
+
     reference: "",
     weight: "0",
     calcWeight: "0",
@@ -148,10 +154,7 @@ function NewSheetsUnits(props) {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input
-              type="checkbox"
-              checked={row.inspected == 1 ? true : false}
-            />
+            <input type="checkbox" checked={row.inspected} />
           </lable>
         </div>
       ),
@@ -209,8 +212,9 @@ function NewSheetsUnits(props) {
 
     const found = custdata.find((obj) => obj.Cust_Code === e[0].Cust_Code);
     //setCustDetailVal(found.Address);
+
     setFormHeader((preValue) => {
-      //console.log(preValue)
+      // console.log(preValue);
       return {
         ...preValue,
         //[name]: value,
@@ -229,7 +233,7 @@ function NewSheetsUnits(props) {
   let changeCustomer1 = async (e) => {
     e.preventDefault();
     const { value, name } = e.target;
-
+    console.log("e.target", e.target);
     const found = custdata.find((obj) => obj.Cust_Code === value);
     //setCustDetailVal(found.Address);
 
@@ -486,12 +490,13 @@ function NewSheetsUnits(props) {
   };
   const saveButtonState = async (e) => {
     e.preventDefault();
+    console.log("formHeader.customer", formHeader);
 
     if (formHeader.customer.length == 0) {
       toast.error("Please Select Customer");
-    } else if (formHeader.reference.length == 0)
+    } else if (formHeader.reference.length == 0) {
       toast.error("Please Enter Customer Document Material Reference");
-    else {
+    } else {
       if (saveUpdateCount == 0) {
         formHeader.receiptDate = formatDate(new Date(), 4);
         formHeader.rvDate = currDate;
@@ -534,66 +539,6 @@ function NewSheetsUnits(props) {
         "Enter the Customer Material Weight as per Customer Document"
       );
     } else {
-      //   let flag1 = 0;
-      //   for (let i = 0; i < materialArray.length; i++) {
-      //     if (
-      //       materialArray[i].qtyAccepted == "" ||
-      //       materialArray[i].qtyAccepted == "0" ||
-      //       materialArray[i].qtyAccepted == 0.0 ||
-      //       materialArray[i].qtyAccepted === undefined
-      //     ) {
-      //       flag1 = 3;
-      //     }
-      //     if (materialArray[i].locationNo == "") {
-      //       flag1 = 7;
-      //     }
-
-      //     if (
-      //       materialArray[i].dynamicPara1 == "" ||
-      //       materialArray[i].dynamicPara1 == "0" ||
-      //       materialArray[i].dynamicPara1 == 0.0
-      //     ) {
-      //       flag1 = 5;
-      //     }
-      //     if (materialArray[i].mtrlCode == "") {
-      //       flag1 = 6;
-      //     }
-      //     if (
-      //       materialArray[i].qtyReceived === "" ||
-      //       materialArray[i].qtyReceived === "0" ||
-      //       materialArray[i].qtyReceived === 0.0
-      //       // Number(materialArray[i].qtyReceived <= 0) ||
-      //       // materialArray[i].qtyReceived === null ||
-      //       // materialArray[i].qtyReceived === undefined
-      //     ) {
-      //       flag1 = 4;
-      //     }
-      //     if (materialArray[i].qtyReceived === undefined) {
-      //       flag1 = 8;
-      //       break;
-      //     }
-      //   }
-
-      //   console.log("flag1 value:", flag1);
-      //   if (flag1 === 6) {
-      //     toast.error("select Material");
-      //   } else if (flag1 === 5) {
-      //     toast.error("Parameters cannot be Zero");
-      //   } else if (flag1 === 8) {
-      //     toast.error("Received Qty cannot be Zero");
-      //   } else if (flag1 === 4) {
-      //   } else if (flag1 == 2) {
-      //     toast.error("Select Material First");
-      //   } else if (flag1 == 3) {
-      //     toast.error("Accepted Qty cannot be Zero");
-      //   } else if (flag1 == 7) {
-      //     toast.error("Select Location");
-      //   } else {
-      //     //show model form
-      //     setShow(true);
-      //   }
-      // }
-
       //NEW CODE FOR FORM VALIDATION
       let flag1 = 0;
       for (let i = 0; i < materialArray.length; i++) {
@@ -678,6 +623,14 @@ function NewSheetsUnits(props) {
     setFormHeader(data);
     setBoolVal4(true);
     setBoolVal6(false);
+  };
+
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
+
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
   };
 
   const deleteRVButtonState = () => {
@@ -823,6 +776,7 @@ function NewSheetsUnits(props) {
     } else {
       //console.log("id = ", inputPart.id);
       // console.log("input part = ", inputPart);
+
       postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
           const newArray = materialArray.filter(
@@ -832,6 +786,7 @@ function NewSheetsUnits(props) {
           );
           setMaterialArray(newArray);
           toast.success("Material Deleted");
+          // setOpen(true);
           //reset all fields
           //Object.keys(inputPart).forEach((key) => (inputPart[key] = null));
           setInputPart({
@@ -862,6 +817,8 @@ function NewSheetsUnits(props) {
         }
       });
 
+      // setOpen(true);
+
       //get mtrl_data by mtrl_code
       let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
       getRequest(url, async (data) => {
@@ -886,7 +843,14 @@ function NewSheetsUnits(props) {
   const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
 
-    // console.log("eventvalue....", e.target.value, "id....", id);
+    // console.log(
+    //   "eventvalue....",
+    //   e.target.value,
+    //   "name....",
+    //   name,
+    //   "id....",
+    //   id
+    // );
     for (let i = 0; i < materialArray.length; i++) {
       const element = materialArray[i];
 
@@ -907,26 +871,34 @@ function NewSheetsUnits(props) {
     // inputPart[name] = value;
     //inputPart.custCode = formHeader.customer;
     //inputPart.rvId = formHeader.rvId;
-
+    inputPart[name] = value;
     //checkbox update
     if (name === "inspected") {
       if (e.target.checked) {
-        inputPart.inspected = 1;
+        inputPart.inspected = true;
         setBoolVal5(true);
         setInsCheck(true);
       } else {
-        inputPart.inspected = 0;
+        inputPart.inspected = false;
         setBoolVal5(false);
         setInsCheck(false);
       }
     }
-
-    inputPart[name] = value;
+    if (name === "qtyReceived") {
+      // setInsCheck(false);
+      setBoolVal5(false);
+      setInsCheck(false);
+      inputPart.inspected = false;
+      inputPart.qtyAccepted = 0;
+    }
     setInputPart(inputPart);
     //console.log(inputPart);
 
-    //calculate weight
+    // if (name === "qtyReceived") {
+    //   setInsCheck(false);
+    // }
     if (name === "qtyAccepted") {
+      //calculate weight
       if (e.target.value) {
         let val = e.target.value;
         //get mtrl_data by mtrl_code
@@ -973,7 +945,8 @@ function NewSheetsUnits(props) {
                   ...p,
                   [name]: value,
                   qty: inputPart.qtyReceived,
-                  //inspected: inputPart.inspected,
+                  // inspected: inputPart.inspected,
+                  inspected: inputPart.inspected == true ? 1 : 0,
                 }
               : p
           );
@@ -1039,7 +1012,9 @@ function NewSheetsUnits(props) {
             ...p,
             [name]: value,
             qty: inputPart.qtyReceived,
-            inspected: inputPart.inspected == "on" ? 1 : 0,
+            // inspected: inputPart.inspected == "on" ? 1 : 0,
+            inspected: inputPart.inspected == true ? 1 : 0,
+            // inspected: inputPart.inspected,
           }
         : p
     );
@@ -1048,10 +1023,10 @@ function NewSheetsUnits(props) {
 
     console.log("materialarray.......:", materialArray);
     // console.log("selectedRowss:", selectedRows);
-    console.log("inputPart", inputPart);
+    console.log("inputPart", inputPart.inspected);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
+      if (data?.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
       }
@@ -1199,6 +1174,7 @@ function NewSheetsUnits(props) {
           //setBoolVal2(true);
           //setBoolVal3(false);
           setBoolValStock("on");
+
           // setBoolVal6(true);
           // setBoolVal7(false);
           setRmvBtn(true);
@@ -1255,6 +1231,82 @@ function NewSheetsUnits(props) {
     }
   };
 
+  const handleYes = () => {
+    if (inputPart.id.length === 0) {
+      toast.error("Select Material");
+    } else {
+      //console.log("id = ", inputPart.id);
+      // console.log("input part = ", inputPart);
+
+      postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
+        if (data.affectedRows !== 0) {
+          const newArray = materialArray.filter(
+            (p) =>
+              //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+              p.id !== inputPart.id
+          );
+          setMaterialArray(newArray);
+          toast.success("Material Deleted");
+          // setOpen(true);
+          //reset all fields
+          //Object.keys(inputPart).forEach((key) => (inputPart[key] = null));
+          setInputPart({
+            id: "",
+            rvId: "",
+            srl: "",
+            custCode: "",
+            mtrlCode: "",
+            material: "",
+            shapeMtrlId: "",
+            shapeID: "",
+            dynamicPara1: "",
+            dynamicPara2: "",
+            dynamicPara3: "",
+            qty: "",
+            inspected: "",
+            accepted: "",
+            totalWeightCalculated: "",
+            totalWeight: "",
+            locationNo: "",
+            updated: "",
+            qtyAccepted: 0,
+            qtyReceived: 0,
+            qtyRejected: 0,
+            qtyUsed: 0,
+            qtyReturned: 0,
+          });
+        }
+      });
+
+      // setOpen(true);
+
+      //get mtrl_data by mtrl_code
+      let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+      getRequest(url, async (data) => {
+        let totwt = 0;
+        materialArray.map((obj) => {
+          totwt =
+            parseFloat(totwt) +
+            (parseFloat(obj.qtyAccepted) *
+              getWeight(
+                data,
+                parseFloat(obj.dynamicPara1),
+                parseFloat(obj.dynamicPara2),
+                parseFloat(obj.dynamicPara3)
+              )) /
+              (1000 * 1000);
+        });
+        setCalcWeightVal(parseFloat(totwt).toFixed(2));
+      });
+    }
+    setModalOpen(false);
+  };
+
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
+
   return (
     <div>
       <CreateYesNoModal
@@ -1262,6 +1314,20 @@ function NewSheetsUnits(props) {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
 
       <div>
@@ -1400,11 +1466,12 @@ function NewSheetsUnits(props) {
             >
               Allot RV No
             </button>
+
             <button
               className="button-style"
               // style={{ width: "196px" }}
               disabled={boolVal1 | boolVal4}
-              onClick={deleteRVButtonState}
+              onClick={deleteRVButton}
             >
               Delete RV
             </button>
@@ -1462,6 +1529,15 @@ function NewSheetsUnits(props) {
                   onClick={addNewMaterial}
                 >
                   Add Serial
+                </button>
+                <button
+                  className="button-style "
+                  style={{ width: "155px" }}
+                  disabled={boolVal3 | boolVal4}
+                  // onClick={handleDelete}
+                  onClick={deleteButtonState}
+                >
+                  Delete Serial
                 </button>
               </div>
 
@@ -1663,9 +1739,11 @@ function NewSheetsUnits(props) {
                             disabled={boolVal3 | boolVal4}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
+                              // console.log("evnet..1", e.target.checked);
                             }}
                           />
                         </div>
+
                         <div className="col-md-8 col-sm-12">
                           <label className="form-label">Inspected</label>
                         </div>
@@ -1774,14 +1852,15 @@ function NewSheetsUnits(props) {
                     </div>
                   </div>
                   <div className="row justify-content-center mt-3 mb-4">
-                    <button
+                    {/* <button
                       className="button-style "
                       style={{ width: "155px" }}
                       disabled={boolVal3 | boolVal4}
-                      onClick={handleDelete}
+                      // onClick={handleDelete}
+                      onClick={deleteButtonState}
                     >
-                      Delete
-                    </button>
+                      Delete Serial
+                    </button> */}
                   </div>
                 </div>
               </div>

@@ -8,7 +8,7 @@ import { Typeahead } from "react-bootstrap-typeahead";
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
 
-export default function UnitsDraftRVList() {
+export default function UnitsDraftRVList(props) {
   const nav = useNavigate();
 
   let [custdata, setCustdata] = useState([]);
