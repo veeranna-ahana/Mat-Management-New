@@ -6,27 +6,15 @@ import Table from "react-bootstrap/Table";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import { toast } from "react-toastify";
-// import YesNoModal from "../../../components/YesNoModal";
 import { getWeight } from "../../../../utils";
 import SplitMaterialYesNoModal from "../../components/SplitMaterialYesNoModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getRequest, postRequest } from "../../../api/apiinstance";
 import { endpoints } from "../../../api/constants";
 
-// const style = {
-//   position: "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: 400,
-//   bgcolor: "background.paper",
-//   border: "2px solid #000",
-//   boxShadow: 24,
-//   p: 4,
-// };
-
 export default function ResizeModal(props) {
   const handleClose = () => {
+    props.changeCustomer(props.selectedCust);
     setTableData([]);
     setSelectedTableRow([
       {
@@ -44,21 +32,16 @@ export default function ResizeModal(props) {
 
     props.setOpen(false);
   };
-  //   const [open, setOpen] = useState(false);
-  // const handleOpen = () => props.setOpen(true);
-
-  // console.log("props", props);
-  // if(props.open)
   const nav = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
-  const [formHeader, setFormHeader] = useState({
-    materialCode: props?.selectedTableRows[0]?.Mtrl_Code,
-    quantity: props?.selectedTableRows?.length,
-    para1: props?.selectedTableRows[0]?.DynamicPara1,
-    para2: props?.selectedTableRows[0]?.DynamicPara2,
-    selectedCust: props?.selectedCust,
-  });
+  // const [formHeader, setFormHeader] = useState({
+  //   materialCode: props?.selectedTableRows[0]?.Mtrl_Code,
+  //   quantity: props?.selectedTableRows?.length,
+  //   para1: props?.selectedTableRows[0]?.DynamicPara1,
+  //   para2: props?.selectedTableRows[0]?.DynamicPara2,
+  //   selectedCust: props?.selectedCust,
+  // });
 
   const [tableData, setTableData] = useState([]);
   const [selectedTableRow, setSelectedTableRow] = useState([
@@ -158,9 +141,6 @@ export default function ResizeModal(props) {
       toast.error("Value should be more than 10 mm");
     }
   };
-
-  // console.log("location", location?.state?.selectedTableRows[0].Weight);
-
   const changeHandler = (e) => {
     const { value, name } = e.target;
 
@@ -594,40 +574,13 @@ export default function ResizeModal(props) {
 
   return (
     <>
-      <Modal
-        show={props.open}
-        onHide={handleClose}
-        size="xl"
-        style={{ backgroundColor: "#0000005e" }}
-
-        // fullscreen={true}
-        // dialogClassName="d-flex justify-content-content"
-        // aria-labelledby="example-custom-modal-styling-title"
-
-        // dialogStyle=''
-        // contentClassName="w-100"
-        // contentClassName="modalContentStyle"
-      >
-        {/* <Modal.Header closeButton>
-          <Modal.Title id="example-custom-modal-styling-title">
-            Custom Modal Styling
-          </Modal.Title>
+      <Modal show={props.open} fullscreen={true} onHide={() => handleClose()}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reize Sheets</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p>
-            Ipsum molestiae natus adipisci modi eligendi? Debitis amet quae unde
-            commodi aspernatur enim, consectetur. Cumque deleniti temporibus
-            ipsam atque a dolores quisquam quisquam adipisci possimus
-            laboriosam. Quibusdam facilis doloribus debitis! Sit quasi quod
-            accusamus eos quod. Ab quos consequuntur eaque quo rem! Mollitia
-            reiciendis porro quo magni incidunt dolore amet atque facilis ipsum
-            deleniti rem!
-          </p>
-        </Modal.Body> */}
         <Modal.Body>
           <div>
             <h4 className="title">Material Resize and Splitting Form</h4>
-            {/* {console.log("formHeader?.materialCode", formHeader)} */}
             <div>
               <div className="row">
                 <div className="col-md-10">
