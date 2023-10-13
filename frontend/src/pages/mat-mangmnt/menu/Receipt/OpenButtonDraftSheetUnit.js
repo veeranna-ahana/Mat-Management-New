@@ -1044,7 +1044,7 @@ function OpenButtonDraftSheetUnit(props) {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // console.log("Row = ", row);
+      console.log("Row = ", row);
       // console.log("Row = ", row.updated);
       // setIsButtonEnabled(row.updated === 1);
       // setInputPart(row);
@@ -1105,6 +1105,7 @@ function OpenButtonDraftSheetUnit(props) {
               updated: row.updated,
               accepted: obj.accepted,
               totalWeightCalculated: obj.totalWeightCalculated,
+              totalWeight: row.totalWeight,
             });
           }
         });
@@ -1678,23 +1679,27 @@ function OpenButtonDraftSheetUnit(props) {
           <div className="col-md-4 col-sm-12">
             <div className="ip-box form-bg">
               <div className="row justify-content-center mt-2">
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  //onClick={addNewPart}
-                  disabled={boolVal4}
-                  onClick={addNewMaterial}
-                >
-                  Add Serial
-                </button>
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  disabled={boolVal3 | boolVal4}
-                  onClick={deleteButtonState}
-                >
-                  Delete Serial
-                </button>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    //onClick={addNewPart}
+                    disabled={boolVal4}
+                    onClick={addNewMaterial}
+                  >
+                    Add Serial
+                  </button>
+                </div>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    disabled={boolVal3 | boolVal4}
+                    onClick={deleteButtonState}
+                  >
+                    Delete Serial
+                  </button>
+                </div>
               </div>
 
               <div className="row  justify-content-center">
@@ -1892,11 +1897,11 @@ function OpenButtonDraftSheetUnit(props) {
                             type="checkbox"
                             id="flexCheckDefault"
                             name="inspected"
-                            checked={insCheck}
+                            // checked={insCheck}
+                            checked={inputPart.inspected}
                             // checked={inputPart.inspected === "1" ? true : false}
                             disabled={boolVal3 | boolVal4}
                             // onChange={changeMaterialHandle}
-
                             min="0"
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
@@ -2001,11 +2006,6 @@ function OpenButtonDraftSheetUnit(props) {
                             {location.LocationNo}
                           </option>
                         ))}
-
-                        {/* <option value="option 1">001</option>
-                            <option value="option 1">002</option>
-                            <option value="option 1">003</option>
-                            <option value="option 1">004</option> */}
                       </select>
                     </div>
                   </div>

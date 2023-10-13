@@ -289,6 +289,7 @@ mtrlReceiptDetailsRouter.post(
         `update mtrlreceiptdetails set Updated = ${upDated} where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          console.log("data", data);
           res.send(data);
         }
       );

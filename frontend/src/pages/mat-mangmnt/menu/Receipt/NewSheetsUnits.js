@@ -58,7 +58,7 @@ function NewSheetsUnits(props) {
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
   const [shape, setShape] = useState();
-  console.log("propss...............................", props);
+  // console.log("propss...............................", props);
   const [formHeader, setFormHeader] = useState({
     rvId: "",
     receiptDate: "", //formatDate(new Date(), 4),
@@ -1023,7 +1023,7 @@ function NewSheetsUnits(props) {
 
     console.log("materialarray.......:", materialArray);
     // console.log("selectedRowss:", selectedRows);
-    console.log("inputPart", inputPart.inspected);
+    console.log("inputPart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
       if (data?.affectedRows !== 0) {
@@ -1033,6 +1033,7 @@ function NewSheetsUnits(props) {
     });
     await delay(500);
   };
+
   // row selection
   const selectRow = {
     mode: "radio",
@@ -1057,6 +1058,7 @@ function NewSheetsUnits(props) {
       // let totalWeightCalculated = "";
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
+        console.log("data2 ........", data2);
         data2?.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.mtrlRvId = obj.Mtrl_Rv_id;
@@ -1104,6 +1106,7 @@ function NewSheetsUnits(props) {
               updated: row.updated,
               accepted: obj.accepted,
               totalWeightCalculated: obj.totalWeightCalculated,
+              totalWeight: row.totalWeight,
             });
           }
         });
@@ -1164,10 +1167,10 @@ function NewSheetsUnits(props) {
         locationNo: mtrlStock.locationNo,
         qtyAccepted: mtrlStock.qtyAccepted,
       };
-      // console.log("newrow = ", newRow);
+      console.log("newrow = ", newRow);
       //console.log("before api");
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
-        //console.log("data = ", data);
+        // console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Added Successfully");
@@ -1521,24 +1524,28 @@ function NewSheetsUnits(props) {
           <div className="col-md-4 col-sm-12">
             <div className="ip-box form-bg">
               <div className="row justify-content-center mt-2">
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  //onClick={addNewPart}
-                  disabled={boolVal1 | boolVal4}
-                  onClick={addNewMaterial}
-                >
-                  Add Serial
-                </button>
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  disabled={boolVal3 | boolVal4}
-                  // onClick={handleDelete}
-                  onClick={deleteButtonState}
-                >
-                  Delete Serial
-                </button>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    //onClick={addNewPart}
+                    disabled={boolVal1 | boolVal4}
+                    onClick={addNewMaterial}
+                  >
+                    Add Serial
+                  </button>
+                </div>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    disabled={boolVal3 | boolVal4}
+                    // onClick={handleDelete}
+                    onClick={deleteButtonState}
+                  >
+                    Delete Serial
+                  </button>
+                </div>
               </div>
 
               <div className="row  justify-content-center">
@@ -1732,7 +1739,8 @@ function NewSheetsUnits(props) {
                             type="checkbox"
                             id="flexCheckDefault"
                             name="inspected"
-                            checked={insCheck}
+                            // checked={insCheck}
+                            checked={inputPart.inspected}
                             /*checked={
                                 inputPart.inspected === "1" ? true : false
                               }*/

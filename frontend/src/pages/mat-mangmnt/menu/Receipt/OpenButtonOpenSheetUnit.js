@@ -36,7 +36,7 @@ function OpenButtonOpenSheetUnit() {
 
   const [rmvBtn, setRmvBtn] = useState(false);
   const [addBtn, setAddBtn] = useState(false);
-
+  const [insCheck, setInsCheck] = useState(false);
   //falg for add to stock and remove stock
   const [boolValStock, setBoolValStock] = useState("off");
 
@@ -162,10 +162,14 @@ function OpenButtonOpenSheetUnit() {
         //find shape of material
         for (let i = 0; i < data2.length; i++) {
           let material = data2[i];
+
+          console.log("material....", material);
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
           getRequest(url2, (data3) => {
-            if (material.Shape === "Units") {
+            console.log("material.Shape....", material.Shape);
+            console.log("data3....", data3.Shape);
+            if (data3.Shape === "Units") {
               setPara1Label("Qty"); //Nos
               setPara2Label("");
               setPara3Label("");
@@ -175,7 +179,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("Nos");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Block") {
+            } else if (data3.Shape === "Block") {
               setPara1Label("Length"); //mm
               setPara2Label("Width");
               setPara3Label("Height");
@@ -185,7 +189,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("mm");
-            } else if (material.Shape === "Plate") {
+            } else if (data3.Shape === "Plate") {
               setPara1Label("Length"); //mm
               setPara2Label("Width");
               setPara3Label("");
@@ -195,7 +199,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("");
-            } else if (material.Shape === "Sheet") {
+            } else if (data3.Shape === "Sheet") {
               setPara1Label("Width"); //mm
               setPara2Label("Length"); //mm
               setPara3Label("");
@@ -205,7 +209,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("");
-            } else if (material.Shape === "Tiles") {
+            } else if (data3.Shape === "Tiles") {
               setPara1Label("");
               setPara2Label("");
               setPara3Label("");
@@ -215,7 +219,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Tube") {
+            } else if (data3.Shape === "Tube") {
               setPara1Label("Length"); //mm
               setPara2Label("");
               setPara3Label("");
@@ -225,7 +229,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Cylinder") {
+            } else if (data3.Shape === "Cylinder") {
               setPara1Label("Volume"); //CubicMtr
               setPara2Label("");
               setPara3Label("");
@@ -442,18 +446,18 @@ function OpenButtonOpenSheetUnit() {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      // text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
-      text: "Width(Mm)",
+      text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
+      // text: "Width(Mm)",
       dataField: "dynamicPara1",
     },
     {
-      // text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
-      text: "Length(Mm)",
+      text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
+      // text: "Length(Mm)",
       dataField: "dynamicPara2",
     },
     {
-      // text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
-      text: "Height(Mm)",
+      text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
+      // text: "Height(Mm)",
       dataField: "dynamicPara3",
     },
     {
@@ -528,15 +532,15 @@ function OpenButtonOpenSheetUnit() {
             updated: row.updated,
             accepted: obj.accepted,
             totalWeightCalculated: obj.totalWeightCalculated,
+            totalWeight: row.totalWeight,
           });
         }
       });
     },
   };
 
-  console.log("inputPart....", inputPart);
-  console.log("inputPart....", inputPart.mtrlCode);
-  console.log("inputPart....", inputPart.locationNo);
+  // console.log("inputPart....", inputPart);
+  // console.log("inputPart.location", inputPart.locationNo);
   // console.log("inputPart....", inputPart.totalWeight);
 
   return (
@@ -748,8 +752,8 @@ function OpenButtonOpenSheetUnit() {
                         value={inputPart.mtrlCode}
                         name="mtrlCode"
                       >
-                        <option value="" disabled selected>
-                          Select Material
+                        <option value={inputPart.mtrlCode} disabled selected>
+                          {inputPart.mtrlCode}
                         </option>
                       </select>
                     </div>
@@ -823,6 +827,8 @@ function OpenButtonOpenSheetUnit() {
                             className="form-check-input mt-2"
                             type="checkbox"
                             checked={inputPart.inspected == 1 ? true : false}
+                            value={inputPart.inspected}
+                            // checked={insCheck}
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
@@ -874,7 +880,9 @@ function OpenButtonOpenSheetUnit() {
                     </div>
                     <div className="row">
                       <div className="col-md-6">
-                        <label className="form-label">Weight</label>
+                        <label className="form-label">
+                          Weight{inputPart.totalWeight}
+                        </label>
                         <input
                           className="in-field"
                           disabled={boolVal}
@@ -888,9 +896,11 @@ function OpenButtonOpenSheetUnit() {
                         <select
                           className="ip-select dropdown-field"
                           disabled={boolVal}
-                          value={inputPart.locationNo}
-                          name="locationNo"
-                        ></select>
+                        >
+                          <option value={inputPart.locationNo}>
+                            {inputPart.locationNo}
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
