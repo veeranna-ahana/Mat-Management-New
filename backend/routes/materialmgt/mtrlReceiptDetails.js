@@ -44,7 +44,7 @@ mtrlReceiptDetailsRouter.get(
 mtrlReceiptDetailsRouter.post(
   "/insertMtrlReceiptDetails",
   async (req, res, next) => {
-    console.log("req", req.body);
+    //console.log("req", req.body);
 
     try {
       let {
@@ -90,7 +90,7 @@ mtrlReceiptDetailsRouter.post(
 mtrlReceiptDetailsRouter.post(
   "/updateMtrlReceiptDetails",
   async (req, res, next) => {
-    console.log("result", req.body);
+    //console.log("result", req.body);
     // try {
     //   let {
     //     id,
@@ -109,12 +109,9 @@ mtrlReceiptDetailsRouter.post(
     //     qtyAccepted,
     //     qtyReceived,
     //   } = req.body;
-
     //   inspected = inspected == "on" ? "1" : "0";
-
     //   misQueryMod(
     //     `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID},DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2}, DynamicPara3 = ${dynamicPara3}, Qty = ${qty},Inspected = ${inspected}, LocationNo = "${locationNo}",Updated = ${updated}, QtyAccepted = ${qtyAccepted},QtyReceived = "${qtyReceived}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
-
     //     (err, data) => {
     //       if (err) logger.error(err);
     //       res.json(data);
@@ -129,7 +126,7 @@ mtrlReceiptDetailsRouter.post(
 mtrlReceiptDetailsRouter.post(
   "/updateMtrlReceiptDetailsUpdated",
   async (req, res, next) => {
-    console.log("requpdate2", req.body);
+    //console.log("requpdate2", req.body);
     try {
       let { id, upDated } = req.body;
       misQueryMod(

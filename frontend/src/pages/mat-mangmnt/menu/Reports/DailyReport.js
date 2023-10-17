@@ -3,6 +3,7 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
+import cellEditFactory from "react-bootstrap-table2-editor";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -136,22 +137,27 @@ function DailyReport() {
     {
       text: "Type",
       dataField: "DC_InvType",
+      editable: false,
     },
     {
       text: "Inv_No",
       dataField: "Inv_No",
+      editable: false,
     },
     {
       text: "Customer",
       dataField: "Cust_Name",
+      editable: false,
     },
     {
       text: "Mtrl",
       dataField: "Mtrl",
+      editable: false,
     },
     {
       text: "Material",
       dataField: "Material",
+      editable: false,
     },
     {
       text: "SrlWt",
@@ -266,6 +272,12 @@ function DailyReport() {
       },
     });
   };
+
+  function afterSaveCell(oldValue, newValue, row) {
+    console.log("Oldvalue = ", oldValue);
+    console.log("New value = ", newValue);
+    console.log("Row = ", row);
+  }
   return (
     <div>
       {" "}
@@ -334,6 +346,11 @@ function DailyReport() {
                   condensed
                   //selectRow={selectRow1}
                   headerClasses="header-class tableHeaderBGColor"
+                  cellEdit={cellEditFactory({
+                    mode: "click",
+                    blurToSave: true,
+                    afterSaveCell,
+                  })}
                 ></BootstrapTable>
               </div>
             </Tab>

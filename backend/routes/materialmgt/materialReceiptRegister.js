@@ -59,7 +59,7 @@ materialReceiptRegisterRouter.get(
 materialReceiptRegisterRouter.post(
   "/insertHeaderMaterialReceiptRegister",
   async (req, res, next) => {
-    console.log(req.body);
+    //console.log(req.body);
     try {
       let {
         receiptDate,
@@ -73,7 +73,7 @@ materialReceiptRegisterRouter.post(
         calcWeight,
         type,
       } = req.body;
-      console.log("req.body", req.body);
+      //console.log("req.body", req.body);
       //convert date dd/mm/yyyy to yyyy-mm-dd
       //receiptDate = receiptDate.split("/").reverse().join("-");
       receiptDate = formatDate(new Date(), 5);
