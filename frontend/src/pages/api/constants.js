@@ -212,6 +212,7 @@ export const endpoints = {
   getDailyReportMaterialReceipt1: `${API}/report/getDailyReportMaterialReceipt1`,
   getDailyReportMaterialReceipt2: `${API}/report/getDailyReportMaterialReceipt2`,
   getDailyReportMaterialDispatch: `${API}/report/getDailyReportMaterialDispatch`,
+  updateSrlWghtMaterialDispatch: `${API}/report/updateSrlWghtMaterialDispatch`,
   getDailyReportMaterialSales: `${API}/report/getDailyReportMaterialSales`,
   getDailyReportMaterialPurchase: `${API}/report/getDailyReportMaterialPurchase`,
 
