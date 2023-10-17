@@ -520,6 +520,9 @@ function PendingList(props) {
         secondTableRow={selectedSecondTableRows}
         setSelectedSecondTableRows={setSelectedSecondTableRows}
         onClose={(isOpen) => setIsModalOpen(isOpen)}
+        tableRefresh={tableRefresh}
+        setIsModalOpen={setIsModalOpen}
+        type="return"
       />
 
       <ResizeModal
@@ -557,8 +560,7 @@ function PendingList(props) {
             onClick={() => {
               if (selectedSecondTableRows.length === 0) {
                 toast.error("Select Material to return to Stock");
-              }
-              else {
+              } else {
                 nav(
                   "/MaterialManagement/ShopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
                   {
