@@ -326,10 +326,10 @@ function UnitsMatAllotmentForm() {
     console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
     uncheckSelectedRows();
     //setSecondTableRow(secondTable)
-    setFormHeader({
-      ...formHeader,
-      QtyAllotted: secondTableRow.length,
-    });
+    // setFormHeader({
+    //   ...formHeader,
+    //   QtyAllotted: secondTableRow.length,
+    // });
 
     //second table
     //setSecondTable(secondTableRow);
@@ -370,6 +370,12 @@ function UnitsMatAllotmentForm() {
       });
     });
     setFirstTableRow(firstTableRowObj);
+
+    setFormHeader({
+      ...formHeader,
+      QtyAllotted: secondTableRowObj.length,
+    });
+
     //await delay(500);
     console.log("After second table row = ", secondTableRow);
     console.log(
@@ -535,20 +541,20 @@ function UnitsMatAllotmentForm() {
                     series = series + "0";
                   }
                   series = series + "" + newNo;
-                  console.log("Issue Voucner number is created : " + series);
+                  console.log("Issue Voucher number is created : " + series);
                   localStorage.setItem(
                     "issuevoucer",
-                    "Issue Voucner number is created : " + series
+                    "Issue Voucher number is created : " + series
                   );
                   localStorage.issuevoucer =
-                    "Issue Voucner number is created : " + series;
+                    "Issue Voucher number is created : " + series;
                   //await delay(500);
-                  //setmessageok("Issue Voucner number is created : " + series);
+                  //setmessageok("Issue Voucher number is created : " + series);
                   //setmessageok(localStorage.getItem("issuevoucer"));
-                  //messageok = "Issue Voucner number is created : " + series;
-                  //setmessageok("Issue Voucner number is created : " + series);
+                  //messageok = "Issue Voucher number is created : " + series;
+                  //setmessageok("Issue Voucher number is created : " + series);
                   //await delay(500);
-                  //setmessageok("Issue Voucner number is created : " + series);
+                  //setmessageok("Issue Voucher number is created : " + series);
 
                   setShowok(true);
                 }
