@@ -55,13 +55,20 @@ function LocationStockReport() {
   const changeCustomer = (e) => {
     //const { name, value } = e.target;
     setCustCode(e[0]?.Cust_Code);
+
+    document.getElementById("showStockAll").checked = true;
+    document.getElementById("showStockCustomer").checked = false;
+
+    setSecondTable(secondTableAll);
+    setThirdTable([]);
   };
   const radioButtonChanged = async (e) => {
     const { name, value } = e.target;
     console.log("name = ", name, " value = ", value);
     if (value === "all") {
       setSecondTable(secondTableAll);
-      setCustCode("-1");
+      // setCustCode("-1");
+      setThirdTable([]);
     }
     if (value === "customer") {
       if (custCode !== "-1") {
@@ -70,6 +77,7 @@ function LocationStockReport() {
         );
         setSecondTable(newArray);
       }
+      setThirdTable([]);
     }
   };
 
@@ -263,6 +271,7 @@ function LocationStockReport() {
         }
         console.log("second table = ", data);
       });
+      setThirdTable([]);
     },
   };
 
@@ -292,6 +301,7 @@ function LocationStockReport() {
         for (let i = 0; i < data.length; i++) {
           data[i].id = i + 1;
         }
+        setThirdTable([]);
         setThirdTable(data);
         console.log("third table = ", data);
       });
@@ -388,7 +398,7 @@ function LocationStockReport() {
                   <input
                     className="form-check-input mt-2"
                     type="radio"
-                    id="flexCheckDefault"
+                    id="showStockAll"
                     name="updated"
                     value="all"
                     //   value={inputPart.upDated}
@@ -408,7 +418,7 @@ function LocationStockReport() {
                   <input
                     className="form-check-input mt-2"
                     type="radio"
-                    id="flexCheckDefault"
+                    id="showStockCustomer"
                     name="updated"
                     onChange={radioButtonChanged}
                     value="customer"
