@@ -1055,7 +1055,7 @@ function PofilesMaterials(props) {
             hover
             condensed
             selectRow={selectRowFirst}
-            headerClasses="header-class "
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable> */}
             </div>
           </div>
@@ -1076,7 +1076,7 @@ function PofilesMaterials(props) {
               hover
               condensed
               selectRow={selectRowSecond}
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable> */}
             </div>
           </div>
@@ -1090,7 +1090,7 @@ function PofilesMaterials(props) {
               striped
               hover
               condensed
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable> */}
             </div>
           </div>
@@ -1144,7 +1144,7 @@ export default PofilesMaterials;
 //     hover
 //     condensed
 //     selectRow={selectRowFirst}
-//     headerClasses="header-class "
+//     headerClasses="header-class tableHeaderBGColor"
 //   ></BootstrapTable> */}
 // </div>
 // </div>
@@ -1164,7 +1164,7 @@ export default PofilesMaterials;
 //       hover
 //       condensed
 //       selectRow={selectRowSecond}
-//       headerClasses="header-class "
+//       headerClasses="header-class tableHeaderBGColor"
 //     ></BootstrapTable> */}
 //   </div>
 // </div>
@@ -1178,7 +1178,7 @@ export default PofilesMaterials;
 //       striped
 //       hover
 //       condensed
-//       headerClasses="header-class "
+//       headerClasses="header-class tableHeaderBGColor"
 //     ></BootstrapTable> */}
 //   </div>
 // </div>

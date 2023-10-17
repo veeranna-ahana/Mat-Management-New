@@ -95,12 +95,27 @@ function LocationModel({ show, setShow, scrapModal }) {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          {/* <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
           <Button variant="primary" onClick={handleOpen}>
             Save
-          </Button>
+          </Button> */}
+
+          <button
+            className="button-style"
+            style={{ width: "80px", backgroundColor: "gray" }}
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="button-style"
+            style={{ width: "80px" }}
+            onClick={handleOpen}
+          >
+            Save
+          </button>
         </Modal.Footer>
       </Modal>
     </>

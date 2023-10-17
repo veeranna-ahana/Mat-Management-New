@@ -355,9 +355,15 @@ function SheetResizeForm() {
             hover
             condensed
             selectRow={selectRow}
+<<<<<<< HEAD
+            headerClasses="header-class tableHeaderBGColor"
+          ></BootstrapTable>
+          {/* <Table bordered>
+=======
             headerClasses="header-class"
           ></BootstrapTable> */}
             {/* <Table bordered>
+>>>>>>> fde7a6a1fded53021821a2cfcbdd3aa14bfbe56c
             <thead
               style={{
                 textAlign: "center",

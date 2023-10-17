@@ -2,6 +2,7 @@ const mtrlReceiptDetailsRouter = require("express").Router();
 const { misQueryMod } = require("../../helpers/dbconn");
 const req = require("express/lib/request");
 const { logger } = require("../../helpers/logger");
+const { log } = require("winston");
 
 mtrlReceiptDetailsRouter.get(
   "/getMtrlReceiptDetailsByID",
@@ -78,9 +79,154 @@ mtrlReceiptDetailsRouter.post(
         `insert into  mtrlreceiptdetails (RvID,Srl,Cust_Code,Mtrl_Code,Material,ShapeMtrlID,ShapeID,DynamicPara1,DynamicPara2,DynamicPara3,Qty,Inspected,Accepted,TotalWeightCalculated,TotalWeight,LocationNo,Updated,QtyReceived,QtyRejected,QtyAccepted,QtyUsed,QtyReturned) values ("${rvId}","${srl}","${custCode}","${mtrlCode}","${material}",${shapeMtrlId},${shapeID},${dynamicPara1},${dynamicPara2},${dynamicPara3},${qty},${inspected},${accepted},${totalWeightCalculated},${totalWeight},"${locationNo}",${updated},${qtyReceived},"${qtyRejected}","${qtyAccepted}","${qtyUsed}","${qtyReturned}")`,
         (err, data) => {
           if (err) logger.error(err);
-          res.json(data);
+          res.send(data);
         }
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// mtrlReceiptDetailsRouter.post(
+//   "/updateMtrlReceiptDetailsAfter",
+//   async (req, res, next) => {
+//     console.log("requpdateafter", req.body);
+//     try {
+//       let {
+//         accepted,
+//         dynamicPara1,
+//         dynamicPara2,
+//         dynamicPara3,
+//         id,
+//         inspected,
+//         locationNo,
+//         mtrlCode,
+//         qty,
+//         qtyAccepted,
+//         qtyReceived,
+//         qtyRejected,
+//         srl,
+//         totalWeightCalculated,
+//         updated,
+//       } = req.body;
+//       // inspected = inspected == "on" ? "1" : "0";
+
+//       misQueryMod(
+//         `update mtrlreceiptdetails set  Srl = '${srl}',Mtrl_Code = '${mtrlCode}',DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},LocationNo = '${locationNo}',Updated = ${updated}, QtyAccepted = ${qtyAccepted},QtyReceived = '${qtyReceived}',QtyRejected = '${qtyRejected}', where Mtrl_Rv_id = ${id}`,
+//         (err, data) => {
+//           if (err) logger.error(err);
+
+//           res.json(data);
+//         }
+//       );
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+mtrlReceiptDetailsRouter.post(
+  "/updateMtrlReceiptDetailsAfter",
+  async (req, res, next) => {
+    console.log("requpdateafter", req.body);
+    try {
+      let {
+        accepted,
+        dynamicPara1,
+        dynamicPara2,
+        dynamicPara3,
+        id,
+        inspected,
+        locationNo,
+        mtrlCode,
+        qty,
+        updated,
+        qtyAccepted,
+        qtyReceived,
+        qtyRejected,
+        srl,
+        totalWeightCalculated,
+      } = req.body;
+      inspected = inspected == true ? "1" : "0";
+
+      if (dynamicPara3 || updated === "") {
+        console.log(`UPDATE mtrlreceiptdetails SET 
+        Srl = '${srl}', 
+        Mtrl_Code = '${mtrlCode}', 
+        DynamicPara1 = ${dynamicPara1}, 
+        DynamicPara2 = ${dynamicPara2},        
+        Qty = ${qtyReceived}, 
+        Inspected = ${inspected}, 
+        Accepted = ${accepted}, 
+        TotalWeightCalculated = ${totalWeightCalculated}, 
+        LocationNo = '${locationNo}',        
+        QtyAccepted = ${qtyAccepted}, 
+        QtyReceived = '${qtyReceived}', 
+        QtyRejected = '${qtyRejected}' 
+        WHERE Mtrl_Rv_id = ${id}`);
+        misQueryMod(
+          `UPDATE mtrlreceiptdetails SET 
+          Srl = '${srl}', 
+          Mtrl_Code = '${mtrlCode}', 
+          DynamicPara1 = ${dynamicPara1}, 
+          DynamicPara2 = ${dynamicPara2}, 
+          Qty = ${qtyReceived}, 
+          Inspected = ${inspected}, 
+          Accepted = ${accepted}, 
+          TotalWeightCalculated = ${totalWeightCalculated}, 
+          LocationNo = '${locationNo}',          
+          QtyAccepted = ${qtyAccepted}, 
+          QtyReceived = '${qtyReceived}', 
+          QtyRejected = '${qtyRejected}' 
+          WHERE Mtrl_Rv_id = ${id}`,
+          (err, data) => {
+            if (err) logger.error(err);
+            // console.log("updated data", data);
+            res.json(data);
+          }
+        );
+      } else {
+        console.log(`UPDATE mtrlreceiptdetails SET 
+      Srl = '${srl}', 
+      Mtrl_Code = '${mtrlCode}', 
+      DynamicPara1 = ${dynamicPara1}, 
+      DynamicPara2 = ${dynamicPara2}, 
+      DynamicPara3 = ${dynamicPara3}, 
+      Qty = ${qtyReceived}, 
+      Inspected = ${inspected}, 
+      Accepted = ${accepted}, 
+      TotalWeightCalculated = ${totalWeightCalculated}, 
+      LocationNo = '${locationNo}',
+      Updated = ${updated},  
+      QtyAccepted = ${qtyAccepted}, 
+      QtyReceived = '${qtyReceived}', 
+      QtyRejected = '${qtyRejected}' 
+      WHERE Mtrl_Rv_id = ${id}`);
+        misQueryMod(
+          `UPDATE mtrlreceiptdetails SET 
+          Srl = '${srl}', 
+          Mtrl_Code = '${mtrlCode}', 
+          DynamicPara1 = ${dynamicPara1}, 
+          DynamicPara2 = ${dynamicPara2}, 
+          DynamicPara3 = ${dynamicPara3}, 
+          Qty = ${qtyReceived}, 
+          Inspected = ${inspected}, 
+          Accepted = ${accepted}, 
+          TotalWeightCalculated = ${totalWeightCalculated}, 
+          LocationNo = '${locationNo}',
+          Updated = ${updated},  
+          QtyAccepted = ${qtyAccepted}, 
+          QtyReceived = '${qtyReceived}', 
+          QtyRejected = '${qtyRejected}' 
+          WHERE Mtrl_Rv_id = ${id}`,
+          (err, data) => {
+            if (err) logger.error(err);
+            // console.log("updated data", data);
+            res.json(data);
+          }
+        );
+      }
     } catch (error) {
       next(error);
     }
@@ -90,6 +236,7 @@ mtrlReceiptDetailsRouter.post(
 mtrlReceiptDetailsRouter.post(
   "/updateMtrlReceiptDetails",
   async (req, res, next) => {
+    console.log("requpdate1", req.body);
     try {
       let {
         id,
@@ -116,16 +263,13 @@ mtrlReceiptDetailsRouter.post(
         qtyUsed,
         qtyReturned,
       } = req.body;
-      console.log("reqbody", req.body);
       inspected = inspected == "on" ? "1" : "0";
-      /*console.log(
-        `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID},DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",Updated = ${upDated}, QtyAccepted = ${qtyAccepted},QtyReceived = "${qtyReceived}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`
-      );*/
-      console.log("updatereqbody", req.body);
+
       misQueryMod(
         `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID},DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",Updated = ${updated}, QtyAccepted = ${qtyAccepted},QtyReceived = "${qtyReceived}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+
           res.send(data);
         }
       );
@@ -138,6 +282,7 @@ mtrlReceiptDetailsRouter.post(
 mtrlReceiptDetailsRouter.post(
   "/updateMtrlReceiptDetailsUpdated",
   async (req, res, next) => {
+    console.log("requpdate2", req.body);
     try {
       let { id, upDated } = req.body;
       misQueryMod(

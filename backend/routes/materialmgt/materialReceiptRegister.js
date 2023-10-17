@@ -16,7 +16,7 @@ materialReceiptRegisterRouter.get(
       if (req.query.type3) {
         //purchase section
         misQueryMod(
-          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' and Cust_Code = 0 order by RV_Date DESC`,
+          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' and Cust_Code = 0 order by ReceiptDate DESC`,
           (err, data) => {
             if (err) logger.error(err);
             res.send(data);
@@ -24,7 +24,7 @@ materialReceiptRegisterRouter.get(
         );
       } else {
         misQueryMod(
-          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' order by RV_Date DESC`,
+          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' order by ReceiptDate DESC `,
           (err, data) => {
             if (err) logger.error(err);
             res.send(data);
@@ -42,7 +42,7 @@ materialReceiptRegisterRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
-      // console.log(`SELECT * FROM material_receipt_register where RvID = ${id}`);
+      console.log(`SELECT * FROM material_receipt_register where RvID = ${id}`);
       misQueryMod(
         `SELECT * FROM material_receipt_register where RvID = ${id} order by RvID`,
         (err, data) => {

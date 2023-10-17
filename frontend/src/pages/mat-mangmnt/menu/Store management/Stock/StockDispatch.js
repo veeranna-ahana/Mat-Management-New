@@ -37,12 +37,12 @@ function StockDispatch() {
     {
       text: "Invoice No",
       dataField: "Inv_No",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "PN No",
       dataField: "DC_No",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Customer",
@@ -51,7 +51,7 @@ function StockDispatch() {
     {
       text: "Inv Type",
       dataField: "DC_InvType",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Material",
@@ -60,7 +60,7 @@ function StockDispatch() {
     {
       text: "Total Weight",
       dataField: "DC_Srl_Wt",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
 
@@ -85,12 +85,12 @@ function StockDispatch() {
     {
       text: "Unit Weight",
       dataField: "Unit_Wt",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Srl Weight",
       dataField: "DC_Srl_Wt",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
 
@@ -103,12 +103,12 @@ function StockDispatch() {
     {
       text: "Inv Type",
       dataField: "DC_InvType",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Invoice No",
       dataField: "Inv_No",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Customer",
@@ -117,7 +117,7 @@ function StockDispatch() {
     {
       text: "Total Weight",
       dataField: "WeightOut",
-      headerStyle: { whiteSpace: 'nowrap' },
+      headerStyle: { whiteSpace: "nowrap" },
     },
   ];
   const loadData = () => {
@@ -255,7 +255,7 @@ function StockDispatch() {
                 hover
                 condensed
                 selectRow={selectRow1}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>{" "}
             </div>
           </div>
@@ -269,7 +269,7 @@ function StockDispatch() {
                 hover
                 condensed
                 //selectRow={selectRow1}
-                headerClasses="header-class"
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>{" "}
             </div>
           </div>
@@ -284,7 +284,7 @@ function StockDispatch() {
               hover
               condensed
               //selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

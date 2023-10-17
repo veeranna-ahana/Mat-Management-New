@@ -9,9 +9,9 @@ const { endpoints } = require("../../api/constants");
 
 function CreateYesNoModal(props) {
   const { show, setShow, formHeader, allotRVYesButton } = props;
-  const handleNo = () => setShow(false);
-  const nav = useNavigate();
 
+  const nav = useNavigate();
+  const handleNo = () => setShow(false);
   const handleYes = () => {
     formHeader.status = "Received";
 

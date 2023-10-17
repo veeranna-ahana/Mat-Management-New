@@ -17,9 +17,13 @@ export default function SecondModelAcceptReturn(props) {
         <Modal.Body>Issue voucher closed.</Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSecondModal}>
+          <button
+            className="button-style"
+            style={{ width: "50px", backgroundColor: "gray" }}
+            onClick={handleCloseSecondModal}
+          >
             Close
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>
