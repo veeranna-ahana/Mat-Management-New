@@ -326,10 +326,10 @@ function UnitsMatAllotmentForm() {
     console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
     uncheckSelectedRows();
     //setSecondTableRow(secondTable)
-    setFormHeader({
-      ...formHeader,
-      QtyAllotted: secondTableRow.length,
-    });
+    // setFormHeader({
+    //   ...formHeader,
+    //   QtyAllotted: secondTableRow.length,
+    // });
 
     //second table
     //setSecondTable(secondTableRow);
@@ -370,6 +370,12 @@ function UnitsMatAllotmentForm() {
       });
     });
     setFirstTableRow(firstTableRowObj);
+
+    setFormHeader({
+      ...formHeader,
+      QtyAllotted: secondTableRowObj.length,
+    });
+
     //await delay(500);
     console.log("After second table row = ", secondTableRow);
     console.log(
