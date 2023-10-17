@@ -4,6 +4,7 @@ import Table from "react-bootstrap/Table";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../../../../utils";
+import PrintIVListProfileCutting from "../../../../print/shopfloorissue/PrintIVListProfileCutting";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
@@ -15,6 +16,9 @@ function ShopMatIssueVocher() {
   const [combineSheets, setCombineSheets] = useState("");
   console.log("location id = ", location?.state?.issueIDVal);
   const [tableData, setTableData] = useState([]);
+
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+
   let [formHeader, setFormHeader] = useState({
     CustMtrl: "",
     Cust_name: "",
@@ -42,7 +46,7 @@ function ShopMatIssueVocher() {
     let url =
       endpoints.getShopMaterialIssueVoucher +
       "?id=" +
-      location.state.issueIDVal;
+      location?.state?.issueIDVal;
     getRequest(url, async (data) => {
       console.log("data = ", data);
       //get cust name
@@ -184,29 +188,31 @@ function ShopMatIssueVocher() {
     //   );
     // }
     if (noDetails === 1 && combineSheets.length > 0) {
-      nav(
-        "/MaterialManagement/ShopFloorIssue/IVListProfileCutting/PrintIVListProfileCutting",
-        {
-          state: {
-            formHeader: formHeader,
-            tableData: tableData,
-            noDetails: noDetails,
-            combineSheets: combineSheets,
-          },
-        }
-      );
+      // nav(
+      //   "/MaterialManagement/ShopFloorIssue/IVListProfileCutting/PrintIVListProfileCutting",
+      //   {
+      //     state: {
+      //       formHeader: formHeader,
+      //       tableData: tableData,
+      //       noDetails: noDetails,
+      //       combineSheets: combineSheets,
+      //     },
+      //   }
+      // );
+      setIsPrintModalOpen(true);
     } else {
-      nav(
-        "/MaterialManagement/ShopFloorIssue/IVListProfileCutting/PrintIVListProfileCutting",
-        {
-          state: {
-            formHeader: formHeader,
-            tableData: tableData,
-            noDetails: noDetails,
-            combineSheets: combineSheets,
-          },
-        }
-      );
+      // nav(
+      //   "/MaterialManagement/ShopFloorIssue/IVListProfileCutting/PrintIVListProfileCutting",
+      //   {
+      //     state: {
+      //       formHeader: formHeader,
+      //       tableData: tableData,
+      //       noDetails: noDetails,
+      //       combineSheets: combineSheets,
+      //     },
+      //   }
+      // );
+      setIsPrintModalOpen(true);
     }
   };
 
@@ -215,6 +221,14 @@ function ShopMatIssueVocher() {
   };
   return (
     <div>
+      <PrintIVListProfileCutting
+        isOpen={isPrintModalOpen}
+        formHeader={formHeader}
+        noDetails={noDetails}
+        tableData={tableData}
+        setIsPrintModalOpen={setIsPrintModalOpen}
+        combineSheets={combineSheets}
+      />
       <h4 className="title">Shop Material Issue Voucher</h4>
       <div className="row">
         <div className="col-md-4">

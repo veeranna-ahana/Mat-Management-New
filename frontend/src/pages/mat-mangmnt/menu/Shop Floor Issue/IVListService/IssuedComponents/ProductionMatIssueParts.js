@@ -8,6 +8,8 @@ import OkModal from "../../../../components/OkModal";
 import { toast } from "react-toastify";
 import ShopFloorAcceptReturnPartsYesNoModal from "../../../../components/ShopFloorAcceptReturnPartsYesNoModal";
 
+import PrintIVListServicePart from "../../../../print/shopfloorissue/PrintIVListServicePart";
+
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
 
@@ -21,6 +23,8 @@ function ProductionMatIssueParts() {
   const [show1, setShow1] = useState(false); //cancel
   const [show2, setShow2] = useState(false); //accept
   const [showYN, setShowYN] = useState(false);
+
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   const [modalMessage, setModalMessage] = useState(
     "By cancelling this Issue Voucher the material stock will revert to Receipt Voucher. Continue?"
@@ -178,7 +182,8 @@ function ProductionMatIssueParts() {
         }
       );
 
-      toast.success("Parts Cancelled Successfully");
+      // toast.success("Parts Cancelled Successfully");
+      toast.success("Issue Voucher Cancelled");
     }
     console.log("formHeader.Status after updates:", formHeader.Status);
   };
@@ -208,15 +213,16 @@ function ProductionMatIssueParts() {
     }
   };
   const printButton = () => {
-    nav(
-      "/MaterialManagement/ShopFloorIssue/IVListService/PrintIVListServicePart",
-      {
-        state: {
-          formHeader: formHeader,
-          tableData: tableData,
-        },
-      }
-    );
+    // nav(
+    //   "/MaterialManagement/ShopFloorIssue/IVListService/PrintIVListServicePart",
+    //   {
+    //     state: {
+    //       formHeader: formHeader,
+    //       tableData: tableData,
+    //     },
+    //   }
+    // );
+    setIsPrintModalOpen(true);
   };
   return (
     <div>
@@ -233,6 +239,14 @@ function ProductionMatIssueParts() {
         modalMessage={modalMessage}
         modalResponseok={modalResponseok}
       />
+
+      <PrintIVListServicePart
+        isOpen={isPrintModalOpen}
+        formHeader={formHeader}
+        tableData={tableData}
+        setIsPrintModalOpen={setIsPrintModalOpen}
+      />
+
       <h4 className="title">Production Material Issue :Parts</h4>
       <div className="table_top_style">
         <div className="row">

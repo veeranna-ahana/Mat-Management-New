@@ -18,7 +18,7 @@ function OkModal(props) {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title></Modal.Title>
+          <Modal.Title>Please Confirm</Modal.Title>
         </Modal.Header>
         <Modal.Body>{modalMessage}</Modal.Body>
         <Modal.Footer>

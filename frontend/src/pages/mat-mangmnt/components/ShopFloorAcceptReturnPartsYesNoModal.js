@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 import Button from "react-bootstrap/Button";
 
@@ -68,12 +69,13 @@ function ShopFloorAcceptReturnPartsYesNoModal(props) {
       (data) => {
         console.log("update4");
         setFormHeader({ ...formHeader, Status: "Closed" });
+        toast.success("Issue voucher closed");
       }
     );
 
     setShowYN(false);
 
-    openSecondModal(); // Open the second modal
+    // openSecondModal();
   };
 
   const handleNo = () => {
