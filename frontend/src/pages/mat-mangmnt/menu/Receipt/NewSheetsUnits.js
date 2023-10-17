@@ -1112,7 +1112,8 @@ function NewSheetsUnits(props) {
         });
       });
 
-      // console.log("mtrlArray", mtrlArray);
+      console.log("inspected", inspected);
+      console.log("updated", updated);
       // setInputPart({
       //   qtyAccepted: row.qtyAccepted,
       //   qtyRejected: row.qtyRejected,
@@ -1186,9 +1187,21 @@ function NewSheetsUnits(props) {
           toast.error("Stock Not Added");
         }
       });
-      //console.log("mtrlstock = ", mtrlStock);
+      console.log("mtrlstock = ", mtrlStock);
       //console.log("before materialArray = ", materialArray);
-
+      //update updated status = 1
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 1,
+      };
+      console.log("updateObj", updateObj);
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          console.log("updated", data.upDated);
+        }
+      );
       //update checkbox
       for (let i = 0; i < materialArray.length; i++) {
         if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
@@ -1197,9 +1210,10 @@ function NewSheetsUnits(props) {
       }
       await delay(500);
       setMaterialArray(materialArray);
-      //console.log("after materialArray = ", materialArray);
+      // console.log("after materialArray = ", materialArray);
     }
   };
+  // console.log("after materialArray = ", materialArray[i]?.updated);
 
   // const removeToStock
   const removeStock = () => {
@@ -1233,6 +1247,8 @@ function NewSheetsUnits(props) {
       });
     }
   };
+
+  console.log("mtrlarray11223344", mtrlArray);
 
   const handleYes = () => {
     if (inputPart.id.length === 0) {
@@ -1309,6 +1325,8 @@ function NewSheetsUnits(props) {
     deleteRVButtonState();
     setDeleteRvModalOpen(false);
   };
+
+  console.log("1234", inputPart.updated);
 
   return (
     <div>
@@ -1785,9 +1803,9 @@ function NewSheetsUnits(props) {
                             type="checkbox"
                             id="flexCheckDefault"
                             name="updated"
-                            value={inputPart.updated}
-                            //disabled={boolVal3 | boolVal4}
-                            disabled={true}
+                            // checked={mtrlArray[i].updated === 1 ? true : false}
+                            disabled={boolVal3 | boolVal4}
+                            // disabled={true}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}

@@ -215,7 +215,7 @@ function OpenButtonDraftSheetUnit(props) {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        // console.log("data2  = ", data2);
+        console.log("data2  = ", data2);
         data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -228,7 +228,7 @@ function OpenButtonDraftSheetUnit(props) {
           obj.dynamicPara1 = obj.DynamicPara1;
           obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
-          obj.qty = obj.Qty;
+          obj.qty = Math.floor(obj.Qty);
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
@@ -244,7 +244,7 @@ function OpenButtonDraftSheetUnit(props) {
         // console.log("data 2 = ", data2);
         setMaterialArray(data2);
         //find shape of material
-        //console.log("data2 = ", data2);
+        // console.log("data2 = ", data2);
         for (let i = 0; i < data2.length; i++) {
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
@@ -1380,7 +1380,18 @@ function OpenButtonDraftSheetUnit(props) {
       });
       //console.log("mtrlstock = ", mtrlStock);
       //console.log("before materialArray = ", materialArray);
-
+      //update updated status = 1
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 1,
+      };
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          console.log("updated = 1");
+        }
+      );
       //update checkbox
       for (let i = 0; i < materialArray.length; i++) {
         if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
@@ -1878,7 +1889,11 @@ function OpenButtonDraftSheetUnit(props) {
                         className="in-field"
                         name="qtyReceived"
                         // defaultValue={0}
-                        value={inputPart.qtyReceived}
+                        value={
+                          (inputPart.qtyReceived = Math.floor(
+                            inputPart.qtyReceived
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4}
                         // onChange={changeMaterialHandle}
 
@@ -1923,7 +1938,11 @@ function OpenButtonDraftSheetUnit(props) {
                         className="in-field"
                         name="qtyAccepted"
                         // defaultValue={0}
-                        value={inputPart.qtyAccepted}
+                        value={
+                          (inputPart.qtyAccepted = Math.floor(
+                            inputPart.qtyAccepted
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4 | !boolVal5}
                         // onChange={changeMaterialHandle}
 

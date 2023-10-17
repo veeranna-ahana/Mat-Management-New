@@ -138,6 +138,23 @@ function OpenButtonOpenClosedPartList() {
     },
   ];
 
+  const selectRow = {
+    mode: "radio",
+    clickToSelect: true,
+    bgColor: "#8A92F0",
+    onSelect: (row, isSelect, rowIndex, e) => {
+      setPartUniqueId(row.id);
+      setInputPart({
+        id: row.id,
+        partId: row.partId,
+        unitWeight: row.unitWeight,
+        qtyAccepted: row.qtyAccepted,
+        qtyRejected: row.qtyRejected,
+        qtyReceived: row.qtyReceived,
+      });
+    },
+  };
+
   return (
     <div>
       <div>

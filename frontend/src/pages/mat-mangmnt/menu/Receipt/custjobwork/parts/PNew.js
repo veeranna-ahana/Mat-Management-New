@@ -46,7 +46,7 @@ function PNew() {
     unitWeight: "",
     qtyReceived: 0,
     qtyAccepted: 0,
-    qtyRejected: "0",
+    qtyRejected: 0,
   });
 
   //const [custDetailVal, setCustDetailVal] = useState("");
@@ -151,6 +151,7 @@ function PNew() {
     {
       text: "Qty Rejected",
       dataField: "qtyRejected",
+      formatter: (celContent, row) => <div className="">{qtyRejected}</div>,
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
@@ -208,6 +209,19 @@ function PNew() {
 
   const changePartHandle = (e) => {
     const { value, name } = e.target;
+    console.log(name, value);
+
+    // Check if the entered value is positive before updating the state
+    // if (name === "unitWeight" && parseFloat(value) >= 0) {
+    //   setInputPart((prevInputPart) => ({
+    //     ...prevInputPart,
+    //     [name]: value,
+    //   }));
+    // }
+
+    if (name === "unitWeight" && parseFloat(value) < 0) {
+      toast.error("unitWeight should be a positive value");
+    }
     setInputPart((preValue) => {
       //console.log(preValue)
       return {
@@ -218,12 +232,13 @@ function PNew() {
     inputPart[name] = value;
     inputPart.custBomId = formHeader.customer;
     inputPart.rvId = formHeader.rvId;
-    inputPart.qtyRejected = 0;
+    inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
     inputPart.qtyUsed = 0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
     setInputPart(inputPart);
 
+    console.log("inputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
@@ -519,11 +534,16 @@ function PNew() {
         if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
           flag1 = 2;
         }
+        if (partArray[i].qtyAccepted === 0) {
+          flag1 = 3;
+        }
       }
       if (flag1 === 1) {
         toast.error("Please fill correct Part details");
       } else if (flag1 === 2) {
         toast.error("QtyAccepted should be less than or equal to QtyReceived");
+      } else if (flag1 === 3) {
+        toast.error("QtyAccepted should be greather than 0");
       } else {
         //show model form
         setShow(true);
@@ -775,7 +795,7 @@ function PNew() {
               <tr>
                 <th>#</th>
                 <th>Part Id</th>
-                <th>Unit Wt</th>
+                <th>Unit W </th>
                 <th>Qty Received</th>
                 <th>Qty Accepted</th>
                 <th>Qty Rejected</th>
@@ -889,6 +909,7 @@ function PNew() {
                 <input
                   className="in-field"
                   type="nember"
+                  value={inputPart.qtyReceived - inputPart.qtyAccepted}
                   name="qtyRejected"
                   readOnly
                 />

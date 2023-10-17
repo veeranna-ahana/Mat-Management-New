@@ -159,12 +159,17 @@ function PurchasePartsNew() {
     {
       text: "Qty Rejected",
       dataField: "qtyRejected",
+      formatter: (celContent, row) => <div className="">{qtyRejected}</div>,
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
 
   const changePartHandle = (e) => {
     const { value, name } = e.target;
+
+    if (name === "unitWeight" && parseFloat(value) < 0) {
+      toast.error("unitWeight should be a positive value");
+    }
     setInputPart((preValue) => {
       //console.log(preValue)
       return {
@@ -175,7 +180,8 @@ function PurchasePartsNew() {
     inputPart[name] = value;
     inputPart.custBomId = formHeader.customer;
     inputPart.rvId = formHeader.rvId;
-    inputPart.qtyRejected = 0;
+    // inputPart.qtyRejected = 0;
+    inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
     inputPart.qtyUsed = 0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
@@ -782,6 +788,7 @@ function PurchasePartsNew() {
                 <input
                   className="in-field"
                   type="text"
+                  value={inputPart.qtyReceived - inputPart.qtyAccepted}
                   name="qtyRejected"
                   readOnly
                 />

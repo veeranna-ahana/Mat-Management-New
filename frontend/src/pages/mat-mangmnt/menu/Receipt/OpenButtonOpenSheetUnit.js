@@ -133,6 +133,7 @@ function OpenButtonOpenSheetUnit() {
       getRequest(url1, (data2) => {
         console.log("table data  = ", data2);
         data2.forEach((obj) => {
+          console.log("obj.UpDated", obj.UpDated);
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
           obj.srl = obj.Srl;
@@ -144,7 +145,7 @@ function OpenButtonOpenSheetUnit() {
           obj.dynamicPara1 = obj.DynamicPara1;
           obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
-          obj.qty = obj.Qty;
+          obj.qty = Math.floor(obj.Qty);
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
@@ -356,7 +357,7 @@ function OpenButtonOpenSheetUnit() {
 
       for (let i = 0; i < mtrlArray.length; i++) {
         if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].upDated = 1;
+          mtrlArray[i].updated = 1;
           //console.log("Its Updated");
         }
       }
@@ -366,7 +367,7 @@ function OpenButtonOpenSheetUnit() {
       setMtrlArray([]);
       await delay(200);
       setMtrlArray(newArray);
-
+      console.log("mtrlArray", mtrlArray);
       //console.log("input part ", inputPart);
       //console.log("formheader ", formHeader);
       //console.log("mtrlstock ", mtrlArray);
@@ -412,16 +413,15 @@ function OpenButtonOpenSheetUnit() {
           console.log("updated = 0");
         }
       );
-      //console.log("prev mtrlArray = ", mtrlArray);
-      //console.log("prev mtrlStock = ", mtrlStock);
 
       for (let i = 0; i < mtrlArray.length; i++) {
         if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].upDated = 0;
+          mtrlArray[i].updated = 0;
           //console.log("Its Updated");
         }
       }
       await delay(500);
+      // console.log(newArray);
       let newArray = mtrlArray;
       console.log("mtrle new array = ", newArray);
       setMtrlArray([]);
@@ -467,6 +467,7 @@ function OpenButtonOpenSheetUnit() {
     {
       text: "Inspected",
       dataField: "inspected",
+
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
@@ -489,7 +490,7 @@ function OpenButtonOpenSheetUnit() {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" checked={row.upDated == 1 ? true : false} />
+            <input type="checkbox" checked={row.updated == 1 ? true : false} />
           </lable>
         </div>
       ),
@@ -505,7 +506,7 @@ function OpenButtonOpenSheetUnit() {
       console.log("row", row);
       // setSelectedRows(row);
       setInputPart(row);
-      if (row.upDated === 1) {
+      if (row.updated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
       } else {
@@ -539,9 +540,10 @@ function OpenButtonOpenSheetUnit() {
     },
   };
 
-  // console.log("inputPart....", inputPart);
+  console.log("inputPart....", inputPart);
   // console.log("inputPart.location", inputPart.locationNo);
   // console.log("inputPart....", inputPart.totalWeight);
+  // console.log("inputPart.upDated....", inputPart.upDated);
 
   return (
     <div>
@@ -814,7 +816,11 @@ function OpenButtonOpenSheetUnit() {
                         <input
                           className="in-field"
                           disabled={boolVal}
-                          value={inputPart.qtyReceived}
+                          value={
+                            (inputPart.qtyReceived = Math.floor(
+                              inputPart.qtyReceived
+                            ))
+                          }
                         />
                       </div>
 
@@ -842,7 +848,11 @@ function OpenButtonOpenSheetUnit() {
                         <input
                           className="in-field"
                           disabled={boolVal}
-                          value={inputPart.qtyAccepted}
+                          value={
+                            (inputPart.qtyAccepted = Math.floor(
+                              inputPart.qtyAccepted
+                            ))
+                          }
                         />
                       </div>
 
@@ -854,7 +864,7 @@ function OpenButtonOpenSheetUnit() {
                           <input
                             className="form-check-input mt-2"
                             type="checkbox"
-                            checked={inputPart.upDated == 1 ? true : false}
+                            checked={inputPart.upDated === 1 ? true : false}
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
@@ -880,9 +890,7 @@ function OpenButtonOpenSheetUnit() {
                     </div>
                     <div className="row">
                       <div className="col-md-6">
-                        <label className="form-label">
-                          Weight{inputPart.totalWeight}
-                        </label>
+                        <label className="form-label">Weight</label>
                         <input
                           className="in-field"
                           disabled={boolVal}
