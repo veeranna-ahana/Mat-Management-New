@@ -24,7 +24,6 @@ function MaterialAllotmentMain() {
   const [secondTable, setSecondTable] = useState([]);
   const [custBOMIdArray, setCustBOMIdArray] = useState([]);
   const [custBOMId, setCustBOMId] = useState([]);
-  // const [row2, setRow2] = useState({});
   const [row2, setRow2] = useState(
     secondTable.length > 0 ? secondTable[0] : {}
   );
@@ -39,12 +38,10 @@ function MaterialAllotmentMain() {
   const [sumOfIssueNow, setSumOfIssueNow] = useState(0);
 
   const fetchData = async () => {
-    //get formHeader data
     let url1 = endpoints.getRowByNCID + "?id=" + location.state.ncid;
     getRequest(url1, async (data) => {
-      // console.log("url1 data = ", data);
       setFormHeader(data);
-      //setAllData(data);
+
       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_Code;
       //console.log(url2);
       getRequest(url2, async (data1) => {
@@ -215,46 +212,6 @@ function MaterialAllotmentMain() {
     }
   };
 
-  // const columns1 = [
-  //   {
-  //     text: "Id",
-  //     dataField: "id",
-  //     hidden: true,
-  //   },
-  //   {
-  //     text: "Part Id",
-  //     dataField: "PartId",
-  //   },
-  //   {
-  //     text: "Qty / Assembly",
-  //     dataField: "QtyPerAssy",
-  //   },
-  //   {
-  //     text: "Required",
-  //     dataField: "QtyRequired",
-  //   },
-  //   {
-  //     text: "Already used",
-  //     dataField: "AlreadyUsed",
-  //   },
-  //   {
-  //     text: "Total used",
-  //     dataField: "TotalUsed",
-  //   },
-  //   {
-  //     text: "Rejected",
-  //     dataField: "QtyRejected",
-  //   },
-  //   {
-  //     text: "Available",
-  //     dataField: "QtyAvailable",
-  //   },
-  //   {
-  //     text: "Issue Now",
-  //     dataField: "issueNow",
-  //   },
-  // ];
-
   const releaseProduction = async () => {
     if (issuenowval.length === 0) {
       toast.warning("Please enter Issue Now Value");
@@ -285,12 +242,31 @@ function MaterialAllotmentMain() {
     const hasZeroQtyAvailable = firstTable.some(
       (item) => item.QtyAvailable === 0
     );
+
     if (hasZeroQtyAvailable) {
       // toast.error("QtyAvailable is 0 for some parts.");
       toast.error(`Set Required: ${issuenowval} Set Available: ${0}  `);
       return;
     }
 
+    for (const secondTableRow of secondTable) {
+      const firstTableEntry = firstTable.find(
+        (item) => item.CustBOM_Id === secondTableRow.CustBOM_Id
+      );
+
+      if (firstTableEntry) {
+        const acceptedMinusIssued =
+          secondTableRow.QtyAccepted - secondTableRow.QtyIssued;
+        const issueNowQuantity = parseInt(secondTableRow.issueNow);
+
+        if (issueNowQuantity > acceptedMinusIssued) {
+          toast.error(
+            `Parts Not Available RV No ${secondTableRow.RV_No} Part Issue Now: ${firstTableEntry.PartId} Available for Issue: ${acceptedMinusIssued} `
+          );
+          return;
+        }
+      }
+    }
     CreatePartsIssueVoucher();
   };
 
@@ -598,6 +574,8 @@ function MaterialAllotmentMain() {
     return firstTable.some((row) => row.QtyAvailable === 0);
   };
 
+  console.log("secondTable", secondTable);
+
   return (
     <div>
       <div>
@@ -777,27 +755,10 @@ function MaterialAllotmentMain() {
 
         <div className="col-md-7">
           <div style={{ height: "300px", overflowY: "scroll" }}>
-            {/* <BootstrapTable
-              keyField="Id"
-              columns={columns2}
-              data={secondTable}
-              striped
-              hover
-              condensed
-              rowStyle={rowStyle2}
-              //pagination={paginationFactory()}
-              selectRow={selectRow2}
-               headerClasses="header-class tableHeaderBGColor"
-              cellEdit={cellEditFactory({
-                mode: 'click',
-                blurToSave: true,
-              })}
-            ></BootstrapTable> */}
-
             <Table className="table custom-table" striped bordered hover>
               <thead className="header-class">
                 <tr>
-                  <th>ID</th>
+                  {/* <th>ID</th> */}
                   <th>RV No</th>
                   <th>RV Date</th>
                   <th>Received</th>
@@ -814,10 +775,9 @@ function MaterialAllotmentMain() {
                     style={rowStyle2(row)}
                     onClick={() => {
                       selectRow2.onSelect(row, true);
-                      // setRow2(row)
                     }}
                   >
-                    <td
+                    {/* <td
                       onClick={() => {
                         setSelectedCell({ rowId: row.Id, colId: "Id" });
                         setRow2(row);
@@ -826,10 +786,9 @@ function MaterialAllotmentMain() {
                       className={
                         isSelectedCell(row.Id, "Id") ? "selected-row" : ""
                       }
-                      // className={row.Id === row2.Id ? "selected-row" : ""}
                     >
                       {row.Id}
-                    </td>
+                    </td> */}
 
                     <td
                       onClick={() => {
