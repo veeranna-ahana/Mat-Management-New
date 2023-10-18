@@ -70,30 +70,35 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   para1: {
     width: "10%",
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   para2: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   used: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   reject: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
 
   mtrlVal: {
@@ -201,7 +206,22 @@ const PrintIVListProfileCuttingTable2 = ({
         <Text style={styles.line1}>
           _________________________________________________________________________________
         </Text>
-        <Text style={styles.combine}>{combineSheets}</Text>
+
+        <Text style={styles.mtrlID}>Mtrl ID </Text>
+        <Text style={styles.para1}>Width </Text>
+        <Text style={styles.para2}>Length </Text>
+        <Text style={styles.used}>Used </Text>
+        <Text style={styles.reject}>Reject </Text>
+
+        {tableData.map((item, index) => {
+          return (
+            <>
+              <Text style={styles.combine}>{combineSheets}</Text>
+            </>
+          );
+        })}
+
+        {/* <Text style={styles.combine}>{combineSheets}</Text> */}
         <Text style={styles.line1}>
           _________________________________________________________________________________
         </Text>

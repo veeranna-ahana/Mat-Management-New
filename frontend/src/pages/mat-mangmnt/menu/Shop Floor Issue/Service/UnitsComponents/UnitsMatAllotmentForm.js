@@ -241,6 +241,48 @@ function UnitsMatAllotmentForm() {
   //   },
   // };
 
+  // const selectRow2 = {
+  //   mode: "checkbox",
+  //   clickToSelect: true,
+  //   bgColor: "#98A8F8",
+  //   selected: secondTableSelectIndex,
+  //   onSelect: (row, isSelect, rowIndex, e) => {
+  //     if (isSelect) {
+  //       setSecondTableSelectIndex([...secondTableSelectIndex, row.MtrlStockID]);
+  //       const updatedSecondTableRow = secondTableRow.filter(
+  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
+  //       );
+  //       //setSecondTableRow(updatedSecondTableRow);
+  //       // Row is selected, add it to the selectedRowsInSecondTable
+  //       setSelectedRowsInSecondTable((prevSelectedRows) => {
+  //         // Check if the row is already in the selected list
+  //         if (
+  //           !prevSelectedRows.some(
+  //             (selectedRow) => selectedRow.MtrlStockID === row.MtrlStockID
+  //           )
+  //         ) {
+  //           return [...prevSelectedRows, row];
+  //         }
+  //         return prevSelectedRows; // Row is already selected, so no change
+  //       });
+  //     } else {
+  //       const updatedSecondTableRow = secondTableRow.filter(
+  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
+  //       );
+  //       //setSecondTableRow(updatedSecondTableRow);
+  //       // Row is deselected, remove it from selectedRowsInSecondTable
+  //       setSelectedRowsInSecondTable((prevSelectedRows) => {
+  //         return prevSelectedRows.filter(
+  //           (selectedRow) => selectedRow.MtrlStockID !== row.MtrlStockID
+  //         );
+  //       });
+  //       setSecondTableSelectIndex(
+  //         secondTableSelectIndex.filter((item) => item != row.MtrlStockID)
+  //       );
+  //     }
+  //   },
+  // };
+
   const selectRow2 = {
     mode: "checkbox",
     clickToSelect: true,
@@ -248,40 +290,43 @@ function UnitsMatAllotmentForm() {
     selected: secondTableSelectIndex,
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
+        // When a row is selected
         setSecondTableSelectIndex([...secondTableSelectIndex, row.MtrlStockID]);
-        const updatedSecondTableRow = secondTableRow.filter(
-          (obj) => obj.MtrlStockID !== row.MtrlStockID
-        );
-        //setSecondTableRow(updatedSecondTableRow);
-        // Row is selected, add it to the selectedRowsInSecondTable
-        setSelectedRowsInSecondTable((prevSelectedRows) => {
-          // Check if the row is already in the selected list
-          if (
-            !prevSelectedRows.some(
-              (selectedRow) => selectedRow.MtrlStockID === row.MtrlStockID
-            )
-          ) {
-            return [...prevSelectedRows, row];
-          }
-          return prevSelectedRows; // Row is already selected, so no change
-        });
+        // Add the selected row to selectedRowsInSecondTable
+        setSelectedRowsInSecondTable((prevSelectedRows) => [
+          ...prevSelectedRows,
+          row,
+        ]);
       } else {
-        const updatedSecondTableRow = secondTableRow.filter(
-          (obj) => obj.MtrlStockID !== row.MtrlStockID
+        // When a row is deselected
+        const updatedSecondTableSelectIndex = secondTableSelectIndex.filter(
+          (item) => item !== row.MtrlStockID
         );
-        //setSecondTableRow(updatedSecondTableRow);
-        // Row is deselected, remove it from selectedRowsInSecondTable
-        setSelectedRowsInSecondTable((prevSelectedRows) => {
-          return prevSelectedRows.filter(
+        setSecondTableSelectIndex(updatedSecondTableSelectIndex);
+
+        // Remove the deselected row from selectedRowsInSecondTable
+        setSelectedRowsInSecondTable((prevSelectedRows) =>
+          prevSelectedRows.filter(
             (selectedRow) => selectedRow.MtrlStockID !== row.MtrlStockID
-          );
-        });
-        setSecondTableSelectIndex(
-          secondTableSelectIndex.filter((item) => item != row.MtrlStockID)
+          )
         );
       }
     },
+    onSelectAll: (isSelect, rows) => {
+      if (isSelect) {
+        // When "Select All" is checked
+        const selectedRowIds = rows.map((row) => row.MtrlStockID);
+        setSecondTableSelectIndex(selectedRowIds);
+        setSelectedRowsInSecondTable([...rows]);
+      } else {
+        // When "Select All" is unchecked
+        setSecondTableSelectIndex([]);
+        setSelectedRowsInSecondTable([]);
+      }
+    },
   };
+
+  console.log("QtyAllotted", formHeader.QtyAllotted);
 
   const allotMaterial = async () => {
     setFormHeader({
@@ -321,30 +366,91 @@ function UnitsMatAllotmentForm() {
     setFirstTable(updatedFirstTable);
   };
 
+  // const CancelAllotMaterial = async () => {
+  //   console.log("second table row = ", secondTableRow);
+  //   console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
+  //   uncheckSelectedRows();
+  //   //setSecondTableRow(secondTable)
+  //   // setFormHeader({
+  //   //   ...formHeader,
+  //   //   QtyAllotted: secondTableRow.length,
+  //   // });
+
+  //   //second table
+  //   //setSecondTable(secondTableRow);
+  //   let secondTableRowObj = [];
+  //   secondTableRow.forEach((obj1) => {
+  //     let flag = 0;
+  //     selectedRowsInSecondTable.forEach((obj2) => {
+  //       if (obj1.MtrlStockID === obj2.MtrlStockID) {
+  //         flag = 1;
+  //       }
+  //     });
+  //     if (flag == 0) {
+  //       secondTableRowObj.push(obj1);
+  //     }
+  //   });
+  //   console.log("secondTableRowObj = ", secondTableRowObj);
+
+  //   setSecondTable(secondTableRowObj);
+  //   setSecondTableRow(secondTableRowObj);
+  //   setSelectedRowsInSecondTable([]);
+  //   setSecondTableSelectIndex([]);
+  //   await delay(200);
+
+  //   //deselect first table checkbox
+  //   const secondTableMtrlId = [];
+  //   secondTableRowObj.map((obj) => {
+  //     secondTableMtrlId.push(obj.MtrlStockID);
+  //   });
+  //   setFirstTableSelectIndex(secondTableMtrlId);
+
+  //   //update firsttable row
+  //   let firstTableRowObj = [];
+  //   firstTable.forEach((obj1) => {
+  //     secondTableRowObj.forEach((obj2) => {
+  //       if (obj1.MtrlStockID === obj2.MtrlStockID) {
+  //         firstTableRowObj.push(obj1);
+  //       }
+  //     });
+  //   });
+  //   setFirstTableRow(firstTableRowObj);
+
+  //   setFormHeader({
+  //     ...formHeader,
+  //     QtyAllotted: secondTableRowObj.length,
+  //   });
+
+  //   //await delay(500);
+  //   console.log("After second table row = ", secondTableRow);
+  //   console.log(
+  //     "After selectedRowsInSecondTable = ",
+  //     selectedRowsInSecondTable
+  //   );
+  // };
+
   const CancelAllotMaterial = async () => {
     console.log("second table row = ", secondTableRow);
     console.log("selectedRowsInSecondTable = ", selectedRowsInSecondTable);
     uncheckSelectedRows();
-    //setSecondTableRow(secondTable)
-    // setFormHeader({
-    //   ...formHeader,
-    //   QtyAllotted: secondTableRow.length,
-    // });
 
-    //second table
-    //setSecondTable(secondTableRow);
-    let secondTableRowObj = [];
-    secondTableRow.forEach((obj1) => {
-      let flag = 0;
-      selectedRowsInSecondTable.forEach((obj2) => {
-        if (obj1.MtrlStockID === obj2.MtrlStockID) {
-          flag = 1;
-        }
-      });
-      if (flag == 0) {
-        secondTableRowObj.push(obj1);
-      }
+    // Calculate the new "Allotted" value by subtracting the count of selected rows in the second table
+    const newAllottedValue =
+      formHeader.QtyAllotted - selectedRowsInSecondTable.length;
+
+    // Update the "Allotted" field in the formHeader
+    setFormHeader({
+      ...formHeader,
+      QtyAllotted: newAllottedValue,
     });
+
+    // Update the second table by filtering out the selected rows
+    let secondTableRowObj = secondTableRow.filter((obj1) => {
+      return !selectedRowsInSecondTable.some(
+        (obj2) => obj1.MtrlStockID === obj2.MtrlStockID
+      );
+    });
+
     console.log("secondTableRowObj = ", secondTableRowObj);
 
     setSecondTable(secondTableRowObj);
@@ -353,14 +459,14 @@ function UnitsMatAllotmentForm() {
     setSecondTableSelectIndex([]);
     await delay(200);
 
-    //deselect first table checkbox
+    // Deselect the checkboxes in the first table
     const secondTableMtrlId = [];
-    secondTableRowObj.map((obj) => {
+    secondTableRowObj.forEach((obj) => {
       secondTableMtrlId.push(obj.MtrlStockID);
     });
     setFirstTableSelectIndex(secondTableMtrlId);
 
-    //update firsttable row
+    // Update the first table row
     let firstTableRowObj = [];
     firstTable.forEach((obj1) => {
       secondTableRowObj.forEach((obj2) => {
@@ -371,12 +477,6 @@ function UnitsMatAllotmentForm() {
     });
     setFirstTableRow(firstTableRowObj);
 
-    setFormHeader({
-      ...formHeader,
-      QtyAllotted: secondTableRowObj.length,
-    });
-
-    //await delay(500);
     console.log("After second table row = ", secondTableRow);
     console.log(
       "After selectedRowsInSecondTable = ",
@@ -541,20 +641,20 @@ function UnitsMatAllotmentForm() {
                     series = series + "0";
                   }
                   series = series + "" + newNo;
-                  console.log("Issue Voucher number is created : " + series);
+                  console.log("Issue Voucner number is created : " + series);
                   localStorage.setItem(
                     "issuevoucer",
-                    "Issue Voucher number is created : " + series
+                    "Issue Voucner number is created : " + series
                   );
                   localStorage.issuevoucer =
-                    "Issue Voucher number is created : " + series;
+                    "Issue Voucner number is created : " + series;
                   //await delay(500);
-                  //setmessageok("Issue Voucher number is created : " + series);
+                  //setmessageok("Issue Voucner number is created : " + series);
                   //setmessageok(localStorage.getItem("issuevoucer"));
-                  //messageok = "Issue Voucher number is created : " + series;
-                  //setmessageok("Issue Voucher number is created : " + series);
+                  //messageok = "Issue Voucner number is created : " + series;
+                  //setmessageok("Issue Voucner number is created : " + series);
                   //await delay(500);
-                  //setmessageok("Issue Voucher number is created : " + series);
+                  //setmessageok("Issue Voucner number is created : " + series);
 
                   setShowok(true);
                 }
@@ -652,7 +752,7 @@ function UnitsMatAllotmentForm() {
             />
           </div>
           <div className="col-md-3">
-            <label className="form-label">Para 1</label>
+            <label className="form-label">Width</label>
             <input className="form-label" value={formHeader.Para1} disabled />
           </div>
 
@@ -672,7 +772,7 @@ function UnitsMatAllotmentForm() {
             <input className="form-label" value={formHeader.PStatus} disabled />
           </div>
           <div className="col-md-3">
-            <label className="form-label">Para 2</label>
+            <label className="form-label">Length</label>
             <input className="form-label" value={formHeader.Para2} disabled />
           </div>
 

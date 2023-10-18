@@ -1,6 +1,14 @@
 import React from "react";
-import { Page, Document, StyleSheet, View, Text } from "@react-pdf/renderer";
+import {
+  Page,
+  Document,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+} from "@react-pdf/renderer";
 import { formatDate } from "../../../../utils";
+import MLLogo from "../../../../../../frontend/src/ML-LOGO.png";
 
 const styles = StyleSheet.create({
   page: {
@@ -19,17 +27,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
+    alignSelf: "center",
   },
   title2: {
     width: "100%",
-    marginTop: "8px",
+    marginTop: "6px",
     marginLeft: "130px",
     fontSize: 13,
     fontWeight: "bolder",
     textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
+    alignSelf: "center",
   },
   line1: {
-    marginTop: "10px",
+    marginTop: "8px",
     fontWeight: "bold",
     width: "100%",
   },
@@ -46,6 +58,7 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: "9",
+    fontFamily: "Helvetica-Bold",
   },
   blockLeftAlign: {
     width: "20%",
@@ -69,6 +82,7 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     fontSize: 12,
     fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
   },
   partQuantity: {
     width: "100%",
@@ -88,29 +102,34 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   rvNO: {
     width: "20%",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   issued: {
     width: "10%",
     marginLeft: "20px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   used: {
     width: "8%",
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   returned: {
     width: "8%",
     marginLeft: "0px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
 
   partIDVal: {
@@ -160,6 +179,18 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+  },
+  logoImage: {
+    width: "50px",
+    // marginLeft: "10px",
+  },
+  companyInfo: {
+    marginTop: "5px",
+    marginLeft: "20%",
+    width: "60%",
+    fontSize: "9",
+    alignSelf: "center",
   },
 });
 
@@ -167,15 +198,41 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.tableContainer}>
+        {/* <Image src={MLLogo} style={styles.logoImage} />
         <Text style={styles.title1}>Magod Laser Machining Pvt Ltd : Jigni</Text>
+
         <Text style={styles.title2}>
           Production : Assemby Parts Issue Voucher
-        </Text>
+        </Text> */}
+        {/* marginLeft: "127px" */}
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image src={MLLogo} style={styles.logoImage} />
+          <View>
+            <Text style={styles.title1}>
+              Magod Laser Machining Pvt Ltd : Jigni
+            </Text>
+            <Text style={styles.title2}>
+              Production : Assembly Parts Issue Voucher
+            </Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "90px" }}>
+              GSTIN: 29AABCM1970H1ZE, CIN: U28900KA1995PTC018437
+            </Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "50px" }}>
+              #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
+              Bengaluru - 560105
+            </Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "10px" }}>
+              +91-80-42291005, +91-8110-414313, info@magodlaser.in,
+              https://www.magodlaser.in/
+            </Text>
+          </View>
+        </View>
         <Text style={styles.line1}>
           _________________________________________________________________________________
         </Text>
         <View style={styles.blockRightAlign}>
-          <Text>IV No</Text>
+          <Text style={{ fontFamily: "Helvetica-Bold" }}>IV No</Text>
           <Text style={styles.linegap}>Date</Text>
           <Text style={styles.linegap}>Task No</Text>
           <Text style={styles.linegap}>Program No</Text>
@@ -189,6 +246,7 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
           <Text style={styles.linegap}>{formHeader.NCProgramNo}</Text>
           <Text style={styles.linegap}>{formHeader.QtyIssued}</Text>
         </View>
+
         <View style={styles.blockRightAlign}>
           <Text>Customer</Text>
           <Text style={styles.linegap}>Assey Name</Text>
@@ -229,8 +287,12 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
                 {item.RV_No}({item.CustDocuNo})
               </Text>
               <Text style={styles.issuedVal}>{item.QtyIssued}</Text>
-              <Text style={styles.usedVal}>{item.QtyUsed}</Text>
-              <Text style={styles.returnedVal}>{item.QtyReturned}</Text>
+              {/* <Text style={styles.usedVal}>{item.QtyUsed}</Text> */}
+              <Text style={styles.usedVal}></Text>
+
+              {/* <Text style={styles.returnedVal}>{item.QtyReturned}</Text> */}
+              <Text style={styles.returnedVal}></Text>
+
               {/* <Text style={styles.line3}>
                 {" "}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________________________________________________________________________

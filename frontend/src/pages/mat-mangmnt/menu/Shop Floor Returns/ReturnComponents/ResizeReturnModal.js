@@ -20,6 +20,19 @@ function ResizeReturnModal({
   setIsModalOpen,
 }) {
   const handleClose = () => {
+    setTableData([]);
+    setInputData([
+      {
+        SrlNo: "",
+        DynamicPara1: "",
+        DynamicPara2: "",
+        InStock: "",
+        Weight: "",
+        Location: "",
+      },
+    ]);
+    setSelectedTableRow([]);
+
     onClose(false);
   };
 
