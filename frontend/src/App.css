@@ -490,7 +490,7 @@ li.nav-item {
   background-color: #98a8f8 !important;
 }
 
- /* .custom-table tbody tr.selected-row {
+/* .custom-table tbody tr.selected-row {
   background-color: #98a8f8;
 } */
 
@@ -504,17 +504,4 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
-}
-
-.blink {
-  animation: blinker 1.5s linear infinite;
-  color: red;
-  font-family: sans-serif;
-  font-size: smaller;
-  /* margin-left: 140px; */
-}
-@keyframes blinker {
-  50% {
-    opacity: 0;
-  }
 }

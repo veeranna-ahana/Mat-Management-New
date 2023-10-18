@@ -258,63 +258,43 @@ function OpenButtonClosedSheetUnit() {
         </div>
 
         <div className="row mt-4">
-
           <div className="col-md-8 justify-content-center">
-           <div className="row">
-            <div className="col-md-3 col-sm-12">
-            <button
-              className="button-style"
-            
-              disabled={boolVal}
-            >
-              Save
-            </button>
+            <div className="row">
+              <div className="col-md-3 col-sm-12">
+                <button className="button-style" disabled={boolVal}>
+                  Save
+                </button>
+              </div>
+              <div className="col-md-3 col-sm-12">
+                <button className="button-style" disabled={boolVal}>
+                  Allot RV No
+                </button>
+              </div>
+
+              <div className="col-md-3 col-sm-12">
+                <button className="button-style" disabled={boolVal}>
+                  Delete RV
+                </button>
+              </div>
+
+              <div className="col-md-3 col-sm-12">
+                <button
+                  className="button-style "
+                  id="btnclose"
+                  type="submit"
+                  onClick={() => nav("/MaterialManagement")}
+                >
+                  Close
+                </button>
+              </div>
             </div>
-            <div className="col-md-3 col-sm-12">
-            <button
-              className="button-style"
-            
-              disabled={boolVal}
-            >
-              Allot RV No
-            </button>
-</div>
-
-<div className="col-md-3 col-sm-12">
-<button
-              className="button-style"
-              
-              disabled={boolVal}
-            >
-              Delete RV
-            </button>
-</div>
-
-<div className="col-md-3 col-sm-12">
-<button
-              className="button-style "
-              id="btnclose"
-              type="submit"
-              onClick={() => nav("/MaterialManagement")}
-            >
-              Close
-            </button>
-</div>
-
-
-           </div>
-            
-
-           
-           
-            
           </div>
           <div className="col-md-4 mb-3">
             <label className="form-label"></label>
             <textarea
-                 id="exampleFormControlTextarea1"
-                 rows="4"
-                 style={{ width: "330px" }}
+              id="exampleFormControlTextarea1"
+              rows="4"
+              style={{ width: "330px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -332,7 +312,7 @@ function OpenButtonClosedSheetUnit() {
               striped
               hover
               condensed
-              headerClasses="header-class "
+              headerClasses="header-class tableHeaderBGColor"
               //selectRow={selectRow}
             ></BootstrapTable>
           </div>
@@ -355,36 +335,35 @@ function OpenButtonClosedSheetUnit() {
                   Add Serial
                 </button>
               </div>
-         
-                <div className="row">
-                  <div className="col-md-6 col-sm-12">
-                  <button
-                  className="button-style "
-                  style={{ width: "150px" }}
-                  disabled={boolVal}
-                >
-                  Add to stock
-                </button>
-                  </div>
-                  <div className="col-md-6 col-sm-12">
-                  <button
-                  className="button-style "
-                  style={{ width: "150px" }}
-                  disabled={boolVal}
-                >
-                  Remove stock
-                </button>
-                  </div>
 
+              <div className="row">
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "150px" }}
+                    disabled={boolVal}
+                  >
+                    Add to stock
+                  </button>
                 </div>
-                
-               
-             
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "150px" }}
+                    disabled={boolVal}
+                  >
+                    Remove stock
+                  </button>
+                </div>
+              </div>
+
               <div className="row">
                 <div className="col-md-12 col-sm-12">
                   <div className="ip-box form-bg">
                     <div className="row">
-                    <p className="form-title-deco mt-2"><h5>Serial Details</h5></p>
+                      <p className="form-title-deco mt-2">
+                        <h5>Serial Details</h5>
+                      </p>
 
                       <div className="col-md-4 ">
                         <label className="form-label">Part ID</label>
@@ -430,13 +409,15 @@ function OpenButtonClosedSheetUnit() {
                       </div>
                     </div>
                     <div className="col-md-12 mt-3 ">
-                    <p className="form-title-deco"><h5>Quantity Details</h5></p>
+                      <p className="form-title-deco">
+                        <h5>Quantity Details</h5>
+                      </p>
                       <div className="row">
                         <div className="col-md-6">
                           <label className="form-label">Received</label>
                           <input className="in-field" disabled={boolVal} />
                         </div>
-                        
+
                         <div className="col-md-6">
                           <div
                             className="col-md-12"
@@ -449,7 +430,8 @@ function OpenButtonClosedSheetUnit() {
                               id="flexCheckDefault"
                               disabled={boolVal}
                             />
-                             <label className="form-label mt-1">Inspected</label>
+                             
+                            <label className="form-label mt-1">Inspected</label>
                           </div>
                         </div>
                       </div>
@@ -458,7 +440,7 @@ function OpenButtonClosedSheetUnit() {
                           <label className="form-label">Accepted</label>
                           <input className="in-field" disabled={boolVal} />
                         </div>
-                        
+
                         <div className="col-md-6">
                           <div
                             className="col-md-12"
@@ -478,17 +460,20 @@ function OpenButtonClosedSheetUnit() {
 
                       <div className="row">
                         <div className="col-md-6 mt-2">
-                          <label className="form-label" style={{whiteSpace:"nowrap"}}>Wt Caluclated 2</label>
+                          <label
+                            className="form-label"
+                            style={{ whiteSpace: "nowrap" }}
+                          >
+                            Wt Caluclated 2
+                          </label>
                           <input className="in-field" disabled={boolVal} />
                         </div>
-                        
                       </div>
                       <div className="row">
                         <div className="col-md-6">
                           <label className="form-label">Weight</label>
                           <input className="in-field" disabled={boolVal} />
                         </div>
-                       
                       </div>
                       <div className="row">
                         <div className="col-md-6 ">
@@ -503,7 +488,6 @@ function OpenButtonClosedSheetUnit() {
                             <option value="option 1">004</option> */}
                           </select>
                         </div>
-                        
                       </div>
                     </div>
                   </div>

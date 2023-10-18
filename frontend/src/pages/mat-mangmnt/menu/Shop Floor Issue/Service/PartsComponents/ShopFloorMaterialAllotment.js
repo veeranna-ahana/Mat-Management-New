@@ -224,7 +224,7 @@ function ShopFloorMaterialAllotment(props) {
         );
       } else if (props.formtype == "Units" || props.formtype == "Others") {
         nav(
-          "/MaterialManagement/ShopFloorIssue/service/Units/MaterialAllotmentForm", //UnitsMatAllotmentForm
+          "/MaterialManagement/ShopFloorIssue/Service/Units/MaterialAllotmentForm", //UnitsMatAllotmentForm
           {
             state: { ncid },
           }
@@ -316,7 +316,7 @@ function ShopFloorMaterialAllotment(props) {
               condensed
               //pagination={paginationFactory()}
               selectRow={selectRow}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

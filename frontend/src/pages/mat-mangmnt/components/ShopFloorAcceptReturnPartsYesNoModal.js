@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 import Button from "react-bootstrap/Button";
 
@@ -11,7 +12,14 @@ const { getRequest, postRequest } = require("../../api/apiinstance");
 const { endpoints } = require("../../api/constants");
 
 function ShopFloorAcceptReturnPartsYesNoModal(props) {
-  const { showYN, setShowYN, handleShow, formHeader, tableData } = props;
+  const {
+    showYN,
+    setShowYN,
+    handleShow,
+    formHeader,
+    setFormHeader,
+    tableData,
+  } = props;
 
   const [showSecondModal, setShowSecondModal] = useState(false);
 
@@ -31,9 +39,7 @@ function ShopFloorAcceptReturnPartsYesNoModal(props) {
 
       postRequest(
         endpoints.updateQtyIssuedPartReceiptDetails,
-
         update1,
-
         (data) => {
           console.log("update1");
         }
@@ -43,10 +49,8 @@ function ShopFloorAcceptReturnPartsYesNoModal(props) {
 
       let update3 = {
         Id: formHeader.NcId,
-
         Qty: formHeader.QtyReturned,
       };
-
       postRequest(endpoints.updateQtyAllotedncprograms, update3, (data) => {
         console.log("update3");
       });
@@ -56,23 +60,22 @@ function ShopFloorAcceptReturnPartsYesNoModal(props) {
 
     let update4 = {
       Id: formHeader.IssueID,
-
       status: "Closed",
     };
 
     postRequest(
       endpoints.updateStatusShopfloorPartIssueRegister,
-
       update4,
-
       (data) => {
         console.log("update4");
+        setFormHeader({ ...formHeader, Status: "Closed" });
+        toast.success("Issue voucher closed");
       }
     );
 
     setShowYN(false);
 
-    openSecondModal(); // Open the second modal
+    // openSecondModal();
   };
 
   const handleNo = () => {
@@ -97,13 +100,21 @@ function ShopFloorAcceptReturnPartsYesNoModal(props) {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleYes}>
+          <button
+            className="button-style "
+            style={{ width: "50px" }}
+            onClick={handleYes}
+          >
             Yes
-          </Button>
+          </button>
 
-          <Button variant="secondary" onClick={handleNo}>
+          <button
+            className="button-style"
+            style={{ width: "50px", backgroundColor: "gray" }}
+            onClick={handleNo}
+          >
             No
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>

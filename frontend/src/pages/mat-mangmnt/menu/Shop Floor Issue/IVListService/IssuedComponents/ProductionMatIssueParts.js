@@ -8,6 +8,8 @@ import OkModal from "../../../../components/OkModal";
 import { toast } from "react-toastify";
 import ShopFloorAcceptReturnPartsYesNoModal from "../../../../components/ShopFloorAcceptReturnPartsYesNoModal";
 
+import PrintIVListServicePart from "../../../../print/shopfloorissue/PrintIVListServicePart";
+
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
 
@@ -21,6 +23,8 @@ function ProductionMatIssueParts() {
   const [show1, setShow1] = useState(false); //cancel
   const [show2, setShow2] = useState(false); //accept
   const [showYN, setShowYN] = useState(false);
+
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   const [modalMessage, setModalMessage] = useState(
     "By cancelling this Issue Voucher the material stock will revert to Receipt Voucher. Continue?"
@@ -174,10 +178,14 @@ function ProductionMatIssueParts() {
         update4,
         (data) => {
           console.log("update4");
+          setFormHeader({ ...formHeader, Status: "Cancelled" });
         }
       );
-      toast.success("Parts Cancelled Successfully");
+
+      // toast.success("Parts Cancelled Successfully");
+      toast.success("Issue Voucher Cancelled");
     }
+    console.log("formHeader.Status after updates:", formHeader.Status);
   };
 
   const cancelButton = () => {
@@ -205,15 +213,16 @@ function ProductionMatIssueParts() {
     }
   };
   const printButton = () => {
-    nav(
-      "/MaterialManagement/ShopFloorIssue/IVListService/PrintIVListServicePart",
-      {
-        state: {
-          formHeader: formHeader,
-          tableData: tableData,
-        },
-      }
-    );
+    // nav(
+    //   "/MaterialManagement/ShopFloorIssue/IVListService/PrintIVListServicePart",
+    //   {
+    //     state: {
+    //       formHeader: formHeader,
+    //       tableData: tableData,
+    //     },
+    //   }
+    // );
+    setIsPrintModalOpen(true);
   };
   return (
     <div>
@@ -221,6 +230,7 @@ function ProductionMatIssueParts() {
         showYN={showYN}
         setShowYN={setShowYN}
         formHeader={formHeader}
+        setFormHeader={setFormHeader}
         tableData={tableData}
       />
       <OkModal
@@ -229,6 +239,14 @@ function ProductionMatIssueParts() {
         modalMessage={modalMessage}
         modalResponseok={modalResponseok}
       />
+
+      <PrintIVListServicePart
+        isOpen={isPrintModalOpen}
+        formHeader={formHeader}
+        tableData={tableData}
+        setIsPrintModalOpen={setIsPrintModalOpen}
+      />
+
       <h4 className="title">Production Material Issue :Parts</h4>
       <div className="table_top_style">
         <div className="row">
@@ -271,10 +289,17 @@ function ProductionMatIssueParts() {
               // disabled={
               //   show1 || formHeader.Status === "Cancelled" ? true : false
               // }
+              // disabled={
+              //   show1 ||
+              //   formHeader.Status === "Cancelled" ||
+              //   formHeader.Status === "Closed"
+              // }
               disabled={
-                show1 ||
                 formHeader.Status === "Cancelled" ||
-                formHeader.Status === "Closed"
+                formHeader.Status === "Closed" ||
+                formHeader.Status !== "Created" ||
+                formHeader.QtyReturned > 0 ||
+                formHeader.QtyUsed > 0
               }
             >
               Cancel
@@ -295,7 +320,12 @@ function ProductionMatIssueParts() {
             <button
               className="button-style "
               onClick={acceptReturn}
-              disabled={show2 || formHeader.Status === "Closed" ? true : false}
+              // disabled={show2 || formHeader.Status === "Closed" ? true : false}
+              disabled={
+                formHeader.Status !== "Created" ||
+                formHeader.QtyReturned === 0 ||
+                formHeader.Status === "Closed"
+              }
             >
               Accept Return
             </button>
@@ -331,7 +361,7 @@ function ProductionMatIssueParts() {
             condensed
             //pagination={paginationFactory()}
             //selectRow={selectRow}
-            headerClasses="header-class"
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable>
         </div>
       </div>

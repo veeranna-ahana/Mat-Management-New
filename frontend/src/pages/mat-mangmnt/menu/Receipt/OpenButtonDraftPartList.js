@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import BootstrapTable from "react-bootstrap-table-next";
 import Table from "react-bootstrap/Table";
 import CreateYesNoModal from "../../components/CreateYesNoModal";
+import DeleteSerialYesNoModal from "../../components/DeleteSerialYesNoModal";
+import DeleteRVModal from "../../components/DeleteRVModal";
 import { formatDate } from "../../../../utils";
 import { useLocation } from "react-router-dom";
 
@@ -16,6 +18,8 @@ function OpenButtonDraftPartList() {
 
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const currDate = new Date()
@@ -240,8 +244,6 @@ function OpenButtonDraftPartList() {
     // setCalcWeightVal(parseFloat(totwt).toFixed(2));
     // setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
 
-    //NEW CODE
-
     let totwt = 0;
     partArray.map((obj) => {
       totwt =
@@ -309,7 +311,9 @@ function OpenButtonDraftPartList() {
 
     //console.log("after = ", partArray);
   };
-
+  const deleteButtonState = () => {
+    setModalOpen(true);
+  };
   //delete part
   const handleDelete = () => {
     //minus calculated weight
@@ -324,6 +328,7 @@ function OpenButtonDraftPartList() {
             p.id !== inputPart.id
         );
         setPartArray(newArray);
+        toast.success("Material Deleted");
       }
     });
 
@@ -433,7 +438,12 @@ function OpenButtonDraftPartList() {
 
     if (partArray.length === 0) {
       toast.error("Add Details Before Saving");
-    } else if (partArray.length !== 0 && formHeader.weight == "0") {
+    } else if (
+      partArray.length !== 0 &&
+      (formHeader.weight == 0.0 ||
+        formHeader.weight === null ||
+        formHeader.weight === undefined)
+    ) {
       toast.error(
         "Enter the Customer Material Weight as per Customer Document"
       );
@@ -480,6 +490,9 @@ function OpenButtonDraftPartList() {
           flag1 = 5;
           console.log("Setting flag1 to 5");
         }
+        if (partArray[i].qtyAccepted > partArray[i].qtyReceived) {
+          flag1 = 6;
+        }
       }
 
       console.log("flag1 value:", flag1);
@@ -492,6 +505,8 @@ function OpenButtonDraftPartList() {
         toast.error("Received and Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
         toast.error("Select Location");
+      } else if (flag1 === 6) {
+        toast.error("QtyAccepted should be less than or equal to QtyReceived");
       } else {
         // Show model form
         setShow(true);
@@ -519,7 +534,9 @@ function OpenButtonDraftPartList() {
 
     //console.log("formHeader = ", formHeader);
   };
-
+  const deleteRVButton = async () => {
+    setDeleteRvModalOpen(true);
+  };
   const deleteRVButtonState = () => {
     postRequest(
       endpoints.deleteHeaderMaterialReceiptRegisterAndDetails,
@@ -535,6 +552,14 @@ function OpenButtonDraftPartList() {
       }
     );
   };
+  const handleYes = () => {
+    handleDelete();
+    setModalOpen(false);
+  };
+  const handleRVYes = () => {
+    deleteRVButtonState();
+    setDeleteRvModalOpen(false);
+  };
   return (
     <div>
       <CreateYesNoModal
@@ -542,6 +567,18 @@ function OpenButtonDraftPartList() {
         setShow={setShow}
         formHeader={formHeader}
         allotRVYesButton={allotRVYesButton}
+      />
+      <DeleteSerialYesNoModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        message="You want to delete material,are you sure ?"
+        handleYes={handleYes}
+      />
+      <DeleteRVModal
+        deleteRvModalOpen={deleteRvModalOpen}
+        setDeleteRvModalOpen={setDeleteRvModalOpen}
+        message="You want to delete RV,are you sure ?"
+        handleRVYes={handleRVYes}
       />
       <div>
         <h4 className="title">Customer Parts Receipt Voucher</h4>
@@ -652,7 +689,7 @@ function OpenButtonDraftPartList() {
                 <button
                   className="button-style"
                   disabled={boolVal4}
-                  onClick={deleteRVButtonState}
+                  onClick={deleteRVButton}
                 >
                   Delete RV
                 </button>
@@ -684,7 +721,7 @@ function OpenButtonDraftPartList() {
       <div className="row">
         <div
           style={{ height: "330px", overflowY: "scroll" }}
-          className="col-md-6 col-sm-12"
+          className="col-md-8 col-sm-12"
         >
           <BootstrapTable
             keyField="id"
@@ -694,7 +731,7 @@ function OpenButtonDraftPartList() {
             hover
             condensed
             selectRow={selectRow}
-            headerClasses="header-class "
+            headerClasses="header-class tableHeaderBGColor"
           ></BootstrapTable>
         </div>
         {/*<div className="col-md-6 col-sm-12">
@@ -732,7 +769,7 @@ function OpenButtonDraftPartList() {
             </tbody>
           </table> 
         </div>*/}
-        <div className="col-md-6 col-sm-12">
+        <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
             <div className="row justify-content-center mt-1 mb-2">
               <button
@@ -746,10 +783,10 @@ function OpenButtonDraftPartList() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11">
                 <label className="form-label">Part ID</label>
-              </div>
-              <div className="col-md-8" style={{ marginTop: "8px" }}>
+                {/* </div>
+              <div className="col-md-8" style={{ marginTop: "8px" }}> */}
                 <select
                   className="ip-select dropdown-field"
                   name="partId"
@@ -767,12 +804,12 @@ function OpenButtonDraftPartList() {
                   ))}
                 </select>
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Unit Wt</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -783,12 +820,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Received</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -799,12 +836,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Accepted</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -814,12 +851,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-4 ">
+              <div className="col-md-11 ">
                 <label className="form-label">Qty Rejected</label>
-              </div>
-              <div className="col-md-8 ">
+
                 <input
                   className="in-field"
                   type="number"
@@ -827,6 +864,7 @@ function OpenButtonDraftPartList() {
                   readOnly
                 />
               </div>
+              <div className="col-md-8 "></div>
             </div>
 
             <div className="row justify-content-center mt-3 mb-4">
@@ -834,7 +872,7 @@ function OpenButtonDraftPartList() {
                 className="button-style "
                 style={{ width: "155px" }}
                 disabled={boolVal4}
-                onClick={handleDelete}
+                onClick={deleteButtonState}
               >
                 Delete
               </button>

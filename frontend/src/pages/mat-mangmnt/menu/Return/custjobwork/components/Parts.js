@@ -744,7 +744,7 @@ function Parts(props) {
                 hover
                 condensed
                 selectRow={selectRowFirst}
-                headerClasses="header-class "
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable> */}
             </div>
           </div>
@@ -767,7 +767,7 @@ function Parts(props) {
                 hover
                 condensed
                 selectRow={selectRowSecond}
-                headerClasses="header-class "
+                headerClasses="header-class tableHeaderBGColor"
                 //</div>selectRow={selectRowFirst}
               ></BootstrapTable> */}
             </div>
@@ -820,7 +820,7 @@ function Parts(props) {
                 hover
                 condensed
                 //selectRow={selectRowSecond}
-                headerClasses="header-class "
+                headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable> */}
             </div>
           </div>

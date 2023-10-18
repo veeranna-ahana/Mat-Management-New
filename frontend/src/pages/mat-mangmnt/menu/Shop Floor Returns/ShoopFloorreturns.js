@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function ShoopFloorreturns() {
-  return (
-    <div>ShoopFloorreturns</div>
-  )
+  return <div>ShoopFloorreturns</div>;
 }
 
-export default ShoopFloorreturns
+export default ShoopFloorreturns;

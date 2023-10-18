@@ -10,6 +10,7 @@ import { formatDate, getWeight } from "../../../../utils";
 import { toast } from "react-toastify";
 import YesNoModal from "../../components/YesNoModal";
 import TreeView from "react-treeview";
+import ResizeReturnModal from "./ReturnComponents/ResizeReturnModal";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -24,11 +25,14 @@ function PendingList(props) {
   const [open1, setOpen1] = useState(false);
   const handleOpen1 = () => setOpen1(true);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [firstTable, setFirstTable] = useState([]);
   const [firstRowSelected, setFirstRowSelected] = useState([]);
   const [firstTableAll, setFirstTableAll] = useState([]);
   const [secondTable, setSecondTable] = useState([]);
   const [secondTableRow, setSecondTableRow] = useState({});
+  const [selectSecondAll, setSelectSecondAll] = useState(false);
   const [rowValResize, setRowValResize] = useState({});
   const [treeData, setTreeData] = useState([]);
   let [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
@@ -163,12 +167,12 @@ function PendingList(props) {
     },
     {
       text: "Balance Length",
-      dataField: "RemPara1",
+      dataField: "Para1",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Balance Width",
-      dataField: "RemPara2",
+      dataField: "Para2",
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
@@ -209,7 +213,8 @@ function PendingList(props) {
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
         setSecondTableRow(row);
-
+        // console.log(isSelect);
+        // console.log(row);
         //store selected row data
         setSelectedSecondTableRows([...selectedSecondTableRows, row]);
       } else {
@@ -246,6 +251,7 @@ function PendingList(props) {
       console.log("newTable", newTable);
     }
   };
+  // console.log("setSelectedSecondTableRows", SelectedSecondTableRows);
 
   function tableRefresh() {
     //reset first table
@@ -508,6 +514,17 @@ function PendingList(props) {
         modalResponse={modalYesNoResponse}
       />
       <LocationModel show={show} setShow={setShow} scrapModal={scrapModal} />
+
+      <ResizeReturnModal
+        isOpen={isModalOpen}
+        secondTableRow={selectedSecondTableRows}
+        setSelectedSecondTableRows={setSelectedSecondTableRows}
+        onClose={(isOpen) => setIsModalOpen(isOpen)}
+        tableRefresh={tableRefresh}
+        setIsModalOpen={setIsModalOpen}
+        type="return"
+      />
+
       <ResizeModal
         open1={open1}
         setOpen1={setOpen1}
@@ -537,7 +554,7 @@ function PendingList(props) {
           >
             Return To Stock
           </button>
-          <button
+          {/* <button
             className="button-style mt-0"
             style={{ width: "170px" }}
             onClick={() => {
@@ -545,7 +562,7 @@ function PendingList(props) {
                 toast.error("Select Material to return to Stock");
               } else {
                 nav(
-                  "/MaterialManagement/ShoopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
+                  "/MaterialManagement/ShopFloorReturns/PendingList/ResizeAndReturn/MaterialSplitter",
                   {
                     state: {
                       secondTableRow: selectedSecondTableRows,
@@ -557,7 +574,32 @@ function PendingList(props) {
             }}
           >
             Resize and Return
+          </button> */}
+
+          <button
+            className="button-style mt-0"
+            style={{ width: "170px" }}
+            onClick={() => {
+              if (selectedSecondTableRows.length === 0) {
+                toast.error("Select Material to return to Stock");
+              } else if (
+                selectedSecondTableRows.some(
+                  (row) =>
+                    row.Para1 <= 0 ||
+                    row.Para2 <= 0 ||
+                    row.Para1 < 10 ||
+                    row.Para2 < 10
+                )
+              ) {
+                toast.error("Selected materials cannot be split.");
+              } else {
+                setIsModalOpen(true); // Open the modal
+              }
+            }}
+          >
+            Resize and Return
           </button>
+
           <button
             className="button-style "
             id="btnclose"
@@ -596,7 +638,7 @@ function PendingList(props) {
               hover
               condensed
               selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>
@@ -610,7 +652,7 @@ function PendingList(props) {
               hover
               condensed
               selectRow={selectRow2}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
           </div>
         </div>

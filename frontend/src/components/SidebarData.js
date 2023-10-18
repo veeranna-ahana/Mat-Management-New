@@ -352,7 +352,7 @@ export const customerSidebar = [
     subNav: [
       {
         title: "Pending IV List",
-        path: "/MaterialManagement/ShoopFloorReturns/PendingList",
+        path: "/MaterialManagement/ShopFloorReturns/PendingList",
         icon: <AiIcons.AiOutlineArrowRight />,
       },
     ],
@@ -500,7 +500,7 @@ export const adminSidebar = [
       },
     ],
   },
- 
+
   {
     title: "Users",
     icon: <FaIcon.FaUsers />,

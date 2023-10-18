@@ -77,8 +77,10 @@ function PartsInStockAndProcess(props) {
     <div className="mt-3">
       <div className="row-md-6 justify-content-center mt-1 mb-2">
         <h5>
-          <b>Issued : Issued for Production &nbsp;&nbsp;&nbsp;&nbsp; Used : Used in
-          Production{" "}</b>
+          <b>
+            Issued : Issued for Production &nbsp;&nbsp;&nbsp;&nbsp; Used : Used
+            in Production{" "}
+          </b>
         </h5>
       </div>
       <div className="row mt-4">
@@ -107,7 +109,7 @@ function PartsInStockAndProcess(props) {
               hover
               condensed
               //selectRow={selectRow1}
-              headerClasses="header-class"
+              headerClasses="header-class tableHeaderBGColor"
             ></BootstrapTable>
 
             {/* <Table bordered>
