@@ -72,6 +72,57 @@ reportRouter.get("/getDailyReportMaterialDispatch", async (req, res, next) => {
   }
 });
 
+reportRouter.post("/updateSrlWghtMaterialDispatch", async (req, res, next) => {
+  // console.log("reqqqqqqqqqqqq.............", req.body.tableData);
+
+  // const resultArray = [];
+  try {
+    for (let i = 0; i < req.body.tableData.length; i++) {
+      const element = req.body.tableData[i];
+
+      // console.log("element.....", i, element);
+      misQueryMod(
+        `UPDATE magodmis.dc_inv_summary
+          SET
+        SrlWt = '${element.SrlWt}'
+          WHERE
+        DC_Inv_No = ${element.Dc_Inv_No} AND SummarySrl = ${element.SummarySrl}`,
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("done", i, data);
+          // resultArray.push("1");
+
+          // console.log(
+          //   "req.body.tableData.lengthreq.body.tableData.lengthreq.body.tableData.length"
+          // );
+          // res.send(data);
+        }
+      );
+      // console.log("resultarray...", resultArray);
+    }
+    // console.log("testestetstesteste");
+
+    // console.log("resultArray.length", resultArray, resultArray.length);
+
+    res.send({
+      flag: 1,
+      message: "Updated Successfully",
+    });
+
+    // console.log("req.body.tableData.length", req.body.tableData.length);
+
+    // if (resultArray.length === req.body.tableData.length) {
+    //   console.log("trueeeeeeee");
+    //   res.send({
+    //     flag: 1,
+    //     message: "Update Successfull",
+    //   });
+    // }
+  } catch (error) {
+    next(error);
+  }
+});
+
 reportRouter.get("/getDailyReportMaterialSales", async (req, res, next) => {
   try {
     let date = req.query.date;

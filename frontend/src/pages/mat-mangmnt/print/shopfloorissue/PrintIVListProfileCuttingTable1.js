@@ -1,6 +1,14 @@
 import React from "react";
-import { Page, Document, StyleSheet, View, Text } from "@react-pdf/renderer";
+import {
+  Page,
+  Document,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+} from "@react-pdf/renderer";
 import { formatDate } from "../../../../utils";
+import MLLogo from "../../../../../../frontend/src/ML-LOGO.png";
 
 const styles = StyleSheet.create({
   page: {
@@ -8,6 +16,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     margin: "50px",
   },
+
   tableContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -18,13 +27,19 @@ const styles = StyleSheet.create({
     marginLeft: "127px",
     fontSize: 15,
     fontWeight: "bold",
+    textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
+    alignSelf: "center",
   },
   title2: {
     width: "100%",
-    marginTop: "8px",
-    marginLeft: "190px",
+    marginTop: "6px",
+    marginLeft: "130px",
     fontSize: 13,
     fontWeight: "bolder",
+    textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
+    // alignSelf: "center",
   },
   line1: {
     marginTop: "10px",
@@ -51,6 +66,7 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: "9",
+    // fontFamily: "Helvetica-Bold",
   },
   emptyBlock: {
     width: "35%",
@@ -60,7 +76,9 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: "9",
+    // fontFamily: "Helvetica-Bold",
   },
+
   linegap: {
     marginTop: "5px",
   },
@@ -70,30 +88,35 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   para1: {
     width: "10%",
     marginLeft: "10px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   para2: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   used: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
   reject: {
     width: "10%",
     marginLeft: "5px",
     marginTop: "5px",
     fontSize: 10,
+    fontFamily: "Helvetica-Bold",
   },
 
   mtrlVal: {
@@ -147,16 +170,48 @@ const styles = StyleSheet.create({
   emptyWholeBlock: {
     width: "100%",
   },
+  logoImage: {
+    width: "50px",
+    // marginLeft: "10px",
+  },
+  companyInfo: {
+    marginTop: "5px",
+    marginLeft: "20%",
+    width: "60%",
+    fontSize: "9",
+    alignSelf: "center",
+  },
 });
 
 const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.tableContainer}>
-        <Text style={styles.title1}>
+        {/* <Text style={styles.title1}>
           Magod Laser Machining Pvt Ltd : Jigani
         </Text>
-        <Text style={styles.title2}>Material : Floor Issue</Text>
+        <Text style={styles.title2}>Material : Floor Issue</Text> */}
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image src={MLLogo} style={styles.logoImage} />
+          <View>
+            <Text style={styles.title1}>
+              Magod Laser Machining Pvt Ltd : Jigni
+            </Text>
+            <Text style={styles.title2}>Material : Floor Issue</Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "90px" }}>
+              GSTIN: 29AABCM1970H1ZE, CIN: U28900KA1995PTC018437
+            </Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "50px" }}>
+              #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
+              Bengaluru - 560105
+            </Text>
+            <Text style={{ ...styles.companyInfo, marginLeft: "10px" }}>
+              +91-80-42291005, +91-8110-414313, info@magodlaser.in,
+              https://www.magodlaser.in/
+            </Text>
+          </View>
+        </View>
         <Text style={styles.line1}>
           _________________________________________________________________________________
         </Text>
@@ -164,15 +219,15 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
         <Text style={styles.blockWhole}>IV No : {formHeader.IV_No}</Text>
         <Text style={styles.blockLeftAlign}></Text>
         <Text style={styles.blockRightAlign}>
-          Date {formHeader.Issue_date}{" "}
+          Date: {formHeader.Issue_date}{" "}
         </Text>
         <Text style={styles.emptyBlock}></Text>
-        <Text style={styles.blockLeftAlign}>Task No {formHeader.TaskNo}</Text>
+        <Text style={styles.blockLeftAlign}>Task No: {formHeader.TaskNo}</Text>
         <Text style={styles.blockRightAlign}>
-          Program No {formHeader.NC_ProgramNo}
+          Program No: {formHeader.NC_ProgramNo}
         </Text>
         <Text style={styles.emptyBlock}></Text>
-        <Text style={styles.blockWhole}>Customer {formHeader.Cust_name} </Text>
+        <Text style={styles.blockWhole}>Customer: {formHeader.Cust_name} </Text>
         <Text style={styles.line1}>
           _________________________________________________________________________________
         </Text>
@@ -206,8 +261,12 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
               <Text style={styles.mtrlVal}>{item.ShapeMtrlID}</Text>
               <Text style={styles.para1Val}>{item.Para1}</Text>
               <Text style={styles.para2Val}>{item.Para2}</Text>
-              <Text style={styles.usedVal}>{item.Used}</Text>
-              <Text style={styles.rejectVal}>{item.Rejected}</Text>
+              {/* <Text style={styles.usedVal}>{item.Used}</Text> */}
+              <Text style={styles.usedVal}></Text>
+
+              {/* <Text style={styles.rejectVal}>{item.Rejected}</Text> */}
+              <Text style={styles.rejectVal}></Text>
+
               {/* <Text style={styles.emptyBlock}></Text> */}
             </>
           );

@@ -36,6 +36,7 @@ function PendingList(props) {
   const [rowValResize, setRowValResize] = useState({});
   const [treeData, setTreeData] = useState([]);
   let [selectedSecondTableRows, setSelectedSecondTableRows] = useState([]);
+  const [secondTableSelectIndex, setSecondTableSelectIndex] = useState([]);
 
   const [filteredMachine, setFilteredMachine] = useState(null);
 
@@ -182,9 +183,10 @@ function PendingList(props) {
     clickToSelect: true,
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log("first row = ", row);
-      setFirstRowSelected(row);
       setSelectedSecondTableRows([]);
+      console.log("first row = ", row);
+      setSecondTableSelectIndex([]);
+      setFirstRowSelected(row);
       let url1 = endpoints.getSecondTableShopFloorReturn + "?id=" + row.IssueID;
       getRequest(url1, (data) => {
         data.forEach((sheet) => {
@@ -210,6 +212,7 @@ function PendingList(props) {
     mode: "checkbox",
     clickToSelect: true,
     bgColor: "#98A8F8",
+    selected: secondTableSelectIndex,
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
         setSecondTableRow(row);
@@ -217,18 +220,22 @@ function PendingList(props) {
         // console.log(row);
         //store selected row data
         setSelectedSecondTableRows([...selectedSecondTableRows, row]);
+        setSecondTableSelectIndex([...secondTableSelectIndex, row.NcPgmMtrlId]);
       } else {
         setSelectedSecondTableRows(
           selectedSecondTableRows.filter((obj) => {
             return obj.NcPgmMtrlId !== row.NcPgmMtrlId;
           })
         );
+        setSecondTableSelectIndex(
+          secondTableSelectIndex.filter((item) => item != row.NcPgmMtrlId)
+        );
       }
     },
     onSelectAll: (isSelect, rows, e) => {
       // Handle select all rows
       if (isSelect) {
-        setSelectedSecondTableRows([...selectedSecondTableRows, ...rows]);
+        setSelectedSecondTableRows([...rows]);
       } else {
         setSelectedSecondTableRows([]);
       }
