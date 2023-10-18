@@ -107,6 +107,7 @@ function OpenButtonDraftPartList() {
         const url1 =
           endpoints.getPartReceiptDetailsByRvID + "?id=" + location.state.id;
         getRequest(url1, (data2) => {
+          console.log("dataa.........", data2);
           data2.forEach((obj) => {
             obj["id"] = obj["Id"];
             obj["partId"] = obj["PartId"];
@@ -221,7 +222,7 @@ function OpenButtonDraftPartList() {
 
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
+      if (data?.affectedRows !== 0) {
       } else {
         toast.error("Record Not Updated");
       }

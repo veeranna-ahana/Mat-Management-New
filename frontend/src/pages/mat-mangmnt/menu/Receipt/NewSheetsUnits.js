@@ -1803,7 +1803,9 @@ function NewSheetsUnits(props) {
                             type="checkbox"
                             id="flexCheckDefault"
                             name="updated"
-                            // checked={mtrlArray[i].updated === 1 ? true : false}
+                            // checked={
+                            //   materialArray[i]?.updated === 1 ? true : false
+                            // }
                             disabled={boolVal3 | boolVal4}
                             // disabled={true}
                             onChange={(e) => {
