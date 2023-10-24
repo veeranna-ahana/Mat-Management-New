@@ -318,16 +318,25 @@ function MaterialMoverForm(props) {
 
   // console.log("allData", allData);
   const changeCustomerForLocation = async (e) => {
-    // setSecondTable([]);
+    setSecondTable([]);
+    setSelectedIndex([]);
+
+    // console.log("eeeeeeeeeeeee", e[0].Cust_Code.length);
 
     // console.log("e[0", e[0]);
     //const { value, name } = e.target;
     // setSelectedCustomer(e[0].Cust_Code);
     // setSelectedCustForLocation(e[0].Cust_Code);
 
-    const newArray = allData.filter((obj) => obj.Cust_Code === e[0].Cust_Code);
+    if (e[0].Cust_Code) {
+      const newArray = allData.filter(
+        (obj) => obj.Cust_Code === e[0].Cust_Code
+      );
+      setFirstTable(newArray);
+    } else {
+      setFirstTable(allData);
+    }
     // console.log("new....", newArray);
-    setFirstTable(newArray);
   };
   return (
     <div>
@@ -342,6 +351,35 @@ function MaterialMoverForm(props) {
 
       <div className="row">
         <div className="d-flex justify-content-center">
+          <div
+            className={props.type === "location" ? "col-md-4 px-3" : "d-none"}
+          >
+            <label className="form-label">From Location</label>
+            {/* <select
+                    className="ip-select"
+                    name="customer"
+                    onChange={fromLocationEvent}
+                    // disabled={boolVal1}
+                  >
+                    <option value="" disabled selected>
+                      Select Location
+                    </option>
+                    {locationData.map((location, index) => (
+                      <option key={index} value={location.LocationNo}>
+                        {location.LocationNo}
+                      </option>
+                    ))}
+                  </select> */}
+            <Typeahead
+              id="basic-example"
+              name="location"
+              options={locationData}
+              placeholder="Select Location"
+              onChange={(label) => fromLocationEvent(label)}
+              className="mb-3"
+            />
+          </div>
+
           <div
             className={props.type === "location" ? "col-md-4 px-3" : "d-none"}
           >
@@ -375,66 +413,6 @@ function MaterialMoverForm(props) {
             </div>
             {/* cust dropdown */}
           </div>
-          {/* <div className="col-md-4"> */}
-
-          <div
-            className={props.type === "location" ? "col-md-4 px-3" : "d-none"}
-          >
-            <label className="form-label">From Location</label>
-            {/* <select
-                    className="ip-select"
-                    name="customer"
-                    onChange={fromLocationEvent}
-                    // disabled={boolVal1}
-                  >
-                    <option value="" disabled selected>
-                      Select Location
-                    </option>
-                    {locationData.map((location, index) => (
-                      <option key={index} value={location.LocationNo}>
-                        {location.LocationNo}
-                      </option>
-                    ))}
-                  </select> */}
-            <Typeahead
-              id="basic-example"
-              name="location"
-              options={locationData}
-              placeholder="Select Location"
-              onChange={(label) => fromLocationEvent(label)}
-              className="mb-3"
-            />
-          </div>
-
-          {/* </div> */}
-          {/* <div className="col-md-4">to</div> */}
-
-          <div className="col-md-4 px-3">
-            <label className="form-label">To Location</label>
-            {/* <select
-                    className="ip-select"
-                    name="customer"
-                    onChange={changeLocation}
-                    // disabled={boolVal1}
-                  >
-                    <option value="" disabled selected>
-                      Select Location
-                    </option>
-                    {locationData.map((location, index) => (
-                      <option key={index} value={location.LocationNo}>
-                        {location.LocationNo}
-                      </option>
-                    ))}
-                  </select> */}
-            <Typeahead
-              id="basic-example"
-              name="location"
-              options={locationData}
-              placeholder="Select Location"
-              onChange={(label) => changeLocation(label)}
-              className="mb-3"
-            />
-          </div>
 
           <div
             className={props.type === "customer" ? "col-md-4 px-3" : "d-none"}
@@ -462,6 +440,33 @@ function MaterialMoverForm(props) {
               options={custdata}
               placeholder="Select Customer"
               onChange={(label) => changeCustomer(label)}
+            />
+          </div>
+
+          <div className="col-md-4 px-3">
+            <label className="form-label">To Location</label>
+            {/* <select
+                    className="ip-select"
+                    name="customer"
+                    onChange={changeLocation}
+                    // disabled={boolVal1}
+                  >
+                    <option value="" disabled selected>
+                      Select Location
+                    </option>
+                    {locationData.map((location, index) => (
+                      <option key={index} value={location.LocationNo}>
+                        {location.LocationNo}
+                      </option>
+                    ))}
+                  </select> */}
+            <Typeahead
+              id="basic-example"
+              name="location"
+              options={locationData}
+              placeholder="Select Location"
+              onChange={(label) => changeLocation(label)}
+              className="mb-3"
             />
           </div>
         </div>
