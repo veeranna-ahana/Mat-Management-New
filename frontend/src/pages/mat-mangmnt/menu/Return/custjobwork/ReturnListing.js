@@ -21,6 +21,7 @@ function ReturnListing(props) {
   const [checkboxVal, setCheckboxVal] = useState("off");
   let [custdata, setCustdata] = useState([]);
   let [propsType, setPropsType] = useState(props.type);
+  const [selectedCust, setSelectedCust] = useState();
   //console.log("listing form type = ", propsType);
   async function fetchData() {
     getRequest(endpoints.getCustomers, async (data) => {
@@ -96,6 +97,7 @@ function ReturnListing(props) {
   ];
 
   let changeCustomer = async (e) => {
+    setSelectedCust(e[0].Cust_Code);
     //e.preventDefault();
     //const { value, name } = e.target;
 
@@ -105,6 +107,19 @@ function ReturnListing(props) {
     //setCustdata(filterData);
     setCheckboxVal("on");
     setCheckboxDisable("off");
+
+    // console.log(
+    //   "e[0].Cust_Code",
+    //   e[0].Cust_Code,
+    //   "legftnh",
+    //   e[0].Cust_Code.length
+    // );
+
+    if (e[0].Cust_Code.length > 0) {
+      document.getElementById("filterCustCheckbox").checked = true;
+    } else {
+      document.getElementById("filterCustCheckbox").checked = false;
+    }
   };
 
   let handleClick = async (e) => {
@@ -147,9 +162,22 @@ function ReturnListing(props) {
     );*/
   };
   let changeCheckbox = (e) => {
-    // console.log("val = ", e.target.value);
-    setdata(allData);
-    setCheckboxVal("off");
+    // console.log("checkbox action...... = ", e.target.checked);
+
+    if (e.target.checked) {
+      const found = allData.filter((obj) => obj.Cust_code === selectedCust);
+      setdata(found);
+
+      // console.log("founddddddddddddddddd", found);
+    } else {
+      // console.log("alllllllllll", allData);
+      setdata(allData);
+      // setdata()
+    }
+    // setCheckboxVal("off");
+
+    // //setCustdata(filterData);
+    // setCheckboxVal("on");
   };
 
   const selectRow = {
@@ -207,10 +235,10 @@ function ReturnListing(props) {
               <input
                 className="form-check-input mt-2"
                 type="checkbox"
-                checked={checkboxVal === "on" ? true : false}
-                id="flexCheckDefault"
+                // checked={checkboxVal === "on" ? true : false}
+                id="filterCustCheckbox"
                 onChange={changeCheckbox}
-                disabled={checkboxDisable === "on" ? true : false}
+                disabled={!selectedCust}
               />
             </div>
             <div className="col-md-1 col-sm-12">
