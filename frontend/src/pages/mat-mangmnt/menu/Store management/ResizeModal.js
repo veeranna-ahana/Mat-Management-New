@@ -576,7 +576,7 @@ export default function ResizeModal(props) {
     <>
       <Modal show={props.open} fullscreen={true} onHide={() => handleClose()}>
         <Modal.Header closeButton>
-          <Modal.Title>Reize Sheets</Modal.Title>
+          <Modal.Title>Resize Sheets</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
