@@ -40,7 +40,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
   // console.log("......................................");
   // console.log("req.body.formHeader", req.body.formHeader);
 
-  console.log("req.body.outData", req.body.outData);
+  // console.log("req.body.outData", req.body.outData);
   let flag = false;
 
   // let pkngdcno = null;

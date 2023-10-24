@@ -7,6 +7,7 @@ import { dateToShort, formatDate } from "../../../../../utils";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
+import PrintPartsDC from "../../../print/return/PrintPartsDC";
 
 // formatDate
 
@@ -14,6 +15,8 @@ const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 function OutwordPartIssueVocher(props) {
+  const [printOpen, setPrintOpen] = useState(false);
+
   const nav = useNavigate();
   const [show, setShow] = useState(false);
   const [showCreateDC, setShowCreateDC] = useState(false);
@@ -245,17 +248,19 @@ function OutwordPartIssueVocher(props) {
   let printDC = () => {
     //console.log("First formheader = ", formHeader, " outdata = ", outData);
     if (dcID !== "" && dcID !== 0) {
-      nav("/MaterialManagement/Return/CustomerJobWork/PrintPartsDC", {
-        //formHeader: formHeader,
-        //outData: outData,
-        state: {
-          //id: data.RvID,
-          formHeader: formHeader,
-          outData: outData,
-          custdata: custdata,
-          dcRegister: dcRegister,
-        },
-      });
+      // nav("/MaterialManagement/Return/CustomerJobWork/PrintPartsDC", {
+      //   //formHeader: formHeader,
+      //   //outData: outData,
+      //   state: {
+      //     //id: data.RvID,
+      //     formHeader: formHeader,
+      //     outData: outData,
+      //     custdata: custdata,
+      //     dcRegister: dcRegister,
+      //   },
+      // });
+      setPrintOpen(true);
+
       //window.location.reload();
     } else {
       toast.error("DC Not Created");
@@ -874,6 +879,16 @@ function OutwordPartIssueVocher(props) {
           </div>
         </div>
       </div>
+
+      {/* print */}
+      <PrintPartsDC
+        printOpen={printOpen}
+        setPrintOpen={setPrintOpen}
+        formHeader={formHeader}
+        outData={outData}
+        custdata={custdata}
+        dcRegister={dcRegister}
+      />
 
       {/* modals */}
       <ReturnCancelIVModal
