@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
+import PrintLocationStockSummaryReport from "../../print/store/PrintLocationStockSummaryReport";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -17,6 +18,8 @@ function LocationStockReport() {
   let [secondTableAll, setSecondTableAll] = useState([]);
   let [thirdTable, setThirdTable] = useState([]);
   let [custCode, setCustCode] = useState("-1");
+
+  const [summaryReportPrintOpen, setSummaryReportPrintOpen] = useState(false);
 
   let [selectedfirstRow, setSelectedFirstRow] = useState({
     LocationNo: "",
@@ -81,61 +84,120 @@ function LocationStockReport() {
     }
   };
 
-  const summaryReport = async () => {
-    //find the unique name of customers
-    var custnames = [...new Set(secondTable.map((item) => item.Customer))];
-    custnames = custnames.sort();
+  // summary report func starts
 
-    //calculate material purchase details
-    var fullTable = [];
-    for (let i = 0; i < custnames.length; i++) {
-      let tot1wt = 0,
-        tot1swt = 0,
-        tot1qty = 0;
-      let tot2wt = 0,
-        tot2swt = 0,
-        tot2qty = 0;
-      var raw = [];
-      var scrap = [];
-      for (let j = 0; j < secondTable.length; j++) {
-        if (custnames[i] === secondTable[j].Customer) {
-          if (secondTable[j].Scrap === 0) {
-            raw.push(secondTable[j]);
-            tot1wt = tot1wt + parseFloat(secondTable[j].Weight);
-            tot1swt = tot1swt + parseFloat(secondTable[j].SWeight);
-            tot1qty = tot1qty + parseFloat(secondTable[j].Quantity);
-          } else {
-            scrap.push(secondTable[j]);
-            tot2wt = tot2wt + parseFloat(secondTable[j].Weight);
-            tot2swt = tot2swt + parseFloat(secondTable[j].SWeight);
-            tot2qty = tot2qty + parseFloat(secondTable[j].Quantity);
-          }
+  //find the unique name of customers
+  var custnames = [...new Set(secondTable.map((item) => item.Customer))];
+  custnames = custnames.sort();
+
+  //calculate material purchase details
+  var fullTable = [];
+  for (let i = 0; i < custnames.length; i++) {
+    let tot1wt = 0,
+      tot1swt = 0,
+      tot1qty = 0;
+    let tot2wt = 0,
+      tot2swt = 0,
+      tot2qty = 0;
+    var raw = [];
+    var scrap = [];
+    for (let j = 0; j < secondTable.length; j++) {
+      if (custnames[i] === secondTable[j].Customer) {
+        if (secondTable[j].Scrap === 0) {
+          raw.push(secondTable[j]);
+          tot1wt = tot1wt + parseFloat(secondTable[j].Weight);
+          tot1swt = tot1swt + parseFloat(secondTable[j].SWeight);
+          tot1qty = tot1qty + parseFloat(secondTable[j].Quantity);
+        } else {
+          scrap.push(secondTable[j]);
+          tot2wt = tot2wt + parseFloat(secondTable[j].Weight);
+          tot2swt = tot2swt + parseFloat(secondTable[j].SWeight);
+          tot2qty = tot2qty + parseFloat(secondTable[j].Quantity);
         }
       }
-      let obj = {
-        customer: custnames[i],
-        rawMaterial: raw,
-        scrapMaterial: scrap,
-        tot1wt: tot1wt,
-        tot1swt: tot1swt,
-        tot1qty: tot1qty,
-        tot2wt: tot2wt,
-        tot2swt: tot2swt,
-        tot2qty: tot2qty,
-        rawlength: raw.length,
-        scraplength: scrap.length,
-      };
-      fullTable.push(obj);
     }
-    await delay(300);
-    console.log("fullTable = ", fullTable);
+    let obj = {
+      customer: custnames[i],
+      rawMaterial: raw,
+      scrapMaterial: scrap,
+      tot1wt: tot1wt,
+      tot1swt: tot1swt,
+      tot1qty: tot1qty,
+      tot2wt: tot2wt,
+      tot2swt: tot2swt,
+      tot2qty: tot2qty,
+      rawlength: raw.length,
+      scraplength: scrap.length,
+    };
+    fullTable.push(obj);
+  }
+  delay(300);
+  // console.log("fullTable = ", fullTable);
 
-    nav("/MaterialManagement/StoreManagement/PrintLocationStockSummaryReport", {
-      state: {
-        formHeader: selectedfirstRow,
-        tableData: fullTable,
-      },
-    });
+  // nav("/MaterialManagement/StoreManagement/PrintLocationStockSummaryReport", {
+  //   state: {
+  //     formHeader: selectedfirstRow,
+  //     tableData: fullTable,
+  //   },
+  // });
+  // summary report func ends
+  const summaryReport = async () => {
+    setSummaryReportPrintOpen(true);
+
+    // //find the unique name of customers
+    // var custnames = [...new Set(secondTable.map((item) => item.Customer))];
+    // custnames = custnames.sort();
+
+    // //calculate material purchase details
+    // var fullTable = [];
+    // for (let i = 0; i < custnames.length; i++) {
+    //   let tot1wt = 0,
+    //     tot1swt = 0,
+    //     tot1qty = 0;
+    //   let tot2wt = 0,
+    //     tot2swt = 0,
+    //     tot2qty = 0;
+    //   var raw = [];
+    //   var scrap = [];
+    //   for (let j = 0; j < secondTable.length; j++) {
+    //     if (custnames[i] === secondTable[j].Customer) {
+    //       if (secondTable[j].Scrap === 0) {
+    //         raw.push(secondTable[j]);
+    //         tot1wt = tot1wt + parseFloat(secondTable[j].Weight);
+    //         tot1swt = tot1swt + parseFloat(secondTable[j].SWeight);
+    //         tot1qty = tot1qty + parseFloat(secondTable[j].Quantity);
+    //       } else {
+    //         scrap.push(secondTable[j]);
+    //         tot2wt = tot2wt + parseFloat(secondTable[j].Weight);
+    //         tot2swt = tot2swt + parseFloat(secondTable[j].SWeight);
+    //         tot2qty = tot2qty + parseFloat(secondTable[j].Quantity);
+    //       }
+    //     }
+    //   }
+    //   let obj = {
+    //     customer: custnames[i],
+    //     rawMaterial: raw,
+    //     scrapMaterial: scrap,
+    //     tot1wt: tot1wt,
+    //     tot1swt: tot1swt,
+    //     tot1qty: tot1qty,
+    //     tot2wt: tot2wt,
+    //     tot2swt: tot2swt,
+    //     tot2qty: tot2qty,
+    //     rawlength: raw.length,
+    //     scraplength: scrap.length,
+    //   };
+    //   fullTable.push(obj);
+    // }
+    // await delay(300);
+    // console.log("fullTable = ", fullTable);
+
+    // nav("/MaterialManagement/StoreManagement/PrintLocationStockSummaryReport", {
+    //   state: {
+    //     formHeader: selectedfirstRow,
+    //     tableData: fullTable,
+    //   },
+    // });
   };
 
   const detailsReport = async () => {
@@ -309,19 +371,20 @@ function LocationStockReport() {
   };
 
   return (
-    <div>
-      <h4 className="title">Location Stock Report</h4>
-      <div className="row">
-        <div className="col-md-4">
-          <h4 className="form-title">
-            {" "}
-            <u>Stock Viewer</u>
-          </h4>
+    <>
+      <div>
+        <h4 className="title">Location Stock Report</h4>
+        <div className="row">
+          <div className="col-md-4">
+            <h4 className="form-title">
+              {" "}
+              <u>Stock Viewer</u>
+            </h4>
 
-          <div className="row">
-            <div className="col-md-12">
-              <label className="form-label"> Select Customer</label>
-              {/* <select
+            <div className="row">
+              <div className="col-md-12">
+                <label className="form-label"> Select Customer</label>
+                {/* <select
                 className="ip-select"
                 name="customer"
                 onChange={changeCustomer}
@@ -336,206 +399,184 @@ function LocationStockReport() {
                   </option>
                 ))}
               </select> */}
-              <Typeahead
-                id="basic-example"
-                name="customer"
-                options={custdata}
-                placeholder="Select Customer"
-                onChange={(label) => changeCustomer(label)}
-              />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label"> Location</label>
-              <input
-                className=""
-                name="LocationNo"
-                value={selectedfirstRow.LocationNo}
-              />
-            </div>
-            <div className="col-md-6">
-              {" "}
-              <label className="form-label">Capacity</label>
-              <input
-                className=""
-                name="Capacity"
-                value={selectedfirstRow.Capacity}
-              />
-            </div>
-          </div>
-          <div className="row">
-            {" "}
-            <div className="col-md-6">
-              {" "}
-              <label className="form-label">Type</label>
-              <input
-                className=""
-                name="StorageType"
-                value={selectedfirstRow.StorageType}
-              />
-            </div>
-            <div className="col-md-6">
-              {" "}
-              <label className="form-label">Used</label>
-              <input
-                className=""
-                name="CapacityUtilised"
-                value={selectedfirstRow.CapacityUtilised}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-8">
-          <h8 className="form-label">Show Stock</h8>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="row">
+                <Typeahead
+                  id="basic-example"
+                  name="customer"
+                  options={custdata}
+                  placeholder="Select Customer"
+                  onChange={(label) => changeCustomer(label)}
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label"> Location</label>
+                <input
+                  className=""
+                  name="LocationNo"
+                  value={selectedfirstRow.LocationNo}
+                />
+              </div>
+              <div className="col-md-6">
                 {" "}
-                <div
-                  className="col-md-6 mt-2"
-                  style={{ display: "flex", gap: "5px" }}
-                >
-                  <input
-                    className="form-check-input mt-2"
-                    type="radio"
-                    id="showStockAll"
-                    name="updated"
-                    value="all"
-                    //   value={inputPart.upDated}
-                    //disabled={boolVal3 | boolVal4}
-                    //   disabled={true}
-                    onChange={radioButtonChanged}
-                  />
-                  <label className="form-label">All</label>
-                </div>
+                <label className="form-label">Capacity</label>
+                <input
+                  className=""
+                  name="Capacity"
+                  value={selectedfirstRow.Capacity}
+                />
               </div>
-              <div className="row">
+            </div>
+            <div className="row">
+              {" "}
+              <div className="col-md-6">
                 {" "}
-                <div
-                  className="col-md-8 mt-2"
-                  style={{ display: "flex", gap: "5px" }}
-                >
-                  <input
-                    className="form-check-input mt-2"
-                    type="radio"
-                    id="showStockCustomer"
-                    name="updated"
-                    onChange={radioButtonChanged}
-                    value="customer"
-                    //   value={inputPart.upDated}
-                    //disabled={boolVal3 | boolVal4}
-                    //   disabled={true}
-                    //   onChange={changeMaterialHandle}
-                  />
-                  <label className="form-label">Customer</label>
-                </div>
+                <label className="form-label">Type</label>
+                <input
+                  className=""
+                  name="StorageType"
+                  value={selectedfirstRow.StorageType}
+                />
+              </div>
+              <div className="col-md-6">
+                {" "}
+                <label className="form-label">Used</label>
+                <input
+                  className=""
+                  name="CapacityUtilised"
+                  value={selectedfirstRow.CapacityUtilised}
+                />
               </div>
             </div>
-            <div className="col-md-8">
-              <div className="row  mt-3">
-                <div className="col-md-4 col-sm-12">
-                  <button
-                    className="button-style "
-                    // style={{ width: "155px" }}
-                    onClick={summaryReport}
-                  >
-                    Summary Report
-                  </button>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <button
-                    className="button-style "
-                    // style={{ width: "155px" }}
-                    onClick={detailsReport}
-                  >
-                    Details Report
-                  </button>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <button
-                    className="button-style"
-                    // style={{ width: "155px" }}
-                    id="btnclose"
-                    type="submit"
-                    onClick={() => nav("/MaterialManagement")}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
+          </div>
 
-            <div className="col-md-12">
-              <label className="form-label">Customer</label>
-              <input className="" value={selectedSecondRow.Customer} />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              <label className="form-label">Material</label>
-              <input className="" value={selectedSecondRow.Mtrl_Code} />
-            </div>
-          </div>
-          <div className="row">
-            {" "}
-            <div className="col-md-4">
-              <label className="form-label">Dim 1</label>
-              <input className="" value={selectedSecondRow.DynamicPara1} />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">Dim 2</label>
-              <input className="" value={selectedSecondRow.DynamicPara2} />
-            </div>
-            <div className="col-md-4 mt-2">
-              <div className="row">
-                <div className="col-md-1 col-sm-12">
-                  <input
-                    className="form-check-input mt-3"
-                    type="checkbox"
-                    id="flexCheckDefault"
-                    name="updated"
-                    checked={selectedSecondRow.Scrap !== 0 ? true : false}
-                    //   value={inputPart.upDated}
-                    //disabled={boolVal3 | boolVal4}
-                    //   disabled={true}
-                    //   onChange={changeMaterialHandle}
-                  />
+          <div className="col-md-8">
+            <h8 className="form-label">Show Stock</h8>
+            <div className="row">
+              <div className="col-md-4">
+                <div className="row">
+                  {" "}
+                  <div
+                    className="col-md-6 mt-2"
+                    style={{ display: "flex", gap: "5px" }}
+                  >
+                    <input
+                      className="form-check-input mt-2"
+                      type="radio"
+                      id="showStockAll"
+                      name="updated"
+                      value="all"
+                      //   value={inputPart.upDated}
+                      //disabled={boolVal3 | boolVal4}
+                      //   disabled={true}
+                      onChange={radioButtonChanged}
+                    />
+                    <label className="form-label">All</label>
+                  </div>
                 </div>
-                <div className="col-md-8 col-sm-12">
-                  <label className="form-label mt-1">Scrap</label>
+                <div className="row">
+                  {" "}
+                  <div
+                    className="col-md-8 mt-2"
+                    style={{ display: "flex", gap: "5px" }}
+                  >
+                    <input
+                      className="form-check-input mt-2"
+                      type="radio"
+                      id="showStockCustomer"
+                      name="updated"
+                      onChange={radioButtonChanged}
+                      value="customer"
+                      //   value={inputPart.upDated}
+                      //disabled={boolVal3 | boolVal4}
+                      //   disabled={true}
+                      //   onChange={changeMaterialHandle}
+                    />
+                    <label className="form-label">Customer</label>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-8">
+                <div className="row  mt-3">
+                  <div className="col-md-4 col-sm-12">
+                    <button
+                      className="button-style "
+                      // style={{ width: "155px" }}
+                      onClick={summaryReport}
+                    >
+                      Summary Report
+                    </button>
+                  </div>
+                  <div className="col-md-4 col-sm-12">
+                    <button
+                      className="button-style "
+                      // style={{ width: "155px" }}
+                      onClick={detailsReport}
+                    >
+                      Details Report
+                    </button>
+                  </div>
+                  <div className="col-md-4 col-sm-12">
+                    <button
+                      className="button-style"
+                      // style={{ width: "155px" }}
+                      id="btnclose"
+                      type="submit"
+                      onClick={() => nav("/MaterialManagement")}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-md-12">
+                <label className="form-label">Customer</label>
+                <input className="" value={selectedSecondRow.Customer} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <label className="form-label">Material</label>
+                <input className="" value={selectedSecondRow.Mtrl_Code} />
+              </div>
+            </div>
+            <div className="row">
+              {" "}
+              <div className="col-md-4">
+                <label className="form-label">Dim 1</label>
+                <input className="" value={selectedSecondRow.DynamicPara1} />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label">Dim 2</label>
+                <input className="" value={selectedSecondRow.DynamicPara2} />
+              </div>
+              <div className="col-md-4 mt-2">
+                <div className="row">
+                  <div className="col-md-1 col-sm-12">
+                    <input
+                      className="form-check-input mt-3"
+                      type="checkbox"
+                      id="flexCheckDefault"
+                      name="updated"
+                      checked={selectedSecondRow.Scrap !== 0 ? true : false}
+                      //   value={inputPart.upDated}
+                      //disabled={boolVal3 | boolVal4}
+                      //   disabled={true}
+                      //   onChange={changeMaterialHandle}
+                    />
+                  </div>
+                  <div className="col-md-8 col-sm-12">
+                    <label className="form-label mt-1">Scrap</label>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="row">
-        <div className="col-md-5">
-          <div
-            style={{
-              height: "400px",
-              overflowY: "scroll",
-              border: "solid #c0c4c2 1px",
-              marginTop: "20px",
-            }}
-          >
-            <BootstrapTable
-              keyField="id"
-              columns={columns1}
-              data={firstTable}
-              striped
-              hover
-              condensed
-              selectRow={selectRow1}
-              headerClasses="header-class tableHeaderBGColor"
-            ></BootstrapTable>{" "}
-          </div>
-        </div>
-        <div className="col-md-7">
-          <div className="row">
+        <div className="row">
+          <div className="col-md-5">
             <div
               style={{
-                height: "200px",
+                height: "400px",
                 overflowY: "scroll",
                 border: "solid #c0c4c2 1px",
                 marginTop: "20px",
@@ -543,40 +584,70 @@ function LocationStockReport() {
             >
               <BootstrapTable
                 keyField="id"
-                columns={columns2}
-                data={secondTable}
+                columns={columns1}
+                data={firstTable}
                 striped
                 hover
                 condensed
-                selectRow={selectRow2}
+                selectRow={selectRow1}
                 headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>{" "}
             </div>
           </div>
-          <div className="row">
-            <div
-              style={{
-                height: "200px",
-                overflowY: "scroll",
-                border: "solid #c0c4c2 1px",
-                marginTop: "20px",
-              }}
-            >
-              <BootstrapTable
-                keyField="id"
-                columns={columns3}
-                data={thirdTable}
-                striped
-                hover
-                condensed
-                //selectRow={selectRow1}
-                headerClasses="header-class tableHeaderBGColor"
-              ></BootstrapTable>{" "}
+          <div className="col-md-7">
+            <div className="row">
+              <div
+                style={{
+                  height: "200px",
+                  overflowY: "scroll",
+                  border: "solid #c0c4c2 1px",
+                  marginTop: "20px",
+                }}
+              >
+                <BootstrapTable
+                  keyField="id"
+                  columns={columns2}
+                  data={secondTable}
+                  striped
+                  hover
+                  condensed
+                  selectRow={selectRow2}
+                  headerClasses="header-class tableHeaderBGColor"
+                ></BootstrapTable>{" "}
+              </div>
+            </div>
+            <div className="row">
+              <div
+                style={{
+                  height: "200px",
+                  overflowY: "scroll",
+                  border: "solid #c0c4c2 1px",
+                  marginTop: "20px",
+                }}
+              >
+                <BootstrapTable
+                  keyField="id"
+                  columns={columns3}
+                  data={thirdTable}
+                  striped
+                  hover
+                  condensed
+                  //selectRow={selectRow1}
+                  headerClasses="header-class tableHeaderBGColor"
+                ></BootstrapTable>{" "}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <PrintLocationStockSummaryReport
+        setSummaryReportPrintOpen={setSummaryReportPrintOpen}
+        summaryReportPrintOpen={summaryReportPrintOpen}
+        formHeader={selectedfirstRow}
+        tableData={fullTable}
+      />
+    </>
   );
 }
 
