@@ -5,7 +5,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
 import PrintReportStockList from "../../../print/report/PrintReportStockList";
-
+import PrintReportFullStockList from "../../../print/report/PrintReportFullStockList";
 // PrintReportStockList
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
@@ -33,7 +33,7 @@ function StockList(props) {
   });
 
   const [printSelectedStockOpen, setprintSelectedStockOpen] = useState(false);
-
+  const [printFullStockListOpen, setPrintFullStockListOpen] = useState(false);
   const fetchData = async () => {
     //fetch customer
     getRequest(endpoints.getCustomers, async (data) => {
@@ -370,68 +370,132 @@ function StockList(props) {
     // });
   };
 
+  var fullStockTable = [];
+  var fullStockScrapTable = [];
+  for (let i = 0; i < firstTable.length; i++) {
+    let totqty = 0;
+    let totwt = 0;
+    var tempdata = [];
+    for (let j = 0; j < thirdAllData.length; j++) {
+      if (
+        firstTable[i].Material === thirdAllData[j].Material &&
+        thirdAllData[j].Scrap === 0
+      ) {
+        tempdata.push(thirdAllData[j]);
+        totqty = totqty + parseInt(thirdAllData[j].Qty);
+        totwt = totwt + parseFloat(thirdAllData[j].Weight);
+      }
+    }
+    let obj = {
+      material: firstTable[i].Material,
+      totqty: totqty,
+      totwt: totwt,
+      data: tempdata,
+    };
+    //await delay(500);
+    fullStockTable.push(obj);
+
+    //for scrap
+    totqty = 0;
+    totwt = 0;
+    tempdata = [];
+    for (let j = 0; j < thirdAllData.length; j++) {
+      if (
+        firstTable[i].Material === thirdAllData[j].Material &&
+        thirdAllData[j].Scrap !== 0
+      ) {
+        tempdata.push(thirdAllData[j]);
+        totqty = totqty + parseInt(thirdAllData[j].Qty);
+        totwt = totwt + parseFloat(thirdAllData[j].Weight);
+      }
+    }
+    obj = {
+      material: firstTable[i].Material,
+      totqty: totqty,
+      totwt: totwt,
+      data: tempdata,
+    };
+    //await delay(500);
+    fullStockScrapTable.push(obj);
+  }
+  //fullStockTable.push({ material: "Aluminium", data: thirdAllData });
+  delay(500);
+  // console.log("table = ", fullStockTable);
+  // console.log("table scrap = ", fullStockScrapTable);
+
+  // nav("/MaterialManagement/Reports/PrintReportFullStockList", {
+  //   state: {
+  //     customerDetails: customerDetails,
+  //     fullStockTable: fullStockTable,
+  //     fullStockScrapTable: fullStockScrapTable,
+  //   },
+  // });
+
   const fullStock = async () => {
     //ready to print data
-    var fullStockTable = [];
-    var fullStockScrapTable = [];
-    for (let i = 0; i < firstTable.length; i++) {
-      let totqty = 0;
-      let totwt = 0;
-      var tempdata = [];
-      for (let j = 0; j < thirdAllData.length; j++) {
-        if (
-          firstTable[i].Material === thirdAllData[j].Material &&
-          thirdAllData[j].Scrap === 0
-        ) {
-          tempdata.push(thirdAllData[j]);
-          totqty = totqty + parseInt(thirdAllData[j].Qty);
-          totwt = totwt + parseFloat(thirdAllData[j].Weight);
-        }
-      }
-      let obj = {
-        material: firstTable[i].Material,
-        totqty: totqty,
-        totwt: totwt,
-        data: tempdata,
-      };
-      //await delay(500);
-      fullStockTable.push(obj);
 
-      //for scrap
-      totqty = 0;
-      totwt = 0;
-      tempdata = [];
-      for (let j = 0; j < thirdAllData.length; j++) {
-        if (
-          firstTable[i].Material === thirdAllData[j].Material &&
-          thirdAllData[j].Scrap !== 0
-        ) {
-          tempdata.push(thirdAllData[j]);
-          totqty = totqty + parseInt(thirdAllData[j].Qty);
-          totwt = totwt + parseFloat(thirdAllData[j].Weight);
-        }
-      }
-      obj = {
-        material: firstTable[i].Material,
-        totqty: totqty,
-        totwt: totwt,
-        data: tempdata,
-      };
-      //await delay(500);
-      fullStockScrapTable.push(obj);
-    }
-    //fullStockTable.push({ material: "Aluminium", data: thirdAllData });
-    await delay(500);
-    console.log("table = ", fullStockTable);
-    console.log("table scrap = ", fullStockScrapTable);
+    setPrintFullStockListOpen(true);
 
-    nav("/MaterialManagement/Reports/PrintReportFullStockList", {
-      state: {
-        customerDetails: customerDetails,
-        fullStockTable: fullStockTable,
-        fullStockScrapTable: fullStockScrapTable,
-      },
-    });
+    // var fullStockTable = [];
+    // var fullStockScrapTable = [];
+    // for (let i = 0; i < firstTable.length; i++) {
+    //   let totqty = 0;
+    //   let totwt = 0;
+    //   var tempdata = [];
+    //   for (let j = 0; j < thirdAllData.length; j++) {
+    //     if (
+    //       firstTable[i].Material === thirdAllData[j].Material &&
+    //       thirdAllData[j].Scrap === 0
+    //     ) {
+    //       tempdata.push(thirdAllData[j]);
+    //       totqty = totqty + parseInt(thirdAllData[j].Qty);
+    //       totwt = totwt + parseFloat(thirdAllData[j].Weight);
+    //     }
+    //   }
+    //   let obj = {
+    //     material: firstTable[i].Material,
+    //     totqty: totqty,
+    //     totwt: totwt,
+    //     data: tempdata,
+    //   };
+    //   //await delay(500);
+    //   fullStockTable.push(obj);
+
+    //   //for scrap
+    //   totqty = 0;
+    //   totwt = 0;
+    //   tempdata = [];
+    //   for (let j = 0; j < thirdAllData.length; j++) {
+    //     if (
+    //       firstTable[i].Material === thirdAllData[j].Material &&
+    //       thirdAllData[j].Scrap !== 0
+    //     ) {
+    //       tempdata.push(thirdAllData[j]);
+    //       totqty = totqty + parseInt(thirdAllData[j].Qty);
+    //       totwt = totwt + parseFloat(thirdAllData[j].Weight);
+    //     }
+    //   }
+    //   obj = {
+    //     material: firstTable[i].Material,
+    //     totqty: totqty,
+    //     totwt: totwt,
+    //     data: tempdata,
+    //   };
+    //   //await delay(500);
+    //   fullStockScrapTable.push(obj);
+    // }
+    // //fullStockTable.push({ material: "Aluminium", data: thirdAllData });
+    // await delay(500);
+    // console.log("table = ", fullStockTable);
+    // console.log("table scrap = ", fullStockScrapTable);
+
+    // nav("/MaterialManagement/Reports/PrintReportFullStockList", {
+    //   state: {
+    //     customerDetails: customerDetails,
+    //     fullStockTable: fullStockTable,
+    //     fullStockScrapTable: fullStockScrapTable,
+    //   },
+    // });
   };
   return (
     <>
@@ -567,6 +631,14 @@ function StockList(props) {
         tableData={tblDataTbl}
         scrapData={scrapDataTbl}
         scrapFlag={scrapDataTbl.length}
+      />
+
+      <PrintReportFullStockList
+        setPrintFullStockListOpen={setPrintFullStockListOpen}
+        printFullStockListOpen={printFullStockListOpen}
+        customerDetails={customerDetails}
+        fullStockTable={fullStockTable}
+        fullStockScrapTable={fullStockScrapTable}
       />
     </>
   );
