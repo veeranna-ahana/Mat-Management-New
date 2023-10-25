@@ -283,10 +283,10 @@ function SheetResizeForm() {
                 <tr>
                   <th>Mtrl Stock</th>
                   <th>Mtrl Code</th>
-                  <th>Shape </th>
-                  <th>Length </th>
-                  <th>Width </th>
-                  <th>Weight </th>
+                  <th>Shape</th>
+                  <th>Length</th>
+                  <th>Width</th>
+                  <th>Weight</th>
                 </tr>
               </thead>
               <tbody>

@@ -110,8 +110,8 @@ const PrintLocationStockSummaryTableReport = ({ formHeader, tableData }) => (
           _________________________________________________________________________________________
         </Text>
         <Text style={styles.col1}>Material</Text>
-        <Text style={styles.col2}>Para1</Text>
-        <Text style={styles.col2}>Para2</Text>
+        <Text style={styles.col2}>Length</Text>
+        <Text style={styles.col2}>Width</Text>
         <Text style={styles.col2}>Quantity</Text>
         <Text style={styles.col2}>Weight</Text>
         <Text style={styles.col2}>Scrap Weight</Text>

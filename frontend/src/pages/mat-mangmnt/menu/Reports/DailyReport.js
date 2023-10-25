@@ -11,18 +11,26 @@ const { endpoints } = require("../../../api/constants");
 
 function DailyReport() {
   const nav = useNavigate();
+
+  const newDate = new Date();
+  const dateee = newDate.getDate();
+  const monthhh = newDate.getMonth();
+  const yearrr = newDate.getFullYear();
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const [firstTab, setFirstTab] = useState([]);
   const [secondTab, setSecondTab] = useState([]);
   const [thirdTab, setThirdTab] = useState([]);
   const [fourthTab, setFourthTab] = useState([]);
 
-  const [dateVal, setDateVal] = useState("1988-01-01");
+  // console.log("dateeeeeeeeeeeee", yearrr + "-" + (monthhh + 1) + "-" + dateee);
+  const [dateVal, setDateVal] = useState(
+    yearrr + "-" + (monthhh + 1) + "-" + dateee
+  );
   const [totqty, settotqty] = useState(0);
   const [totalweight, settotalweight] = useState(0);
   const InputEvent = (e) => {
     const { name, value } = e.target;
-    console.log("value = ", value);
+    //console.log("value = ", value);
     setDateVal(value);
   };
 
@@ -34,7 +42,7 @@ function DailyReport() {
         data[i].id = i + 1;
       }
       //setFirstTab(data);
-      console.log("first tab1 ");
+      //console.log("first tab1 ");
     });
     const url2 = endpoints.getDailyReportMaterialReceipt2 + "?date=" + dateVal;
     getRequest(url2, async (data) => {
@@ -42,7 +50,7 @@ function DailyReport() {
         data[i].id = i + 1;
       }
       setFirstTab(data);
-      console.log("first tab2 = ", data);
+      //console.log("first tab2 = ", data);
 
       let tweight = 0;
       let tqty = 0;
@@ -62,7 +70,7 @@ function DailyReport() {
         data[i].id = i + 1;
       }
       setSecondTab(data);
-      console.log("second tab = ", data);
+      //console.log("second tab = ", data);
     });
 
     //third tab -sales
@@ -72,7 +80,7 @@ function DailyReport() {
         data[i].id = i + 1;
       }
       setThirdTab(data);
-      console.log("third tab = ", data);
+      //console.log("third tab = ", data);
     });
 
     //fourth tab-purchase
@@ -82,10 +90,11 @@ function DailyReport() {
         data[i].id = i + 1;
       }
       setFourthTab(data);
-      console.log("fourth tab = ", data);
+      //console.log("fourth tab = ", data);
     });
   };
 
+  console.log("firstTab", firstTab);
   const saveData = () => {
     const updateURL = endpoints.updateSrlWghtMaterialDispatch;
 
@@ -129,7 +138,7 @@ function DailyReport() {
     },
     {
       text: "Receipt Details",
-      dataField: "",
+      dataField: "mtrl_code",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
@@ -283,7 +292,7 @@ function DailyReport() {
       fullTable.push(obj);
     }
     await delay(300);
-    console.log("fullTable = ", fullTable);
+    //console.log("fullTable = ", fullTable);
 
     nav("/MaterialManagement/Reports/PrintDailyReportInvoice", {
       state: {
@@ -294,22 +303,28 @@ function DailyReport() {
   };
 
   function afterSaveCell(oldValue, newValue, row) {
-    console.log("Oldvalue = ", oldValue);
-    console.log("New value = ", newValue);
-    console.log("Row = ", row);
-
-    console.log("......................");
-    console.log("secondtabbbbbbb", secondTab);
+    //console.log("Oldvalue = ", oldValue);
+    //console.log("New value = ", newValue);
+    //console.log("Row = ", row);
+    //console.log("......................");
+    //console.log("secondtabbbbbbb", secondTab);
     // setSecondTab
   }
+
+  // setDateVal(yearrr, "-", monthhh + 1, "-", dateee);
   return (
     <div>
       {" "}
       <h4 className="title">Raw Material Daily Report</h4>
       <div className="row">
         <div className="col-md-2">
-          <label className="form-label">Select Month</label>
-          <input type="date" name="date" onChange={InputEvent} />
+          <label className="form-label">Select Date</label>
+          <input
+            type="date"
+            name="date"
+            onChange={InputEvent}
+            defaultValue={`${yearrr}-${monthhh + 1}-${dateee}`}
+          />
         </div>
         <div className="col-md-10">
           <button className="button-style" onClick={loadData}>

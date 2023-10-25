@@ -183,11 +183,11 @@ function MaterialMoverForm(props) {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: "Para1",
+      text: "Length",
       dataField: "DynamicPara1",
     },
     {
-      text: "Para2",
+      text: "Width",
       dataField: "DynamicPara2",
     },
     {
@@ -230,11 +230,11 @@ function MaterialMoverForm(props) {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: "Para1",
+      text: "Length",
       dataField: "DynamicPara1",
     },
     {
-      text: "Para2",
+      text: "Width",
       dataField: "DynamicPara2",
     },
     {

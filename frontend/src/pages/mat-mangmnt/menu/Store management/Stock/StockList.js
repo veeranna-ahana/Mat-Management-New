@@ -208,11 +208,11 @@ function StockList(props) {
       hidden: true,
     },
     {
-      text: "Para1",
+      text: "Length",
       dataField: "DynamicPara1",
     },
     {
-      text: "Para2",
+      text: "Width",
       dataField: "DynamicPara2",
     },
     {
@@ -222,10 +222,24 @@ function StockList(props) {
     {
       text: "Locked",
       dataField: "Locked",
+      formatter: (celContent, row) => (
+        <div className="checkbox">
+          <lable>
+            <input type="checkbox" checked={row.Locked === 0 ? false : true} />
+          </lable>
+        </div>
+      ),
     },
     {
       text: "Scrap",
       dataField: "Scrap",
+      formatter: (celContent, row) => (
+        <div className="checkbox">
+          <lable>
+            <input type="checkbox" checked={row.Scrap === 0 ? false : true} />
+          </lable>
+        </div>
+      ),
     },
     {
       text: "Weight",
