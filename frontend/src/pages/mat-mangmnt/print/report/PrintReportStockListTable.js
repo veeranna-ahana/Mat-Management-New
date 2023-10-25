@@ -121,7 +121,9 @@ const PrintReportStockListTable = ({
         <Text style={styles.line1}>
           _________________________________________________________________________________________
         </Text>
-        <Text style={styles.title1}>{tableData[0].Material}</Text>
+        <Text style={styles.title1}>
+          {tableData.length > 0 ? tableData[0]?.Material : ""}
+        </Text>
 
         <Text style={styles.material}>Material</Text>
         <Text style={styles.para}>Width</Text>
