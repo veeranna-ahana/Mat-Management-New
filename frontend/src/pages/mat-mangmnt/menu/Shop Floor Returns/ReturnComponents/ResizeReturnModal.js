@@ -38,15 +38,15 @@ function ResizeReturnModal({
 
   const nav = useNavigate();
 
-  console.log("secondTableRowModal", secondTableRow);
+  // console.log("secondTableRowModal", secondTableRow);
 
   const materialCode = secondTableRow[0]?.Mtrl_Code;
   const quantity = secondTableRow?.length;
   const para1 = secondTableRow[0]?.Para1;
   const para2 = secondTableRow[0]?.Para2;
 
-  console.log("para1", para1);
-  console.log("para2", para2);
+  // console.log("para1", para1);
+  // console.log("para2", para2);
 
   const [tableData, setTableData] = useState([]);
   const [selectedTableRow, setSelectedTableRow] = useState([
@@ -95,7 +95,7 @@ function ResizeReturnModal({
     setTableData([...tableData, newRow]);
   };
 
-  console.log("1st Table Data", tableData);
+  // console.log("1st Table Data", tableData);
 
   const selectRow = (val, key) => {
     setSelectedTableRow([
@@ -370,7 +370,7 @@ function ResizeReturnModal({
               endpoints.updateShopfloorMaterialIssueRegisterQtyReturnedAddOne,
               paraData1,
               (data) => {
-                console.log("rejected : updated shopfloorregisterqtyreturned");
+                // console.log("rejected : updated shopfloorregisterqtyreturned");
               }
             );
 
@@ -383,7 +383,7 @@ function ResizeReturnModal({
               endpoints.updateQtyAllotedncprograms,
               paraData2,
               (data) => {
-                console.log("rejected : updated qtyallotted ncprograms");
+                // console.log("rejected : updated qtyallotted ncprograms");
               }
             );
           }
@@ -396,7 +396,7 @@ function ResizeReturnModal({
               endpoints.updateShopfloorMaterialIssueRegisterQtyReturnedAddOne,
               paraData1,
               (data) => {
-                console.log("used : updated shopfloorregisterqtyreturned");
+                // console.log("used : updated shopfloorregisterqtyreturned");
               }
             );
           }
@@ -407,7 +407,7 @@ function ResizeReturnModal({
             MtrlStockID: secondTableRow[i].ShapeMtrlID,
           };
           postRequest(endpoints.updateMtrlStockLock3, paraData3, (data) => {
-            console.log("updated stock list");
+            // console.log("updated stock list");
           });
 
           //updatencprogrammtrlallotmentlistReturnStock
@@ -418,7 +418,7 @@ function ResizeReturnModal({
             endpoints.updatencprogrammtrlallotmentlistReturnStock,
             paraData4,
             (data) => {
-              console.log("updated ncprogrammtrlallotmentreturnstock");
+              // console.log("updated ncprogrammtrlallotmentreturnstock");
             }
           );
         }
@@ -435,7 +435,7 @@ function ResizeReturnModal({
             MtrlStockIDNew: secondTableRow[0].ShapeMtrlID,
           };
           postRequest(endpoints.insertByMtrlStockID, paraData3, (data) => {
-            console.log("inserted stock list");
+            // console.log("inserted stock list");
           });
         }
         tableRefresh();

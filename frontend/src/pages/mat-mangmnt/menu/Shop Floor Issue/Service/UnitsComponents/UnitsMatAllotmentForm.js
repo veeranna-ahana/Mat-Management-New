@@ -14,7 +14,7 @@ const { endpoints } = require("../../../../../api/constants");
 function UnitsMatAllotmentForm() {
   const nav = useNavigate();
   const location = useLocation();
-  //console.log("ncid = ", location?.state?.ncid);
+  console.log("ncid = ", location?.state?.ncid);
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const [formHeader, setFormHeader] = useState({});
@@ -40,8 +40,13 @@ function UnitsMatAllotmentForm() {
 
     getRequest(url1, async (data) => {
       data["QtyAllottedTemp"] = data.QtyAllotted;
+
       setFormHeader(data);
       //setAllData(data);
+      console.log("data", data.Mtrl_Code);
+      console.log("Shape", data.Shape);
+      console.log("Para1", data.Para1);
+      console.log("Para2", data.Para2);
 
       let url2 = endpoints.getCustomerByCustCode + "?code=" + data.Cust_Code;
       //console.log(url2);
@@ -154,7 +159,7 @@ function UnitsMatAllotmentForm() {
           formHeader.Qty
         ) {
           //const updatedFirstTableRow = [...firstTableRow, row];
-          const updatedFirstTableRow = [row, ...firstTableRow];
+          const updatedFirstTableRow = [...firstTableRow, row];
           setFirstTableRow(updatedFirstTableRow);
           setSecondTableRow(updatedFirstTableRow);
         } else {
@@ -190,12 +195,17 @@ function UnitsMatAllotmentForm() {
         let secondno = formHeader.Qty;
         let updatedFirstTableRow = [];
         console.log("initial first = ", firstno, " second = ", secondno);
-        for (
-          let i = rows.length - 1;
-          i >= 0 && firstno < secondno;
-          i--, firstno++
-        ) {
-          //console.log("i = ", i, " secondno = ", secondno);
+        // for (
+        //   let i = rows.length - 1;
+        //   i >= 0 && firstno < secondno;
+        //   i--, firstno++
+        // ) {
+        //   //console.log("i = ", i, " secondno = ", secondno);
+        //   updatedFirstTableRow.push(rows[i]);
+        // }
+
+        for (let i = 0; i < rows.length && firstno < secondno; i++, firstno++) {
+          console.log("i = ", i, " secondno = ", secondno);
           updatedFirstTableRow.push(rows[i]);
         }
         await delay(100);
@@ -219,69 +229,7 @@ function UnitsMatAllotmentForm() {
     },
   };
 
-  // const selectRow2 = {
-  //   mode: "checkbox",
-  //   clickToSelect: true,
-  //   bgColor: "#98A8F8",
-  //   onSelect: (row, isSelect, rowIndex, e) => {
-  //     if (isSelect) {
-  //       // const updatedSecondTableRow = [...secondTableRow, row];
-  //       // setSecondTableRow(updatedSecondTableRow);
-  //       const updatedSecondTableRow = secondTableRow.filter(
-  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
-  //       );
-  //       setSecondTableRow(updatedSecondTableRow);
-  //     } else {
-  //       // setSecondTableRow(secondTableRow);
-  //       const updatedSecondTableRow = secondTableRow.filter(
-  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
-  //       );
-  //       setSecondTableRow(updatedSecondTableRow);
-  //     }
-  //   },
-  // };
-
-  // const selectRow2 = {
-  //   mode: "checkbox",
-  //   clickToSelect: true,
-  //   bgColor: "#98A8F8",
-  //   selected: secondTableSelectIndex,
-  //   onSelect: (row, isSelect, rowIndex, e) => {
-  //     if (isSelect) {
-  //       setSecondTableSelectIndex([...secondTableSelectIndex, row.MtrlStockID]);
-  //       const updatedSecondTableRow = secondTableRow.filter(
-  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
-  //       );
-  //       //setSecondTableRow(updatedSecondTableRow);
-  //       // Row is selected, add it to the selectedRowsInSecondTable
-  //       setSelectedRowsInSecondTable((prevSelectedRows) => {
-  //         // Check if the row is already in the selected list
-  //         if (
-  //           !prevSelectedRows.some(
-  //             (selectedRow) => selectedRow.MtrlStockID === row.MtrlStockID
-  //           )
-  //         ) {
-  //           return [...prevSelectedRows, row];
-  //         }
-  //         return prevSelectedRows; // Row is already selected, so no change
-  //       });
-  //     } else {
-  //       const updatedSecondTableRow = secondTableRow.filter(
-  //         (obj) => obj.MtrlStockID !== row.MtrlStockID
-  //       );
-  //       //setSecondTableRow(updatedSecondTableRow);
-  //       // Row is deselected, remove it from selectedRowsInSecondTable
-  //       setSelectedRowsInSecondTable((prevSelectedRows) => {
-  //         return prevSelectedRows.filter(
-  //           (selectedRow) => selectedRow.MtrlStockID !== row.MtrlStockID
-  //         );
-  //       });
-  //       setSecondTableSelectIndex(
-  //         secondTableSelectIndex.filter((item) => item != row.MtrlStockID)
-  //       );
-  //     }
-  //   },
-  // };
+  console.log("firstTableRow", firstTableRow);
 
   const selectRow2 = {
     mode: "checkbox",
@@ -333,6 +281,8 @@ function UnitsMatAllotmentForm() {
       ...formHeader,
       QtyAllotted: parseInt(formHeader.QtyAllottedTemp) + firstTableRow.length,
     });
+    console.log("QtyAllottedTemp", formHeader.QtyAllottedTemp);
+    console.log("firstTableRow.length", firstTableRow.length);
 
     //set second table
     setSecondTable(secondTableRow);
@@ -347,6 +297,8 @@ function UnitsMatAllotmentForm() {
     setSecondTableSelectIndex([]);
     console.log("first table row = ", firstTableRow);
   };
+
+  console.log("secondTableRow", secondTable);
 
   const uncheckSelectedRows = () => {
     const updatedFirstTable = firstTable.map((row) => {
@@ -477,11 +429,11 @@ function UnitsMatAllotmentForm() {
     });
     setFirstTableRow(firstTableRowObj);
 
-    console.log("After second table row = ", secondTableRow);
-    console.log(
-      "After selectedRowsInSecondTable = ",
-      selectedRowsInSecondTable
-    );
+    // console.log("After second table row = ", secondTableRow);
+    // console.log(
+    //   "After selectedRowsInSecondTable = ",
+    //   selectedRowsInSecondTable
+    // );
   };
 
   let modalResponse = async (data) => {
@@ -724,7 +676,7 @@ function UnitsMatAllotmentForm() {
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">NC Program No</label>
               <input
-                className="form-label"
+                // className="form-label"
                 value={formHeader.NCProgramNo}
                 disabled
               />
@@ -734,7 +686,7 @@ function UnitsMatAllotmentForm() {
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">Material Code</label>
               <input
-                className="form-label"
+                // className="form-label"
                 value={formHeader.Mtrl_Code}
                 disabled
               />
@@ -746,40 +698,40 @@ function UnitsMatAllotmentForm() {
           <div className="col-md-3">
             <label className="form-label">Priority</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.Priority}
               disabled
             />
           </div>
           <div className="col-md-3">
             <label className="form-label">Width</label>
-            <input className="form-label" value={formHeader.Para1} disabled />
+            <input value={formHeader.Para1} disabled />
           </div>
 
           <div className="col-md-3">
             <label className="form-label">Machine</label>
-            <input className="form-label" value={formHeader.Machine} disabled />
+            <input value={formHeader.Machine} disabled />
           </div>
           <div className="col-md-3">
             <label className="form-label">Quantity</label>
-            <input className="form-label" value={formHeader.Qty} disabled />
+            <input value={formHeader.Qty} disabled />
           </div>
         </div>
 
         <div className="row">
           <div className="col-md-3">
             <label className="form-label">Status</label>
-            <input className="form-label" value={formHeader.PStatus} disabled />
+            <input value={formHeader.PStatus} disabled />
           </div>
           <div className="col-md-3">
             <label className="form-label">Length</label>
-            <input className="form-label" value={formHeader.Para2} disabled />
+            <input value={formHeader.Para2} disabled />
           </div>
 
           <div className="col-md-3">
             <label className="form-label">Process</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.MProcess}
               disabled
             />
@@ -787,7 +739,7 @@ function UnitsMatAllotmentForm() {
           <div className="col-md-3">
             <label className="form-label">Allotted</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.QtyAllotted}
               disabled
             />
@@ -797,7 +749,7 @@ function UnitsMatAllotmentForm() {
           <div className="col-md-4">
             <label className="form-label">Source</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.CustMtrl}
               disabled
             />
