@@ -4,7 +4,9 @@ import { toast } from "react-toastify";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
+import PrintReportStockList from "../../../print/report/PrintReportStockList";
 
+// PrintReportStockList
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
@@ -29,6 +31,8 @@ function StockList(props) {
     city: "",
     address: "",
   });
+
+  const [printSelectedStockOpen, setprintSelectedStockOpen] = useState(false);
 
   const fetchData = async () => {
     //fetch customer
@@ -257,48 +261,99 @@ function StockList(props) {
     },
   };
 
+  // selected stock calc start
+  let tq1 = 0;
+  let tw1 = 0;
+  for (let i = 0; i < thirdTable.length; i++) {
+    if (thirdTable[i].Scrap === 0) {
+      tq1 = tq1 + thirdTable[i].Qty;
+      tw1 = tw1 + parseFloat(thirdTable[i].Weight);
+    }
+  }
+
+  let tq2 = 0;
+  let tw2 = 0;
+  for (let i = 0; i < thirdTable.length; i++) {
+    if (thirdTable[i].Scrap !== 0) {
+      tq2 = tq2 + thirdTable[i].Qty;
+      tw2 = tw2 + parseFloat(thirdTable[i].Weight);
+    }
+  }
+  delay(300);
+
+  const scrapDataTbl = thirdTable.filter((item, index) => {
+    return item.Scrap !== 0;
+  });
+
+  const tblDataTbl = thirdTable.filter((item, index) => {
+    return item.Scrap === 0;
+  });
+  delay(300);
+
+  // setprintSelectedStockOpen(true)
+
+  // nav("/MaterialManagement/Reports/PrintReportStockList", {
+  //   state: {
+  //     //tableData: thirdTable,
+  //     customerDetails: customerDetails,
+  //     totalweight1: tw1,
+  //     totqty1: tq1,
+  //     totalweight2: tw2,
+  //     totqty2: tq2,
+  //     tableData: tblDataTbl,
+  //     scrapData: scrapDataTbl,
+  //     scrapFlag: scrapDataTbl.length,
+  //   },
+  // });
+
+  // selected stock cal end
+
   const selectedStock = async () => {
-    let tq1 = 0;
-    let tw1 = 0;
-    for (let i = 0; i < thirdTable.length; i++) {
-      if (thirdTable[i].Scrap === 0) {
-        tq1 = tq1 + thirdTable[i].Qty;
-        tw1 = tw1 + parseFloat(thirdTable[i].Weight);
-      }
-    }
+    setprintSelectedStockOpen(true);
 
-    let tq2 = 0;
-    let tw2 = 0;
-    for (let i = 0; i < thirdTable.length; i++) {
-      if (thirdTable[i].Scrap !== 0) {
-        tq2 = tq2 + thirdTable[i].Qty;
-        tw2 = tw2 + parseFloat(thirdTable[i].Weight);
-      }
-    }
-    await delay(300);
+    // let tq1 = 0;
+    // let tw1 = 0;
+    // for (let i = 0; i < thirdTable.length; i++) {
+    //   if (thirdTable[i].Scrap === 0) {
+    //     tq1 = tq1 + thirdTable[i].Qty;
+    //     tw1 = tw1 + parseFloat(thirdTable[i].Weight);
+    //   }
+    // }
 
-    const scrapDataTbl = thirdTable.filter((item, index) => {
-      return item.Scrap !== 0;
-    });
+    // let tq2 = 0;
+    // let tw2 = 0;
+    // for (let i = 0; i < thirdTable.length; i++) {
+    //   if (thirdTable[i].Scrap !== 0) {
+    //     tq2 = tq2 + thirdTable[i].Qty;
+    //     tw2 = tw2 + parseFloat(thirdTable[i].Weight);
+    //   }
+    // }
+    // await delay(300);
 
-    const tblDataTbl = thirdTable.filter((item, index) => {
-      return item.Scrap === 0;
-    });
-    await delay(300);
+    // const scrapDataTbl = thirdTable.filter((item, index) => {
+    //   return item.Scrap !== 0;
+    // });
 
-    nav("/MaterialManagement/Reports/PrintReportStockList", {
-      state: {
-        //tableData: thirdTable,
-        customerDetails: customerDetails,
-        totalweight1: tw1,
-        totqty1: tq1,
-        totalweight2: tw2,
-        totqty2: tq2,
-        tableData: tblDataTbl,
-        scrapData: scrapDataTbl,
-        scrapFlag: scrapDataTbl.length,
-      },
-    });
+    // const tblDataTbl = thirdTable.filter((item, index) => {
+    //   return item.Scrap === 0;
+    // });
+    // await delay(300);
+
+    // setprintSelectedStockOpen(true)
+
+    // nav("/MaterialManagement/Reports/PrintReportStockList", {
+    //   state: {
+    //     //tableData: thirdTable,
+    //     customerDetails: customerDetails,
+    //     totalweight1: tw1,
+    //     totqty1: tq1,
+    //     totalweight2: tw2,
+    //     totqty2: tq2,
+    //     tableData: tblDataTbl,
+    //     scrapData: scrapDataTbl,
+    //     scrapFlag: scrapDataTbl.length,
+    //   },
+    // });
   };
 
   const fullStock = async () => {
@@ -365,22 +420,27 @@ function StockList(props) {
     });
   };
   return (
-    <div>
-      {" "}
-      <>
-        <h4 className="title">Material Stock List</h4>
-        {/* <h4 className="form-title">Customer Material Stock List</h4> */}
-        <div className="row">
-          <div className="col-md-6 col-sm-12">
-            <div
-              className={props.type === "customer" ? "col-md-1 mt-2" : "d-none"}
-            >
-              <label className="form-label">Customer</label>
-            </div>
-            <div
-              className={props.type === "customer" ? "col-md-6 mt-2" : "d-none"}
-            >
-              {/* <select
+    <>
+      <div>
+        {" "}
+        <>
+          <h4 className="title">Material Stock List</h4>
+          {/* <h4 className="form-title">Customer Material Stock List</h4> */}
+          <div className="row">
+            <div className="col-md-6 col-sm-12">
+              <div
+                className={
+                  props.type === "customer" ? "col-md-1 mt-2" : "d-none"
+                }
+              >
+                <label className="form-label">Customer</label>
+              </div>
+              <div
+                className={
+                  props.type === "customer" ? "col-md-6 mt-2" : "d-none"
+                }
+              >
+                {/* <select
               className="ip-select dropdown-field"
               onChange={customerChange}
             >
@@ -393,90 +453,108 @@ function StockList(props) {
                 </option>
               ))}
             </select> */}
-              <Typeahead
-                id="basic-example"
-                name="customer"
-                options={custdata}
-                placeholder="Select Customer"
-                onChange={(label) => changeCustomer(label)}
-              />
+                <Typeahead
+                  id="basic-example"
+                  name="customer"
+                  options={custdata}
+                  placeholder="Select Customer"
+                  onChange={(label) => changeCustomer(label)}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-2 col-sm-12">
+              <button
+                className="button-style"
+                onClick={selectedStock}
+                disabled={thirdTable.length <= 0}
+              >
+                Selected Stock
+              </button>
+            </div>
+            <div className="col-md-2 col-sm-12">
+              <button className="button-style" onClick={fullStock}>
+                Full Stock
+              </button>
+            </div>
+            <div className="col-md-2 col-sm-12">
+              <button
+                className="button-style "
+                id="btnclose"
+                type="submit"
+                onClick={() => nav("/MaterialManagement")}
+              >
+                Close
+              </button>
             </div>
           </div>
 
-          <div className="col-md-2 col-sm-12">
-            <button className="button-style" onClick={selectedStock}>
-              Selected Stock
-            </button>
-          </div>
-          <div className="col-md-2 col-sm-12">
-            <button className="button-style" onClick={fullStock}>
-              Full Stock
-            </button>
-          </div>
-          <div className="col-md-2 col-sm-12">
-            <button
-              className="button-style "
-              id="btnclose"
-              type="submit"
-              onClick={() => nav("/MaterialManagement")}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+          <hr className="horizontal-line mt-4" />
+          <div className="row">
+            <div className="col-md-6 col-sm-12">
+              <div className="row">
+                {" "}
+                <div style={{ height: "200px", overflowY: "scroll" }}>
+                  <BootstrapTable
+                    keyField="id"
+                    columns={columns1}
+                    data={firstTable}
+                    striped
+                    hover
+                    condensed
+                    selectRow={selectRow1}
+                    headerClasses="header-class tableHeaderBGColor"
+                  ></BootstrapTable>
+                </div>
+              </div>
+              <div className="row mt-3">
+                {" "}
+                <div style={{ height: "200px", overflowY: "scroll" }}>
+                  <BootstrapTable
+                    keyField="id"
+                    columns={columns2}
+                    data={secondTable}
+                    striped
+                    hover
+                    condensed
+                    selectRow={selectRow2}
+                    headerClasses="header-class tableHeaderBGColor"
+                  ></BootstrapTable>
+                </div>
+              </div>
+            </div>
 
-        <hr className="horizontal-line mt-4" />
-        <div className="row">
-          <div className="col-md-6 col-sm-12">
-            <div className="row">
-              {" "}
-              <div style={{ height: "200px", overflowY: "scroll" }}>
+            <div className="col-md-6 col-sm-12">
+              <div style={{ height: "400px", overflowY: "scroll" }}>
                 <BootstrapTable
                   keyField="id"
-                  columns={columns1}
-                  data={firstTable}
+                  columns={columns3}
+                  data={thirdTable}
                   striped
                   hover
                   condensed
-                  selectRow={selectRow1}
+                  //selectRow={selectRow1}
                   headerClasses="header-class tableHeaderBGColor"
                 ></BootstrapTable>
               </div>
             </div>
-            <div className="row mt-3">
-              {" "}
-              <div style={{ height: "200px", overflowY: "scroll" }}>
-                <BootstrapTable
-                  keyField="id"
-                  columns={columns2}
-                  data={secondTable}
-                  striped
-                  hover
-                  condensed
-                  selectRow={selectRow2}
-                  headerClasses="header-class tableHeaderBGColor"
-                ></BootstrapTable>
-              </div>
-            </div>
           </div>
+        </>
+      </div>
 
-          <div className="col-md-6 col-sm-12">
-            <div style={{ height: "400px", overflowY: "scroll" }}>
-              <BootstrapTable
-                keyField="id"
-                columns={columns3}
-                data={thirdTable}
-                striped
-                hover
-                condensed
-                //selectRow={selectRow1}
-                headerClasses="header-class tableHeaderBGColor"
-              ></BootstrapTable>
-            </div>
-          </div>
-        </div>
-      </>
-    </div>
+      <PrintReportStockList
+        setprintSelectedStockOpen={setprintSelectedStockOpen}
+        printSelectedStockOpen={printSelectedStockOpen}
+        customerDetails={customerDetails}
+        totalweight1={tw1}
+        totqty1={tq1}
+        totalweight2={tw2}
+        totqty2={tq2}
+        tableData={tblDataTbl}
+        scrapData={scrapDataTbl}
+        scrapFlag={scrapDataTbl.length}
+      />
+    </>
   );
 }
 
