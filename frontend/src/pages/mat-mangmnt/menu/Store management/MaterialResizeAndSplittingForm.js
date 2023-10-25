@@ -36,11 +36,11 @@ function MaterialResizeAndSplittingForm(props) {
               <input className="form-label" />
             </div>
             <div className="col-md-3">
-              <label className="form-label">Para1</label>
+              <label className="form-label">Length</label>
               <input className="form-label" />
             </div>
             <div className="col-md-3">
-              <label className="form-label">Para2</label>
+              <label className="form-label">Width</label>
               <input className="form-label" />
             </div>
             <div className="col-md-3 mt-2">
@@ -75,8 +75,8 @@ function MaterialResizeAndSplittingForm(props) {
                   <tr>
                     <th>Location</th>
                     <th>MtrlStock ID</th>
-                    <th>DynamicPara1</th>
-                    <th>DynamicPara2</th>
+                    <th>Length</th>
+                    <th>Width</th>
                     <th>Weight</th>
                   </tr>
                 </thead>
@@ -124,7 +124,7 @@ function MaterialResizeAndSplittingForm(props) {
               </div>
               <div className="row">
                 <div className="col-md-3 mt-1 ">
-                  <label className="form-label">Para1</label>
+                  <label className="form-label">Length</label>
                 </div>
 
                 <div className="col-md-4 ">
@@ -141,7 +141,7 @@ function MaterialResizeAndSplittingForm(props) {
               </div>
               <div className="row">
                 <div className="col-md-3 mt-1">
-                  <label className="form-label">Para2</label>
+                  <label className="form-label">Width</label>
                 </div>
                 <div className="col-md-9">
                   <input className="in-field" readOnly />

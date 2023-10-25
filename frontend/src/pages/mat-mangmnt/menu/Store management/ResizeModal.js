@@ -506,8 +506,11 @@ export default function ResizeModal(props) {
       toast.success("Resize Successfull");
       // new
       props.setSelectedTableRows([]);
-      props.changeCustomer(props.selectedCust);
-      handleClose();
+
+      setTimeout(() => {
+        props.changeCustomer(props.selectedCust);
+        handleClose();
+      }, 300);
       // setTimeout(() => {
       //   // document.getElementById("result").innerHTML = "Hello, I am here";
       //   // nav("/MaterialManagement/StoreManagement/ResizeSheets", {

@@ -386,7 +386,7 @@ function OpenButtonClosedSheetUnit() {
 
                     <div className="row">
                       <div className="col-md-4">
-                        <label className="form-label">Para 1</label>
+                        <label className="form-label">Length</label>
                       </div>
                       <div className="col-md-8 ">
                         <input className="in-field" disabled={boolVal} />
@@ -394,7 +394,7 @@ function OpenButtonClosedSheetUnit() {
                     </div>
                     <div className="row">
                       <div className="col-md-4">
-                        <label className="form-label">Para 2</label>
+                        <label className="form-label">Width</label>
                       </div>
                       <div className="col-md-8 ">
                         <input className="in-field" disabled={boolVal} />
@@ -402,7 +402,7 @@ function OpenButtonClosedSheetUnit() {
                     </div>
                     <div className="row">
                       <div className="col-md-4">
-                        <label className="form-label">Para 3</label>
+                        <label className="form-label">Height</label>
                       </div>
                       <div className="col-md-8 ">
                         <input className="in-field" disabled={boolVal} />
