@@ -243,12 +243,22 @@ function CreateDCYesNoModal(props) {
           Do you want to create DC?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleYes}>
+          <button
+            className="button-style"
+            onClick={handleYes}
+            style={{ width: "10%" }}
+          >
             Yes
-          </Button>
-          <Button variant="secondary" onClick={handleNo}>
+          </button>
+          <button className="btn btn-secondary" onClick={handleNo}>
             No
-          </Button>
+          </button>
+          {/* <Button variant="primary" onClick={handleYes}>
+            Yes
+          </Button> */}
+          {/* <Button variant="secondary" onClick={handleNo}>
+            No
+          </Button> */}
         </Modal.Footer>
       </Modal>
     </>

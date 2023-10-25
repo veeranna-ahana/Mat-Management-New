@@ -193,6 +193,7 @@ export const endpoints = {
   getResizeMtrlStockList: `${API}/storeMng/getResizeMtrlStockList`,
   getMoveStoreMtrlStockByCustomer: `${API}/storeMng/getMoveStoreMtrlStockByCustomer`,
   getMoveStoreMtrlStockByLocation: `${API}/storeMng/getMoveStoreMtrlStockByLocation`,
+  getMoveStoreCustomerMtrlStockByLocation: `${API}/storeMng/getMoveStoreCustomerMtrlStockByLocation`,
   getMoveStoreMtrlStockByAll: `${API}/storeMng/getMoveStoreMtrlStockByAll`,
   updateMtrlstockLocationByMtrlStockId: `${API}/storeMng/updateMtrlstockLocationByMtrlStockId`,
   getLocationListMtrlStockCount: `${API}/storeMng/getLocationListMtrlStockCount`,

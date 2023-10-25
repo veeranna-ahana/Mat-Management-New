@@ -10,11 +10,14 @@ import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
+import PrintMaterialDC from "../../../print/return/PrintMaterialDC";
 
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 function OutwordMaterialIssueVocher(props) {
+  const [printOpen, setPrintOpen] = useState(false);
+
   const [show, setShow] = useState(false);
   const [showCreateDC, setShowCreateDC] = useState(false);
   const nav = useNavigate();
@@ -301,17 +304,19 @@ function OutwordMaterialIssueVocher(props) {
   let printDC = () => {
     //console.log("First formheader = ", formHeader, " outdata = ", outData);
     if (dcID !== "" && dcID !== 0) {
-      nav("/MaterialManagement/Return/CustomerJobWork/PrintMaterialDC", {
-        //formHeader: formHeader,
-        //outData: outData,
-        state: {
-          //id: data.RvID,
-          formHeader: formHeader,
-          outData: outData,
-          custdata: custdata,
-          dcRegister: dcRegister,
-        },
-      });
+      // nav("/MaterialManagement/Return/CustomerJobWork/PrintMaterialDC", {
+      //   //formHeader: formHeader,
+      //   //outData: outData,
+      //   state: {
+      //     //id: data.RvID,
+      //     formHeader: formHeader,
+      //     outData: outData,
+      //     custdata: custdata,
+      //     dcRegister: dcRegister,
+      //   },
+      // });
+
+      setPrintOpen(true);
     } else {
       toast.error("DC Not Created");
     }
@@ -957,6 +962,15 @@ function OutwordMaterialIssueVocher(props) {
         // fetchData={fetchData}
         // handleSave={handleSave}
         createDcResponse={createDcResponse}
+      />
+
+      <PrintMaterialDC
+        printOpen={printOpen}
+        setPrintOpen={setPrintOpen}
+        formHeader={formHeader}
+        outData={outData}
+        custdata={custdata}
+        dcRegister={dcRegister}
       />
     </>
   );

@@ -40,6 +40,7 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
   // console.log("......................................");
   // console.log("req.body.formHeader", req.body.formHeader);
 
+  // console.log("req.body.outData", req.body.outData);
   let flag = false;
 
   // let pkngdcno = null;
@@ -69,6 +70,39 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
                     )}', UpDated = ${element.UpDated} WHERE (Iv_Mtrl_Id = '${
                       element.Iv_Mtrl_Id
                     }')`,
+                    (err, data) => {
+                      // console.log("data........", data);
+                      if (err) logger.error(err);
+                      // res.send(data)
+                    }
+                  );
+                } catch (error) {
+                  next(error);
+                }
+                flag = true;
+              }
+
+              if (flag) {
+                res.send(data1);
+                // console.log("successfull");
+              } else {
+                res.send("Error found while updating (BE001)");
+              }
+            } else {
+              res.send("Error found while updating (BE001)");
+            }
+          } else if (req.body.type === "part") {
+            // type=part
+            if (data1.affectedRows !== 0) {
+              for (let i = 0; i < req.body.outData.length; i++) {
+                const element = req.body.outData[i];
+                // console.log("element...", element);
+                // , UpDated = ${element.UpDated}
+                try {
+                  misQueryMod(
+                    `UPDATE magodmis.mtrl_part_issue_details SET TotalWeight = '${parseFloat(
+                      element.TotalWeight
+                    )}'WHERE (Id = '${element.Id}')`,
                     (err, data) => {
                       // console.log("data........", data);
                       if (err) logger.error(err);
