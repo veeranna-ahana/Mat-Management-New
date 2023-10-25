@@ -596,7 +596,7 @@ function MaterialAllotmentMain() {
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">NC Program No</label>
               <input
-                className="form-label"
+                // className="form-label"
                 value={formHeader.NCProgramNo}
                 disabled
               />
@@ -607,7 +607,7 @@ function MaterialAllotmentMain() {
             <div style={{ marginBottom: "9px" }}>
               <label className="form-label">Material Code</label>
               <input
-                className="form-label"
+                // className="form-label"
                 value={formHeader.Mtrl_Code}
                 disabled
               />
@@ -619,7 +619,7 @@ function MaterialAllotmentMain() {
           <div className="col-md-4">
             <label className="form-label">Priority</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.Priority}
               disabled
             />
@@ -627,25 +627,25 @@ function MaterialAllotmentMain() {
 
           <div className="col-md-3">
             <label className="form-label">Machine</label>
-            <input className="form-label" value={formHeader.Machine} disabled />
+            <input value={formHeader.Machine} disabled />
           </div>
 
           <div className="col-md-3">
             <label className="form-label">Quantity</label>
-            <input className="form-label" value={formHeader.Qty} disabled />
+            <input value={formHeader.Qty} disabled />
           </div>
         </div>
 
         <div className="row">
           <div className="col-md-4">
             <label className="form-label">Status</label>
-            <input className="form-label" value={formHeader.PStatus} disabled />
+            <input value={formHeader.PStatus} disabled />
           </div>
 
           <div className="col-md-3">
             <label className="form-label">Process</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.Operation}
               disabled
             />
@@ -654,7 +654,7 @@ function MaterialAllotmentMain() {
           <div className="col-md-3">
             <label className="form-label">Allotted</label>
             <input
-              className="form-label"
+              // className="form-label"
               value={formHeader.QtyAllotted}
               disabled
             />
@@ -664,7 +664,7 @@ function MaterialAllotmentMain() {
         <div className="row">
           <div className="col-md-4">
             <label className="form-label">Source</label>
-            <input className="form-label" value="Customer" disabled />
+            <input value="Customer" disabled />
           </div>
 
           <div className="col-md-3">

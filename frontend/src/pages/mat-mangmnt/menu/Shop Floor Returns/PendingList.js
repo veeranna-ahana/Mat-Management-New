@@ -183,10 +183,10 @@ function PendingList(props) {
     clickToSelect: true,
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
-      setSelectedSecondTableRows([]);
       console.log("first row = ", row);
       setSecondTableSelectIndex([]);
       setFirstRowSelected(row);
+      setSelectedSecondTableRows([]);
       let url1 = endpoints.getSecondTableShopFloorReturn + "?id=" + row.IssueID;
       getRequest(url1, (data) => {
         data.forEach((sheet) => {
@@ -216,8 +216,6 @@ function PendingList(props) {
     onSelect: (row, isSelect, rowIndex, e) => {
       if (isSelect) {
         setSecondTableRow(row);
-        // console.log(isSelect);
-        // console.log(row);
         //store selected row data
         setSelectedSecondTableRows([...selectedSecondTableRows, row]);
         setSecondTableSelectIndex([...secondTableSelectIndex, row.NcPgmMtrlId]);
@@ -235,8 +233,16 @@ function PendingList(props) {
     onSelectAll: (isSelect, rows, e) => {
       // Handle select all rows
       if (isSelect) {
-        setSelectedSecondTableRows([...rows]);
+        const selectedRowIds = rows.map((row) => row.NcPgmMtrlId);
+        setSecondTableSelectIndex(selectedRowIds);
+        setSelectedSecondTableRows([...selectedSecondTableRows, ...rows]);
+
+        if (rows.length > 0) {
+          // Set secondTableRow to the first row in the selected rows
+          setSecondTableRow(rows[0]);
+        }
       } else {
+        setSecondTableSelectIndex([]);
         setSelectedSecondTableRows([]);
       }
     },
@@ -512,6 +518,8 @@ function PendingList(props) {
     }
   };
 
+  console.log("secondTableRow", secondTableRow);
+
   return (
     <>
       <YesNoModal
@@ -521,7 +529,6 @@ function PendingList(props) {
         modalResponse={modalYesNoResponse}
       />
       <LocationModel show={show} setShow={setShow} scrapModal={scrapModal} />
-
       <ResizeReturnModal
         isOpen={isModalOpen}
         secondTableRow={selectedSecondTableRows}
@@ -531,13 +538,13 @@ function PendingList(props) {
         setIsModalOpen={setIsModalOpen}
         type="return"
       />
-
       <ResizeModal
         open1={open1}
         setOpen1={setOpen1}
         row={secondTableRow}
         resizeModal={resizeModal}
       />
+
       <h4 className="title">Shop Floor Material Issue List</h4>
       <div className="row">
         <div className="col-md-3">
@@ -618,7 +625,6 @@ function PendingList(props) {
           </button>
         </div>
       </div>
-
       <div className="row mt-2">
         <div className="col-md-2 mb-5">
           {/* <SideComponent /> */}

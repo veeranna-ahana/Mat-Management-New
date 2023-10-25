@@ -14,12 +14,20 @@ const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    margin: "50px",
+    //  margin: "30px"
   },
 
   tableContainer: {
+    //   flexDirection: "row",
+    //   flexWrap: "wrap",
+    //   border: "1px solid black",
+    //   padding: "4px",
     flexDirection: "row",
     flexWrap: "wrap",
+    margin: 10,
+    border: "1px solid black",
+    paddingTop: "10px",
+    paddingBottom: "50px",
   },
 
   title1: {
@@ -55,11 +63,12 @@ const styles = StyleSheet.create({
   },
 
   blockRightAlign: {
-    width: "30%",
-    textAlign: "right",
+    width: "8%",
+    textAlign: "left",
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: "9",
+    fontFamily: "Helvetica-Bold",
   },
   blockLeftAlign: {
     width: "30%",
@@ -68,6 +77,22 @@ const styles = StyleSheet.create({
     fontSize: "9",
     // fontFamily: "Helvetica-Bold",
   },
+
+  blockRightAlign2: {
+    width: "8%",
+    textAlign: "left",
+    marginLeft: "10px",
+    marginTop: "10px",
+    fontSize: "9",
+    fontFamily: "Helvetica-Bold",
+  },
+  blockLeftAlign2: {
+    width: "20%",
+    marginLeft: "10px",
+    marginTop: "10px",
+    fontSize: "9",
+  },
+
   emptyBlock: {
     width: "35%",
   },
@@ -172,7 +197,7 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     width: "50px",
-    // marginLeft: "10px",
+    marginLeft: "10px",
   },
   companyInfo: {
     marginTop: "5px",
@@ -206,17 +231,40 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
               #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
               Bengaluru - 560105
             </Text>
-            <Text style={{ ...styles.companyInfo, marginLeft: "10px" }}>
+            <Text style={{ ...styles.companyInfo }}>
               +91-80-42291005, +91-8110-414313, info@magodlaser.in,
               https://www.magodlaser.in/
             </Text>
           </View>
         </View>
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
         {/* Issue By & Received By */}
-        <Text style={styles.blockWhole}>IV No : {formHeader.IV_No}</Text>
+
+        <View style={styles.blockRightAlign}>
+          <Text style={{ fontFamily: "Helvetica-Bold" }}>IV No</Text>
+          <Text style={styles.linegap}>Task No</Text>
+          <Text style={styles.linegap}>Customer</Text>
+        </View>
+
+        <View style={styles.blockLeftAlign}>
+          <Text>{formHeader.IV_No}</Text>
+          <Text style={styles.linegap}>{formHeader.TaskNo}</Text>
+          <Text style={styles.linegap}>{formHeader.Cust_name}</Text>
+        </View>
+
+        <View style={styles.blockRightAlign}>
+          <Text>Date</Text>
+          <Text style={styles.linegap}>Program No</Text>
+        </View>
+
+        <View style={styles.blockLeftAlign}>
+          <Text>{formHeader.Issue_date}</Text>
+          <Text style={styles.linegap}>{formHeader.NC_ProgramNo}</Text>
+        </View>
+
+        {/* <Text style={styles.blockWhole}>IV No : {formHeader.IV_No}</Text>
         <Text style={styles.blockLeftAlign}></Text>
         <Text style={styles.blockRightAlign}>
           Date: {formHeader.Issue_date}{" "}
@@ -227,22 +275,54 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
           Program No: {formHeader.NC_ProgramNo}
         </Text>
         <Text style={styles.emptyBlock}></Text>
-        <Text style={styles.blockWhole}>Customer: {formHeader.Cust_name} </Text>
+        <Text style={styles.blockWhole}>Customer: {formHeader.Cust_name} </Text> */}
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
-        <Text style={styles.blockWhole}>Material : {formHeader.Mtrl_Code}</Text>
-        <Text style={styles.blockLeftAlign}>Para 1: {formHeader.Para1}</Text>
-        <Text style={styles.blockLeftAlign}>Para 2: {formHeader.Para2}</Text>
-        <Text style={styles.blockLeftAlign}>Para 3: {formHeader.Para3}</Text>
+
+        <View style={styles.blockRightAlign2}>
+          <Text>Material</Text>
+          <Text style={styles.linegap}>Length</Text>
+          <Text style={styles.linegap}>Qty</Text>
+          <Text style={styles.linegap}>Source</Text>
+        </View>
+        <View style={styles.blockLeftAlign2}>
+          <Text>{formHeader.Mtrl_Code}</Text>
+          <Text style={styles.linegap}>{formHeader.Para1}</Text>
+          <Text style={styles.linegap}>{formHeader.Qty}</Text>
+          <Text style={styles.linegap}>Custom</Text>
+        </View>
+
+        <View style={styles.blockRightAlign2}>
+          <Text>Width</Text>
+          <Text style={styles.linegap}>Machine</Text>
+        </View>
+        <View style={styles.blockLeftAlign2}>
+          <Text>{formHeader.Para2}</Text>
+          <Text style={styles.linegap}>{formHeader.Machine}</Text>
+        </View>
+
+        <View style={styles.blockRightAlign2}>
+          <Text>Height</Text>
+          <Text style={styles.linegap}>Process</Text>
+        </View>
+        <View style={styles.blockLeftAlign2}>
+          <Text>{formHeader.Para3}</Text>
+          <Text style={styles.linegap}>{formHeader.MProcess}</Text>
+        </View>
+
+        {/* <Text style={styles.blockWhole}>Material : {formHeader.Mtrl_Code}</Text>
+        <Text style={styles.blockLeftAlign}>Length: {formHeader.Para1}</Text>
+        <Text style={styles.blockLeftAlign}>Width: {formHeader.Para2}</Text>
+        <Text style={styles.blockLeftAlign}>Height: {formHeader.Para3}</Text>
         <Text style={styles.blockLeftAlign}>Qty: {formHeader.Qty}</Text>
         <Text style={styles.blockLeftAlign}>Machine: {formHeader.Machine}</Text>
         <Text style={styles.blockLeftAlign}>
           Process: {formHeader.MProcess}
         </Text>
-        <Text style={styles.blockWhole}>Source : Custom</Text>
+        <Text style={styles.blockWhole}>Source : Custom</Text> */}
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
 
         <Text style={styles.mtrlID}>Mtrl ID </Text>
@@ -252,7 +332,7 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
         <Text style={styles.reject}>Reject </Text>
 
         <Text style={styles.line2}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
         {/* Table Row */}
         {tableData.map((item, index) => {
@@ -272,7 +352,7 @@ const PrintIVListProfileCuttingTable1 = ({ formHeader, tableData }) => (
           );
         })}
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
 
         {/* Issue By & Received By */}

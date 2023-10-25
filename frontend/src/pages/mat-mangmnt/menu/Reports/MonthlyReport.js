@@ -11,21 +11,25 @@ const { endpoints } = require("../../../api/constants");
 function MonthlyReport() {
   const nav = useNavigate();
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const dateee = new Date();
+  const monthhh = dateee.getMonth();
+  const yearrr = dateee.getFullYear();
 
+  // console.log("monthhhhhhhhh", yearrr + "-" + (monthhh + 1));
   const [firstTab, setFirstTab] = useState([]);
   const [secondTab, setSecondTab] = useState([]);
   const [thirdTab, setThirdTab] = useState([]);
   const [fourthTab, setFourthTab] = useState([]);
   const [fifthTab, setFifthTab] = useState([]);
 
-  const [dateVal, setDateVal] = useState("1988-01-01");
+  const [dateVal, setDateVal] = useState(yearrr + "-" + (monthhh + 1));
   const [monthval, setMonthVal] = useState(0);
   const [yearval, setYearVal] = useState(1900);
   const InputEvent = (e) => {
     const { name, value } = e.target;
-    console.log("value = ", value);
-    console.log("year = ", formatDate(new Date(value), 6));
-    console.log("month = ", formatDate(new Date(value), 8));
+    //console.log("value = ", value);
+    //console.log("year = ", formatDate(new Date(value), 6));
+    //console.log("month = ", formatDate(new Date(value), 8));
     setDateVal(value);
     setMonthVal(formatDate(new Date(value), 8));
     setYearVal(formatDate(new Date(value), 6));
@@ -44,7 +48,7 @@ function MonthlyReport() {
         data[i].id = i + 1;
       }
       setFirstTab(data);
-      console.log("first tab : ", data);
+      //console.log("first tab : ", data);
     });
 
     //second tab
@@ -59,7 +63,7 @@ function MonthlyReport() {
         data[i].id = i + 1;
       }
       setSecondTab(data);
-      console.log("second tab : ", data);
+      //console.log("second tab : ", data);
     });
 
     //thhird tab
@@ -74,7 +78,7 @@ function MonthlyReport() {
         data[i].id = i + 1;
       }
       setThirdTab(data);
-      console.log("third tab : ", data);
+      //console.log("third tab : ", data);
     });
 
     //fourth tab
@@ -89,7 +93,7 @@ function MonthlyReport() {
         data[i].id = i + 1;
       }
       setFourthTab(data);
-      console.log("fourth tab : ", data);
+      //console.log("fourth tab : ", data);
     });
 
     //fifth tab
@@ -104,7 +108,7 @@ function MonthlyReport() {
         data[i].id = i + 1;
       }
       setFifthTab(data);
-      console.log("fifth tab : ", data);
+      //console.log("fifth tab : ", data);
     });
   };
   function statusFormatter(cell, row, rowIndex, formatExtraData) {
@@ -274,7 +278,7 @@ function MonthlyReport() {
       fullStockTable1.push(obj);
     }
     await delay(300);
-    console.log("fullStockTable1 = ", fullStockTable1);
+    //console.log("fullStockTable1 = ", fullStockTable1);
 
     //calculate material purchase details
     var fullStockTable2 = [];
@@ -295,7 +299,7 @@ function MonthlyReport() {
       fullStockTable2.push(obj);
     }
     await delay(300);
-    console.log("fullStockTable2 = ", fullStockTable2);
+    //console.log("fullStockTable2 = ", fullStockTable2);
 
     nav("/MaterialManagement/Reports/PrintMonthlyReport", {
       state: {
@@ -309,18 +313,21 @@ function MonthlyReport() {
       },
     });
   };
+
+  // console.log("monthhh", monthhh + 1, "yearrr", yearrr);
   return (
     <div>
       {" "}
-      <h4 className="title">Raw Material Daily Report</h4>
+      <h4 className="title">Raw Material Month Report</h4>
       <div className="row">
         <div className="col-md-2">
           <label className="form-label">Select Month</label>
           <input
-            type="date"
-            name="date"
-            defaultValue="2021-03-10"
+            type="month"
+            name="month"
+            defaultValue={`${yearrr}-${monthhh + 1}`}
             onChange={InputEvent}
+            // placeholder="month,year"
           />
         </div>
         <div className="col-md-2"></div>

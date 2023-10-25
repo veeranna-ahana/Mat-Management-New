@@ -8,7 +8,6 @@ const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 function ResizeModal({ open1, setOpen1, row, resizeModal }) {
-  //console.log("row = ", row);
   const [open, setOpen] = useState(false);
 
   //console.log("row val =", row);
@@ -21,6 +20,7 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
     setLocationData(data);
   });
   //}, []);
+
   const handlSave = () => {
     console.log("row = ", row);
     if (row.ReminderPara1 < 10 || row.ReminderPara2 < 10) {
@@ -51,6 +51,7 @@ function ResizeModal({ open1, setOpen1, row, resizeModal }) {
     row[name] = value;
   };
   //rowResizeModal = () => setrow(row);
+
   return (
     <>
       {/* <ModalComp open={open} setOpen={setOpen} resizeModal={resizeModal} /> */}

@@ -58,11 +58,11 @@ function MaterialStockList() {
       dataField: "Qty",
     },
     {
-      text: "Wieght",
+      text: "Weight",
       dataField: "Weight",
     },
     {
-      text: "Scarp Wieght",
+      text: "Scarp Weight",
       dataField: "ScrapWeight",
     },
   ];
@@ -76,21 +76,21 @@ function MaterialStockList() {
       dataField: "Qty",
     },
     {
-      text: "Wieght",
+      text: "Weight",
       dataField: "Weight",
     },
     {
-      text: "Scarp Wieght",
+      text: "Scarp Weight",
       dataField: "ScrapWeight",
     },
   ];
   const columns2 = [
     {
-      text: "Para1",
+      text: "Length",
       dataField: "DynamicPara1",
     },
     {
-      text: "Para2",
+      text: "Width",
       dataField: "DynamicPara2",
     },
     {
@@ -106,11 +106,11 @@ function MaterialStockList() {
       dataField: "Scrap",
     },
     {
-      text: " Wieght",
+      text: "Weight",
       dataField: "Weight",
     },
     {
-      text: "Scarp Wieght",
+      text: "Scarp Weight",
       dataField: "ScrapWeight",
     },
   ];

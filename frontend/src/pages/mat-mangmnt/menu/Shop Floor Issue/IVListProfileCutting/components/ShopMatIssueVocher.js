@@ -293,15 +293,15 @@ function ShopMatIssueVocher() {
           <div className="row">
             {" "}
             <div className="col-md-4">
-              <label className="form-label">Dim</label>
+              <label className="form-label">Length</label>
               <input className="" disabled value={formHeader.Para1} />
             </div>
             <div className="col-md-4">
-              <label className="form-label">X</label>
+              <label className="form-label">Width</label>
               <input className="" disabled value={formHeader.Para2} />
             </div>
             <div className="col-md-4">
-              <label className="form-label">X</label>
+              <label className="form-label">Height</label>
               <input className="" disabled value={formHeader.Para3} />
             </div>
           </div>

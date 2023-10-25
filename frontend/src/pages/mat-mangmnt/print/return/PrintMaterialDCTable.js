@@ -136,7 +136,7 @@ const PrintMaterialDCTable = ({
   totalQTYVar,
 }) => (
   <Document>
-    {console.log("formHeader", formHeader)}
+    {/* {console.log("formHeader", formHeader)} */}
     <Page size="A4" style={styles.page}>
       <View style={styles.tableContainer}>
         {/* <Text style={styles.tableTitle}>Magod Laser Machining Pvt Ltd</Text>

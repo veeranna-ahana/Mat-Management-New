@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { PDFViewer, StyleSheet } from "@react-pdf/renderer";
+import { PDFViewer, StyleSheet, Image } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
 import PrintIVListProfileCuttingTable1 from "./PrintIVListProfileCuttingTable1";
 import PrintIVListProfileCuttingTable2 from "./PrintIVListProfileCuttingTable2";
@@ -14,6 +14,17 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     flexGrow: 1,
+  },
+  logoImage: {
+    width: "50px",
+    // marginLeft: "10px",
+  },
+  companyInfo: {
+    marginTop: "5px",
+    marginLeft: "20%",
+    width: "60%",
+    fontSize: "9",
+    alignSelf: "center",
   },
 });
 

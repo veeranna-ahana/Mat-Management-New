@@ -55,6 +55,28 @@ storeRouter.get("/getMoveStoreMtrlStockByLocation", async (req, res, next) => {
   }
 });
 
+storeRouter.get(
+  "/getMoveStoreCustomerMtrlStockByLocation",
+  async (req, res, next) => {
+    try {
+      let LocationNo = req.query.location;
+
+      misQueryMod(
+        // `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (not Locked or Scrap )`,
+        `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (NOT LOCKED OR Scrap ) GROUP BY Cust_Code
+      `,
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("dataaaa", data);
+          res.send(data);
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 storeRouter.get("/getMoveStoreMtrlStockByAll", async (req, res, next) => {
   try {
     misQueryMod(

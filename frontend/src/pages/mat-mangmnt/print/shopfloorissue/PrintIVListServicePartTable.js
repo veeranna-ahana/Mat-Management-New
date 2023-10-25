@@ -14,11 +14,16 @@ const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    margin: "50px",
+    // margin: "30px",
   },
+
   tableContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    margin: 10,
+    border: "1px solid black",
+    paddingTop: "10px",
+    paddingBottom: "10px",
   },
 
   title1: {
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
   },
   blockRightAlign: {
     width: "10%",
-    textAlign: "right",
+    textAlign: "left",
     marginLeft: "10px",
     marginTop: "10px",
     fontSize: "9",
@@ -91,6 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
   },
   // tableHeader: {
   //   width: "100%",
@@ -173,6 +179,7 @@ const styles = StyleSheet.create({
     marginTop: "10px",
     fontSize: 11,
     textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
   },
   lastText: {
     width: "45%",
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     width: "50px",
-    // marginLeft: "10px",
+    marginLeft: "10px",
   },
   companyInfo: {
     marginTop: "5px",
@@ -229,8 +236,9 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
           </View>
         </View>
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
+
         <View style={styles.blockRightAlign}>
           <Text style={{ fontFamily: "Helvetica-Bold" }}>IV No</Text>
           <Text style={styles.linegap}>Date</Text>
@@ -249,12 +257,13 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
 
         <View style={styles.blockRightAlign}>
           <Text>Customer</Text>
-          <Text style={styles.linegap}>Assey Name</Text>
+          <Text style={styles.linegap}>Assy Name</Text>
           <Text style={styles.linegap}>Operation</Text>
           <Text style={styles.linegap}>Mtrl Code</Text>
           <Text style={styles.linegap}>Machine</Text>
           <Text style={styles.linegap}>Remarks</Text>
         </View>
+
         <View style={styles.blockLeftAlignBigger}>
           <Text>{formHeader.Cust_name}</Text>
           <Text style={styles.linegap}>{formHeader.AssyName}</Text>
@@ -264,7 +273,7 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
           <Text style={styles.linegap}>{formHeader.Remarks}</Text>
         </View>
         <Text style={styles.line1}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
         <Text style={styles.assemblyPartList}>Assemby Parts List</Text>
         <Text style={styles.partQuantity}>Part Quantity</Text>
@@ -276,7 +285,7 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
         <Text style={styles.used}>Used</Text>
         <Text style={styles.returned}>Returned</Text>
         <Text style={styles.line2}>
-          _________________________________________________________________________________
+          ______________________________________________________________________________________________
         </Text>
         {/* Table Row */}
         {tableData.map((item, index) => {
@@ -298,7 +307,7 @@ const PrintIVListServicePartTable = ({ formHeader, tableData }) => (
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________________________________________________________________________
               </Text> */}
               <Text style={styles.line2}>
-                _________________________________________________________________________________
+                ______________________________________________________________________________________________
               </Text>
             </>
           );

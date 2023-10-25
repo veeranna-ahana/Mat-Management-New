@@ -6,6 +6,8 @@ import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { dateToShort, formatDate } from "../../../../../utils";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
+import Table from "react-bootstrap/Table";
+import PrintPartsDC from "../../../print/return/PrintPartsDC";
 
 // formatDate
 
@@ -13,6 +15,8 @@ const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 function OutwordPartIssueVocher(props) {
+  const [printOpen, setPrintOpen] = useState(false);
+
   const nav = useNavigate();
   const [show, setShow] = useState(false);
   const [showCreateDC, setShowCreateDC] = useState(false);
@@ -244,17 +248,19 @@ function OutwordPartIssueVocher(props) {
   let printDC = () => {
     //console.log("First formheader = ", formHeader, " outdata = ", outData);
     if (dcID !== "" && dcID !== 0) {
-      nav("/MaterialManagement/Return/CustomerJobWork/PrintPartsDC", {
-        //formHeader: formHeader,
-        //outData: outData,
-        state: {
-          //id: data.RvID,
-          formHeader: formHeader,
-          outData: outData,
-          custdata: custdata,
-          dcRegister: dcRegister,
-        },
-      });
+      // nav("/MaterialManagement/Return/CustomerJobWork/PrintPartsDC", {
+      //   //formHeader: formHeader,
+      //   //outData: outData,
+      //   state: {
+      //     //id: data.RvID,
+      //     formHeader: formHeader,
+      //     outData: outData,
+      //     custdata: custdata,
+      //     dcRegister: dcRegister,
+      //   },
+      // });
+      setPrintOpen(true);
+
       //window.location.reload();
     } else {
       toast.error("DC Not Created");
@@ -458,6 +464,48 @@ function OutwordPartIssueVocher(props) {
   };
 
   // console.log("status", formHeader.IVStatus);
+
+  const updateChange = (key, value, field) => {
+    const newArray = [];
+
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+
+      if (i === key) {
+        element[field] = value;
+      }
+      // console.log("element", element);
+
+      newArray.push(element);
+
+      // if(i===key){
+
+      // }else{
+
+      //   setOutData([element])
+      // }
+    }
+
+    // console.log("new", newArray);
+
+    setOutData(newArray);
+  };
+
+  console.log("outdata", outData);
+  const handleChangeWeightTotalCal = () => {
+    let newTotalCalWeight = 0;
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+      // console.log("elemet@@@@@@@@@@@@@@", element.TotalWeightCalculated);
+      newTotalCalWeight =
+        parseFloat(newTotalCalWeight) + parseFloat(element.TotalWeight);
+    }
+
+    setFormHeader({
+      ...formHeader,
+      TotalWeight: newTotalCalWeight,
+    });
+  };
   return (
     <>
       {/* new */}
@@ -677,7 +725,7 @@ function OutwordPartIssueVocher(props) {
         <div className="p-2"></div>
 
         {/* table */}
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-12">
             <div style={{ maxHeight: "420px", overflow: "auto" }}>
               <BootstrapTable
@@ -694,8 +742,153 @@ function OutwordPartIssueVocher(props) {
               ></BootstrapTable>
             </div>
           </div>
+        </div> */}
+
+        {/* table */}
+        <div className="row">
+          <div className="col-md-12">
+            <div style={{ maxHeight: "420px", overflow: "auto" }}>
+              <Table
+                hover
+                condensed
+                className="table-data border header-class table-striped"
+              >
+                <thead className="text-white">
+                  <tr>
+                    <th>SL No</th>
+                    <th>PartId / Part Name</th>
+                    <th>Qty Returned</th>
+                    <th>Unit Weight</th>
+                    <th>Total Weight</th>
+                    <th>Remarks</th>
+                    <th>Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {outData.map((val, key) => (
+                    <tr>
+                      <td>{key + 1}</td>
+                      <td>{val.PartId}</td>
+                      <td>{val.QtyReturned} </td>
+                      <td>{val.UnitWt}</td>
+                      <td>
+                        {/* {val.TotalWeight} */}
+
+                        <input
+                          type="number"
+                          min={0}
+                          disabled={
+                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Returned")
+                              ? true
+                              : false
+                          }
+                          defaultValue={parseFloat(val.TotalWeight)}
+                          onChange={(e) => {
+                            // console.log("eeeeeeeeee", e.target.value);
+
+                            updateChange(
+                              key,
+
+                              e.target.value.length === 0 ? 0 : e.target.value,
+                              "TotalWeight"
+                            );
+                            handleChangeWeightTotalCal();
+                          }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "transparent",
+                            border: "none",
+                          }}
+                        />
+                      </td>
+                      <td>{val.Remarks}</td>
+
+                      <td>
+                        <input type="checkbox" name="" id="" />
+                      </td>
+                      {/* <td
+                   
+                    >
+                      <input
+                        type="number"
+                        min={0}
+                        disabled={
+                          (formHeader.IVStatus === "Cancelled") |
+                          (formHeader.IVStatus === "Returned")
+                            ? true
+                            : false
+                        }
+                        defaultValue={parseFloat(val.TotalWeightCalculated)}
+                        onChange={(e) => {
+
+                          updateChange(
+                            key,
+
+                            e.target.value.length === 0 ? 0 : e.target.value,
+                            "TotalWeightCalculated"
+                          );
+                          handleChangeWeightTotalCal();
+                        }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      />
+                    </td>
+                    <td>
+                      {val.UpDated === 0 ? (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          disabled={
+                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Returned")
+                              ? true
+                              : false
+                          }
+                          onClick={() => updateChange(key, 1, "UpDated")}
+                        />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          checked
+                          disabled={
+                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Returned")
+                              ? true
+                              : false
+                          }
+                          onClick={() => updateChange(key, 0, "UpDated")}
+
+                        
+                        />
+                      )}
+                    </td> */}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* print */}
+      <PrintPartsDC
+        printOpen={printOpen}
+        setPrintOpen={setPrintOpen}
+        formHeader={formHeader}
+        outData={outData}
+        custdata={custdata}
+        dcRegister={dcRegister}
+      />
 
       {/* modals */}
       <ReturnCancelIVModal
