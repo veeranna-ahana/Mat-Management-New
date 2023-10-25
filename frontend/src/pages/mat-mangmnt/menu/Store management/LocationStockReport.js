@@ -3,6 +3,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
 import PrintLocationStockSummaryReport from "../../print/store/PrintLocationStockSummaryReport";
+import PrintLocationStockDetailReport from "../../print/store/PrintLocationStockDetailReport";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -20,6 +21,7 @@ function LocationStockReport() {
   let [custCode, setCustCode] = useState("-1");
 
   const [summaryReportPrintOpen, setSummaryReportPrintOpen] = useState(false);
+  const [detailsReportPrintOpen, setDetailsReportPrintOpen] = useState(false);
 
   let [selectedfirstRow, setSelectedFirstRow] = useState({
     LocationNo: "",
@@ -200,26 +202,50 @@ function LocationStockReport() {
     // });
   };
 
+  // details report calc starts
+
+  let tot1 = 0,
+    tot2 = 0;
+  for (let i = 0; i < thirdTable.length; i++) {
+    tot1 = tot1 + parseFloat(thirdTable[i].Weight);
+    tot2 = tot2 + parseFloat(thirdTable[i].ScrapWeight);
+  }
+  let tabletotal = {
+    qty: thirdTable.length,
+    tot1: tot1,
+    tot2: tot2,
+  };
+  // await delay(300);
+  // nav("/MaterialManagement/StoreManagement/PrintLocationStockDetailReport", {
+  //   state: {
+  //     formHeader: selectedSecondRow,
+  //     tableData: thirdTable,
+  //     tabletotal: tabletotal,
+  //   },
+  // });
+  // details report calc ends
+
   const detailsReport = async () => {
-    let tot1 = 0,
-      tot2 = 0;
-    for (let i = 0; i < thirdTable.length; i++) {
-      tot1 = tot1 + parseFloat(thirdTable[i].Weight);
-      tot2 = tot2 + parseFloat(thirdTable[i].ScrapWeight);
-    }
-    let tabletotal = {
-      qty: thirdTable.length,
-      tot1: tot1,
-      tot2: tot2,
-    };
-    await delay(300);
-    nav("/MaterialManagement/StoreManagement/PrintLocationStockDetailReport", {
-      state: {
-        formHeader: selectedSecondRow,
-        tableData: thirdTable,
-        tabletotal: tabletotal,
-      },
-    });
+    setDetailsReportPrintOpen(true);
+    // let tot1 = 0,
+    //   tot2 = 0;
+    // for (let i = 0; i < thirdTable.length; i++) {
+    //   tot1 = tot1 + parseFloat(thirdTable[i].Weight);
+    //   tot2 = tot2 + parseFloat(thirdTable[i].ScrapWeight);
+    // }
+    // let tabletotal = {
+    //   qty: thirdTable.length,
+    //   tot1: tot1,
+    //   tot2: tot2,
+    // };
+    // await delay(300);
+    // nav("/MaterialManagement/StoreManagement/PrintLocationStockDetailReport", {
+    //   state: {
+    //     formHeader: selectedSecondRow,
+    //     tableData: thirdTable,
+    //     tabletotal: tabletotal,
+    //   },
+    // });
   };
   const columns1 = [
     {
@@ -646,6 +672,14 @@ function LocationStockReport() {
         summaryReportPrintOpen={summaryReportPrintOpen}
         formHeader={selectedfirstRow}
         tableData={fullTable}
+      />
+
+      <PrintLocationStockDetailReport
+        setDetailsReportPrintOpen={setDetailsReportPrintOpen}
+        detailsReportPrintOpen={detailsReportPrintOpen}
+        formHeader={selectedSecondRow}
+        tableData={thirdTable}
+        tabletotal={tabletotal}
       />
     </>
   );
