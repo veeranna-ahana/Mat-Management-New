@@ -100,15 +100,12 @@ function UnitsIssueToProduction() {
           </div>
         </div>
         <div className="col-md-4">
-          {" "}
           <div className="row mt-4">
-            {" "}
             <div className="col-md-12">
               <button className="button-style ">Print</button>
             </div>
           </div>
           <div className="row mt-4">
-            {" "}
             <div
               className="col-md-12 mt-2"
               style={{ display: "flex", gap: "5px" }}
@@ -130,7 +127,6 @@ function UnitsIssueToProduction() {
             <div className="col-md-12">
               <label className="form-label">Combined Sheets</label>
               <div>
-                {" "}
                 <textarea style={{ height: "100px" }}></textarea>
               </div>
             </div>
@@ -145,8 +141,9 @@ function UnitsIssueToProduction() {
           marginTop: "20px",
         }}
       >
-        <Table striped  className="table-data border">
-          <thead  className="tableHeaderBGColor"
+        <Table striped className="table-data border">
+          <thead
+            className="tableHeaderBGColor"
             style={{
               textAlign: "center",
               position: "sticky",

@@ -13,8 +13,14 @@ shopfloorUnitIssueRegisterRouter.get(
       let para1 = req.query.para1;
       let para2 = req.query.para2;
 
+      //   let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
+      // m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
+
       let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND 
-    m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
+   m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 ORDER BY
+    SUBSTRING(MtrlStockID, 1, 8) ASC,   
+    CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(MtrlStockID, '/', -1), '/', 1) AS SIGNED) ASC, 
+    SUBSTRING(MtrlStockID, 9, 2) ASC`;
 
       if (shape === "Sheet") {
         query += `AND ((DynamicPara1>=${para1} AND DynamicPara2>=${para2}) OR (DynamicPara2>=${para1} AND DynamicPara1>=${para2}))`;
