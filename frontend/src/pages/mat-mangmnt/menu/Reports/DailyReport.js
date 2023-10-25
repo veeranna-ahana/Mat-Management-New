@@ -6,6 +6,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import PrintDailyReportReceipt from "../../print/report/PrintDailyReportReceipt";
+import PrintDailyReportInvoice from "../../print/report/PrintDailyReportInvoice";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -271,39 +272,77 @@ function DailyReport() {
     //   },
     // });
   };
-  const printInvoice = async () => {
-    //first find out the unique type
-    var invType = [...new Set(secondTab.map((item) => item.DC_InvType))];
-    invType = invType.sort();
-    //console.log("type = ", invType.sort());
 
-    //calculate material purchase details
-    var fullTable = [];
-    for (let i = 0; i < invType.length; i++) {
-      let tot = 0;
-      var tempdata = [];
-      for (let j = 0; j < secondTab.length; j++) {
-        if (invType[i] === secondTab[j].DC_InvType) {
-          tempdata.push(secondTab[j]);
-          tot = tot + parseFloat(secondTab[j].SrlWt);
-        }
+  // print invoicce dispatch func starts
+
+  //first find out the unique type
+  var invType = [...new Set(secondTab.map((item) => item.DC_InvType))];
+  invType = invType.sort();
+  //console.log("type = ", invType.sort());
+
+  //calculate material purchase details
+  var fullTable = [];
+  for (let i = 0; i < invType.length; i++) {
+    let tot = 0;
+    var tempdata = [];
+    for (let j = 0; j < secondTab.length; j++) {
+      if (invType[i] === secondTab[j].DC_InvType) {
+        tempdata.push(secondTab[j]);
+        tot = tot + parseFloat(secondTab[j].SrlWt);
       }
-      let obj = {
-        material: invType[i],
-        totwt: tot,
-        data: tempdata,
-      };
-      fullTable.push(obj);
     }
-    await delay(300);
-    //console.log("fullTable = ", fullTable);
+    let obj = {
+      material: invType[i],
+      totwt: tot,
+      data: tempdata,
+    };
+    fullTable.push(obj);
+  }
+  //  await delay(300);
+  //console.log("fullTable = ", fullTable);
 
-    nav("/MaterialManagement/Reports/PrintDailyReportInvoice", {
-      state: {
-        tableData: fullTable,
-        date: dateVal,
-      },
-    });
+  //  nav("/MaterialManagement/Reports/PrintDailyReportInvoice", {
+  //    state: {
+  //      tableData: fullTable,
+  //      date: dateVal,
+  //    },
+  //  });
+
+  // print invoicce dispatch func ends
+  const printInvoice = async () => {
+    setInvoiceDispatchPrint(true);
+    // //first find out the unique type
+    // var invType = [...new Set(secondTab.map((item) => item.DC_InvType))];
+    // invType = invType.sort();
+    // //console.log("type = ", invType.sort());
+
+    // //calculate material purchase details
+    // var fullTable = [];
+    // for (let i = 0; i < invType.length; i++) {
+    //   let tot = 0;
+    //   var tempdata = [];
+    //   for (let j = 0; j < secondTab.length; j++) {
+    //     if (invType[i] === secondTab[j].DC_InvType) {
+    //       tempdata.push(secondTab[j]);
+    //       tot = tot + parseFloat(secondTab[j].SrlWt);
+    //     }
+    //   }
+    //   let obj = {
+    //     material: invType[i],
+    //     totwt: tot,
+    //     data: tempdata,
+    //   };
+    //   fullTable.push(obj);
+    // }
+    // await delay(300);
+    // //console.log("fullTable = ", fullTable);
+
+    // nav("/MaterialManagement/Reports/PrintDailyReportInvoice", {
+    //   state: {
+    //     tableData: fullTable,
+    //     date: dateVal,
+    //   },
+    // });
   };
 
   function afterSaveCell(oldValue, newValue, row) {
@@ -444,6 +483,13 @@ function DailyReport() {
         date={dateVal}
         totalweight={totalweight}
         totqty={totqty}
+      />
+
+      <PrintDailyReportInvoice
+        setInvoiceDispatchPrint={setInvoiceDispatchPrint}
+        invoiceDispatchPrint={invoiceDispatchPrint}
+        tableData={fullTable}
+        date={dateVal}
       />
     </>
   );
