@@ -77,9 +77,9 @@ function ShopFloorMaterialAllotment(props) {
         });
       });
       if (props.formtype === "Parts") {
-        await delay(7000);
+        await delay(800);
       } else {
-        await delay(13000);
+        await delay(800);
       }
       setTreeData(data);
       console.log("data = ", data);
@@ -88,6 +88,8 @@ function ShopFloorMaterialAllotment(props) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log("tableData", tableData);
 
   const columns = [
     {
