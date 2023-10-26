@@ -1,9 +1,19 @@
 import React from "react";
-import { Page, Document, StyleSheet, View, Text } from "@react-pdf/renderer";
+import {
+  Page,
+  Document,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+} from "@react-pdf/renderer";
+import MLLogo from "../../../../../../frontend/src/ML-LOGO.png";
+
 import { formatDate } from "../../../../utils";
 
 //function PrintMaterialDCTable() {
 const styles = StyleSheet.create({
+  insideBox: { borderBottom: "1px", padding: "0.6%" },
   page: {
     fontSize: 11,
     flexDirection: "column",
@@ -105,207 +115,399 @@ const PrintMonthlyTable = ({
   saleDetails,
 }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.tableContainer}>
-        <Text style={styles.topspace}></Text>
+    <Page size="A4" style={{ padding: "3%", fontSize: "11" }}>
+      <View>
+        {/* Top */}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Image src={MLLogo} style={{ width: "8.3%" }} />
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              Magod Laser Machining Pvt. Ltd.
+            </Text>
+            <Text style={{ fontWeight: "700" }}>
+              GSTIN: 29AABCM1970H1ZE, CIN: U28900KA1995PTC018437
+            </Text>
+            <Text>
+              #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
+              Bengaluru - 560105
+            </Text>
+            <Text>
+              +91-80-42291005, +91-8110-414313, info@magodlaser.in,
+              https://www.magodlaser.in/
+            </Text>
+            <Text>Material Summary For the Month of : {date}</Text>
+          </View>
+          <Text style={{ padding: "3%" }}></Text>
+        </View>
+        <Text style={{ padding: "1%" }}></Text>
+        <View style={{ border: "1px" }}>
+          <View
+            style={{
+              // display: "flex",
+              // flexDirection: "column",
+              // justifyContent: "center",
+              padding: "1%",
+            }}
+          >
+            {/* summary section */}
+            {/* Material Purchase Summary */}
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ borderBottom: "1px" }}>
+                  Material Purchase Summary
+                </Text>
+              </View>
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Text style={styles.material}>Material</Text>
+                <Text style={styles.weightinkgs}>Weight in Kgs</Text>
+              </View>
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "flex-start",
+                }}
+              >
+                {fourthTab.map((item, index) => {
+                  return (
+                    <>
+                      <View
+                        style={{
+                          // ...styles.insideBox,
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Text style={styles.material}>{item.Material}</Text>
+                        <Text style={styles.weightinkgs}>
+                          {Math.round(parseFloat(item.TotalWeight))}
+                        </Text>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
+            </View>
+            {/* Material Sales Summary */}
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ borderBottom: "1px" }}>
+                  Material Sales Summary
+                </Text>
+              </View>
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Text style={styles.material}>Material</Text>
+                <Text style={styles.weightinkgs}>Weight in Kgs</Text>
+              </View>
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "flex-start",
+                }}
+              >
+                {thirdTab.map((item, index) => {
+                  return (
+                    <>
+                      <View
+                        style={{
+                          // ...styles.insideBox,
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Text style={styles.material}>{item.Material}</Text>
+                        <Text style={styles.weightinkgs}>
+                          {Math.round(parseFloat(item.SrlWt))}
+                        </Text>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
+            </View>
+            {/* Monthly Material Handling Summary */}
 
-        <Text style={styles.titleFull}>
-          Magod Laser Machining Pvt Ltd : Jigani
-        </Text>
-        <Text style={styles.titleFull1}>Material Summary For the Month of</Text>
-        <Text style={styles.titleFull1}>{date}</Text>
-        {/* material purchase summary */}
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.titleFull2}>Material Purchase Summary</Text>
-        <Text style={styles.material}>Material </Text>
-        <Text style={styles.weightinkgs}>Weight in Kgs</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {fourthTab.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.material}>{item.Material}</Text>
-              <Text style={styles.weightinkgs}>
-                {Math.round(parseFloat(item.TotalWeight))}
-              </Text>
-            </>
-          );
-        })}
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ borderBottom: "1px" }}>
+                  Monthly Material Handling Summary
+                </Text>
+              </View>
 
-        {/* material Sales summary */}
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.titleFull2}>Material Sales Summary</Text>
-        <Text style={styles.material}>Material </Text>
-        <Text style={styles.weightinkgs}>Weight in Kgs</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {thirdTab.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.material}>{item.Material}</Text>
-              <Text style={styles.weightinkgs}>
-                {Math.round(parseFloat(item.SrlWt))}
-              </Text>
-            </>
-          );
-        })}
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "flex-start",
+                }}
+              >
+                {totalobj.map((item, index) => {
+                  return (
+                    <>
+                      <View
+                        style={{
+                          // ...styles.insideBox,
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Text style={styles.material}>{item.type}</Text>
+                        <Text style={styles.weightinkgs}>Material</Text>
+                        <Text style={styles.totqty}>
+                          Quantity : {item.total}
+                        </Text>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
+            </View>
 
-        {/* print total */}
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.titleFull2}>Monthly Material Handling Summary</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {totalobj.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.material}>{item.type}</Text>
-              <Text style={styles.weightinkgs}>Material</Text>
-              <Text style={styles.totqty}>Quantity : {item.total}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-              {/* <Text style={styles.material}></Text>
-              <Text style={styles.weightinkgs}></Text>
-              <Text style={styles.totqty}>{item.total}</Text> */}
-            </>
-          );
-        })}
+            {/* details sections */}
+            {/*Material Purchase Details */}
 
-        {/* purchase Details */}
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.title1}>Material Purchase Details</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {purchaseDetails.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.titleFull3}>{item.material}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ borderBottom: "1px" }}>
+                  Material Purchase Details
+                </Text>
+              </View>
 
-              {item.data.map((item, index) => {
-                return (
-                  <>
-                    <Text style={styles.para}></Text>
-                    <Text style={styles.para}>
-                      {formatDate(new Date(item.RV_Date), 3)}
-                    </Text>
-                    <Text style={styles.para}>{item.RV_No}</Text>
-                    <Text style={styles.para}>
-                      {Math.round(parseInt(item.TotalWeight))}
-                    </Text>
-                    <Text style={styles.docu}>{item.CustDocuNo}</Text>
-                  </>
-                );
-              })}
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "flex-start",
+                  border: "none",
+                }}
+              >
+                {purchaseDetails.map((item, index) => {
+                  return (
+                    <>
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text style={{ borderBottom: "1px" }}>
+                          {item.material}
+                        </Text>
+                      </View>
 
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-              <Text style={styles.para}></Text>
-              <Text style={styles.para}></Text>
-              <Text style={styles.para}>Total</Text>
-              <Text style={styles.para}>{item.totwt}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-            </>
-          );
-        })}
+                      <View
+                        style={{
+                          // ...styles.insideBox,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {item.data.map((item, index) => {
+                          return (
+                            <>
+                              <View
+                                style={{
+                                  // ...styles.insideBox,
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Text style={styles.para}>
+                                  {formatDate(new Date(item.RV_Date), 3)}
+                                </Text>
+                                <Text style={styles.para}>{item.RV_No}</Text>
+                                <Text style={styles.para}>
+                                  {Math.round(parseInt(item.TotalWeight))}
+                                </Text>
+                                <Text style={styles.docu}>
+                                  {item.CustDocuNo}
+                                </Text>
+                              </View>
+                            </>
+                          );
+                        })}
+                        <View
+                          style={{
+                            // ...styles.insideBox,
+                            // border: "none",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            borderTop: "1px",
+                            borderBottom: "1px",
+                            marginTop: "0.6%",
+                            padding: "0.6%",
+                          }}
+                        >
+                          <Text style={styles.para}></Text>
+                          <Text style={styles.para}>Total</Text>
+                          <Text style={styles.para}>{item.totwt}</Text>
+                          <Text style={styles.docu}></Text>
+                        </View>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
+            </View>
 
-        {/* sale Details */}
-        <Text style={styles.title1}>Material Sale Details</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {saleDetails.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.titleFull3}>{item.material}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
+            {/* Material Sales Details */}
 
-              {item.data.map((item, index) => {
-                return (
-                  <>
-                    <Text style={styles.para}></Text>
-                    <Text style={styles.para}>
-                      {formatDate(new Date(item.Inv_Date), 3)}
-                    </Text>
-                    <Text style={styles.para}>{item.Inv_No}</Text>
-                    <Text style={styles.para}>
-                      {Math.round(parseInt(item.SrlWt))}
-                    </Text>
-                    <Text style={styles.docu}>{item.Cust_Name}</Text>
-                  </>
-                );
-              })}
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ borderBottom: "1px" }}>
+                  Material Sales Details
+                </Text>
+              </View>
 
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-              <Text style={styles.para}></Text>
-              <Text style={styles.para}></Text>
-              <Text style={styles.para}>Total</Text>
-              <Text style={styles.para}>{item.totwt}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-            </>
-          );
-        })}
+              <View
+                style={{
+                  ...styles.insideBox,
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "flex-start",
+                  border: "none",
+                }}
+              >
+                {saleDetails.map((item, index) => {
+                  return (
+                    <>
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text style={{ borderBottom: "1px" }}>
+                          {item.material}
+                        </Text>
+                      </View>
 
-        {/* <Text style={styles.rvno}>Rv No</Text>
-        <Text style={styles.customer}>Customer</Text>
-        <Text style={styles.material}>Material</Text>
-        <Text style={styles.shape}>Shape</Text>
-        <Text style={styles.totalweight}>Total Weight</Text>
-        <Text style={styles.quantity}>Quantity</Text>
-
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        {tableData.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.rvnoVal}>{item.RV_No}</Text>
-              <Text style={styles.customerVal}>{item.Customer}</Text>
-              <Text style={styles.materialVal}>{item.material}</Text>
-              <Text style={styles.shapeVal}>{item.Shape}</Text>
-              <Text style={styles.totalweightVal}>{item.totalWeight}</Text>
-              <Text style={styles.quantityVal}>{item.qty}</Text>
-            </>
-          );
-        })}
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-
-        <Text style={styles.emptyblock1}></Text>
-        <Text style={styles.summaryFinal}>Summary</Text>
-        <Text style={styles.totalWeightFinal}>{totalweight.toFixed(2)}</Text>
-        <Text style={styles.quantityFinal}>{totqty}</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.MaterialReceiptIncharge}>
-          Material Receipt Incharge
-        </Text>
-        <Text style={styles.MaterialDeptIncharge}>Material Dept Incharge</Text> */}
+                      <View
+                        style={{
+                          // ...styles.insideBox,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {item.data.map((item, index) => {
+                          return (
+                            <>
+                              <View
+                                style={{
+                                  // ...styles.insideBox,
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Text style={styles.para}>
+                                  {formatDate(new Date(item.Inv_Date), 3)}
+                                </Text>
+                                <Text style={styles.para}>{item.Inv_No}</Text>
+                                <Text style={styles.para}>
+                                  {Math.round(parseInt(item.SrlWt))}
+                                </Text>
+                                <Text style={styles.docu}>
+                                  {item.Cust_Name}
+                                </Text>
+                              </View>
+                            </>
+                          );
+                        })}
+                        <View
+                          style={{
+                            // ...styles.insideBox,
+                            // border: "none",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            borderTop: "1px",
+                            borderBottom: "1px",
+                            marginTop: "0.6%",
+                            padding: "0.6%",
+                          }}
+                        >
+                          <Text style={styles.para}></Text>
+                          <Text style={styles.para}>Total</Text>
+                          <Text style={styles.para}>{item.totwt}</Text>
+                          <Text style={styles.docu}></Text>
+                        </View>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
     </Page>
   </Document>
