@@ -75,7 +75,11 @@ function NewSheetsUnits(props) {
     weight: "0",
     calcWeight: "0",
     type: props.type === "sheets" ? "Sheets" : "Units",
-    address: "",
+    // address: "",
+    address:
+      props.type2 === "purchase"
+        ? "Plot No 72 , Phase II KAIDB Indl  Area KAIDB Indl  Area Jigani Anekal Taluk"
+        : "",
   });
 
   let [custdata, setCustdata] = useState([]);
