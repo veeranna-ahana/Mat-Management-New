@@ -192,7 +192,7 @@ function OutwordPartIssueVocher(props) {
     setFormHeader({ ...formHeader, IVStatus: "Cancelled" });
   };
 
-  let createDC = () => {
+  let createDC = (e) => {
     let flag = 0;
     if (
       formHeader.TotalWeight === 0 ||
@@ -206,6 +206,7 @@ function OutwordPartIssueVocher(props) {
     if (flag === 0) {
       // console.log("Valid");
       setShowCreateDC(true);
+      saveButtonState(e);
       //setBoolVal1(false);
       //setBoolVal2(true);
     }
