@@ -129,6 +129,12 @@ a {
   overflow-y: scroll;
 }
 
+.content.no-scroll {
+  height: 85vh;
+  padding: 10px;
+  overflow-y: visible !important;
+}
+
 .text-link {
   text-decoration: none;
   color: #000000;

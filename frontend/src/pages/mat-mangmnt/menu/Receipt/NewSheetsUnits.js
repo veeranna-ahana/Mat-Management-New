@@ -16,6 +16,7 @@ function NewSheetsUnits(props) {
   const [show, setShow] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteRvModalOpen, setDeleteRvModalOpen] = useState(false);
+
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
   const currDate = new Date()
     .toJSON()
@@ -41,6 +42,7 @@ function NewSheetsUnits(props) {
   const [boolPara3, setBoolPara3] = useState(false);
 
   const [mtrlArray, setMtrlArray] = useState([]);
+  const [checkboxState, setCheckboxState] = useState();
   const [mtrlStock, setMtrlStock] = useState({});
   //after clicking inspected checkbox
   const [boolVal5, setBoolVal5] = useState(false);
@@ -133,15 +135,16 @@ function NewSheetsUnits(props) {
       dataField: "mtrlCode",
     },
     {
-      text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
+      text: unitLabel1 !== "" ? para1Label : "",
       dataField: "dynamicPara1",
     },
+    // + "(" + unitLabel1 + ")"
     {
-      text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
+      text: unitLabel2 !== "" ? para2Label : "",
       dataField: "dynamicPara2",
     },
     {
-      text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
+      text: unitLabel3 !== "" ? para3Label : "",
       dataField: "dynamicPara3",
     },
     {
@@ -204,14 +207,15 @@ function NewSheetsUnits(props) {
   // useEffect(() => {
   //   setFormHeader(formHeader);
   // }, [formHeader]); //[inputPart]);
-  console.log(custdata);
+
   console.log(formHeader);
   let changeCustomer = async (e) => {
     //e.preventDefault();
     //const { value, name } = e.target;
-
+    console.log(custdata);
     const found = custdata.find((obj) => obj.Cust_Code === e[0].Cust_Code);
-    //setCustDetailVal(found.Address);
+    // setCustDetailVal(found.Address);
+    console.log("found.Address", found.Address);
 
     setFormHeader((preValue) => {
       // console.log(preValue);
@@ -237,6 +241,7 @@ function NewSheetsUnits(props) {
     const found = custdata.find((obj) => obj.Cust_Code === value);
     //setCustDetailVal(found.Address);
 
+    console.log("found.Address", found.Address);
     setFormHeader((preValue) => {
       //console.log(preValue)
       return {
@@ -905,7 +910,24 @@ function NewSheetsUnits(props) {
         let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
         getRequest(url, async (data) => {
           //setCustdata(data);
-          // console.log("weight", data);
+          console.log("data...", data);
+          // console.log(
+          //   "inputPart.qtyAccepted...",
+          //   parseFloat(inputPart.qtyAccepted)
+          // );
+          // console.log(
+          //   "inputPart.dynamicPara1...",
+          //   parseFloat(inputPart.dynamicPara1)
+          // );
+          // console.log(
+          //   "inputPart.dynamicPara2...",
+          //   parseFloat(inputPart.dynamicPara2)
+          // );
+          // console.log(
+          //   "inputPart.dynamicPara3...",
+          //   parseFloat(inputPart.dynamicPara3)
+          // );
+
           let TotalWeightCalculated =
             parseFloat(inputPart.qtyAccepted) *
             getWeight(
@@ -915,7 +937,7 @@ function NewSheetsUnits(props) {
               parseFloat(inputPart.dynamicPara3)
             );
 
-          // console.log("TotalWeightCalculated", TotalWeightCalculated);
+          console.log("TotalWeightCalculated...", TotalWeightCalculated);
 
           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
           // console.log("TotalWeightCalculated", TotalWeightCalculated);
@@ -1042,6 +1064,8 @@ function NewSheetsUnits(props) {
     onSelect: (row, isSelect, rowIndex, e) => {
       // setIsButtonEnabled(row.updated === 1);
 
+      setCheckboxState(row.updated);
+
       console.log("row", row);
       setSelectedRows(row);
       setInputPart(row);
@@ -1134,6 +1158,8 @@ function NewSheetsUnits(props) {
     },
   };
 
+  // console.log("setCheckboxState", checkboxState);
+
   // console.log("selectedRowss:", selectedRows);
   // console.log("inputpart:", inputPart);
 
@@ -1207,11 +1233,20 @@ function NewSheetsUnits(props) {
         if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
           materialArray[i].updated = 1;
         }
+        // setMaterialArray(materialArray);
+        // console.log("materialArray[i].updated = 1", materialArray[i].updated);
       }
       await delay(500);
+      setInputPart({ ...inputPart, updated: 1 });
       setMaterialArray(materialArray);
       // console.log("after materialArray = ", materialArray);
     }
+
+    // // Update checkboxState based on materialArray
+    // const updatedCheckboxState = materialArray.map(
+    //   (item) => item.updated === 1
+    // );
+    // setCheckboxState(updatedCheckboxState);
   };
   // console.log("after materialArray = ", materialArray[i]?.updated);
 
@@ -1238,14 +1273,21 @@ function NewSheetsUnits(props) {
             if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
               materialArray[i].updated = 0;
             }
+            // setMaterialArray(materialArray);
           }
           await delay(500);
           setMaterialArray(materialArray);
+          setInputPart({ ...inputPart, updated: 0 });
         } else {
           toast.error("Stock Not Removed");
         }
       });
     }
+    // // Update checkboxState based on materialArray
+    // const updatedCheckboxState = materialArray.map(
+    //   (item) => item.updated === 0
+    // );
+    // setCheckboxState(updatedCheckboxState);
   };
 
   console.log("mtrlarray11223344", mtrlArray);
@@ -1364,11 +1406,11 @@ function NewSheetsUnits(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -1377,7 +1419,7 @@ function NewSheetsUnits(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -1386,9 +1428,20 @@ function NewSheetsUnits(props) {
               readOnly
             />
           </div>
+          <div className="col-md-3">
+            <label className="form-label">Weight</label>
+            <input
+              type="number"
+              name="weight"
+              required
+              value={formHeader.weight}
+              onChange={InputHeaderEvent}
+              disabled={boolVal4}
+            />
+          </div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
             <label className="form-label">Customer</label>
             {props.type2 !== "purchase" ? (
               <Typeahead
@@ -1434,20 +1487,6 @@ function NewSheetsUnits(props) {
             )}
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              type="number"
-              name="weight"
-              required
-              value={formHeader.weight}
-              onChange={InputHeaderEvent}
-              disabled={boolVal4}
-            />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-8">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -1457,7 +1496,7 @@ function NewSheetsUnits(props) {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="number"
@@ -1467,12 +1506,47 @@ function NewSheetsUnits(props) {
               readOnly
             />
           </div>
+          {/* <div className="col-md-4">
+            <label className="form-label">Weight</label>
+            <input
+              type="number"
+              name="weight"
+              required
+              value={formHeader.weight}
+              onChange={InputHeaderEvent}
+              disabled={boolVal4}
+            />
+          </div> */}
+        </div>
+
+        <div className="row">
+          {/* <div className="col-md-8">
+            <label className="form-label">Reference</label>
+            <input
+              type="text"
+              name="reference"
+              value={formHeader.reference}
+              onChange={InputHeaderEvent}
+              disabled={boolVal2 & boolVal4}
+            />
+          </div> */}
+          {/* <div className="col-md-4">
+            <label className="form-label">Calculated Weight</label>
+            <input
+              type="number"
+              name="calculatedWeight"
+              //value={formHeader.calcWeight}
+              value={calcWeightVal}
+              readOnly
+            />
+          </div> */}
         </div>
 
         <div className="row">
           <div className="col-md-8 justify-content-center">
             <button
               className="button-style"
+              style={{ marginLeft: "70px" }}
               // style={{ width: "120px" }}
               onClick={saveButtonState}
               disabled={boolVal4}
@@ -1505,12 +1579,12 @@ function NewSheetsUnits(props) {
               Close
             </button>
           </div>
-          <div className="col-md-4 mb-3 mt-3">
-            <label className="form-label"></label>
+          <div className="col-md-3 mb-3 mt-4">
+            {/* <label className="form-label"></label> */}
             <textarea
               id="exampleFormControlTextarea1"
-              rows="4"
-              style={{ width: "320px" }}
+              rows="2"
+              style={{ width: "400px", height: "40px" }}
               // className="form-control"
               value={formHeader.address}
               readOnly
@@ -1519,7 +1593,7 @@ function NewSheetsUnits(props) {
         </div>
         <div className="row">
           <div className="col-md-8 col-sm-12">
-            <div style={{ height: "330px", overflowY: "scroll" }}>
+            <div style={{ height: "420px", overflowY: "scroll" }}>
               <BootstrapTable
                 keyField="id"
                 columns={columns}
@@ -1539,9 +1613,12 @@ function NewSheetsUnits(props) {
              <Tables theadData={getHeadings()} tbodyData={data3} />
             </div> */}
           </div>
-          <div className="col-md-4 col-sm-12">
+          <div
+            className="col-md-4 col-sm-12"
+            style={{ overflowY: "scroll", height: "420px" }}
+          >
             <div className="ip-box form-bg">
-              <div className="row justify-content-center mt-2">
+              <div className="row justify-content-center">
                 <div className="col-md-6 col-sm-12">
                   <button
                     className="button-style "
@@ -1605,14 +1682,14 @@ function NewSheetsUnits(props) {
 
               <div className="row">
                 <div className="ip-box form-bg">
-                  <p className="form-title-deco mt-2">
+                  <p className="form-title-deco mt-1">
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-4 ">
+                    <div className="col-md-3 ">
                       <label className="form-label">Part ID</label>
                     </div>
-                    <div className="col-md-8" style={{ marginTop: "8px" }}>
+                    <div className="col-md-8" style={{ marginTop: "7px" }}>
                       <select
                         className="ip-select dropdown-field"
                         onChange={changeMtrl}
@@ -1665,14 +1742,15 @@ function NewSheetsUnits(props) {
                     </div>
                   </div>
 
-                  <div className="row mt-3">
-                    <div className="col-md-4">
+                  {/* <div className="row mt-2">
+                    <div className="col-md-3">
                       <label className="form-label">{para1Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         type="number"
-                        className="in-fields"
+                        // className="in-fields"
+                        className="in-field"
                         name="dynamicPara1"
                         value={inputPart.dynamicPara1}
                         disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
@@ -1683,17 +1761,42 @@ function NewSheetsUnits(props) {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label className="form-label">{unitLabel1}</label>
+                      <label className="form-label mt-1">{unitLabel1}</label>
                     </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
+                  </div> */}
+
+                  {!(boolVal3 || boolPara1) && (
+                    <div className="row mt-2">
+                      <div className="col-md-3">
+                        <label className="form-label">{para1Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          type="number"
+                          className="in-field"
+                          name="dynamicPara1"
+                          disabled={boolVal5 || boolVal4}
+                          value={inputPart.dynamicPara1}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label mt-1">{unitLabel1}</label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* <div className="row">
+                    <div className="col-md-3">
                       <label className="form-label">{para2Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         type="number"
-                        className="in-fields"
+                        className="in-field"
                         name="dynamicPara2"
                         value={inputPart.dynamicPara2}
                         disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
@@ -1704,17 +1807,41 @@ function NewSheetsUnits(props) {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label className="form-label">{unitLabel2}</label>
+                      <label className="form-label mt-1">{unitLabel2}</label>
                     </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
+                  </div> */}
+                  {!(boolVal3 || boolPara2) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para2Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          type="number"
+                          className="in-field"
+                          name="dynamicPara2"
+                          disabled={boolVal5 || boolVal4}
+                          value={inputPart.dynamicPara2}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label mt-1">{unitLabel2}</label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* <div className="row">
+                    <div className="col-md-3">
                       <label className="form-label">{para3Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         type="number"
-                        className="in-fields"
+                        className="in-field"
                         name="dynamicPara3"
                         value={inputPart.dynamicPara3}
                         disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
@@ -1725,16 +1852,41 @@ function NewSheetsUnits(props) {
                       />
                     </div>
                     <div className="col-md-3">
-                      <label className="form-label">{unitLabel3}</label>
+                      <label className="form-label mt-1">{unitLabel3}</label>
                     </div>
-                  </div>
+                  </div> */}
+                  {!(boolVal3 || boolPara3) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para3Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          type="number"
+                          className="in-field"
+                          name="dynamicPara3"
+                          disabled={boolVal5 || boolVal4}
+                          value={inputPart.dynamicPara3}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label mt-1">{unitLabel3}</label>
+                      </div>
+                    </div>
+                  )}
 
-                  <p className="form-title-deco">
+                  <p className="form-title-deco mt-2">
                     <h5>Quantity Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Received</label>
+                    <div className="col-md-3 col-sm-12 ">
+                      <label className="form-label mt-1">Received</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         type="number"
                         className="in-field"
@@ -1748,39 +1900,41 @@ function NewSheetsUnits(props) {
                         }}
                       />
                     </div>
-
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="inspected"
-                            // checked={insCheck}
-                            checked={inputPart.inspected}
-                            /*checked={
+                    <div className="col-md-5  ">
+                      {/* <div className="row"> */}
+                      <div
+                        className="col-md-12 "
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          // className="checkBoxStyle mt-2"
+                          // type="checkbox"
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="inspected"
+                          // checked={insCheck}
+                          checked={inputPart.inspected}
+                          /*checked={
                                 inputPart.inspected === "1" ? true : false
                               }*/
-                            disabled={boolVal3 | boolVal4}
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                              // console.log("evnet..1", e.target.checked);
-                            }}
-                          />
-                        </div>
-
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Inspected</label>
-                        </div>
+                          disabled={boolVal3 | boolVal4}
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                            // console.log("evnet..1", e.target.checked);
+                          }}
+                        />
+                        <label className="form-label mt-1">Inspected</label>
                       </div>
-                       
+                      {/* </div> */} 
                     </div>
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
+                    <div className="col-md-3 col-sm-12 mt-1">
                       <label className="form-label">Accepted</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         type="number"
                         className="in-field"
@@ -1794,33 +1948,31 @@ function NewSheetsUnits(props) {
                         }}
                       />
                     </div>
-
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="updated"
-                            // checked={
-                            //   materialArray[i]?.updated === 1 ? true : false
-                            // }
-                            disabled={boolVal3 | boolVal4}
-                            // disabled={true}
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                            }}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Updated</label>
-                        </div>
+                    <div className="col-md-5 ">
+                      <div
+                        className="col-md-12"
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          // className="checkBoxStyle mt-2"
+                          // type="checkbox"
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="updated"
+                          checked={inputPart.updated === 1 ? true : false}
+                          disabled={boolVal3 | boolVal4}
+                          // disabled={true}
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                        <label className="form-label mt-1">Updated</label>
                       </div>
                     </div>
                   </div>
 
-                  <div className="row">
+                  <div className="row mt-2">
                     <div className="col-md-6">
                       <label
                         className="form-label"
@@ -1828,6 +1980,8 @@ function NewSheetsUnits(props) {
                       >
                         Wt Calculated 2
                       </label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         name="totalWeightCalculated"
@@ -1842,6 +1996,8 @@ function NewSheetsUnits(props) {
                   <div className="row">
                     <div className="col-md-6">
                       <label className="form-label">Weight</label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         type="number"
                         className="in-field"
@@ -1858,6 +2014,8 @@ function NewSheetsUnits(props) {
                   <div className="row">
                     <div className="col-md-6 ">
                       <label className="form-label">Location</label>
+                    </div>
+                    <div className="col-md-6 mt-1">
                       <select
                         className="ip-select dropdown-field"
                         // onChange={changeMaterialHandle}

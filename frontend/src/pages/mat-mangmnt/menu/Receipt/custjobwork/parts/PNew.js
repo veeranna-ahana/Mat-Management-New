@@ -641,11 +641,11 @@ function PNew() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -654,7 +654,7 @@ function PNew() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -663,9 +663,20 @@ function PNew() {
               readOnly
             />
           </div>
+          <div className="col-md-3">
+            <label className="form-label">Weight</label>
+            <input
+              required="required"
+              type="number"
+              name="weight"
+              value={formHeader.weight}
+              onChange={InputHeaderEvent}
+              disabled={boolVal4}
+            />
+          </div>
         </div>
         <div className="row">
-          <div className="col-md-8 ">
+          <div className="col-md-5 ">
             <label className="form-label">Customer</label>
             {/* <select
               className="ip-select"
@@ -693,19 +704,6 @@ function PNew() {
             />
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              required="required"
-              type="number"
-              name="weight"
-              value={formHeader.weight}
-              onChange={InputHeaderEvent}
-              disabled={boolVal4}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -715,7 +713,7 @@ function PNew() {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="number"
@@ -725,12 +723,14 @@ function PNew() {
             />
           </div>
         </div>
+        <div className="row"></div>
 
         <div className="row">
           <div className="col-md-8 justify-content-center">
             <button
               className="button-style"
               onClick={saveButtonState}
+              style={{ marginLeft: "60px" }}
               disabled={boolVal4}
             >
               Save
@@ -760,12 +760,12 @@ function PNew() {
               Close
             </button>
           </div>
-          <div className="col-md-4 mb-3 mt-3">
+          <div className="col-md-4 mb-3 mt-4">
             <label className="form-label"></label>
             <textarea
               id="exampleFormControlTextarea1"
               rows="4"
-              style={{ width: "330px" }}
+              style={{ width: "400px", height: "40px" }}
               //className="form-control"
               value={formHeader.address}
               readOnly
@@ -826,7 +826,7 @@ function PNew() {
         </div>*/}
         <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
-            <div className="row justify-content-center mt-2 mb-2">
+            <div className="row justify-content-center mt-2 mb-3">
               <button
                 className="button-style "
                 style={{ width: "155px" }}
@@ -837,8 +837,10 @@ function PNew() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
+              <div className="col-md-4 ">
                 <label className="form-label">Part ID</label>
+              </div>
+              <div className="col-md-8 ">
                 <select
                   className="ip-select dropdown-field"
                   name="partId"
@@ -857,11 +859,12 @@ function PNew() {
                   ))}
                 </select>
               </div>
-              <div className="col-md-8" style={{ marginTop: "8px" }}></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Unit Wt</label>
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">Unit Wt</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -872,11 +875,12 @@ function PNew() {
                   disabled={boolVal3 | boolVal4}
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Received</label>
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyReceived</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -887,11 +891,12 @@ function PNew() {
                   disabled={boolVal3 | boolVal4}
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Accepted</label>
+              <div className="col-md-4 ">
+                <label className="form-label">QtyAccepted</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -901,11 +906,12 @@ function PNew() {
                   disabled={boolVal3 | boolVal4}
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Rejected</label>
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyRejected</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="nember"
@@ -914,7 +920,6 @@ function PNew() {
                   readOnly
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
 
             <div className="row justify-content-center mt-3 mb-4">

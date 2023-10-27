@@ -100,7 +100,8 @@ function OpenButtonDraftPartList() {
       //get customer details for address
       getRequest(endpoints.getCustomers, (data1) => {
         const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
-        data.address = found.Address;
+        // data.address = found.Address;
+        formHeader.address = found.Address;
         setFormHeader(formHeader);
 
         //get part details
@@ -599,11 +600,11 @@ function OpenButtonDraftPartList() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -612,7 +613,7 @@ function OpenButtonDraftPartList() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -621,22 +622,7 @@ function OpenButtonDraftPartList() {
               readOnly
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
-            <label className="form-label">Customer</label>
-            <select
-              className="ip-select"
-              name="customer"
-              //onChange={changeCustomer}
-              disabled={boolVal1}
-            >
-              <option value={formHeader.customer} disabled selected>
-                {formHeader.customerName}
-              </option>
-            </select>
-          </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Weight</label>
             <input
               type="number"
@@ -648,7 +634,20 @@ function OpenButtonDraftPartList() {
           </div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
+            <label className="form-label">Customer</label>
+            <select
+              className="ip-select mt-1"
+              name="customer"
+              //onChange={changeCustomer}
+              disabled={boolVal1}
+            >
+              <option value={formHeader.customer} disabled selected>
+                {formHeader.customerName}
+              </option>
+            </select>
+          </div>
+          <div className="col-md-4">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -658,7 +657,7 @@ function OpenButtonDraftPartList() {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="number"
@@ -670,54 +669,46 @@ function OpenButtonDraftPartList() {
           </div>
         </div>
 
-        <div className="row mt-3">
+        <div className="row ">
           <div className="col-md-8 justify-content-center">
-            <div className="row">
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  onClick={saveButtonState}
-                  disabled={boolVal4}
-                >
-                  Save
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={allotRVButtonState}
-                >
-                  Allot RV No
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={deleteRVButton}
-                >
-                  Delete RV
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style "
-                  id="btnclose"
-                  type="submit"
-                  onClick={() => nav("/MaterialManagement")}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <button
+              className="button-style"
+              onClick={saveButtonState}
+              style={{ marginLeft: "60px" }}
+              disabled={boolVal4}
+            >
+              Save
+            </button>
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={allotRVButtonState}
+            >
+              Allot RV No
+            </button>
+
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={deleteRVButton}
+            >
+              Delete RV
+            </button>
+
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
           </div>
-          <div className="col-md-4 mb-3">
-            <label className="form-label"></label>
+          <div className="col-md-4 mb-3 mt-3">
             <textarea
               id="exampleFormControlTextarea1"
               rows="4"
-              style={{ width: "330px" }}
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -777,7 +768,7 @@ function OpenButtonDraftPartList() {
         </div>*/}
         <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
-            <div className="row justify-content-center mt-1 mb-2">
+            <div className="row justify-content-center mt-1 mb-3">
               <button
                 className="button-style "
                 style={{ width: "155px" }}
@@ -789,10 +780,12 @@ function OpenButtonDraftPartList() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-11">
-                <label className="form-label">Part ID</label>
+              <div className="col-md-4">
+                <label className="form-label mt-1">Part ID</label>
                 {/* </div>
               <div className="col-md-8" style={{ marginTop: "8px" }}> */}
+              </div>
+              <div className="col-md-8">
                 <select
                   className="ip-select dropdown-field"
                   name="partId"
@@ -810,12 +803,12 @@ function OpenButtonDraftPartList() {
                   ))}
                 </select>
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Unit Wt</label>
-
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">Unit Wt</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -826,12 +819,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Received</label>
-
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyReceived</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -845,9 +838,10 @@ function OpenButtonDraftPartList() {
               <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Accepted</label>
-
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyAccepted</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
@@ -857,12 +851,12 @@ function OpenButtonDraftPartList() {
                   disabled={boolVal4}
                 />
               </div>
-              <div className="col-md-8 "></div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Rejected</label>
-
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyRejected</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="number"
