@@ -1,9 +1,18 @@
 import React from "react";
-import { Page, Document, StyleSheet, View, Text } from "@react-pdf/renderer";
+import {
+  Page,
+  Document,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+} from "@react-pdf/renderer";
 import { formatDate } from "../../../../utils";
+import MLLogo from "../../../../../../frontend/src/ML-LOGO.png";
 
 //function PrintMaterialDCTable() {
 const styles = StyleSheet.create({
+  insideBox: { borderBottom: "1px", padding: "0.6%" },
   page: {
     fontSize: 11,
     flexDirection: "column",
@@ -97,7 +106,7 @@ const styles = StyleSheet.create({
   },
   titleMiddle2: {
     padding: "5px",
-    width: "30%",
+    // width: "30%",
     fontSize: "12px",
   },
   titleRight1: {
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
 
   tableCol1: {
     padding: "5px",
-    width: "5%",
+    width: "9%",
   },
   tableCol2: {
     padding: "5px",
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
   },
   tableCol3: {
     padding: "5px",
-    width: "20%",
+    width: "19%",
   },
   tableCol4: {
     padding: "5px",
@@ -135,71 +144,183 @@ const PrintPartsDCTable = ({
   totalQTYVar,
 }) => (
   <Document>
-    {/* {console.log("totalQtyFunc data...", totalQtyFunc)} */}
-    <Page size="A4" style={styles.page}>
-      <View style={styles.tableContainer}>
-        {/* <Text style={styles.tableTitle}>Magod Laser Machining Pvt Ltd</Text>
-        <Text style={styles.title2}>Production Department</Text>
-        <Text style={styles.shiftperiod}>
-          Shift Plan for Period From : {formHeader?.Customer} and {outData}
-        </Text> */}
-        <Text style={styles.topspace}></Text>
-        <Text style={styles.titleFull}>
-          {formHeader?.Customer} ({formHeader?.Cust_code})
-        </Text>
-        <Text style={styles.titleLeft1}>Branch {custdata?.Branch}</Text>
-        <Text style={styles.titleMiddle1}></Text>
-        <Text style={styles.titleRight1}>{dcRegister?.DC_No}</Text>
-        <Text style={styles.titleLeft1}>
-          {custdata?.Address} {custdata?.City}
-        </Text>
-        <View style={styles.titleMiddle1}>
-          <Text>CST No : {custdata?.CST_No}</Text>
-          <Text>TIN No : {custdata?.TIN_No}</Text>
-          <Text>ECC No : {custdata?.ECC_No}</Text>
+    <Page size="A4" style={{ padding: "3%", fontSize: "11" }}>
+      {/* <View>
+    <Text style={{ padding: "1%" }}></Text>
+  </View> */}
+      <View>
+        {/* Top */}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Image src={MLLogo} style={{ width: "8.3%" }} />
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              Magod Laser Machining Pvt. Ltd.
+            </Text>
+            <Text style={{ fontWeight: "700" }}>
+              GSTIN: 29AABCM1970H1ZE, CIN: U28900KA1995PTC018437
+            </Text>
+            <Text>
+              #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
+              Bengaluru - 560105
+            </Text>
+            <Text>
+              +91-80-42291005, +91-8110-414313, info@magodlaser.in,
+              https://www.magodlaser.in/
+            </Text>
+            {/* <Text>Material Stock List as On : {formatDate(new Date(), 7)}</Text> */}
+          </View>
+          <Text style={{ padding: "3%" }}></Text>
         </View>
-        <View style={{ ...styles.titleRight1 }}>
-          <Text>{formHeader?.IV_No}</Text>
-          <Text>
-            {formatDate(
-              new Date(
+        <Text style={{ padding: "1%" }}></Text>
+        <View style={{ border: "1px" }}>
+          <View style={{ display: "flex", flexDirection: "row" }}>
+            <View
+              style={{
+                ...styles.insideBox,
+                width: "70%",
+                // borderBottom: "1px",
+                borderRight: "1px",
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>
+                {formHeader?.Customer} ({formHeader?.Cust_code})
+              </Text>
+              <View style={{ padding: "0.6%" }}>
+                <Text>GST No: {custdata?.GSTNo}</Text>
+                <Text>Branch: {custdata?.Branch}</Text>
+                {/* <View style={{ display: "flex", flexDirection: "row" }}> */}
+                <Text>{custdata?.Address}</Text>
+                <Text>
+                  {custdata?.City}, {custdata?.State} - {custdata?.Pin_Code}
+                </Text>
+                {/* <Text>
+                {custdata?.City} 
+              </Text> */}
+                {/* <Text></Text> */}
+                {/* </View> */}
+              </View>
+            </View>
+
+            <View
+              style={{
+                ...styles.insideBox,
+                width: "30%",
+                display: "flex",
+                flexDirection: "column",
+                // justifyContent: "center",
+                // borderBottom: "1px",
+                // borderRight: "1px",
+              }}
+            >
+              <Text>DC No : {dcRegister?.DC_No}</Text>
+              <Text>IV No : {formHeader?.IV_No}</Text>
+              <Text>
+                IV Date : {formHeader?.IV_Date}
+                {/* {formatDate(
                 new Date(
-                  formHeader?.IV_Date.toString().substring(0, 10)
-                ).toDateString()
-              ),
-              1
-            )}
-          </Text>
+                  new Date(
+                    formHeader?.IV_Date.toString().substring(0, 10)
+                  ).toDateString()
+                ),
+                1
+              )} */}
+              </Text>
+            </View>
+          </View>
+
+          {/* <View style={{ ...styles.titleRight1 }}></View> */}
+
+          {/* <Text style={styles.titleFull1}> */}
+          <View style={{ ...styles.insideBox }}>
+            <Text>Authority : {dcRegister?.AuhtorisingDocu}</Text>
+          </View>
+
+          {/* <Text style={styles.topspace}></Text> */}
+
+          <View
+            style={{
+              ...styles.insideBox,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+            }}
+          >
+            <Text style={styles.tableCol1}>SL No</Text>
+            <Text style={styles.tableCol2}>PartId / Part Name</Text>
+            <Text style={styles.tableCol3}>Remarks</Text>
+            <Text style={styles.tableCol4}>Quantity</Text>
+          </View>
+          <View
+            style={{
+              ...styles.insideBox,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {outData?.map((item, index) => {
+              return (
+                <>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <Text style={styles.tableCol1}>{index + 1}</Text>
+                    <Text style={styles.tableCol2}>{item.PartId}</Text>
+                    <Text style={styles.tableCol3}>{item.Remarks}</Text>
+                    <Text style={styles.tableCol4}>{item.QtyReturned}</Text>
+                  </View>
+                </>
+              );
+            })}
+          </View>
+
+          {/* <Text style={styles.topspace}></Text>
+        <Text style={styles.topspace}></Text>
+        <Text style={styles.topspace}></Text>
+        <Text style={styles.topspace}></Text> */}
+          {/* <Text style={styles.titleLeft1}></Text> */}
+          <View style={{ padding: "1%" }}></View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "0.6%",
+            }}
+          >
+            <Text>Remarks :</Text>
+            <View style={{ padding: "5%", border: "1px" }}></View>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <Text style={styles.titleMiddle2}>
+              Total Items : {outData?.length}
+            </Text>
+            {/* <Text style={styles.titleLeft1}></Text> */}
+            <Text style={styles.titleMiddle2}>
+              Total Quantity : {totalQTYVar}
+            </Text>
+          </View>
         </View>
-        <Text style={styles.titleFull1}>
-          {custdata?.City} PIN - {custdata?.Pin_Code}
-        </Text>
-        <Text style={styles.titleFull1}>{custdata?.State}</Text>
-        <Text style={styles.titleFull1}>
-          Authority : {dcRegister?.AuhtorisingDocu}
-        </Text>
-
-        <Text style={styles.topspace}></Text>
-
-        {outData?.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.tableCol1}>{index + 1}</Text>
-              <Text style={styles.tableCol2}>{item.PartId}</Text>
-              <Text style={styles.tableCol3}>{item.Remarks}</Text>
-              <Text style={styles.tableCol4}>{item.QtyReturned}</Text>
-            </>
-          );
-        })}
-
-        <Text style={styles.topspace}></Text>
-        <Text style={styles.topspace}></Text>
-        <Text style={styles.topspace}></Text>
-        <Text style={styles.topspace}></Text>
-        <Text style={styles.titleLeft1}></Text>
-        <Text style={styles.titleMiddle2}>Total Items : {outData?.length}</Text>
-        <Text style={styles.titleLeft1}></Text>
-        <Text style={styles.titleMiddle2}>Total Quantity : {totalQTYVar}</Text>
       </View>
     </Page>
   </Document>

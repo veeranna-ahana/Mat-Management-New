@@ -236,29 +236,41 @@ function OutwordMaterialIssueVocher(props) {
     // setBoolVal2(true);
   };
 
-  let createDC = () => {
+  let createDC = (e) => {
     // console.log("outedata = ", outData);
+
+    // formHeader.TotalWeight;
+
     let flag = 0;
-    outData.map((item) => {
-      if (
-        item.TotalWeight === 0 ||
-        item.TotalWeight === "0" ||
-        item.TotalWeight === "0.00" ||
-        item.TotalWeight === 0.0
-      ) {
-        toast.error("Serial Weight cannot be zero. Set Weight and try again");
-        flag = 1;
-      }
-    });
+    if (
+      formHeader.TotalWeight === 0 ||
+      formHeader.TotalWeight === "0" ||
+      formHeader.TotalWeight === "0.000" ||
+      formHeader.TotalWeight === 0.0
+    ) {
+      toast.error("Serial Weight cannot be zero. Set Weight and try again");
+      flag = 1;
+    }
     if (flag === 0) {
       setShowCreateDC(true);
-
-      // console.log("Valid");
-      // e.preventDefault();
-
-      //setBoolVal1(false);
-      //setBoolVal2(true);
+      saveButtonState(e);
     }
+
+    // let flag = 0;
+    // outData.map((item) => {
+    //   if (
+    //     item.TotalWeight === 0 ||
+    //     item.TotalWeight === "0" ||
+    //     item.TotalWeight === "0.00" ||
+    //     item.TotalWeight === 0.0
+    //   ) {
+    //     toast.error("Serial Weight cannot be zero. Set Weight and try again");
+    //     flag = 1;
+    //   }
+    // });
+    // if (flag === 0) {
+    //   setShowCreateDC(true);
+    // }
   };
 
   // if (test) {
