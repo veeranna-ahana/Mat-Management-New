@@ -76,7 +76,7 @@ function UnitsMatAllotmentForm() {
         setFirstTable(data2);
         if (data2.length == 0) {
           toast.warning(
-            "There is no material to allot for this program. Check if you have added the material to customer stock?"
+            "There is no material to allot for this program. Check if you have added the material to customer stock?."
           );
         }
       });

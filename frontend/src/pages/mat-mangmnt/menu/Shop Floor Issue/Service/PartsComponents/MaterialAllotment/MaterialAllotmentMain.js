@@ -38,7 +38,7 @@ function MaterialAllotmentMain() {
   const [sumOfIssueNow, setSumOfIssueNow] = useState(0);
 
   const fetchData = async () => {
-    let url1 = endpoints.getRowByNCID + "?id=" + location.state.ncid;
+    let url1 = endpoints.getRowByNCID + "?id=" + location.state?.ncid;
     getRequest(url1, async (data) => {
       setFormHeader(data);
 
@@ -55,7 +55,7 @@ function MaterialAllotmentMain() {
     let url3 =
       endpoints.getShopFloorAllotmentPartFirstTable +
       "?id=" +
-      location.state.ncid;
+      location.state?.ncid;
     getRequest(url3, async (data) => {
       //setFirstTable(data);
       let tempArray = [];

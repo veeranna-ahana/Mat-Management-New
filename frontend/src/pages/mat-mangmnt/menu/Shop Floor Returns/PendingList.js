@@ -21,6 +21,7 @@ function PendingList(props) {
   const [showYesNo, setShowYesNo] = useState(false);
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const [open1, setOpen1] = useState(false);
   const handleOpen1 = () => setOpen1(true);
@@ -71,6 +72,9 @@ function PendingList(props) {
       //console.log("unique = ", arrayUniqueByKey);
     });
   };
+
+  delay(1000);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -342,7 +346,7 @@ function PendingList(props) {
   const modalYesNoResponse = (msg) => {
     //console.log("msg = ", msg, "row = ", rowValResize);
     if (msg == "yes") {
-      if (rowValResize.Para1 < 10 || rowValResize.Para1 < 10) {
+      if (rowValResize.ReminderPara1 < 10 || rowValResize.ReminderPara2 < 10) {
         toast.error("Cannot Resize to less than 10 mm");
       } else {
         //get mtrl_data by mtrl_code

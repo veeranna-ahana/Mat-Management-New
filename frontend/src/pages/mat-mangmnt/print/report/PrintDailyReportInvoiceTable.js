@@ -1,9 +1,19 @@
 import React from "react";
-import { Page, Document, StyleSheet, View, Text } from "@react-pdf/renderer";
+import {
+  Page,
+  Document,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+} from "@react-pdf/renderer";
+import MLLogo from "../../../../../../frontend/src/ML-LOGO.png";
+
 import { formatDate } from "../../../../utils";
 
 //function PrintMaterialDCTable() {
 const styles = StyleSheet.create({
+  insideBox: { borderBottom: "1px", padding: "0.6%" },
   page: {
     fontSize: 11,
     flexDirection: "column",
@@ -102,62 +112,145 @@ const styles = StyleSheet.create({
 //}
 const PrintDailyReportInvoiceTable = ({ tableData, date }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.tableContainer}>
-        <Text style={styles.topspace}></Text>
+    <Page size="A4" style={{ padding: "3%", fontSize: "11" }}>
+      <View>
+        {/* Top */}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Image src={MLLogo} style={{ width: "8.3%" }} />
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              Magod Laser Machining Pvt. Ltd.
+            </Text>
+            <Text style={{ fontWeight: "700" }}>
+              GSTIN: 29AABCM1970H1ZE, CIN: U28900KA1995PTC018437
+            </Text>
+            <Text>
+              #71 & 72, Phase II, KIADB Indl Area, Jigani, Anekal Taluk,
+              Bengaluru - 560105
+            </Text>
+            <Text>
+              +91-80-42291005, +91-8110-414313, info@magodlaser.in,
+              https://www.magodlaser.in/
+            </Text>
+            <Text>
+              {" "}
+              Daily Invoice Material Dispatch List :{" "}
+              {formatDate(new Date(date), 3)}
+            </Text>
+          </View>
+          <Text style={{ padding: "3%" }}></Text>
+        </View>
+        <Text style={{ padding: "1%" }}></Text>
+        <View style={{ border: "1px", borderBottom: "none" }}>
+          {/* material stock */}
+          <View style={styles.insideBox}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.invno}>Invoice No</Text>
+              <Text style={styles.customer}>Customer</Text>
+              <Text style={styles.material}>Material</Text>
+              <Text style={styles.weight}>Weight</Text>
+            </View>
+          </View>
 
-        <Text style={styles.titleFull}>
-          Magod Laser Machining Pvt Ltd : Jigani
-        </Text>
-        <Text style={styles.titleFull}>
-          Daily Invoice Material Dispatch List : {formatDate(new Date(date), 3)}
-        </Text>
-        <Text style={styles.betweenspace}></Text>
+          {tableData.map((item, index) => {
+            return (
+              <>
+                {/* <Text style={styles.line1}>
+                  _________________________________________________________________________________________
+                </Text> */}
 
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
-        <Text style={styles.invno}>Invoice No</Text>
-        <Text style={styles.customer}>Customer</Text>
-        <Text style={styles.material}>Material</Text>
-        <Text style={styles.weight}>Weight</Text>
-        <Text style={styles.line1}>
-          _________________________________________________________________________________________
-        </Text>
+                <View
+                  style={{
+                    ...styles.insideBox,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    fontWeight: "bold",
+                    padding: "1%",
+                  }}
+                >
+                  <Text>{item.material}</Text>
+                </View>
+                {/* <Text style={styles.insideBox}></Text> */}
+                <View
+                  style={{
+                    ...styles.insideBox,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  {item.data.map((item, index) => {
+                    return (
+                      <>
+                        <View
+                          style={{
+                            // ...styles.insideBox,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text style={styles.invnoval}>{item.Inv_No}</Text>
+                          <Text style={styles.customerval}>
+                            {item.Cust_Name}
+                          </Text>
+                          <Text style={styles.materialval}>
+                            {item.Material}
+                          </Text>
+                          <Text style={styles.weightval}>{item.SrlWt}</Text>
+                        </View>
+                      </>
+                    );
+                  })}
 
-        {tableData.map((item, index) => {
-          return (
-            <>
-              <Text style={styles.titleFull3}>{item.material}</Text>
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
+                  {/* <Text style={styles.line1}>
+                  _________________________________________________________________________________________
+                </Text> */}
+                  <View
+                    style={{
+                      ...styles.insideBox,
+                      border: "none",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      borderTop: "1px solid black",
+                      marginTop: "0.6%",
+                    }}
+                  >
+                    <Text style={styles.invnoval}></Text>
+                    <Text style={styles.customerval}></Text>
+                    <Text style={styles.materialval}>Total</Text>
+                    <Text style={styles.weightval}>
+                      {item.totwt.toFixed(2)}
+                    </Text>
+                  </View>
 
-              {item.data.map((item, index) => {
-                return (
-                  <>
-                    <Text style={styles.invnoval}>{item.Inv_No}</Text>
-                    <Text style={styles.customerval}>{item.Cust_Name}</Text>
-                    <Text style={styles.materialval}>{item.Material}</Text>
-                    <Text style={styles.weightval}>{item.SrlWt}</Text>
-                  </>
-                );
-              })}
-
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-              <Text style={styles.invnoval}></Text>
-              <Text style={styles.customerval}></Text>
-              <Text style={styles.materialval}></Text>
-              <Text style={styles.weightval}>{item.totwt.toFixed(2)}</Text>
-
-              <Text style={styles.line1}>
-                _________________________________________________________________________________________
-              </Text>
-            </>
-          );
-        })}
+                  {/* <Text style={styles.line1}>
+                  _________________________________________________________________________________________
+                </Text> */}
+                </View>
+              </>
+            );
+          })}
+        </View>
       </View>
     </Page>
   </Document>
