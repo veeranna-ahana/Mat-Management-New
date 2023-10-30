@@ -103,6 +103,7 @@ function PendingList(props) {
       dataField: "Issue_date",
       formatter: statusFormatter,
       headerStyle: { whiteSpace: "nowrap" },
+      sort: true,
     },
     {
       text: "Program No",
