@@ -944,7 +944,7 @@ function NewSheetsUnits(props) {
           console.log("TotalWeightCalculated...", TotalWeightCalculated);
 
           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
-          // console.log("TotalWeightCalculated", TotalWeightCalculated);
+          console.log("TotalWeightCalculated", TotalWeightCalculated);
 
           inputPart.totalWeightCalculated = parseFloat(
             TotalWeightCalculated

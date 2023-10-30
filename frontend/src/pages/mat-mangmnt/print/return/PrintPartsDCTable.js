@@ -224,7 +224,7 @@ const PrintPartsDCTable = ({
                 // borderRight: "1px",
               }}
             >
-              <Text>DC No : {dcRegister?.DC_No}</Text>
+              <Text>DC No : {formHeader?.PkngDcNo}</Text>
               <Text>IV No : {formHeader?.IV_No}</Text>
               <Text>
                 IV Date : {formHeader?.IV_Date}

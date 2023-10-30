@@ -79,8 +79,10 @@ function OutwordPartIssueVocher(props) {
         Customer: data.Customer,
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
-        TotalWeight: data.TotalWeight,
-        TotalCalculatedWeight: data.TotalCalculatedWeight,
+        TotalWeight: parseFloat(data.TotalWeight).toFixed(2),
+        TotalCalculatedWeight: parseFloat(data.TotalCalculatedWeight).toFixed(
+          2
+        ),
         Dc_ID: data.Dc_ID,
         IVStatus: data.IVStatus,
       });
@@ -492,7 +494,7 @@ function OutwordPartIssueVocher(props) {
     setOutData(newArray);
   };
 
-  console.log("outdata", outData);
+  // console.log("outdata", outData);
   const handleChangeWeightTotalCal = () => {
     let newTotalCalWeight = 0;
     for (let i = 0; i < outData.length; i++) {
@@ -770,8 +772,8 @@ function OutwordPartIssueVocher(props) {
                     <tr>
                       <td>{key + 1}</td>
                       <td>{val.PartId}</td>
-                      <td>{val.QtyReturned} </td>
-                      <td>{val.UnitWt}</td>
+                      <td>{parseInt(val.QtyReturned)} </td>
+                      <td>{parseFloat(val.UnitWt).toFixed(2)}</td>
                       <td>
                         {/* {val.TotalWeight} */}
 
@@ -784,7 +786,7 @@ function OutwordPartIssueVocher(props) {
                               ? true
                               : false
                           }
-                          defaultValue={parseFloat(val.TotalWeight)}
+                          defaultValue={parseFloat(val.TotalWeight).toFixed(2)}
                           onChange={(e) => {
                             // console.log("eeeeeeeeee", e.target.value);
 
