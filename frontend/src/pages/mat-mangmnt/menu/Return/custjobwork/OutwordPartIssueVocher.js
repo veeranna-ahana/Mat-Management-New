@@ -200,6 +200,7 @@ function OutwordPartIssueVocher(props) {
       formHeader.TotalWeight === 0 ||
       formHeader.TotalWeight === "0" ||
       formHeader.TotalWeight === "0.000" ||
+      formHeader.TotalWeight === "0.00" ||
       formHeader.TotalWeight === 0.0
     ) {
       toast.error("Serial Weight cannot be zero. Set Weight and try again");
