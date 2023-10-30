@@ -91,8 +91,10 @@ function OutwordMaterialIssueVocher(props) {
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
         PkngDCDate: data.PkngDCDate,
-        TotalWeight: data.TotalWeight,
-        TotalCalculatedWeight: data.TotalCalculatedWeight,
+        TotalWeight: parseFloat(data.TotalWeight).toFixed(2),
+        TotalCalculatedWeight: parseFloat(data.TotalCalculatedWeight).toFixed(
+          2
+        ),
         Dc_ID: data.Dc_ID,
         IVStatus: data.IVStatus,
       });
@@ -111,7 +113,7 @@ function OutwordMaterialIssueVocher(props) {
       "?id=" +
       location.state.selectData.Iv_Id;
     getRequest(url1, async (data) => {
-      console.log("outdata.....", data);
+      // console.log("outdata.....", data);
       setOutData(data);
     });
   }
@@ -179,7 +181,7 @@ function OutwordMaterialIssueVocher(props) {
     // const { name, value } = e.target;
     setFormHeader({ ...formHeader, [name]: value });
   };
-  console.log("formHeader", formHeader);
+  // console.log("formHeader", formHeader);
 
   // console.log("formHeader", formHeader);
 
@@ -569,7 +571,7 @@ function OutwordMaterialIssueVocher(props) {
     });
   };
 
-  console.log("status", formHeader.IVStatus);
+  // console.log("status", formHeader.IVStatus);
 
   const createDcResponse = async (data) => {
     //await delay(500);
@@ -820,13 +822,13 @@ function OutwordMaterialIssueVocher(props) {
                 </tr>
               </thead>
               <tbody>
-                {outData.map((val, key) => (
+                {outData?.map((val, key) => (
                   <tr>
                     <td>{key + 1}</td>
                     <td>{val.MtrlDescription}</td>
                     <td>{val.Material} </td>
-                    <td>{val.Qty}</td>
-                    <td>{val.TotalWeight}</td>
+                    <td>{parseInt(val?.Qty)}</td>
+                    <td>{parseFloat(val?.TotalWeight).toFixed(2)}</td>
                     <td
                     // contenteditable="true"
                     // onChange={(e) => {
@@ -843,7 +845,9 @@ function OutwordMaterialIssueVocher(props) {
                             ? true
                             : false
                         }
-                        defaultValue={parseFloat(val.TotalWeightCalculated)}
+                        defaultValue={parseFloat(
+                          val?.TotalWeightCalculated
+                        ).toFixed(2)}
                         onChange={(e) => {
                           // console.log("eeeeeeeeee", e.target.value);
 

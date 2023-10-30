@@ -454,19 +454,27 @@ function Parts(props) {
               let newNo = parseInt(obj.Running_No) + 1;
               //let no = "23/000" + newNo;
               let series = "";
-              //add prefix zeros
-              for (
-                let i = 0;
-                i < parseInt(obj.Length) - newNo.toString().length;
-                i++
-              ) {
-                series = series + "0";
+
+              if (newNo < 1000) {
+                //add prefix zeros
+                for (
+                  let i = 0;
+                  i < parseInt(obj.Length) - newNo.toString().length;
+                  i++
+                ) {
+                  series = series + "0";
+                }
+                series = series + "" + newNo;
+              } else {
+                series = newNo;
               }
-              series = series + "" + newNo;
+
               //console.log("series = ", series);
               //get last 2 digit of year
               let yy = formatDate(new Date(), 6).toString().substring(2);
               let no = yy + "/" + series;
+
+              // console.log("noonono", no);
 
               setIVNOVal(no);
 
