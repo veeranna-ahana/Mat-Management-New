@@ -221,12 +221,8 @@ export default function FirstTable(props) {
 
   return (
     <>
-      <Table
-        hover
-        condensed
-        className="table-data border header-class table-striped"
-      >
-        <thead className="text-white">
+      <Table striped className="table-data border" style={{ border: "1px" }}>
+        <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
             <th>RV No</th>
@@ -261,8 +257,8 @@ export default function FirstTable(props) {
                   checked={val.Scrap === 0 ? false : true}
                 />
               </td>
-              <td>{val.Weight}</td>
-              <td>{val.ScrapWeight}</td>
+              <td>{parseFloat(val.Weight).toFixed(2)}</td>
+              <td>{parseFloat(val.ScrapWeight).toFixed(2)}</td>
               <td>{val.InStock}</td>
               <td>
                 <input

@@ -67,7 +67,7 @@ function PrintPartsDC(props) {
     <>
       <Modal show={props.printOpen} onHide={handleClose} fullscreen>
         <Modal.Header closeButton>
-          <Modal.Title>Outward Material Part Voucher Print</Modal.Title>
+          <Modal.Title>Outward Part Issue Voucher Print</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Fragment>
