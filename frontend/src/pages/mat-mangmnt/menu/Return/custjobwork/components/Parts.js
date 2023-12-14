@@ -518,7 +518,7 @@ function Parts(props) {
                         Mtrl_Rv_id: thirdTableData[i].Id,
                         PartId:
                           thirdTableData[i].PartId +
-                          "**Ref: " +
+                          "/**Ref: " +
                           thirdTableData[i].CustDocuNo,
                         CustBOM_Id: thirdTableData[i].CustBOM_Id,
                         UnitWt: thirdTableData[i].UnitWt,

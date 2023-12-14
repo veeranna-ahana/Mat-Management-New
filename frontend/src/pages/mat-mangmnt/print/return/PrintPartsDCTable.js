@@ -118,19 +118,31 @@ const styles = StyleSheet.create({
   tableCol1: {
     padding: "5px",
     width: "9%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   tableCol2: {
     padding: "5px",
-    width: "60%",
+    width: "51%",
     fontWeight: "bold",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   tableCol3: {
     padding: "5px",
-    width: "19%",
+    width: "21%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   tableCol4: {
     padding: "5px",
-    width: "10%",
+    width: "12%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
@@ -257,10 +269,18 @@ const PrintPartsDCTable = ({
               justifyContent: "flex-start",
             }}
           >
-            <Text style={styles.tableCol1}>SL No</Text>
-            <Text style={styles.tableCol2}>PartId / Part Name</Text>
-            <Text style={styles.tableCol3}>Remarks</Text>
-            <Text style={styles.tableCol4}>Quantity</Text>
+            <View style={styles.tableCol1}>
+              <Text>SL No</Text>
+            </View>
+            <View style={styles.tableCol2}>
+              <Text>PartId / Part Name</Text>
+            </View>
+            <View style={styles.tableCol3}>
+              <Text>Remarks</Text>
+            </View>
+            <View style={styles.tableCol4}>
+              <Text>Quantity</Text>
+            </View>
           </View>
           <View
             style={{
@@ -279,10 +299,18 @@ const PrintPartsDCTable = ({
                       justifyContent: "flex-start",
                     }}
                   >
-                    <Text style={styles.tableCol1}>{index + 1}</Text>
-                    <Text style={styles.tableCol2}>{item.PartId}</Text>
-                    <Text style={styles.tableCol3}>{item.Remarks}</Text>
-                    <Text style={styles.tableCol4}>{item.QtyReturned}</Text>
+                    <View style={styles.tableCol1}>
+                      <Text>{index + 1}</Text>
+                    </View>
+                    <View style={styles.tableCol2}>
+                      <Text>{item.PartId?.split("/**Ref:")[0]}</Text>
+                    </View>
+                    <View style={styles.tableCol3}>
+                      <Text>{item.Remarks}</Text>
+                    </View>
+                    <View style={styles.tableCol4}>
+                      <Text>{item.QtyReturned}</Text>
+                    </View>
                   </View>
                 </>
               );
