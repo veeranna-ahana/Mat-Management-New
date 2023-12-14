@@ -23,7 +23,7 @@ function PofilesMaterials(props) {
 
   const [firstTableData, setFirstTableData] = useState([]);
   const [secondTableData, setSecondTableData] = useState([]);
-  const [thirdTable, setThirdTable] = useState([]);
+  // const [thirdTable, setThirdTable] = useState([]);
   const [thirdTableData, setThirdTableData] = useState([]);
   let [objShape, setObjShape] = useState({});
   let [objMaterial, setObjMaterial] = useState({});
@@ -39,6 +39,10 @@ function PofilesMaterials(props) {
   const handleShow = () => setShow(true);
 
   const fetchData = () => {
+    setFirstTableData([]);
+    setSecondTableData([]);
+    setThirdTableData([]);
+    setFirstTableSelectedRow([]);
     //console.log("props = ", props);
     if (props && props.custCode.length !== 0) {
       let url1 =
@@ -862,9 +866,17 @@ function PofilesMaterials(props) {
                               shapeData,
                               MtrlData
                             ) +
-                            " ** " +
+                            " /** " +
                             element.Cust_Docu_No;
-
+                          // testing for print without dimension , dc and date...
+                          // console.log(
+                          //   "mtrlDescription",
+                          //   mtrlDescription
+                          //     ?.split("/**")[0]
+                          //     ?.split(".00")[0]
+                          //     ?.replace(/[0-9]/g, "")
+                          //     ?.split("Quantity")[0]
+                          // );
                           // console.log(
                           //   "mtrlDescription",
                           //   mtrlDescription,
@@ -894,10 +906,6 @@ function PofilesMaterials(props) {
                             RvId: element.RvID ? element.RvID : 0,
                             Mtrl_Rv_id: element.Mtrl_Rv_id,
                           };
-                          // console.log(
-                          //   "newRowMtrlIssueDetails : ",
-                          //   newRowMtrlIssueDetails
-                          // );
                           postRequest(
                             endpoints.insertMtrlIssueDetails,
                             newRowMtrlIssueDetails,
