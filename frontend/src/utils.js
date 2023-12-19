@@ -175,7 +175,7 @@ export function get_Iv_DetailsEntry(
   objMaterialCode
 ) {
   let Details = "";
-  if (Scrap) return "Scrap Of " + Material;
+  if (Scrap) return "Scrap of " + Material;
   else {
     if (Shape === "Sheet") {
       Details =

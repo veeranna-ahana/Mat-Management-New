@@ -753,11 +753,11 @@ function OutwordPartIssueVocher(props) {
           <div className="col-md-12">
             <div style={{ maxHeight: "420px", overflow: "auto" }}>
               <Table
-                hover
-                condensed
-                className="table-data border header-class table-striped"
+                striped
+                className="table-data border"
+                style={{ border: "1px" }}
               >
-                <thead className="text-white">
+                <thead className="tableHeaderBGColor">
                   <tr>
                     <th>SL No</th>
                     <th>PartId / Part Name</th>
