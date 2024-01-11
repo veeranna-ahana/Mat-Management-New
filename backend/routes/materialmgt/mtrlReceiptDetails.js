@@ -28,7 +28,10 @@ mtrlReceiptDetailsRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
-      //console.log(`SELECT * FROM mtrl_part_receipt_details where RvID = ${id}`);
+      // console.log(`SELECT * FROM mtrl_part_receipt_details where RvID = ${id}`);
+      console.log(
+        `SELECT * FROM mtrlreceiptdetails where RvID = ${id} order by RvID`
+      );
       misQueryMod(
         `SELECT * FROM mtrlreceiptdetails where RvID = ${id} order by RvID`,
         (err, data) => {
@@ -147,47 +150,49 @@ mtrlReceiptDetailsRouter.post(
         qtyRejected,
         srl,
         totalWeightCalculated,
+        totalWeight,
       } = req.body;
       inspected = inspected == true ? "1" : "0";
 
-      if (dynamicPara3 || updated === "") {
-        console.log(`UPDATE mtrlreceiptdetails SET 
-        Srl = '${srl}', 
-        Mtrl_Code = '${mtrlCode}', 
-        DynamicPara1 = ${dynamicPara1}, 
-        DynamicPara2 = ${dynamicPara2},        
-        Qty = ${qtyReceived}, 
-        Inspected = ${inspected}, 
-        Accepted = ${accepted}, 
-        TotalWeightCalculated = ${totalWeightCalculated}, 
-        LocationNo = '${locationNo}',        
-        QtyAccepted = ${qtyAccepted}, 
-        QtyReceived = '${qtyReceived}', 
-        QtyRejected = '${qtyRejected}' 
-        WHERE Mtrl_Rv_id = ${id}`);
-        misQueryMod(
-          `UPDATE mtrlreceiptdetails SET 
-          Srl = '${srl}', 
-          Mtrl_Code = '${mtrlCode}', 
-          DynamicPara1 = ${dynamicPara1}, 
-          DynamicPara2 = ${dynamicPara2}, 
-          Qty = ${qtyReceived}, 
-          Inspected = ${inspected}, 
-          Accepted = ${accepted}, 
-          TotalWeightCalculated = ${totalWeightCalculated}, 
-          LocationNo = '${locationNo}',          
-          QtyAccepted = ${qtyAccepted}, 
-          QtyReceived = '${qtyReceived}', 
-          QtyRejected = '${qtyRejected}' 
-          WHERE Mtrl_Rv_id = ${id}`,
-          (err, data) => {
-            if (err) logger.error(err);
-            // console.log("updated data", data);
-            res.json(data);
-          }
-        );
-      } else {
-        console.log(`UPDATE mtrlreceiptdetails SET 
+      // if (dynamicPara3 || updated === "") {
+      //   console.log(`UPDATE mtrlreceiptdetails SET
+      //   Srl = '${srl}',
+      //   Mtrl_Code = '${mtrlCode}',
+      //   DynamicPara1 = ${dynamicPara1},
+      //   DynamicPara2 = ${dynamicPara2},
+      //   Qty = ${qtyReceived},
+      //   Inspected = ${inspected},
+      //   Accepted = ${accepted},
+      //   TotalWeightCalculated = ${totalWeightCalculated},
+      //   LocationNo = '${locationNo}',
+      //   QtyAccepted = ${qtyAccepted},
+      //   QtyReceived = '${qtyReceived}',
+      //   QtyRejected = '${qtyRejected}'
+      //   WHERE Mtrl_Rv_id = ${id}`);
+      //   misQueryMod(
+      //     `UPDATE mtrlreceiptdetails SET
+      //     Srl = '${srl}',
+      //     Mtrl_Code = '${mtrlCode}',
+      //     DynamicPara1 = ${dynamicPara1},
+      //     DynamicPara2 = ${dynamicPara2},
+      //     Qty = ${qtyReceived},
+      //     Inspected = ${inspected},
+      //     Accepted = ${accepted},
+      //     TotalWeightCalculated = ${totalWeightCalculated},
+      //     TotalWeight = ${totalWeight},
+      //     LocationNo = '${locationNo}',
+      //     QtyAccepted = ${qtyAccepted},
+      //     QtyReceived = '${qtyReceived}',
+      //     QtyRejected = '${qtyRejected}'
+      //     WHERE Mtrl_Rv_id = ${id}`,
+      //     (err, data) => {
+      //       if (err) logger.error(err);
+      //       // console.log("updated data", data);
+      //       res.json(data);
+      //     }
+      //   );
+      // } else {
+      console.log(`UPDATE mtrlreceiptdetails SET 
       Srl = '${srl}', 
       Mtrl_Code = '${mtrlCode}', 
       DynamicPara1 = ${dynamicPara1}, 
@@ -197,14 +202,15 @@ mtrlReceiptDetailsRouter.post(
       Inspected = ${inspected}, 
       Accepted = ${accepted}, 
       TotalWeightCalculated = ${totalWeightCalculated}, 
+      TotalWeight = ${totalWeight},
       LocationNo = '${locationNo}',
       Updated = ${updated},  
       QtyAccepted = ${qtyAccepted}, 
       QtyReceived = '${qtyReceived}', 
       QtyRejected = '${qtyRejected}' 
       WHERE Mtrl_Rv_id = ${id}`);
-        misQueryMod(
-          `UPDATE mtrlreceiptdetails SET 
+      misQueryMod(
+        `UPDATE mtrlreceiptdetails SET 
           Srl = '${srl}', 
           Mtrl_Code = '${mtrlCode}', 
           DynamicPara1 = ${dynamicPara1}, 
@@ -214,19 +220,20 @@ mtrlReceiptDetailsRouter.post(
           Inspected = ${inspected}, 
           Accepted = ${accepted}, 
           TotalWeightCalculated = ${totalWeightCalculated}, 
+          TotalWeight = ${totalWeight},
           LocationNo = '${locationNo}',
           Updated = ${updated},  
           QtyAccepted = ${qtyAccepted}, 
           QtyReceived = '${qtyReceived}', 
           QtyRejected = '${qtyRejected}' 
           WHERE Mtrl_Rv_id = ${id}`,
-          (err, data) => {
-            if (err) logger.error(err);
-            // console.log("updated data", data);
-            res.json(data);
-          }
-        );
-      }
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("updated data", data);
+          res.json(data);
+        }
+      );
+      // }
     } catch (error) {
       next(error);
     }
@@ -289,6 +296,7 @@ mtrlReceiptDetailsRouter.post(
         `update mtrlreceiptdetails set Updated = ${upDated} where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          console.log("data", data);
           res.send(data);
         }
       );

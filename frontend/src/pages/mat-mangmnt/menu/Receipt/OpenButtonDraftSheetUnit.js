@@ -137,15 +137,15 @@ function OpenButtonDraftSheetUnit(props) {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
+      text: unitLabel1 !== "" ? para1Label : "",
       dataField: "dynamicPara1",
     },
     {
-      text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
+      text: unitLabel2 !== "" ? para2Label : "",
       dataField: "dynamicPara2",
     },
     {
-      text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
+      text: unitLabel3 !== "" ? para3Label : "",
       dataField: "dynamicPara3",
     },
     {
@@ -205,9 +205,18 @@ function OpenButtonDraftSheetUnit(props) {
       //setFormHeader(formHeader);
 
       //get customer details for address
+      // getRequest(endpoints.getCustomers, (data1) => {
+      //   const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
+      //   data.address = found.Address;
+      //   console.log("data.address", data.address);
+      //   setFormHeader(formHeader);
+      //   setCalcWeightVal(data.TotalCalculatedWeight);
+      // });
+
       getRequest(endpoints.getCustomers, (data1) => {
         const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
-        data.address = found.Address;
+        formHeader.address = found.Address;
+        console.log("formHeader.address", formHeader.address);
         setFormHeader(formHeader);
         setCalcWeightVal(data.TotalCalculatedWeight);
       });
@@ -215,7 +224,7 @@ function OpenButtonDraftSheetUnit(props) {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        // console.log("data2  = ", data2);
+        console.log("data2  = ", data2);
         data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -228,7 +237,7 @@ function OpenButtonDraftSheetUnit(props) {
           obj.dynamicPara1 = obj.DynamicPara1;
           obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
-          obj.qty = obj.Qty;
+          obj.qty = Math.floor(obj.Qty);
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
@@ -244,7 +253,7 @@ function OpenButtonDraftSheetUnit(props) {
         // console.log("data 2 = ", data2);
         setMaterialArray(data2);
         //find shape of material
-        //console.log("data2 = ", data2);
+        // console.log("data2 = ", data2);
         for (let i = 0; i < data2.length; i++) {
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
@@ -1044,7 +1053,7 @@ function OpenButtonDraftSheetUnit(props) {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // console.log("Row = ", row);
+      console.log("Row = ", row);
       // console.log("Row = ", row.updated);
       // setIsButtonEnabled(row.updated === 1);
       // setInputPart(row);
@@ -1105,6 +1114,7 @@ function OpenButtonDraftSheetUnit(props) {
               updated: row.updated,
               accepted: obj.accepted,
               totalWeightCalculated: obj.totalWeightCalculated,
+              totalWeight: row.totalWeight,
             });
           }
         });
@@ -1379,7 +1389,18 @@ function OpenButtonDraftSheetUnit(props) {
       });
       //console.log("mtrlstock = ", mtrlStock);
       //console.log("before materialArray = ", materialArray);
-
+      //update updated status = 1
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 1,
+      };
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          console.log("updated = 1");
+        }
+      );
       //update checkbox
       for (let i = 0; i < materialArray.length; i++) {
         if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
@@ -1388,6 +1409,7 @@ function OpenButtonDraftSheetUnit(props) {
       }
       await delay(500);
       setMaterialArray(materialArray);
+      setInputPart({ ...inputPart, updated: 1 });
       //console.log("after materialArray = ", materialArray);
     }
   };
@@ -1417,6 +1439,7 @@ function OpenButtonDraftSheetUnit(props) {
           }
           await delay(500);
           setMaterialArray(materialArray);
+          setInputPart({ ...inputPart, updated: 0 });
         } else {
           toast.error("Stock Not Removed");
         }
@@ -1528,11 +1551,11 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -1541,7 +1564,7 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -1550,22 +1573,7 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
-            <label className="form-label">Customer</label>
-            <select
-              className="ip-select"
-              name="customer"
-              disabled={true}
-              //onChange={changeCustomer}
-            >
-              <option value={formHeader.customer} disabled selected>
-                {formHeader.customerName}
-              </option>
-            </select>
-          </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Weight</label>
             <input
               type="text"
@@ -1577,9 +1585,21 @@ function OpenButtonDraftSheetUnit(props) {
             />
           </div>
         </div>
-
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
+            <label className="form-label">Customer</label>
+            <select
+              className="ip-select mt-1 "
+              name="customer"
+              disabled={true}
+              //onChange={changeCustomer}
+            >
+              <option value={formHeader.customer} disabled selected>
+                {formHeader.customerName}
+              </option>
+            </select>
+          </div>
+          <div className="col-md-4">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -1589,7 +1609,7 @@ function OpenButtonDraftSheetUnit(props) {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="text"
@@ -1600,54 +1620,48 @@ function OpenButtonDraftSheetUnit(props) {
           </div>
         </div>
 
-        <div className="row mt-3">
+        <div className="row">
           <div className="col-md-8 justify-content-center">
-            <div className="row">
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  onClick={saveButtonState}
-                  disabled={boolVal4}
-                >
-                  Save
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={allotRVButtonState}
-                >
-                  Allot RV No
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={deleteRVButton}
-                >
-                  Delete RV
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style "
-                  id="btnclose"
-                  type="submit"
-                  onClick={() => nav("/MaterialManagement")}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <button
+              className="button-style"
+              style={{ marginLeft: "70px" }}
+              onClick={saveButtonState}
+              disabled={boolVal4}
+            >
+              Save
+            </button>
+
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={allotRVButtonState}
+            >
+              Allot RV No
+            </button>
+
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={deleteRVButton}
+            >
+              Delete RV
+            </button>
+
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
           </div>
-          <div className="col-md-4 mb-3">
-            <label className="form-label"></label>
+          <div className="col-md-4 mb-3 mt-4">
+            {/* <label className="form-label"></label> */}
             <textarea
               id="exampleFormControlTextarea1"
-              rows="4"
-              style={{ width: "330px" }}
+              rows="2"
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -1655,7 +1669,7 @@ function OpenButtonDraftSheetUnit(props) {
         </div>
         <div className="row">
           <div className="col-md-8 col-sm-12">
-            <div style={{ height: "330px", overflowY: "scroll" }}>
+            <div style={{ height: "420px", overflowY: "scroll" }}>
               <BootstrapTable
                 keyField="id"
                 columns={columns}
@@ -1675,26 +1689,33 @@ function OpenButtonDraftSheetUnit(props) {
              <Tables theadData={getHeadings()} tbodyData={data3} />
             </div> */}
           </div>
-          <div className="col-md-4 col-sm-12">
+          <div
+            className="col-md-4 col-sm-12"
+            style={{ overflowY: "scroll", height: "420px" }}
+          >
             <div className="ip-box form-bg">
               <div className="row justify-content-center mt-2">
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  //onClick={addNewPart}
-                  disabled={boolVal4}
-                  onClick={addNewMaterial}
-                >
-                  Add Serial
-                </button>
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  disabled={boolVal3 | boolVal4}
-                  onClick={deleteButtonState}
-                >
-                  Delete Serial
-                </button>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    //onClick={addNewPart}
+                    disabled={boolVal4}
+                    onClick={addNewMaterial}
+                  >
+                    Add Serial
+                  </button>
+                </div>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    disabled={boolVal3 | boolVal4}
+                    onClick={deleteButtonState}
+                  >
+                    Delete Serial
+                  </button>
+                </div>
               </div>
 
               <div className="row  justify-content-center">
@@ -1740,7 +1761,7 @@ function OpenButtonDraftSheetUnit(props) {
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-4 ">
+                    <div className="col-md-3 ">
                       <label className="form-label">Part ID</label>
                     </div>
                     <div className="col-md-8" style={{ marginTop: "8px" }}>
@@ -1796,84 +1817,98 @@ function OpenButtonDraftSheetUnit(props) {
                     </div>
                   </div>
 
-                  <div className="row mt-3">
-                    <div className="col-md-4">
-                      <label className="form-label">{para1Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara1"
-                        value={inputPart.dynamicPara1}
-                        disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
-                        // onChange={changeMaterialHandle}
+                  {!(boolVal3 || boolVal4 || boolPara1) && (
+                    <div className="row mt-3">
+                      <div className="col-md-3">
+                        <label className="form-label">{para1Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara1"
+                          value={inputPart.dynamicPara1}
+                          // disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
+                          disabled={boolVal5}
+                          // onChange={changeMaterialHandle}
 
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel1}</label>
+                      </div>
                     </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel1}</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para2Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara2"
-                        value={inputPart.dynamicPara2}
-                        // onChange={changeMaterialHandle}
+                  )}
 
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel2}</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para3Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara3"
-                        value={inputPart.dynamicPara3}
-                        // onChange={changeMaterialHandle}
+                  {!(boolVal3 || boolVal4 || boolPara2) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para2Label}</label>
+                      </div>
+                      <div className="col-md-6">
+                        <input
+                          className="in-field"
+                          name="dynamicPara2"
+                          value={inputPart.dynamicPara2}
+                          // onChange={changeMaterialHandle}
 
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
-                      />
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                          disabled={boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel2}</label>
+                      </div>
                     </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel3}</label>
+                  )}
+                  {!(boolVal3 || boolVal4 || boolPara3) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para3Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara3"
+                          value={inputPart.dynamicPara3}
+                          // onChange={changeMaterialHandle}
+
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                          disabled={boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel3}</label>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <p className="form-title-deco">
                     <h5>Quantity Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Received</label>
+                    <div className="col-md-3 col-sm-12">
+                      <label className="form-label mt-1">Received</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
                         name="qtyReceived"
                         // defaultValue={0}
-                        value={inputPart.qtyReceived}
+                        value={
+                          (inputPart.qtyReceived = Math.floor(
+                            inputPart.qtyReceived
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4}
                         // onChange={changeMaterialHandle}
 
@@ -1883,42 +1918,47 @@ function OpenButtonDraftSheetUnit(props) {
                         }}
                       />
                     </div>
-
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="inspected"
-                            checked={insCheck}
-                            // checked={inputPart.inspected === "1" ? true : false}
-                            disabled={boolVal3 | boolVal4}
-                            // onChange={changeMaterialHandle}
-
-                            min="0"
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                            }}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Inspected</label>
-                        </div>
+                    <div className="col-md-5 ">
+                      <div
+                        className="col-md-12 "
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          // className="checkBoxStyle mt-2"
+                          // type="checkbox"
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="inspected"
+                          // checked={insCheck}
+                          checked={inputPart.inspected}
+                          // checked={inputPart.inspected === "1" ? true : false}
+                          disabled={boolVal3 | boolVal4}
+                          // onChange={changeMaterialHandle}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                        <label className="form-label mt-1">Inspected</label>
                       </div>
-                       
                     </div>
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Accepted</label>
+                    <div className="col-md-3 col-sm-12">
+                      <label className="form-label mt-1">Accepted</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
                         name="qtyAccepted"
                         // defaultValue={0}
-                        value={inputPart.qtyAccepted}
+                        value={
+                          (inputPart.qtyAccepted = Math.floor(
+                            inputPart.qtyAccepted
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4 | !boolVal5}
                         // onChange={changeMaterialHandle}
 
@@ -1929,23 +1969,24 @@ function OpenButtonDraftSheetUnit(props) {
                       />
                     </div>
 
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="updated"
-                            value={inputPart.updated}
-                            //disabled={boolVal3 | boolVal4}
-                            disabled={true}
-                            onChange={changeMaterialHandle}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Updated</label>
-                        </div>
+                    <div className="col-md-5 ">
+                      <div
+                        className="col-md-12 "
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          // className="checkBoxStyle mt-2"
+                          // type="checkbox"
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="updated"
+                          checked={inputPart.updated === 1 ? true : false}
+                          disabled={boolVal3 | boolVal4}
+                          // disabled={boolVal}
+                          onChange={changeMaterialHandle}
+                        />
+                        <label className="form-label mt-1">Updated</label>
                       </div>
                     </div>
                   </div>
@@ -1958,6 +1999,8 @@ function OpenButtonDraftSheetUnit(props) {
                       >
                         Wt Calculated 2
                       </label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         name="totalWeightCalculated"
@@ -1969,6 +2012,8 @@ function OpenButtonDraftSheetUnit(props) {
                   <div className="row">
                     <div className="col-md-6">
                       <label className="form-label">Weight</label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         name="totalWeight"
@@ -1981,6 +2026,8 @@ function OpenButtonDraftSheetUnit(props) {
                   <div className="row">
                     <div className="col-md-6 ">
                       <label className="form-label">Location</label>
+                    </div>
+                    <div className="col-md-6 mt-1">
                       <select
                         className="ip-select dropdown-field"
                         // onChange={changeMaterialHandle}
@@ -2001,11 +2048,6 @@ function OpenButtonDraftSheetUnit(props) {
                             {location.LocationNo}
                           </option>
                         ))}
-
-                        {/* <option value="option 1">001</option>
-                            <option value="option 1">002</option>
-                            <option value="option 1">003</option>
-                            <option value="option 1">004</option> */}
                       </select>
                     </div>
                   </div>

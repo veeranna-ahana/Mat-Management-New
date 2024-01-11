@@ -179,11 +179,11 @@ function OpenButtonClosedSheetUnit() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.RV_No} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -193,7 +193,7 @@ function OpenButtonClosedSheetUnit() {
             />
             {/* value={currDate} */}
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -202,12 +202,23 @@ function OpenButtonClosedSheetUnit() {
               readOnly
             />
           </div>
+          <div className="col-md-3">
+            <label className="form-label">Weight</label>
+            <input
+              type="text"
+              name="weight"
+              required
+              value={formHeader.TotalWeight}
+              disabled={boolVal}
+              // onChange={InputHeaderEvent}
+            />
+          </div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
             <label className="form-label">Customer</label>
             <select
-              className="ip-select"
+              className="ip-select mt-1"
               name="customer"
               disabled={boolVal}
               // onChange={changeCustomer}
@@ -224,19 +235,6 @@ function OpenButtonClosedSheetUnit() {
             </select>
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              type="text"
-              name="weight"
-              required
-              value={formHeader.TotalWeight}
-              disabled={boolVal}
-              // onChange={InputHeaderEvent}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -246,7 +244,7 @@ function OpenButtonClosedSheetUnit() {
               // onChange={InputHeaderEvent}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="text"
@@ -256,45 +254,41 @@ function OpenButtonClosedSheetUnit() {
             />
           </div>
         </div>
+        <div className="row"></div>
 
-        <div className="row mt-4">
+        <div className="row ">
           <div className="col-md-8 justify-content-center">
-            <div className="row">
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Save
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Allot RV No
-                </button>
-              </div>
+            <button
+              className="button-style"
+              style={{ marginLeft: "70px" }}
+              disabled={boolVal}
+            >
+              Save
+            </button>
 
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Delete RV
-                </button>
-              </div>
+            <button className="button-style" disabled={boolVal}>
+              Allot RV No
+            </button>
 
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style "
-                  id="btnclose"
-                  type="submit"
-                  onClick={() => nav("/MaterialManagement")}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <button className="button-style" disabled={boolVal}>
+              Delete RV
+            </button>
+
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
           </div>
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4 mb-3 mt-4">
             <label className="form-label"></label>
             <textarea
               id="exampleFormControlTextarea1"
               rows="4"
-              style={{ width: "330px" }}
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -324,23 +318,24 @@ function OpenButtonClosedSheetUnit() {
               <Tables theadData={getHeadings()} tbodyData={data3} />
             </div> 
           </div> */}
-          <div className="col-md-4 col-sm-12">
+          <div
+            className="col-md-4 col-sm-12"
+            style={{ overflowY: "scroll", height: "420px" }}
+          >
             <div className="ip-box form-bg">
               <div className="row justify-content-center mt-2">
-                <button
+                {/* <button
                   className="button-style "
                   style={{ width: "155px" }}
                   disabled={boolVal}
                 >
                   Add Serial
-                </button>
-              </div>
+                </button> */}
 
-              <div className="row">
                 <div className="col-md-6 col-sm-12">
                   <button
                     className="button-style "
-                    style={{ width: "150px" }}
+                    style={{ width: "155px" }}
                     disabled={boolVal}
                   >
                     Add to stock
@@ -349,7 +344,7 @@ function OpenButtonClosedSheetUnit() {
                 <div className="col-md-6 col-sm-12">
                   <button
                     className="button-style "
-                    style={{ width: "150px" }}
+                    style={{ width: "155px" }}
                     disabled={boolVal}
                   >
                     Remove stock
@@ -365,7 +360,7 @@ function OpenButtonClosedSheetUnit() {
                         <h5>Serial Details</h5>
                       </p>
 
-                      <div className="col-md-4 ">
+                      <div className="col-md-3 ">
                         <label className="form-label">Part ID</label>
                       </div>
                       <div className="col-md-8" style={{ marginTop: "8px" }}>
@@ -385,27 +380,43 @@ function OpenButtonClosedSheetUnit() {
                     </div>
 
                     <div className="row">
-                      <div className="col-md-4">
+                      {/* <div className="col-md-3">
                         <label className="form-label">Length</label>
+                      </div> */}
+                      <div className="col-md-3">
+                        <label className="form-label">{para1Label}</label>
                       </div>
-                      <div className="col-md-8 ">
-                        <input className="in-field" disabled={boolVal} />
+                      <div className="col-md-6 ">
+                        <input
+                          className="in-field"
+                          // value={inputPart.dynamicPara1}
+                          disabled={boolVal}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        {/* <label className="form-label">{unitLabel1}</label> */}
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-4">
-                        <label className="form-label">Width</label>
+                      <div className="col-md-3">
+                        <label className="form-label">{para2Label}</label>
                       </div>
-                      <div className="col-md-8 ">
+                      <div className="col-md-6 ">
                         <input className="in-field" disabled={boolVal} />
+                      </div>
+                      <div className="col-md-3">
+                        {/* <label className="form-label">{unitLabel1}</label> */}
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-4">
-                        <label className="form-label">Height</label>
+                      <div className="col-md-3">
+                        <label className="form-label">{para3Label}</label>
                       </div>
-                      <div className="col-md-8 ">
+                      <div className="col-md-6 ">
                         <input className="in-field" disabled={boolVal} />
+                      </div>
+                      <div className="col-md-3">
+                        {/* <label className="form-label">{unitLabel1}</label> */}
                       </div>
                     </div>
                     <div className="col-md-12 mt-3 ">
@@ -413,12 +424,15 @@ function OpenButtonClosedSheetUnit() {
                         <h5>Quantity Details</h5>
                       </p>
                       <div className="row">
-                        <div className="col-md-6">
-                          <label className="form-label">Received</label>
+                        <div className="col-md-3">
+                          <label className="form-label mt-2">Received</label>
+                        </div>
+                        <div className="col-md-4">
+                          {" "}
                           <input className="in-field" disabled={boolVal} />
                         </div>
 
-                        <div className="col-md-6">
+                        <div className="col-md-5">
                           <div
                             className="col-md-12"
                             style={{ display: "flex", gap: "5px" }}
@@ -436,12 +450,14 @@ function OpenButtonClosedSheetUnit() {
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-6">
-                          <label className="form-label">Accepted</label>
+                        <div className="col-md-3">
+                          <label className="form-label mt-2">Accepted</label>
+                        </div>
+                        <div className="col-md-4">
                           <input className="in-field" disabled={boolVal} />
                         </div>
 
-                        <div className="col-md-6">
+                        <div className="col-md-5">
                           <div
                             className="col-md-12"
                             style={{ display: "flex", gap: "5px" }}
@@ -466,18 +482,24 @@ function OpenButtonClosedSheetUnit() {
                           >
                             Wt Caluclated 2
                           </label>
+                        </div>
+                        <div className="col-md-6 mt-1">
                           <input className="in-field" disabled={boolVal} />
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-md-6">
                           <label className="form-label">Weight</label>
+                        </div>
+                        <div className="col-md-6 ">
                           <input className="in-field" disabled={boolVal} />
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-md-6 ">
                           <label className="form-label">Location</label>
+                        </div>
+                        <div className="col-md-6 mt-2">
                           <select
                             className="ip-select dropdown-field"
                             disabled={boolVal}

@@ -3,6 +3,8 @@ import "./Login.css";
 import Logo from "../Auth/Magod Laser Logo - Default [2500].png";
 import { useNavigate } from "react-router-dom";
 
+const apiKey = process.env.REACT_APP_API_KEY;
+
 function Login() {
   const navigate = useNavigate();
   let [username, setUsername] = useState("");
@@ -26,7 +28,8 @@ function Login() {
 
   function submitLogin() {
     postRequest(
-      "http://localhost:5001/user/login",
+      // "http://localhost:5001/user/login",
+      `${apiKey}/user/login`,
       { username: username, password: formPassword },
       (data) => {
         if (data.accessToken) {

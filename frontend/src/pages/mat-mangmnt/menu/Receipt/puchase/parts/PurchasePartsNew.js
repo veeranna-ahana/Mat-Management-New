@@ -159,12 +159,17 @@ function PurchasePartsNew() {
     {
       text: "Qty Rejected",
       dataField: "qtyRejected",
+      formatter: (celContent, row) => <div className="">{qtyRejected}</div>,
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
 
   const changePartHandle = (e) => {
     const { value, name } = e.target;
+
+    if (name === "unitWeight" && parseFloat(value) < 0) {
+      toast.error("unitWeight should be a positive value");
+    }
     setInputPart((preValue) => {
       //console.log(preValue)
       return {
@@ -175,7 +180,8 @@ function PurchasePartsNew() {
     inputPart[name] = value;
     inputPart.custBomId = formHeader.customer;
     inputPart.rvId = formHeader.rvId;
-    inputPart.qtyRejected = 0;
+    // inputPart.qtyRejected = 0;
+    inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
     inputPart.qtyUsed = 0;
     inputPart.qtyReturned = 0;
     inputPart.qtyIssued = 0;
@@ -532,11 +538,11 @@ function PurchasePartsNew() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -545,7 +551,7 @@ function PurchasePartsNew() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -554,12 +560,22 @@ function PurchasePartsNew() {
               readOnly
             />
           </div>
+          <div className="col-md-3">
+            <label className="form-label">Weight</label>
+            <input
+              type="text"
+              name="weight"
+              value={formHeader.weight}
+              onChange={InputHeaderEvent}
+              disabled={boolVal4}
+            />
+          </div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
             <label className="form-label">Customer</label>
             <select
-              className="ip-select"
+              className="ip-select mt-1"
               name="customer"
               //onChange={changeCustomer}
               disabled={boolVal1}
@@ -576,18 +592,6 @@ function PurchasePartsNew() {
             </select>
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              type="text"
-              name="weight"
-              value={formHeader.weight}
-              onChange={InputHeaderEvent}
-              disabled={boolVal4}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -597,7 +601,7 @@ function PurchasePartsNew() {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="text"
@@ -613,6 +617,7 @@ function PurchasePartsNew() {
             <button
               className="button-style"
               // style={{ width: "196px" }}
+              style={{ marginLeft: "60px" }}
               onClick={saveButtonState}
               disabled={boolVal4}
             >
@@ -644,11 +649,10 @@ function PurchasePartsNew() {
             </button>
           </div>
           <div className="col-md-4 mb-3 mt-3">
-            <label className="form-label"></label>
             <textarea
               id="exampleFormControlTextarea1"
               rows="4"
-              style={{ width: "360px" }}
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -708,7 +712,7 @@ function PurchasePartsNew() {
         </div>*/}
         <div className="col-md-4 col-sm-12">
           <div className="ip-box form-bg">
-            <div className="row justify-content-center mt-2 mb-2">
+            <div className="row justify-content-center mt-2 mb-3">
               <button
                 className="button-style "
                 style={{ width: "155px" }}
@@ -719,10 +723,12 @@ function PurchasePartsNew() {
               </button>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Part ID</label>
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">Part ID</label>
+              </div>
+              <div className="col-md-8">
                 <select
-                  className="ip-select dropdown-field mt-1"
+                  className="ip-select dropdown-field"
                   name="partId"
                   value={inputPart.partId}
                   onChange={changePartHandle}
@@ -738,8 +744,10 @@ function PurchasePartsNew() {
                   ))}
                 </select>
               </div>
-              <div className="col-md-11">
-                <label className="form-label">Unit Wt</label>
+              <div className="col-md-4">
+                <label className="form-label mt-1">Unit Wt</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="text"
@@ -752,8 +760,10 @@ function PurchasePartsNew() {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-11 ">
-                <label className="form-label">Qty Received</label>
+              <div className="col-md-4 ">
+                <label className="form-label mt-1">QtyReceived</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="text"
@@ -764,8 +774,10 @@ function PurchasePartsNew() {
                   disabled={boolVal3 | boolVal4}
                 />
               </div>
-              <div className="col-md-11">
-                <label className="form-label">Qty Accepted</label>
+              <div className="col-md-4">
+                <label className="form-label mt-1">QtyAccepted</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="text"
@@ -777,11 +789,14 @@ function PurchasePartsNew() {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-11">
-                <label className="form-label">Qty Rejected</label>
+              <div className="col-md-4">
+                <label className="form-label mt-1">QtyRejected</label>
+              </div>
+              <div className="col-md-8 ">
                 <input
                   className="in-field"
                   type="text"
+                  value={inputPart.qtyReceived - inputPart.qtyAccepted}
                   name="qtyRejected"
                   readOnly
                 />
