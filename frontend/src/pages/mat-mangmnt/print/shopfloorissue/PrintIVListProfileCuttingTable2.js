@@ -313,13 +313,13 @@ const PrintIVListProfileCuttingTable2 = ({
 
         <View style={styles.blockRightAlign2}>
           <Text>Material</Text>
-          <Text style={styles.linegap}>Length</Text>
+          <Text style={styles.linegap}>Height</Text>
           <Text style={styles.linegap}>Qty</Text>
           <Text style={styles.linegap}>Source</Text>
         </View>
         <View style={styles.blockLeftAlign2}>
           <Text>{formHeader.Mtrl_Code}</Text>
-          <Text style={styles.linegap}>{formHeader.Para1}</Text>
+          <Text style={styles.linegap}>{formHeader.Para3}</Text>
           <Text style={styles.linegap}>{formHeader.Qty}</Text>
           <Text style={styles.linegap}>Custom</Text>
         </View>
@@ -334,11 +334,11 @@ const PrintIVListProfileCuttingTable2 = ({
         </View>
 
         <View style={styles.blockRightAlign2}>
-          <Text>Height</Text>
+          <Text>Length</Text>
           <Text style={styles.linegap}>Process</Text>
         </View>
         <View style={styles.blockLeftAlign2}>
-          <Text>{formHeader.Para3}</Text>
+          <Text>{formHeader.Para1}</Text>
           <Text style={styles.linegap}>{formHeader.MProcess}</Text>
         </View>
 
@@ -358,9 +358,9 @@ const PrintIVListProfileCuttingTable2 = ({
 
         <Text style={styles.combine}>{combineSheets}</Text>
 
-        <Text style={styles.line1}>
+        {/* <Text style={styles.line1}>
           ______________________________________________________________________________________________
-        </Text>
+        </Text> */}
 
         {/* {tableData.map((item, index) => {
           return (
@@ -369,22 +369,19 @@ const PrintIVListProfileCuttingTable2 = ({
             </>
           );
         })} */}
-        {tableData.map((item, index) => {
+        {/* {tableData.map((item, index) => {
           return (
             <>
               <Text style={styles.mtrlVal}>{item.ShapeMtrlID}</Text>
               <Text style={styles.para1Val}>{item.Para1}</Text>
               <Text style={styles.para2Val}>{item.Para2}</Text>
-              {/* <Text style={styles.usedVal}>{item.Used}</Text> */}
+
               <Text style={styles.usedVal}></Text>
 
-              {/* <Text style={styles.rejectVal}>{item.Rejected}</Text> */}
               <Text style={styles.rejectVal}></Text>
-
-              {/* <Text style={styles.emptyBlock}></Text> */}
             </>
           );
-        })}
+        })} */}
 
         {/* <Text style={styles.combine}>{combineSheets}</Text> */}
         <Text style={styles.line1}>
