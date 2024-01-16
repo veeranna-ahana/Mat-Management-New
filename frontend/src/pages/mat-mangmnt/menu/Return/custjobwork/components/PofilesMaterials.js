@@ -870,11 +870,14 @@ function PofilesMaterials(props) {
               let RVTotalCalWeight = 0;
               for (let i = 0; i < thirdTableData.length; i++) {
                 const element = thirdTableData[i];
+
+                // console.log("element...", element);
                 RVTotalWeight =
-                  parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
+                  parseFloat(RVTotalWeight) + parseFloat(element.Weight);
+                // parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
                 RVTotalCalWeight =
-                  parseFloat(RVTotalCalWeight) +
-                  parseFloat(element.TotalCalculatedWeight);
+                  parseFloat(RVTotalCalWeight) + parseFloat(element.Weight);
+                // parseFloat(element.TotalCalculatedWeight);
               }
               let newRowMaterialIssueRegister = {
                 IV_No: no,
@@ -1010,13 +1013,15 @@ function PofilesMaterials(props) {
                         RV_Srl: "",
                         Qty: element.Qty,
                         TotalWeightCalculated: (
-                          parseFloat(element.Qty) *
-                          parseFloat(element.TotalCalculatedWeight)
-                        ).toFixed(3),
+                          parseFloat(element.Qty) * parseFloat(element.Weight)
+                        )
+                          // parseFloat(element.TotalCalculatedWeight)
+                          .toFixed(3),
                         TotalWeight: (
-                          parseFloat(element.Qty) *
-                          parseFloat(element.TotalWeight)
-                        ).toFixed(3),
+                          parseFloat(element.Qty) * parseFloat(element.Weight)
+                        )
+                          // parseFloat(element.TotalWeight)
+                          .toFixed(3),
                         UpDated: 0,
                         RvId: element.RvID || 0,
                         Mtrl_Rv_id: element.Mtrl_Rv_id,
