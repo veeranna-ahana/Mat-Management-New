@@ -505,3 +505,13 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.button-disabled {
+  color: white !important;
+  background-color: rgb(173, 173, 173) !important;
+  cursor: no-drop;
+}
+
+.input-disabled {
+  cursor: no-drop;
+}
