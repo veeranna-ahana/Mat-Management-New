@@ -243,37 +243,31 @@ function OutwordMaterialIssueVocher(props) {
 
     // formHeader.TotalWeight;
 
-    let flag = 0;
-    if (
-      formHeader.TotalWeight === 0 ||
-      formHeader.TotalWeight === "0" ||
-      formHeader.TotalWeight === "0.000" ||
-      formHeader.TotalWeight === "0.00" ||
-      formHeader.TotalWeight === 0.0
-    ) {
-      toast.error("Serial Weight cannot be zero. Set Weight and try again");
-      flag = 1;
-    }
-    if (flag === 0) {
-      setShowCreateDC(true);
-      saveButtonState(e);
+    let flag = true;
+
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+      if (
+        element.TotalWeight === null ||
+        element.TotalWeight === "null" ||
+        element.TotalWeight === "" ||
+        element.TotalWeight === 0 ||
+        element.TotalWeight === "0" ||
+        element.TotalWeight === "0.000" ||
+        element.TotalWeight === "0.00" ||
+        element.TotalWeight === 0.0
+      ) {
+        flag = false;
+        break;
+      }
     }
 
-    // let flag = 0;
-    // outData.map((item) => {
-    //   if (
-    //     item.TotalWeight === 0||
-    //     item.TotalWeight === "0"||
-    //     item.TotalWeight === "0.00"||
-    //     item.TotalWeight === 0.0
-    //   ) {
-    //     toast.error("Serial Weight cannot be zero. Set Weight and try again");
-    //     flag = 1;
-    //   }
-    // });
-    // if (flag === 0) {
-    //   setShowCreateDC(true);
-    // }
+    if (flag) {
+      setShowCreateDC(true);
+      // saveButtonState(e);
+    } else {
+      toast.warning("Serial Weight cannot be zero. Set Weight and try again");
+    }
   };
 
   // if (test) {
@@ -1008,6 +1002,7 @@ function OutwordMaterialIssueVocher(props) {
         // fetchData={fetchData}
         // handleSave={handleSave}
         createDcResponse={createDcResponse}
+        saveButtonState={saveButtonState}
       />
 
       <PrintMaterialDC
