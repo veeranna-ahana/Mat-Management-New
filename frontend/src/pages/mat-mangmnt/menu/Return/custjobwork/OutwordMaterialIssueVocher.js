@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import { dateToShort, formatDate } from "../../../../../utils";
-import Swal from "sweetalert2";
+// import { dateToShort, formatDate } from "../../../../../utils";
+// import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import BootstrapTable from "react-bootstrap-table-next";
-import cellEditFactory from "react-bootstrap-table2-editor";
+// import BootstrapTable from "react-bootstrap-table-next";
+// import cellEditFactory from "react-bootstrap-table2-editor";
 import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
@@ -25,27 +25,27 @@ function OutwordMaterialIssueVocher(props) {
     Address: "",
   });
 
-  //initial disable - print button
-  const [boolVal1, setBoolVal1] = useState(true);
+  // //initial disable - print button
+  // const [boolVal1, setBoolVal1] = useState(true);
 
-  //after clicking create dc
-  const [boolVal2, setBoolVal2] = useState(false);
+  // //after clicking create dc
+  // const [boolVal2, setBoolVal2] = useState(false);
 
-  //after clicking cancel dc
-  const [boolVal3, setBoolVal3] = useState(false);
+  // //after clicking cancel dc
+  // const [boolVal3, setBoolVal3] = useState(false);
 
   let [dcID, setdcID] = useState("");
   let [dcRegister, setdcRegister] = useState({});
 
   const [outData, setOutData] = useState([]);
-  const [upData, setUpData] = useState();
+  // const [upData, setUpData] = useState();
 
   const location = useLocation();
 
   const [IVNOValue, setIVNOValue] = useState("");
   const [IVIDValue, setIVIDValue] = useState("");
 
-  const handleShow = () => setShow(true);
+  // const handleShow = () => setShow(true);
 
   let [formHeader, setFormHeader] = useState({
     Iv_Id: "",
@@ -62,10 +62,10 @@ function OutwordMaterialIssueVocher(props) {
     IVStatus: "",
   });
 
-  function statusFormatter(cell, row, rowIndex, formatExtraData) {
-    if (!cell) return;
-    return dateToShort(cell);
-  }
+  // function statusFormatter(cell, row, rowIndex, formatExtraData) {
+  //   if (!cell) return;
+  //   return dateToShort(cell);
+  // }
 
   async function fetchData() {
     // console.log("propstype = ", location.state.propsType);
@@ -91,9 +91,9 @@ function OutwordMaterialIssueVocher(props) {
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
         PkngDCDate: data.PkngDCDate,
-        TotalWeight: parseFloat(data.TotalWeight).toFixed(2),
+        TotalWeight: parseFloat(data.TotalWeight).toFixed(3),
         TotalCalculatedWeight: parseFloat(data.TotalCalculatedWeight).toFixed(
-          2
+          3
         ),
         Dc_ID: data.Dc_ID,
         IVStatus: data.IVStatus,
@@ -107,7 +107,7 @@ function OutwordMaterialIssueVocher(props) {
       });
     });
 
-    //grid data
+    //table data
     let url1 =
       endpoints.getmtrlIssueDetailsByIVID +
       "?id=" +
@@ -122,60 +122,60 @@ function OutwordMaterialIssueVocher(props) {
     fetchData();
   }, []); //[inputPart]);
 
-  const columns = [
-    {
-      text: "Srl",
-      dataField: "Srl",
-      editable: false,
-    },
-    {
-      text: "Description",
-      dataField: "MtrlDescription",
-      editable: false,
-    },
-    {
-      text: "Material",
-      dataField: "Material",
-      editable: false,
-    },
-    {
-      text: "Qty",
-      dataField: "Qty",
-      editable: false,
-    },
-    {
-      text: "Weight",
-      dataField: "TotalWeightCalculated",
-      editable: false,
-    },
-    {
-      text: "Total Weight",
-      dataField: "TotalWeight",
-      // editable: (content, row, rowIndex, columnIndex) => {
-      // // console.log("content = ", content);
-      // },
-    },
-    {
-      text: "Updated",
-      dataField: "",
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input type="checkbox" />
-          </lable>
-        </div>
-      ),
-    },
-  ];
-  function afterSaveCell(oldValue, newValue, row, column) {
-    //console.log("oldvalue = ", oldValue);
-    //console.log("newvalue = ", newValue);
-    //console.log("row = ", row);
-    setFormHeader({
-      ...formHeader,
-      TotalWeight: newValue,
-    });
-  }
+  // const columns = [
+  //   {
+  //     text: "Srl",
+  //     dataField: "Srl",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Description",
+  //     dataField: "MtrlDescription",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Material",
+  //     dataField: "Material",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Qty",
+  //     dataField: "Qty",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Weight",
+  //     dataField: "TotalWeightCalculated",
+  //     editable: false,
+  //   },
+  //   {
+  //     text: "Total Weight",
+  //     dataField: "TotalWeight",
+  //     // editable: (content, row, rowIndex, columnIndex) => {
+  //     // // console.log("content = ", content);
+  //     // },
+  //   },
+  //   {
+  //     text: "Updated",
+  //     dataField: "",
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input type="checkbox" />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  // ];
+  // function afterSaveCell(oldValue, newValue, row, column) {
+  //   //console.log("oldvalue = ", oldValue);
+  //   //console.log("newvalue = ", newValue);
+  //   //console.log("row = ", row);
+  //   setFormHeader({
+  //     ...formHeader,
+  //     TotalWeight: newValue,
+  //   });
+  // }
   const InputHeaderEvent = (name, value) => {
     console.log("function.........", "name", name, "value", value);
     // const { name, value } = e.target;
@@ -194,12 +194,12 @@ function OutwordMaterialIssueVocher(props) {
     else {*/
     postRequest(
       endpoints.updateDCWeight,
-
       { outData: outData, formHeader: formHeader, type: "material" },
       (data) => {
         //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           toast.success("Record Updated Successfully");
+          fetchData();
         } else {
           toast.error("Record Not Updated");
         }
@@ -208,14 +208,14 @@ function OutwordMaterialIssueVocher(props) {
     //}
   };
 
-  const getPop = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Current IV is cancelled and stock added to Material Stock",
-      confirmButtonColor: "#3085d6",
-      confirmButtonText: "okay",
-    });
-  };
+  // const getPop = () => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Current IV is cancelled and stock added to Material Stock",
+  //     confirmButtonColor: "#3085d6",
+  //     confirmButtonText: "okay",
+  //   });
+  // };
   let cancelIV = () => {
     // console.log("location.state", location.state);
 
@@ -299,8 +299,8 @@ function OutwordMaterialIssueVocher(props) {
       });
 
       //button enable disable
-      setBoolVal1(false);
-      setBoolVal2(true);
+      // setBoolVal1(false);
+      // setBoolVal2(true);
 
       //fetch again dcno
       let url4 =
@@ -368,202 +368,201 @@ function OutwordMaterialIssueVocher(props) {
   // }
 
   const handleChangeWeightTotalCal = () => {
-    let newTotalCalWeight = 0;
+    let newTotalWeight = 0;
     for (let i = 0; i < outData.length; i++) {
       const element = outData[i];
       // console.log("elemet@@@@@@@@@@@@@@", element.TotalWeightCalculated);
-      newTotalCalWeight =
-        parseFloat(newTotalCalWeight) +
-        parseFloat(element.TotalWeightCalculated);
+      newTotalWeight =
+        parseFloat(newTotalWeight) + parseFloat(element.TotalWeight);
     }
 
     setFormHeader({
       ...formHeader,
-      TotalWeight: newTotalCalWeight,
+      TotalWeight: newTotalWeight,
     });
   };
 
-  const handleSave = () => {
-    const type = "sheets";
-    //get running no
-    // debugger;
-    let yyyy = formatDate(new Date(), 6).toString();
-    const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
-    // console.log(url);
-    getRequest(url, (data) => {
-      data.map((obj) => {
-        let newNo = parseInt(obj.Running_No) + 1;
-        //let no = "23/000" + newNo;
-        let series = "";
-        //add prefix zeros
-        for (
-          let i = 0;
-          i < parseInt(obj.Length) - newNo.toString().length;
-          i++
-        ) {
-          series = series + "0";
-        }
-        series = series + "" + newNo;
+  // const handleSave = () => {
+  //   const type = "sheets";
+  //   //get running no
+  //   // debugger;
+  //   let yyyy = formatDate(new Date(), 6).toString();
+  //   const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
+  //   // console.log(url);
+  //   getRequest(url, (data) => {
+  //     data.map((obj) => {
+  //       let newNo = parseInt(obj.Running_No) + 1;
+  //       //let no = "23/000" + newNo;
+  //       let series = "";
+  //       //add prefix zeros
+  //       for (
+  //         let i = 0;
+  //         i < parseInt(obj.Length) - newNo.toString().length;
+  //         i++
+  //       ) {
+  //         series = series + "0";
+  //       }
+  //       series = series + "" + newNo;
 
-        //get last 2 digit of year
-        let yy = formatDate(new Date(), 6).toString().substring(2);
-        let no = yy + "/" + series;
-        // console.log("no = ", no);
-        //toast.success("No = ", no);
+  //       //get last 2 digit of year
+  //       let yy = formatDate(new Date(), 6).toString().substring(2);
+  //       let no = yy + "/" + series;
+  //       // console.log("no = ", no);
+  //       //toast.success("No = ", no);
 
-        //get cust data
-        let url1 =
-          endpoints.getCustomerByCustCode + "?code=" + formHeader.Cust_code;
-        // console.log("url = ", url1);
-        getRequest(url1, (data) => {
-          let DCRegister = {
-            DC_Type: "Material Return",
-            DC_No: no,
-            DC_Date: formatDate(new Date(), 2),
-            Cust_Code: formHeader.Cust_code,
-            Cust_Name: formHeader.Customer,
-            Cust_Address: data.Address,
-            Cust_Place: data.City,
-            Cust_State: data.State,
-            PIN_Code: data.Pin_Code,
-            GSTNo: type === "parts" ? "" : data.GSTNo,
-            ECC_No: type === "parts" ? data.ECC_No : "",
-            TIN_No: type === "parts" ? data.TIN_No : "",
-            CST_No: type === "parts" ? data.CST_No : "",
-            AuhtorisingDocu:
-              formHeader.IV_No +
-              " Dt " +
-              formatDate(
-                new Date(formHeader.IV_Date.toString().substring(0, 10)),
-                7
-              ),
-            Total_Wt: formHeader.TotalWeight,
-            ScarpWt: 0,
-            DCStatus: "Draft",
-            Remarks:
-              formHeader.IV_No +
-              " Dt " +
-              formatDate(
-                new Date(
-                  new Date(
-                    formHeader.IV_Date.toString().substring(0, 10)
-                  ).toDateString()
-                ),
-                7
-              ),
-          };
+  //       //get cust data
+  //       let url1 =
+  //         endpoints.getCustomerByCustCode + "?code=" + formHeader.Cust_code;
+  //       // console.log("url = ", url1);
+  //       getRequest(url1, (data) => {
+  //         let DCRegister = {
+  //           DC_Type: "Material Return",
+  //           DC_No: no,
+  //           DC_Date: formatDate(new Date(), 2),
+  //           Cust_Code: formHeader.Cust_code,
+  //           Cust_Name: formHeader.Customer,
+  //           Cust_Address: data.Address,
+  //           Cust_Place: data.City,
+  //           Cust_State: data.State,
+  //           PIN_Code: data.Pin_Code,
+  //           GSTNo: type === "parts" ? "" : data.GSTNo,
+  //           ECC_No: type === "parts" ? data.ECC_No : "",
+  //           TIN_No: type === "parts" ? data.TIN_No : "",
+  //           CST_No: type === "parts" ? data.CST_No : "",
+  //           AuhtorisingDocu:
+  //             formHeader.IV_No +
+  //             " Dt " +
+  //             formatDate(
+  //               new Date(formHeader.IV_Date.toString().substring(0, 10)),
+  //               7
+  //             ),
+  //           Total_Wt: formHeader.TotalWeight,
+  //           ScarpWt: 0,
+  //           DCStatus: "Draft",
+  //           Remarks:
+  //             formHeader.IV_No +
+  //             " Dt " +
+  //             formatDate(
+  //               new Date(
+  //                 new Date(
+  //                   formHeader.IV_Date.toString().substring(0, 10)
+  //                 ).toDateString()
+  //               ),
+  //               7
+  //             ),
+  //         };
 
-          // console.log("form header = ", props.formHeader);
-          // console.log("table data = ", props.outData);
-          //console.log("dcregister = ", DCRegister);
+  //         // console.log("form header = ", props.formHeader);
+  //         // console.log("table data = ", props.outData);
+  //         //console.log("dcregister = ", DCRegister);
 
-          //insert dc_register table
-          postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
-            // console.log("DC Register Inserted");
-          });
+  //         //insert dc_register table
+  //         postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
+  //           // console.log("DC Register Inserted");
+  //         });
 
-          //get the last insert id of dc details
-          getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
-            let dc_id = data.DC_ID + 1;
-            // console.log("Last id = ", dc_id);
-            for (let i = 0; i < outData.length; i++) {
-              //dc_id = dc_id + 1;
-              let dcdetails = {
-                DC_ID: dc_id,
-                DC_Srl: i + 1,
-                Cust_Code: outData[i].Cust_Code,
-                cust_docu_No: formHeader.IV_No,
-                Item_Descrption:
-                  type === "parts"
-                    ? outData[i].PartId
-                    : outData[i].MtrlDescription,
-                Material:
-                  type === "parts" ? outData[i].Remarks : outData[i].Material,
-                Qty: type === "parts" ? outData[i].QtyReturned : outData[i].Qty,
-                Unit_Wt: type === "parts" ? outData[i].UnitWt : 0,
-                DC_Srl_Wt: outData[i].TotalWeight,
-                Excise_CL_no: null,
-                DespStatus: "Closed",
-              };
-              //insert dcdetails
-              postRequest(
-                endpoints.insertDCDetails,
-                dcdetails,
-                async (data) => {
-                  // console.log("DC Details Inserted");
-                }
-              );
+  //         //get the last insert id of dc details
+  //         getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
+  //           let dc_id = data.DC_ID + 1;
+  //           // console.log("Last id = ", dc_id);
+  //           for (let i = 0; i < outData.length; i++) {
+  //             //dc_id = dc_id + 1;
+  //             let dcdetails = {
+  //               DC_ID: dc_id,
+  //               DC_Srl: i + 1,
+  //               Cust_Code: outData[i].Cust_Code,
+  //               cust_docu_No: formHeader.IV_No,
+  //               Item_Descrption:
+  //                 type === "parts"
+  //                   ? outData[i].PartId
+  //                   : outData[i].MtrlDescription,
+  //               Material:
+  //                 type === "parts" ? outData[i].Remarks : outData[i].Material,
+  //               Qty: type === "parts" ? outData[i].QtyReturned : outData[i].Qty,
+  //               Unit_Wt: type === "parts" ? outData[i].UnitWt : 0,
+  //               DC_Srl_Wt: outData[i].TotalWeight,
+  //               Excise_CL_no: null,
+  //               DespStatus: "Closed",
+  //             };
+  //             //insert dcdetails
+  //             postRequest(
+  //               endpoints.insertDCDetails,
+  //               dcdetails,
+  //               async (data) => {
+  //                 // console.log("DC Details Inserted");
+  //               }
+  //             );
 
-              let dcupdatedetails = {
-                Iv_Id: formHeader.Iv_Id,
-                PkngDcNo: no,
-                Dc_ID: dc_id,
-              };
-              //update material issue register
-              postRequest(
-                endpoints.updateStatusDCNoDCID,
-                dcupdatedetails,
-                async (data) => {
-                  // console.log("material issue register Updated");
-                }
-              );
+  //             let dcupdatedetails = {
+  //               Iv_Id: formHeader.Iv_Id,
+  //               PkngDcNo: no,
+  //               Dc_ID: dc_id,
+  //             };
+  //             //update material issue register
+  //             postRequest(
+  //               endpoints.updateStatusDCNoDCID,
+  //               dcupdatedetails,
+  //               async (data) => {
+  //                 // console.log("material issue register Updated");
+  //               }
+  //             );
 
-              //send dc id to main page
-              getDCID(dc_id);
-              // InputHeaderEvent("IVStatus", "Returned");
+  //             //send dc id to main page
+  //             getDCID(dc_id);
+  //             // InputHeaderEvent("IVStatus", "Returned");
 
-              //update the running no
-              const inputData = {
-                SrlType: "Outward_DCNo",
-                Period: formatDate(new Date(), 6),
-                RunningNo: newNo,
-              };
-              postRequest(endpoints.updateRunningNo, inputData, (data) => {});
-            }
+  //             //update the running no
+  //             const inputData = {
+  //               SrlType: "Outward_DCNo",
+  //               Period: formatDate(new Date(), 6),
+  //               RunningNo: newNo,
+  //             };
+  //             postRequest(endpoints.updateRunningNo, inputData, (data) => {});
+  //           }
 
-            //console.log("dc details = ", dcdetails);
-          });
-          //insert dc details
-        });
-        /*props.type === "parts"
-            ? nav(
-                "/materialmanagement/return/customerjobwork/OutwordPartIssueVocher"
-              )
-            : nav(
-                "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
-              );*/
+  //           //console.log("dc details = ", dcdetails);
+  //         });
+  //         //insert dc details
+  //       });
+  //       /*props.type === "parts"
+  //           ? nav(
+  //               "/materialmanagement/return/customerjobwork/OutwordPartIssueVocher"
+  //             )
+  //           : nav(
+  //               "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
+  //             );*/
 
-        // props.setFormHeader({
-        //   ...props.formHeader,
-        //   IVStatus: "test",
-        //   text: "123",
-        // });
-        // props.setTest(true);
+  //       // props.setFormHeader({
+  //       //   ...props.formHeader,
+  //       //   IVStatus: "test",
+  //       //   text: "123",
+  //       // });
+  //       // props.setTest(true);
 
-        // props.setFormHeader
+  //       // props.setFormHeader
 
-        // props.setReturnValueFunc();
-        setFormHeader({
-          ...formHeader,
-          IVStatus: "Returned",
-        });
-        toast.success("DC Created Successfully");
-        // props.setFormHeader({
-        //   ...props.formHeader,
-        //   IVStatus: "test",
-        //   text: "123",
-        // });
+  //       // props.setReturnValueFunc();
+  //       setFormHeader({
+  //         ...formHeader,
+  //         IVStatus: "Returned",
+  //       });
+  //       toast.success("DC Created Successfully");
+  //       // props.setFormHeader({
+  //       //   ...props.formHeader,
+  //       //   IVStatus: "test",
+  //       //   text: "123",
+  //       // });
 
-        // window.location.reload();
-        // window.location.reload();
-        //setpnno("");
-        //setShow(false);
-      });
-    });
-    // console.log("form header...", props.formHeader);
+  //       // window.location.reload();
+  //       // window.location.reload();
+  //       //setpnno("");
+  //       //setShow(false);
+  //     });
+  //   });
+  //   // console.log("form header...", props.formHeader);
 
-    // props.setFormHeader([])
-  };
+  //   // props.setFormHeader([])
+  // };
 
   const setReturnValueFunc = () => {
     setFormHeader({
@@ -687,7 +686,8 @@ function OutwordMaterialIssueVocher(props) {
                 <div className="col-md-6">
                   <label className="form-label">Actual Weight</label>
                   <input
-                    type="text"
+                    type="number"
+                    min="0"
                     name="TotalWeight"
                     defaultValue={formHeader.TotalWeight}
                     onChange={(e) => {
@@ -843,28 +843,25 @@ function OutwordMaterialIssueVocher(props) {
                     <td>{val.MtrlDescription}</td>
                     <td>{val.Material} </td>
                     <td>{parseInt(val?.Qty)}</td>
-                    <td>{parseFloat(val?.TotalWeight).toFixed(2)}</td>
+                    <td>{parseFloat(val?.TotalWeightCalculated).toFixed(3)}</td>
                     <td
                     // contenteditable="true"
                     // onChange={(e) => {
                     //   console.log("eeeeeeeeee", e);
                     // }}
                     >
-                      {/* {val.TotalWeightCalculated} */}
+                      {/* {val.TotalWeight} */}
                       <input
                         type="number"
-                        min={0}
-                        defaultValue={parseFloat(
-                          val?.TotalWeightCalculated
-                        ).toFixed(2)}
+                        min="0"
+                        defaultValue={parseFloat(val?.TotalWeight).toFixed(3)}
                         onChange={(e) => {
                           // console.log("eeeeeeeeee", e.target.value);
 
                           updateChange(
                             key,
-
                             e.target.value.length === 0 ? 0 : e.target.value,
-                            "TotalWeightCalculated"
+                            "TotalWeight"
                           );
                           handleChangeWeightTotalCal();
                         }}
