@@ -784,17 +784,16 @@ function OutwordMaterialIssueVocher(props) {
           <button
             onClick={printDC}
             disabled={
-              formHeader.IVStatus === "Cancelled"
-                ? true
-                : false || formHeader.IVStatus === "Returned"
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
                 ? false
                 : true
             }
             className={
               formHeader.IVStatus === "Cancelled" ||
               formHeader.IVStatus === "Returned"
-                ? "button-style button-disabled"
-                : "button-style"
+                ? "button-style"
+                : "button-disabled button-style"
             }
           >
             Print DC

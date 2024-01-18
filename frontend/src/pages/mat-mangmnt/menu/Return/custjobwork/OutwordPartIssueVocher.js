@@ -751,8 +751,8 @@ function OutwordPartIssueVocher(props) {
             className={
               formHeader.IVStatus === "Cancelled" ||
               formHeader.IVStatus === "Returned"
-                ? "button-style button-disabled"
-                : "button-style"
+                ? "button-style"
+                : "button-disabled button-style"
             }
           >
             Print DC
