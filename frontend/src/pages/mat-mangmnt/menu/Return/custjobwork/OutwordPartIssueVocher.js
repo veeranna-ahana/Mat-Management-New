@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import ReturnCancelIVModal from "../../../components/ReturnCancelIVModal";
 import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
-import { dateToShort, formatDate } from "../../../../../utils";
-import BootstrapTable from "react-bootstrap-table-next";
+// import { dateToShort, formatDate } from "../../../../../utils";
+// import BootstrapTable from "react-bootstrap-table-next";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import PrintPartsDC from "../../../print/return/PrintPartsDC";
@@ -23,20 +23,20 @@ function OutwordPartIssueVocher(props) {
   let [custdata, setCustdata] = useState({
     Address: "",
   });
-  //initial disable - print button
-  const [boolVal1, setBoolVal1] = useState(true);
+  // //initial disable - print button
+  // const [boolVal1, setBoolVal1] = useState(true);
 
-  //after clicking create dc
-  const [boolVal2, setBoolVal2] = useState(false);
+  // //after clicking create dc
+  // const [boolVal2, setBoolVal2] = useState(false);
 
-  //after clicking cancel dc
-  const [boolVal3, setBoolVal3] = useState(false);
+  // //after clicking cancel dc
+  // const [boolVal3, setBoolVal3] = useState(false);
 
   let [dcID, setdcID] = useState("");
   let [dcRegister, setdcRegister] = useState({});
 
   const [outData, setOutData] = useState([]);
-  const [upData, setUpData] = useState();
+  // const [upData, setUpData] = useState();
 
   const location = useLocation();
 
@@ -79,9 +79,9 @@ function OutwordPartIssueVocher(props) {
         Customer: data.Customer,
         CustGSTNo: data.CustGSTNo,
         PkngDcNo: data.PkngDcNo,
-        TotalWeight: parseFloat(data.TotalWeight).toFixed(2),
+        TotalWeight: parseFloat(data.TotalWeight).toFixed(3),
         TotalCalculatedWeight: parseFloat(data.TotalCalculatedWeight).toFixed(
-          2
+          3
         ),
         Dc_ID: data.Dc_ID,
         IVStatus: data.IVStatus,
@@ -109,52 +109,52 @@ function OutwordPartIssueVocher(props) {
     fetchData();
   }, []); //[inputPart]);
 
-  const columns = [
-    {
-      text: "Srl",
-      dataField: "Srl",
-    },
-    {
-      text: "PartId / Part Name",
-      dataField: "PartId",
-    },
-    {
-      text: "Qty Returned",
-      dataField: "QtyReturned",
-    },
-    {
-      text: "Unit Weight",
-      dataField: "UnitWt",
-    },
-    {
-      text: "Total Weight",
-      dataField: "TotalWeight",
-    },
-    {
-      text: "Remarks",
-      dataField: "Remarks",
-    },
-    {
-      text: "Updated",
-      dataField: "",
-      formatter: (celContent, row) => (
-        <div className="checkbox">
-          <lable>
-            <input
-              type="checkbox"
-              disabled={
-                formHeader.IVStatus === "Cancelled"
-                  ? true
-                  : false | (formHeader.IVStatus === "Returned")
-                  ? true
-                  : false
-              }
-            />
-          </lable>
-        </div>
-      ),
-    },
-  ];
+  // const columns = [
+  //   {
+  //     text: "Srl",
+  //     dataField: "Srl",
+  //   },
+  //   {
+  //     text: "PartId / Part Name",
+  //     dataField: "PartId",
+  //   },
+  //   {
+  //     text: "Qty Returned",
+  //     dataField: "QtyReturned",
+  //   },
+  //   {
+  //     text: "Unit Weight",
+  //     dataField: "UnitWt",
+  //   },
+  //   {
+  //     text: "Total Weight",
+  //     dataField: "TotalWeight",
+  //   },
+  //   {
+  //     text: "Remarks",
+  //     dataField: "Remarks",
+  //   },
+  //   {
+  //     text: "Updated",
+  //     dataField: "",
+  //     formatter: (celContent, row) => (
+  //       <div className="checkbox">
+  //         <lable>
+  //           <input
+  //             type="checkbox"
+  //             disabled={
+  //               formHeader.IVStatus === "Cancelled"
+  //                 ? true
+  //                 : false || (formHeader.IVStatus === "Returned")
+  //                 ? true
+  //                 : false
+  //             }
+  //           />
+  //         </lable>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   const InputHeaderEvent = (e) => {
     const { name, value } = e.target;
@@ -182,15 +182,15 @@ function OutwordPartIssueVocher(props) {
     );
     //}
   };
-  function statusFormatter(cell, row, rowIndex, formatExtraData) {
-    if (!cell) return;
-    return dateToShort(cell);
-  }
+  // function statusFormatter(cell, row, rowIndex, formatExtraData) {
+  //   if (!cell) return;
+  //   return dateToShort(cell);
+  // }
   let cancelIV = () => {
     //console.log(IVNOValue, " and ", IVIDValue);
     // InputHeaderEvent(IVStatus)
     setShow(true);
-    setBoolVal2(true);
+    // setBoolVal2(true);
     setFormHeader({ ...formHeader, IVStatus: "Cancelled" });
   };
 
@@ -233,8 +233,8 @@ function OutwordPartIssueVocher(props) {
       });
 
       //button enable disable
-      setBoolVal1(false);
-      setBoolVal2(true);
+      // setBoolVal1(false);
+      // setBoolVal2(true);
 
       //fetch again dcno
       let url4 =
@@ -271,187 +271,187 @@ function OutwordPartIssueVocher(props) {
     }
   };
 
-  const handleSave = () => {
-    const type = "parts";
-    //get running no
-    // debugger;
-    let yyyy = formatDate(new Date(), 6).toString();
-    const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
-    // console.log(url);
-    getRequest(url, (data) => {
-      data.map((obj) => {
-        let newNo = parseInt(obj.Running_No) + 1;
-        //let no = "23/000" + newNo;
-        let series = "";
-        //add prefix zeros
-        for (
-          let i = 0;
-          i < parseInt(obj.Length) - newNo.toString().length;
-          i++
-        ) {
-          series = series + "0";
-        }
-        series = series + "" + newNo;
+  // const handleSave = () => {
+  //   const type = "parts";
+  //   //get running no
+  //   // debugger;
+  //   let yyyy = formatDate(new Date(), 6).toString();
+  //   const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
+  //   // console.log(url);
+  //   getRequest(url, (data) => {
+  //     data.map((obj) => {
+  //       let newNo = parseInt(obj.Running_No) + 1;
+  //       //let no = "23/000" + newNo;
+  //       let series = "";
+  //       //add prefix zeros
+  //       for (
+  //         let i = 0;
+  //         i < parseInt(obj.Length) - newNo.toString().length;
+  //         i++
+  //       ) {
+  //         series = series + "0";
+  //       }
+  //       series = series + "" + newNo;
 
-        //get last 2 digit of year
-        let yy = formatDate(new Date(), 6).toString().substring(2);
-        let no = yy + "/" + series;
-        // console.log("no = ", no);
-        //toast.success("No = ", no);
+  //       //get last 2 digit of year
+  //       let yy = formatDate(new Date(), 6).toString().substring(2);
+  //       let no = yy + "/" + series;
+  //       // console.log("no = ", no);
+  //       //toast.success("No = ", no);
 
-        //get cust data
-        let url1 =
-          endpoints.getCustomerByCustCode + "?code=" + formHeader.Cust_code;
-        // console.log("url = ", url1);
-        getRequest(url1, (data) => {
-          let DCRegister = {
-            DC_Type: "Material Return",
-            DC_No: no,
-            DC_Date: formatDate(new Date(), 2),
-            Cust_Code: formHeader.Cust_code,
-            Cust_Name: formHeader.Customer,
-            Cust_Address: data.Address,
-            Cust_Place: data.City,
-            Cust_State: data.State,
-            PIN_Code: data.Pin_Code,
-            GSTNo: type === "parts" ? "" : data.GSTNo,
-            ECC_No: type === "parts" ? data.ECC_No : "",
-            TIN_No: type === "parts" ? data.TIN_No : "",
-            CST_No: type === "parts" ? data.CST_No : "",
-            AuhtorisingDocu:
-              formHeader.IV_No +
-              " Dt " +
-              formatDate(
-                new Date(formHeader.IV_Date.toString().substring(0, 10)),
-                7
-              ),
-            Total_Wt: formHeader.TotalWeight,
-            ScarpWt: 0,
-            DCStatus: "Draft",
-            Remarks:
-              formHeader.IV_No +
-              " Dt " +
-              formatDate(
-                new Date(
-                  new Date(
-                    formHeader.IV_Date.toString().substring(0, 10)
-                  ).toDateString()
-                ),
-                7
-              ),
-          };
+  //       //get cust data
+  //       let url1 =
+  //         endpoints.getCustomerByCustCode + "?code=" + formHeader.Cust_code;
+  //       // console.log("url = ", url1);
+  //       getRequest(url1, (data) => {
+  //         let DCRegister = {
+  //           DC_Type: "Material Return",
+  //           DC_No: no,
+  //           DC_Date: formatDate(new Date(), 2),
+  //           Cust_Code: formHeader.Cust_code,
+  //           Cust_Name: formHeader.Customer,
+  //           Cust_Address: data.Address,
+  //           Cust_Place: data.City,
+  //           Cust_State: data.State,
+  //           PIN_Code: data.Pin_Code,
+  //           GSTNo: type === "parts" ? "" : data.GSTNo,
+  //           ECC_No: type === "parts" ? data.ECC_No : "",
+  //           TIN_No: type === "parts" ? data.TIN_No : "",
+  //           CST_No: type === "parts" ? data.CST_No : "",
+  //           AuhtorisingDocu:
+  //             formHeader.IV_No +
+  //             " Dt " +
+  //             formatDate(
+  //               new Date(formHeader.IV_Date.toString().substring(0, 10)),
+  //               7
+  //             ),
+  //           Total_Wt: formHeader.TotalWeight,
+  //           ScarpWt: 0,
+  //           DCStatus: "Draft",
+  //           Remarks:
+  //             formHeader.IV_No +
+  //             " Dt " +
+  //             formatDate(
+  //               new Date(
+  //                 new Date(
+  //                   formHeader.IV_Date.toString().substring(0, 10)
+  //                 ).toDateString()
+  //               ),
+  //               7
+  //             ),
+  //         };
 
-          // console.log("form header = ", props.formHeader);
-          // console.log("table data = ", props.outData);
-          //console.log("dcregister = ", DCRegister);
+  //         // console.log("form header = ", props.formHeader);
+  //         // console.log("table data = ", props.outData);
+  //         //console.log("dcregister = ", DCRegister);
 
-          //insert dc_register table
-          postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
-            // console.log("DC Register Inserted");
-          });
+  //         //insert dc_register table
+  //         postRequest(endpoints.insertDCRegister, DCRegister, async (data) => {
+  //           // console.log("DC Register Inserted");
+  //         });
 
-          //get the last insert id of dc details
-          getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
-            let dc_id = data.DC_ID + 1;
-            // console.log("Last id = ", dc_id);
-            for (let i = 0; i < outData.length; i++) {
-              //dc_id = dc_id + 1;
-              let dcdetails = {
-                DC_ID: dc_id,
-                DC_Srl: i + 1,
-                Cust_Code: outData[i].Cust_Code,
-                cust_docu_No: formHeader.IV_No,
-                Item_Descrption:
-                  type === "parts"
-                    ? outData[i].PartId
-                    : outData[i].MtrlDescription,
-                Material:
-                  type === "parts" ? outData[i].Remarks : outData[i].Material,
-                Qty: type === "parts" ? outData[i].QtyReturned : outData[i].Qty,
-                Unit_Wt: type === "parts" ? outData[i].UnitWt : 0,
-                DC_Srl_Wt: outData[i].TotalWeight,
-                Excise_CL_no: null,
-                DespStatus: "Closed",
-              };
-              //insert dcdetails
-              postRequest(
-                endpoints.insertDCDetails,
-                dcdetails,
-                async (data) => {
-                  // console.log("DC Details Inserted");
-                }
-              );
+  //         //get the last insert id of dc details
+  //         getRequest(endpoints.getLastInsertIDDCDetails, (data) => {
+  //           let dc_id = data.DC_ID + 1;
+  //           // console.log("Last id = ", dc_id);
+  //           for (let i = 0; i < outData.length; i++) {
+  //             //dc_id = dc_id + 1;
+  //             let dcdetails = {
+  //               DC_ID: dc_id,
+  //               DC_Srl: i + 1,
+  //               Cust_Code: outData[i].Cust_Code,
+  //               cust_docu_No: formHeader.IV_No,
+  //               Item_Descrption:
+  //                 type === "parts"
+  //                   ? outData[i].PartId
+  //                   : outData[i].MtrlDescription,
+  //               Material:
+  //                 type === "parts" ? outData[i].Remarks : outData[i].Material,
+  //               Qty: type === "parts" ? outData[i].QtyReturned : outData[i].Qty,
+  //               Unit_Wt: type === "parts" ? outData[i].UnitWt : 0,
+  //               DC_Srl_Wt: outData[i].TotalWeight,
+  //               Excise_CL_no: null,
+  //               DespStatus: "Closed",
+  //             };
+  //             //insert dcdetails
+  //             postRequest(
+  //               endpoints.insertDCDetails,
+  //               dcdetails,
+  //               async (data) => {
+  //                 // console.log("DC Details Inserted");
+  //               }
+  //             );
 
-              let dcupdatedetails = {
-                Iv_Id: formHeader.Iv_Id,
-                PkngDcNo: no,
-                Dc_ID: dc_id,
-              };
-              //update material issue register
-              postRequest(
-                endpoints.updateStatusDCNoDCID,
-                dcupdatedetails,
-                async (data) => {
-                  // console.log("material issue register Updated");
-                }
-              );
+  //             let dcupdatedetails = {
+  //               Iv_Id: formHeader.Iv_Id,
+  //               PkngDcNo: no,
+  //               Dc_ID: dc_id,
+  //             };
+  //             //update material issue register
+  //             postRequest(
+  //               endpoints.updateStatusDCNoDCID,
+  //               dcupdatedetails,
+  //               async (data) => {
+  //                 // console.log("material issue register Updated");
+  //               }
+  //             );
 
-              //send dc id to main page
-              getDCID(dc_id);
-              // InputHeaderEvent("IVStatus", "Returned");
+  //             //send dc id to main page
+  //             getDCID(dc_id);
+  //             // InputHeaderEvent("IVStatus", "Returned");
 
-              //update the running no
-              const inputData = {
-                SrlType: "Outward_DCNo",
-                Period: formatDate(new Date(), 6),
-                RunningNo: newNo,
-              };
-              postRequest(endpoints.updateRunningNo, inputData, (data) => {});
-            }
+  //             //update the running no
+  //             const inputData = {
+  //               SrlType: "Outward_DCNo",
+  //               Period: formatDate(new Date(), 6),
+  //               RunningNo: newNo,
+  //             };
+  //             postRequest(endpoints.updateRunningNo, inputData, (data) => {});
+  //           }
 
-            //console.log("dc details = ", dcdetails);
-          });
-          //insert dc details
-        });
-        /*props.type === "parts"
-            ? nav(
-                "/materialmanagement/return/customerjobwork/OutwordPartIssueVocher"
-              )
-            : nav(
-                "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
-              );*/
+  //           //console.log("dc details = ", dcdetails);
+  //         });
+  //         //insert dc details
+  //       });
+  //       /*props.type === "parts"
+  //           ? nav(
+  //               "/materialmanagement/return/customerjobwork/OutwordPartIssueVocher"
+  //             )
+  //           : nav(
+  //               "/materialmanagement/return/customerjobwork/OutwordMaterialIssueVocher"
+  //             );*/
 
-        // props.setFormHeader({
-        //   ...props.formHeader,
-        //   IVStatus: "test",
-        //   text: "123",
-        // });
-        // props.setTest(true);
+  //       // props.setFormHeader({
+  //       //   ...props.formHeader,
+  //       //   IVStatus: "test",
+  //       //   text: "123",
+  //       // });
+  //       // props.setTest(true);
 
-        // props.setFormHeader
+  //       // props.setFormHeader
 
-        // props.setReturnValueFunc();
-        setFormHeader({
-          ...formHeader,
-          IVStatus: "Returned",
-        });
-        toast.success("DC Created Successfully");
-        // props.setFormHeader({
-        //   ...props.formHeader,
-        //   IVStatus: "test",
-        //   text: "123",
-        // });
+  //       // props.setReturnValueFunc();
+  //       setFormHeader({
+  //         ...formHeader,
+  //         IVStatus: "Returned",
+  //       });
+  //       toast.success("DC Created Successfully");
+  //       // props.setFormHeader({
+  //       //   ...props.formHeader,
+  //       //   IVStatus: "test",
+  //       //   text: "123",
+  //       // });
 
-        // window.location.reload();
-        // window.location.reload();
-        //setpnno("");
-        //setShow(false);
-      });
-    });
-    // console.log("form header...", props.formHeader);
+  //       // window.location.reload();
+  //       // window.location.reload();
+  //       //setpnno("");
+  //       //setShow(false);
+  //     });
+  //   });
+  //   // console.log("form header...", props.formHeader);
 
-    // props.setFormHeader([])
-  };
+  //   // props.setFormHeader([])
+  // };
 
   const setReturnValueFunc = () => {
     setFormHeader({
@@ -510,6 +510,7 @@ function OutwordPartIssueVocher(props) {
       TotalWeight: newTotalCalWeight,
     });
   };
+
   return (
     <>
       {/* new */}
@@ -529,6 +530,7 @@ function OutwordPartIssueVocher(props) {
                     name="IvId"
                     value={formHeader.IV_No}
                     disabled
+                    className="input-disabled"
                     // onChange={InputHeaderEvent}
                   />
                 </div>
@@ -539,6 +541,7 @@ function OutwordPartIssueVocher(props) {
                     name="reference"
                     value={formHeader.IVStatus}
                     disabled
+                    className="input-disabled"
                   />
                 </div>
               </div>
@@ -552,15 +555,17 @@ function OutwordPartIssueVocher(props) {
                     name="Customer"
                     value={formHeader.Customer}
                     disabled
+                    className="input-disabled"
                   />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">GST</label>
                   <input
                     type="text"
-                    name="reference"
+                    name="CustGSTNo"
                     value={formHeader.CustGSTNo}
                     disabled
+                    className="input-disabled"
                   />
                 </div>
               </div>
@@ -572,12 +577,12 @@ function OutwordPartIssueVocher(props) {
               <div className="row">
                 <div className="col-md-6">
                   <label className="form-label">IV Date</label>
-
                   <input
                     type="text"
                     name="IVDate"
                     value={formHeader.IV_Date}
                     disabled
+                    className="input-disabled"
                   />
                 </div>
                 <div className="col-md-6">
@@ -585,7 +590,7 @@ function OutwordPartIssueVocher(props) {
                   <input
                     type="text"
                     name="PkngDcNo"
-                    disabled
+                    // disabled
                     value={
                       formHeader.PkngDcNo
                       // ? formHeader.PkngDcNo +
@@ -593,11 +598,23 @@ function OutwordPartIssueVocher(props) {
                       //   formHeader.PkngDCDate
                       // : ""
                     }
+                    disabled
+                    className="input-disabled"
                     // onChange={InputHeaderEvent}
                   />
                 </div>
               </div>
               <div className="row">
+                <div className="col-md-6">
+                  <label className="form-label">Calculated Weight</label>
+                  <input
+                    type="text"
+                    name="Type"
+                    value={formHeader.TotalCalculatedWeight}
+                    disabled
+                    className="input-disabled"
+                  />
+                </div>
                 <div className="col-md-6">
                   <label className="form-label">Actual Weight</label>
                   <input
@@ -606,20 +623,19 @@ function OutwordPartIssueVocher(props) {
                     value={formHeader.TotalWeight}
                     onChange={InputHeaderEvent}
                     disabled={
-                      (formHeader.IVStatus === "Cancelled") |
-                      (formHeader.IVStatus === "Returned")
+                      formHeader.IVStatus === "Cancelled" ||
+                      formHeader.IVStatus === "Returned"
                         ? true
                         : false
                     }
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">Calculated Weight</label>
-                  <input
-                    type="text"
-                    name="Type"
-                    value={formHeader.TotalCalculatedWeight}
-                    disabled
+                    className={
+                      formHeader.IVStatus === "Cancelled" ||
+                      formHeader.IVStatus === "Returned"
+                        ? "input-disabled"
+                        : ""
+                    }
+
+                    // disabled
                   />
                 </div>
               </div>
@@ -633,8 +649,9 @@ function OutwordPartIssueVocher(props) {
                       cols="30"
                       rows="3"
                       value={custdata.Address}
-                      disabled
                       style={{ height: "90px" }}
+                      disabled
+                      className="input-disabled"
                     ></textarea>
                   </div>
                 </div>
@@ -647,71 +664,69 @@ function OutwordPartIssueVocher(props) {
 
         <div className="d-flex justify-content-between">
           <button
-            className="button-style ms-3"
             onClick={saveButtonState}
             disabled={
-              // boolVal2 |
-              // boolVal3 |
-              // (location?.state?.propsType === "customerIVList")
-              //   ? true
-              //   : false |
-              //     (location.state?.propsType === "returnCancelled")
-              //   ? true
-              //   : false |
-              formHeader.IVStatus === "Cancelled"
-                ? true
-                : false | (formHeader.IVStatus === "Returned")
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
                 ? true
                 : false
+            }
+            className={
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
+                ? "button-style ms-3 button-disabled"
+                : "button-style ms-3"
             }
           >
             Save
           </button>
           <button
-            className="button-style"
             onClick={cancelIV}
             disabled={
-              // boolVal2 | (location?.state?.propsType === "customerIVList")
-              //   ? true
-              //   : false | (location?.state?.propsType === "returnCancelled")
-              //   ? true
-              //   : false |
-              formHeader.IVStatus === "Cancelled"
-                ? true
-                : false | (formHeader.IVStatus === "Returned")
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
                 ? true
                 : false
+            }
+            className={
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
+                ? "button-style button-disabled"
+                : "button-style"
             }
           >
             Cancel IV
           </button>
           <button
-            className="button-style"
             onClick={createDC}
             disabled={
-              // boolVal2 | (location?.state?.propsType === "customerIVList")
-              //   ? true
-              //   : false | (location?.state?.propsType === "returnCancelled")
-              //   ? true
-              //   : false |
-              formHeader.IVStatus === "Cancelled"
-                ? true
-                : false | (formHeader.IVStatus === "Returned")
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
                 ? true
                 : false
+            }
+            className={
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
+                ? "button-style button-disabled"
+                : "button-style"
             }
           >
             Create DC
           </button>
           <button
-            className="button-style"
             onClick={printDC}
             disabled={
-              formHeader.IVStatus === "Cancelled"
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
                 ? true
-                : false | (formHeader.IVStatus === "Returned")
-                ? false
-                : true
+                : false
+            }
+            className={
+              formHeader.IVStatus === "Cancelled" ||
+              formHeader.IVStatus === "Returned"
+                ? "button-style button-disabled"
+                : "button-style"
             }
           >
             Print DC
@@ -774,26 +789,23 @@ function OutwordPartIssueVocher(props) {
                       <td>{key + 1}</td>
                       <td>{val.PartId}</td>
                       <td>{parseInt(val.QtyReturned)} </td>
-                      <td>{parseFloat(val.UnitWt).toFixed(2)}</td>
+                      <td>{parseFloat(val.UnitWt).toFixed(3)}</td>
                       <td>
                         {/* {val.TotalWeight} */}
 
                         <input
                           type="number"
                           min={0}
-                          disabled={
-                            (formHeader.IVStatus === "Cancelled") |
-                            (formHeader.IVStatus === "Returned")
-                              ? true
-                              : false
-                          }
-                          defaultValue={parseFloat(val.TotalWeight).toFixed(2)}
+                          // disabled={
+                          //   (formHeader.IVStatus === "Cancelled") ||
+                          //   (formHeader.IVStatus === "Returned")
+                          //     ? true
+                          //     : false
+                          // }
+                          defaultValue={parseFloat(val.TotalWeight).toFixed(3)}
                           onChange={(e) => {
-                            // console.log("eeeeeeeeee", e.target.value);
-
                             updateChange(
                               key,
-
                               e.target.value.length === 0 ? 0 : e.target.value,
                               "TotalWeight"
                             );
@@ -805,6 +817,18 @@ function OutwordPartIssueVocher(props) {
                             backgroundColor: "transparent",
                             border: "none",
                           }}
+                          disabled={
+                            formHeader.IVStatus === "Cancelled" ||
+                            formHeader.IVStatus === "Returned"
+                              ? true
+                              : false
+                          }
+                          className={
+                            formHeader.IVStatus === "Cancelled" ||
+                            formHeader.IVStatus === "Returned"
+                              ? "input-disabled"
+                              : ""
+                          }
                         />
                       </td>
                       <td>{val.Remarks}</td>
@@ -819,7 +843,7 @@ function OutwordPartIssueVocher(props) {
                         type="number"
                         min={0}
                         disabled={
-                          (formHeader.IVStatus === "Cancelled") |
+                          (formHeader.IVStatus === "Cancelled") ||
                           (formHeader.IVStatus === "Returned")
                             ? true
                             : false
@@ -850,7 +874,7 @@ function OutwordPartIssueVocher(props) {
                           name=""
                           id=""
                           disabled={
-                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Cancelled") ||
                             (formHeader.IVStatus === "Returned")
                               ? true
                               : false
@@ -864,7 +888,7 @@ function OutwordPartIssueVocher(props) {
                           id=""
                           checked
                           disabled={
-                            (formHeader.IVStatus === "Cancelled") |
+                            (formHeader.IVStatus === "Cancelled") ||
                             (formHeader.IVStatus === "Returned")
                               ? true
                               : false
@@ -988,17 +1012,17 @@ export default OutwordPartIssueVocher;
 //               className="button-style ms-1"
 //               onClick={saveButtonState}
 //               disabled={
-//                 boolVal2 |
-//                 boolVal3 |
+//                 boolVal2 ||
+//                 boolVal3 ||
 //                 // (location?.state?.propsType === "customerIVList")
 //                 //   ? true
-//                 //   : false |
+//                 //   : false ||
 //                 //     (location.state?.propsType === "returnCancelled")
 //                 //   ? true
-//                 //   : false |
+//                 //   : false ||
 //                 (formHeader.IVStatus === "Cancelled")
 //                   ? true
-//                   : false | (formHeader.IVStatus === "Returned")
+//                   : false || (formHeader.IVStatus === "Returned")
 //                   ? true
 //                   : false
 //               }
@@ -1055,7 +1079,7 @@ export default OutwordPartIssueVocher;
 //               disabled={
 //                 formHeader.IVStatus === "Cancelled"
 //                   ? true
-//                   : false | (formHeader.IVStatus === "Returned")
+//                   : false || (formHeader.IVStatus === "Returned")
 //                   ? true
 //                   : false
 //               }
@@ -1089,14 +1113,14 @@ export default OutwordPartIssueVocher;
 //             className="button-style"
 //             onClick={cancelIV}
 //             disabled={
-//               // boolVal2 | (location?.state?.propsType === "customerIVList")
+//               // boolVal2 || (location?.state?.propsType === "customerIVList")
 //               //   ? true
-//               //   : false | (location?.state?.propsType === "returnCancelled")
+//               //   : false || (location?.state?.propsType === "returnCancelled")
 //               //   ? true
-//               //   : false |
+//               //   : false ||
 //               formHeader.IVStatus === "Cancelled"
 //                 ? true
-//                 : false | (formHeader.IVStatus === "Returned")
+//                 : false || (formHeader.IVStatus === "Returned")
 //                 ? true
 //                 : false
 //             }
@@ -1109,14 +1133,14 @@ export default OutwordPartIssueVocher;
 //             className="button-style"
 //             onClick={createDC}
 //             disabled={
-//               // boolVal2 | (location?.state?.propsType === "customerIVList")
+//               // boolVal2 || (location?.state?.propsType === "customerIVList")
 //               //   ? true
-//               //   : false | (location?.state?.propsType === "returnCancelled")
+//               //   : false || (location?.state?.propsType === "returnCancelled")
 //               //   ? true
-//               //   : false |
+//               //   : false ||
 //               formHeader.IVStatus === "Cancelled"
 //                 ? true
-//                 : false | (formHeader.IVStatus === "Returned")
+//                 : false || (formHeader.IVStatus === "Returned")
 //                 ? true
 //                 : false
 //             }
@@ -1131,7 +1155,7 @@ export default OutwordPartIssueVocher;
 //             disabled={
 //               formHeader.IVStatus === "Cancelled"
 //                 ? true
-//                 : false | (formHeader.IVStatus === "Returned")
+//                 : false || (formHeader.IVStatus === "Returned")
 //                 ? false
 //                 : true
 //             }
