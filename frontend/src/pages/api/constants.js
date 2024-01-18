@@ -23,6 +23,7 @@ export const endpoints = {
   getRowByMtrlCode: `${API}/mtrlData/getRowByMtrlCode`,
 
   //shape data
+  getAllShapes: `${API}/shapes/getAllShapes`,
   getRowByShape: `${API}/shapes/getRowByShape`,
   getAllShapeNames: `${API}/shapes/getAllShapeNames`,
 

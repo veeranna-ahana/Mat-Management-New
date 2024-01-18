@@ -9,15 +9,16 @@ const { getRequest, postRequest } = require("../../api/apiinstance");
 const { endpoints } = require("../../api/constants");
 
 function CreateDCYesNoModal(props) {
-  const { showCreateDC, setShowCreateDC, handleShow, createDcResponse } = props;
-  const [show, setShow] = useState(false);
-  // const handleClose = () => setShowCreateDC(false);
+  // const {props. showCreateDC, props.setShowCreateDC, handleShow, createDcResponse } = props;
+  // const [show, setShow] = useState(false);
+  // const handleClose = () => props.setShowCreateDC(false);
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+    props.saveButtonState(e);
     // debugger;
     //get running no
     // debugger;
-    let yyyy = formatDate(new Date(), 6).toString();
+    let yyyy = parseInt(formatDate(new Date(), 6).toString()) - 1;
     const url = endpoints.getRunningNo + "?SrlType=Outward_DCNo&Period=" + yyyy;
     // console.log(url);
     getRequest(url, (data) => {
@@ -179,7 +180,7 @@ function CreateDCYesNoModal(props) {
         // });
         // props.setTest(true);
         props.formHeader.IVStatus = "Returned";
-        createDcResponse(props.formHeader);
+        props.createDcResponse(props.formHeader);
 
         // props.setFormHeader
 
@@ -205,21 +206,11 @@ function CreateDCYesNoModal(props) {
 
   // console.log("form header..", props.formHeader);
 
-  const handleNo = () => setShowCreateDC(false);
-  const handleYes = () => {
-    if (
-      props.formHeader.TotalWeight === "0.000" ||
-      props.formHeader.TotalWeight === "0" ||
-      props.formHeader.TotalWeight === 0 ||
-      props.formHeader.TotalWeight === 0.0
-    ) {
-      toast.error("Serial Weight Cannot be Zero. Set Weight and try again");
-    } else {
-      //setShow(true);
-      handleSave();
-    }
+  const handleNo = () => props.setShowCreateDC(false);
+  const handleYes = (e) => {
+    handleSave(e);
 
-    setShowCreateDC(false);
+    props.setShowCreateDC(false);
     // props.fetchData();
   };
 
@@ -234,7 +225,7 @@ function CreateDCYesNoModal(props) {
         getDCID={props.getDCID}
       /> */}
 
-      <Modal show={showCreateDC} onHide={handleNo}>
+      <Modal show={props.showCreateDC} onHide={handleNo}>
         <Modal.Header closeButton>
           <Modal.Title>Create DC</Modal.Title>
         </Modal.Header>

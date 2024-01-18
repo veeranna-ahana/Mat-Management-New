@@ -148,9 +148,14 @@ a {
   background-color: #2b3a55;
   color: #ffffff;
   border-radius: 5px;
-  padding: 3px;
-  margin-top: 20px;
+  /* padding: 3px; */
+  margin-top: 10px;
   font-size: 18px;
+}
+.button-disabled {
+  color: white !important;
+  background-color: rgb(173, 173, 173) !important;
+  cursor: no-drop;
 }
 
 /* width for buttons  */
@@ -510,4 +515,8 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.input-disabled {
+  cursor: no-drop;
 }
