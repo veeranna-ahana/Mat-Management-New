@@ -378,8 +378,8 @@ const PrintPartsDCTable = ({
                     ...styles.titleMiddle2,
                   }}
                 >
-                  <Text style={{ ...styles.fontBold }}>Total Items : </Text>
-                  <Text>{outData?.length}</Text>
+                  <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
+                  <Text>{totalQTYVar}</Text>
                 </View>
 
                 <View
@@ -389,8 +389,8 @@ const PrintPartsDCTable = ({
                     ...styles.titleMiddle2,
                   }}
                 >
-                  <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
-                  <Text>{totalQTYVar}</Text>
+                  <Text style={{ ...styles.fontBold }}>Total Weight : </Text>
+                  <Text>{formHeader.TotalWeight}</Text>
                 </View>
               </View>
             </View>
