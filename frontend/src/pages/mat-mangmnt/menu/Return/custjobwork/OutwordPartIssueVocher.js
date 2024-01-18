@@ -195,24 +195,50 @@ function OutwordPartIssueVocher(props) {
   };
 
   let createDC = (e) => {
-    let flag = 0;
-    if (
-      formHeader.TotalWeight === 0 ||
-      formHeader.TotalWeight === "0" ||
-      formHeader.TotalWeight === "0.000" ||
-      formHeader.TotalWeight === "0.00" ||
-      formHeader.TotalWeight === 0.0
-    ) {
-      toast.error("Serial Weight cannot be zero. Set Weight and try again");
-      flag = 1;
+    let flag = true;
+
+    for (let i = 0; i < outData.length; i++) {
+      const element = outData[i];
+      if (
+        element.TotalWeight === null ||
+        element.TotalWeight === "null" ||
+        element.TotalWeight === "" ||
+        element.TotalWeight === 0 ||
+        element.TotalWeight === "0" ||
+        element.TotalWeight === "0.000" ||
+        element.TotalWeight === "0.00" ||
+        element.TotalWeight === 0.0
+      ) {
+        flag = false;
+        break;
+      }
     }
-    if (flag === 0) {
-      // console.log("Valid");
+
+    if (flag) {
       setShowCreateDC(true);
-      saveButtonState(e);
-      //setBoolVal1(false);
-      //setBoolVal2(true);
+      // saveButtonState(e);
+    } else {
+      toast.warning("Serial Weight cannot be zero. Set Weight and try again");
     }
+
+    // let flag = 0;
+    // if (
+    //   formHeader.TotalWeight === 0 ||
+    //   formHeader.TotalWeight === "0" ||
+    //   formHeader.TotalWeight === "0.000" ||
+    //   formHeader.TotalWeight === "0.00" ||
+    //   formHeader.TotalWeight === 0.0
+    // ) {
+    //   toast.error("Serial Weight cannot be zero. Set Weight and try again");
+    //   flag = 1;
+    // }
+    // if (flag === 0) {
+    //   // console.log("Valid");
+    //   setShowCreateDC(true);
+    //   saveButtonState(e);
+    //   //setBoolVal1(false);
+    //   //setBoolVal2(true);
+    // }
 
     //setShowCreateDC(true);
     //setBoolVal1(false);
@@ -719,8 +745,8 @@ function OutwordPartIssueVocher(props) {
             disabled={
               formHeader.IVStatus === "Cancelled" ||
               formHeader.IVStatus === "Returned"
-                ? true
-                : false
+                ? false
+                : true
             }
             className={
               formHeader.IVStatus === "Cancelled" ||
@@ -832,9 +858,81 @@ function OutwordPartIssueVocher(props) {
                         />
                       </td>
                       <td>{val.Remarks}</td>
-
                       <td>
-                        <input type="checkbox" name="" id="" />
+                        {val.UpDated === 0 ? (
+                          <input
+                            type="checkbox"
+                            name=""
+                            id=""
+                            disabled={
+                              formHeader.IVStatus === "Cancelled" ||
+                              formHeader.IVStatus === "Returned"
+                                ? true
+                                : false
+                            }
+                            className={
+                              formHeader.IVStatus === "Cancelled" ||
+                              formHeader.IVStatus === "Returned"
+                                ? "input-disabled"
+                                : ""
+                            }
+                            onClick={() => updateChange(key, 1, "UpDated")}
+                            // onChange={(e) => {
+                            //   // console.log("checkbox clicked", e.target.value);
+
+                            //   const newArray = [];
+
+                            //   for (let i = 0; i < outData.length; i++) {
+                            //     const element = outData[i];
+
+                            //     if (i === key) {
+                            //       element.UpDated = 1;
+                            //     }
+                            //     console.log("element", element);
+
+                            //     newArray.push(element);
+
+                            //     // if(i===key){
+
+                            //     // }else{
+
+                            //     //   setOutData([element])
+                            //     // }
+                            //   }
+
+                            //   console.log("new", newArray);
+
+                            //   setOutData(newArray);
+
+                            //   // console.log("setOutData", outData[key].UpDated);
+                            // }}
+                          />
+                        ) : (
+                          <input
+                            type="checkbox"
+                            name=""
+                            id=""
+                            checked
+                            disabled={
+                              formHeader.IVStatus === "Cancelled" ||
+                              formHeader.IVStatus === "Returned"
+                                ? true
+                                : false
+                            }
+                            className={
+                              formHeader.IVStatus === "Cancelled" ||
+                              formHeader.IVStatus === "Returned"
+                                ? "input-disabled"
+                                : ""
+                            }
+                            onClick={() => updateChange(key, 0, "UpDated")}
+
+                            // onChange={(e) => {
+                            //   // console.log("checkbox clicked", e.target.value);
+                            //   // console.log("setOutData", outData);
+                            // }}
+                          />
+                        )}
                       </td>
                       {/* <td
                    
@@ -940,6 +1038,7 @@ function OutwordPartIssueVocher(props) {
         // fetchData={fetchData}
         // handleSave={handleSave}
         createDcResponse={createDcResponse}
+        saveButtonState={saveButtonState}
       />
     </>
   );
