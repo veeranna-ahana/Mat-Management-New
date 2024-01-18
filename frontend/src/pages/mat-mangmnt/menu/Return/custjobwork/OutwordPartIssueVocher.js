@@ -497,17 +497,17 @@ function OutwordPartIssueVocher(props) {
 
   // console.log("outdata", outData);
   const handleChangeWeightTotalCal = () => {
-    let newTotalCalWeight = 0;
+    let newTotalWeight = 0;
     for (let i = 0; i < outData.length; i++) {
       const element = outData[i];
       // console.log("elemet@@@@@@@@@@@@@@", element.TotalWeightCalculated);
-      newTotalCalWeight =
-        parseFloat(newTotalCalWeight) + parseFloat(element.TotalWeight);
+      newTotalWeight =
+        parseFloat(newTotalWeight) + parseFloat(element.TotalWeight);
     }
 
     setFormHeader({
       ...formHeader,
-      TotalWeight: newTotalCalWeight,
+      TotalWeight: newTotalWeight,
     });
   };
 
