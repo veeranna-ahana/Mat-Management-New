@@ -50,11 +50,15 @@ function PofilesMaterials(props) {
       let url1 =
         endpoints.profileMaterialFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
-        data.forEach((item, i) => {
-          item.id = i + 1;
-          item.Issue = false;
-        });
-        setFirstTableData(data);
+        if (data?.length > 0) {
+          data.forEach((item, i) => {
+            item.id = i + 1;
+            item.Issue = false;
+          });
+          setFirstTableData(data);
+        } else {
+          toast.warning("No materials data found for selected Customer");
+        }
       });
 
       //fetch second table data

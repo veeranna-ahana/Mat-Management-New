@@ -34,18 +34,22 @@ function Parts(props) {
     if (props && props.custCode.length !== 0) {
       let url1 = endpoints.partFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
-        setFirstTableData(data);
-        setSecondTableData([]);
+        if (data?.length > 0) {
+          setFirstTableData(data);
+          setSecondTableData([]);
 
-        //fetch second table data
-        let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
-        getRequest(url2, (data1) => {
-          let newData = data1.filter((obj, index) => {
-            return obj.RVId === Object.values(data)[0].RvID;
+          //fetch second table data
+          let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
+          getRequest(url2, (data1) => {
+            let newData = data1.filter((obj, index) => {
+              return obj.RVId === Object.values(data)[0].RvID;
+            });
+            setAllData(data1);
+            // setSecondTableData(newData);
           });
-          setAllData(data1);
-          // setSecondTableData(newData);
-        });
+        } else {
+          toast.warning("No parts data found for selected Customer");
+        }
       });
     }
   };
