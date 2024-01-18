@@ -445,7 +445,7 @@ function Parts(props) {
           // toast.success("good to go...");
 
           //get running no and assign to RvNo
-          let yyyy = formatDate(new Date(), 6).toString();
+          let yyyy = parseInt(formatDate(new Date(), 6).toString()) - 1;
           const url =
             endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
 
@@ -490,8 +490,8 @@ function Parts(props) {
                 EMail: "",
                 PkngDcNo: null,
                 PkngDCDate: null,
-                TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
-                TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
+                TotalWeight: parseFloat(0).toFixed(3), // firstTableSelectedRow[0].TotalWeight,
+                TotalCalculatedWeight: parseFloat(0).toFixed(3), // thirdTableData[0].TotalCalculatedWeight,
                 UpDated: 0,
                 IVStatus: "Draft",
                 Dc_ID: 0,
@@ -521,7 +521,8 @@ function Parts(props) {
                           "/**Ref: " +
                           thirdTableData[i].CustDocuNo,
                         CustBOM_Id: thirdTableData[i].CustBOM_Id,
-                        UnitWt: thirdTableData[i].UnitWt,
+                        UnitWt: parseFloat(0).toFixed(3),
+                        TotalWeight: parseFloat(0).toFixed(3),
                         QtyReturned: thirdTableData[i].QtyReturnedNew,
                         Remarks: thirdTableData[i].Remarks,
                       };
