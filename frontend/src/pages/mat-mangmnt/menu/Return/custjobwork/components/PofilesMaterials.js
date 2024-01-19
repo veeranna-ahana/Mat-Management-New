@@ -9,6 +9,7 @@ import CreateReturnNewModal from "../../../../components/CreateReturnNewModal";
 import FirstTable from "./Tables/FirstTable";
 import SecondTable from "./Tables/SecondTable";
 import ThirdTable from "./Tables/ThirdTable";
+import ConfirmationModal from "./Modals/ConfimationModal";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
@@ -34,6 +35,11 @@ function PofilesMaterials(props) {
 
   let [allData, setAllData] = useState([]);
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  // const [buttonClicked, setButtonClicked] = useState("");
+
+  const [runningNo, setRunningNo] = useState([]);
   // const [currentRunningNo, setCurrentRunningNo] = useState([]);
   // const [detailsDataToPosted, setDetailsDataToPosted] = useState([]);
 
@@ -82,10 +88,41 @@ function PofilesMaterials(props) {
     }
   };
 
+  const getRunningNo = async () => {
+    let SrlType = "MaterialReturnIV";
+    let yyyy = formatDate(new Date(), 6).toString();
+    let UnitName = "Jigani";
+    const insertRunningNoVal = {
+      UnitName: UnitName,
+      SrlType: SrlType,
+      ResetPeriod: "Year",
+      ResetValue: "0",
+      EffectiveFrom_date: `${yyyy}-01-01`,
+      Reset_date: `${yyyy}-12-31`,
+      Running_No: "0",
+      UnitIntial: "0",
+      Prefix: "",
+      Suffix: "",
+      Length: "4",
+      Period: yyyy,
+    };
+
+    // var runningNo = [];
+    postRequest(
+      endpoints.getAndInsertRunningNo,
+      insertRunningNoVal,
+      (runningNo) => {
+        // console.log("post done", runningNo);
+        setRunningNo(runningNo);
+        // runningNo = runningNo;
+      }
+    );
+    // await delay(30);
+    // console.log("runningNo", runningNo);
+  };
+
   useEffect(() => {
-    //setPropsValue(props.custCode);
     fetchData();
-    //console.log("S props value = ", propsValue);
   }, [props.custCode]);
 
   // const columnsFirst = [
@@ -836,73 +873,86 @@ function PofilesMaterials(props) {
   //   // );
   // }, [thirdTableData]);
 
+  const createReturnVoucherValidationFunc = () => {
+    getRunningNo();
+    setConfirmModalOpen(true);
+  };
   const createReturnVoucherFunc = async () => {
+    // console.log("running...", runningNo);
+
+    // await delay(90);
+    // console.log("runningNo", runningNo);
     if (props.custCode) {
       if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
         if (thirdTableData.length > 0) {
-          //get running no and assign to RvNo
-          let SrlType = "MaterialReturnIV";
-          let yyyy = formatDate(new Date(), 6).toString();
-          let UnitName = "Jigani";
-          const url =
-            endpoints.getRunningNo +
-            `?SrlType=${SrlType}&Period=${yyyy}&UnitName=${UnitName}`;
-          let runningNoArr = [];
-          getRequest(url, (runningNo) => {
-            runningNoArr = runningNo;
-          });
+          // .....................
+          // //get running no and assign to RvNo
+          // let SrlType = "MaterialReturnIV";
+          // let yyyy = formatDate(new Date(), 6).toString();
+          // let UnitName = "Jigani";
+          // const url =
+          //   endpoints.getRunningNo +
+          //   `?SrlType=${SrlType}&Period=${yyyy}&UnitName=${UnitName}`;
+          // let runningNoArr = [];
+          // getRequest(url, (runningNo) => {
+          //   runningNoArr = runningNo;
+          //   console.log("first", runningNo);
+          // });
 
-          await delay(30);
-          // console.log("no insert", runningNoArr);
+          // // console.log("no insert", runningNoArr);
 
-          if (runningNoArr.length === 0) {
-            // console.log("need to insert");
-            const insertRunningNoVal = {
-              UnitName: UnitName,
-              SrlType: SrlType,
-              ResetPeriod: "Year",
-              ResetValue: "0",
-              EffectiveFrom_date: `${yyyy}-01-01`,
-              Reset_date: `${yyyy}-12-31`,
-              Running_No: "0",
-              UnitIntial: "0",
-              Prefix: "",
-              Suffix: "",
-              Length: "4",
-              Period: yyyy,
-            };
+          // await delay(30);
+          // if (runningNoArr.length === 0) {
+          //   // console.log("need to insert");
+          //   const insertRunningNoVal = {
+          //     UnitName: UnitName,
+          //     SrlType: SrlType,
+          //     ResetPeriod: "Year",
+          //     ResetValue: "0",
+          //     EffectiveFrom_date: `${yyyy}-01-01`,
+          //     Reset_date: `${yyyy}-12-31`,
+          //     Running_No: "0",
+          //     UnitIntial: "0",
+          //     Prefix: "",
+          //     Suffix: "",
+          //     Length: "4",
+          //     Period: yyyy,
+          //   };
 
-            postRequest(
-              endpoints.insertRunningNo,
-              insertRunningNoVal,
-              (insertRunningNoData) => {
-                // console.log("insertRunningNoData", insertRunningNoData);
-              }
-            );
+          //   postRequest(
+          //     endpoints.insertRunningNo,
+          //     insertRunningNoVal,
+          //     (insertRunningNoData) => {
+          //       console.log("insertRunningNoData", insertRunningNoData);
+          //     }
+          //   );
 
-            getRequest(url, (runningNo) => {
-              runningNoArr = runningNo;
-            });
-            // await delay(30);
-            // console.log("inserted", runningNoArr);
-          }
+          //   getRequest(url, (runningNo) => {
+          //     runningNoArr = runningNo;
+          //     console.log("second", runningNo);
+          //   });
+          //   // await delay(30);
+          //   // console.log("inserted", runningNoArr);
+          // }
 
-          await delay(30);
+          // // await delay(30);
+          // // +
+          // // yyyy +
+          // // "?UnitName=" +
+          // // UnitName;
+
           // console.log("final", runningNoArr);
-          // +
-          // yyyy +
-          // "?UnitName=" +
-          // UnitName;
 
-          if (runningNoArr.length > 0) {
+          // console.log("runningNo", runningNo);
+          if (runningNo.length > 0) {
             // console.log("clicked");
-            let newNo = parseInt(runningNoArr[0].Running_No) + 1;
+            let newNo = parseInt(runningNo[0].Running_No) + 1;
             let series = "";
             if (newNo < 1000) {
               //add prefix zeros
               for (
                 let i = 0;
-                i < parseInt(runningNoArr[0].Length) - newNo.toString().length;
+                i < parseInt(runningNo[0].Length) - newNo.toString().length;
                 i++
               ) {
                 series = series + "0";
@@ -1386,7 +1436,10 @@ function PofilesMaterials(props) {
               <button
                 className="button-style mx-0"
                 style={{ width: "200px" }}
-                onClick={createReturnVoucherFunc}
+                // onClick={createReturnVoucherFunc}
+                onClick={(e) => {
+                  createReturnVoucherValidationFunc();
+                }}
               >
                 Create Return Voucher
               </button>
@@ -1469,6 +1522,15 @@ function PofilesMaterials(props) {
         srlMaterialType={srlMaterialType}
         srlIVID={srlIVID}
         IVNOVal={IVNOVal}
+      />
+
+      {/* confirmation modal */}
+      <ConfirmationModal
+        confirmModalOpen={confirmModalOpen}
+        setConfirmModalOpen={setConfirmModalOpen}
+        // yesClickedFunc={cancelPN}
+        yesClickedFunc={createReturnVoucherFunc}
+        message={"Are you sure to create the return voucher ?"}
       />
     </>
   );
