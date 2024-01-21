@@ -321,7 +321,7 @@ const PrintIVListProfileCuttingTable2 = ({
           <Text>{formHeader.Mtrl_Code}</Text>
           <Text style={styles.linegap}>{formHeader.Para3}</Text>
           <Text style={styles.linegap}>{formHeader.Qty}</Text>
-          <Text style={styles.linegap}>Custom</Text>
+          <Text style={styles.linegap}>{formHeader.CustMtrl}</Text>
         </View>
 
         <View style={styles.blockRightAlign2}>

@@ -74,6 +74,7 @@ export default function SheetsDraftRVList() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
+      console.log("row", row);
       setData({
         CustDocuNo: row.CustDocuNo,
         Cust_Code: row.Cust_Code,

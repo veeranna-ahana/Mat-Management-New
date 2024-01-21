@@ -55,18 +55,23 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
     misQueryMod(
       `select * from shapes where ShapeID = ${shapeID}`,
       (err, data) => {
-        if (err) logger.error(err);
-        shape = data[0].Shape;
-        for (let i = 0; i < qtyAccepted; i++) {
-          mtrlStockId = rvNo + "/" + srl + "/" + (i + 1);
-          misQueryMod(
-            `insert into  mtrlstocklist (MtrlStockID,Mtrl_Rv_id,Cust_Code,Customer,RV_No,Cust_Docu_No,Mtrl_Code,Shape,Material,DynamicPara1,DynamicPara2,DynamicPara3,DynamicPara4,Locked,Scrap,Issue,Weight,ScrapWeight,IV_No,NCProgramNo,LocationNo) values ("${mtrlStockId}",${mtrlRvId},"${custCode}","${customer}","${rvNo}","${custDocuNo}","${mtrlCode}","${shape}","${material}",${dynamicPara1},${dynamicPara2},${dynamicPara3},${dynamicPara4},${locked},${scrap},${issue},${weight},${scrapWeight},"${ivNo}","${ncProgramNo}","${locationNo}")`,
-            (err, data1) => {
-              if (err) logger.error(err);
-              //returnData = data1;
-              //res.send(data);
-            }
-          );
+        if (err) {
+          logger.error(err);
+          return;
+        }
+        if (data && data.length > 0 && data[0].Shape) {
+          shape = data[0].Shape;
+          for (let i = 0; i < qtyAccepted; i++) {
+            mtrlStockId = rvNo + "/" + srl + "/" + (i + 1);
+            misQueryMod(
+              `insert into  mtrlstocklist (MtrlStockID,Mtrl_Rv_id,Cust_Code,Customer,RV_No,Cust_Docu_No,Mtrl_Code,Shape,Material,DynamicPara1,DynamicPara2,DynamicPara3,DynamicPara4,Locked,Scrap,Issue,Weight,ScrapWeight,IV_No,NCProgramNo,LocationNo) values ("${mtrlStockId}",${mtrlRvId},"${custCode}","${customer}","${rvNo}","${custDocuNo}","${mtrlCode}","${shape}","${material}",${dynamicPara1},${dynamicPara2},${dynamicPara3},${dynamicPara4},${locked},${scrap},${issue},${weight},${scrapWeight},"${ivNo}","${ncProgramNo}","${locationNo}")`,
+              (err, data1) => {
+                if (err) logger.error(err);
+                //returnData = data1;
+                //res.send(data);
+              }
+            );
+          }
         }
       }
     );

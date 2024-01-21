@@ -81,9 +81,9 @@ function OpenButtonDraftSheetUnit(props) {
   });
 
   //const [mtrlArray, setMtrlArray] = useState([]);
-  let [para1Label, setPara1Label] = useState("Para 1");
-  let [para2Label, setPara2Label] = useState("Para 2");
-  let [para3Label, setPara3Label] = useState("Para 3");
+  let [para1Label, setPara1Label] = useState("");
+  let [para2Label, setPara2Label] = useState("");
+  let [para3Label, setPara3Label] = useState("");
 
   const [unitLabel1, setUnitLabel1] = useState("");
   const [unitLabel2, setUnitLabel2] = useState("");
@@ -137,15 +137,15 @@ function OpenButtonDraftSheetUnit(props) {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
+      text: unitLabel1 !== "" ? para1Label : "",
       dataField: "dynamicPara1",
     },
     {
-      text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
+      text: unitLabel2 !== "" ? para2Label : "",
       dataField: "dynamicPara2",
     },
     {
-      text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
+      text: unitLabel3 !== "" ? para3Label : "",
       dataField: "dynamicPara3",
     },
     {
@@ -199,15 +199,10 @@ function OpenButtonDraftSheetUnit(props) {
       formHeader.calcWeight = data.TotalCalculatedWeight;
       formHeader.type = data.Type;
 
-      // console.log("data = ", data);
-      //data.ReceiptDate = formatDate(new Date(data.ReceiptDate), 4);
-      //data.RV_Date = formatDate(new Date(data.RV_Date), 3);
-      //setFormHeader(formHeader);
-
-      //get customer details for address
       getRequest(endpoints.getCustomers, (data1) => {
         const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
-        data.address = found.Address;
+        formHeader.address = found.Address;
+        console.log("formHeader.address", formHeader.address);
         setFormHeader(formHeader);
         setCalcWeightVal(data.TotalCalculatedWeight);
       });
@@ -215,7 +210,6 @@ function OpenButtonDraftSheetUnit(props) {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        // console.log("data2  = ", data2);
         data2.forEach((obj) => {
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
@@ -228,7 +222,7 @@ function OpenButtonDraftSheetUnit(props) {
           obj.dynamicPara1 = obj.DynamicPara1;
           obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
-          obj.qty = obj.Qty;
+          obj.qty = Math.floor(obj.Qty);
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
@@ -241,16 +235,15 @@ function OpenButtonDraftSheetUnit(props) {
           obj.qtyUsed = obj.QtyUsed;
           obj.qtyReturned = obj.QtyReturned;
         });
-        // console.log("data 2 = ", data2);
+
         setMaterialArray(data2);
         //find shape of material
-        //console.log("data2 = ", data2);
+        console.log("data2 = ", data2);
+
         for (let i = 0; i < data2.length; i++) {
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
           getRequest(url2, (data3) => {
-            console.log("data3 = ", data3);
-
             if (data3.Shape === "Block") {
               setPara1Label("Length");
               setPara2Label("Width");
@@ -296,56 +289,24 @@ function OpenButtonDraftSheetUnit(props) {
             }
           });
         }
-
         //setFormHeader(formHeader);
-        //console.log(data2);
       });
     });
-    //console.log("data = ", formHeader);
-
-    /*getRequest(endpoints.getCustomers, (data) => {
-      setCustdata(data);
-    });*/
     getRequest(endpoints.getMaterialLocationList, (data) => {
       setLocationData(data);
     });
     getRequest(endpoints.getMtrlData, (data) => {
       setMtrlDetails(data);
     });
-    //console.log("data = ", custdata);
     await delay(500);
-    // console.log("para1 label = ", para1Label);
   }
 
   useEffect(() => {
     fetchData();
-    addNewMaterial();
+    // addNewMaterial();
     //setPartArray(partArray);
   }, []); //[inputPart]);
 
-  /*  let changeCustomer = async (e) => {
-    e.preventDefault();
-    const { value, name } = e.target;
-
-    const found = custdata.find((obj) => obj.Cust_Code === value);
-    //setCustDetailVal(found.Address);
-
-    setFormHeader((preValue) => {
-      //console.log(preValue)
-      return {
-        ...preValue,
-        [name]: value,
-        customerName: found.Cust_name,
-        customer: found.Cust_Code,
-        address: found.Address,
-      };
-    });
-
-    // getRequest(endpoints.getCustBomList, (data) => {
-    //   const foundPart = data.filter((obj) => obj.Cust_code == value);
-    //   setMtrlDetails(foundPart);
-    // });
-  };*/
   let changeMtrl = async (e) => {
     e.preventDefault();
     const { value, name } = e.target;
@@ -360,18 +321,10 @@ function OpenButtonDraftSheetUnit(props) {
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
           getRequest(url2, async (shapeData) => {
-            // console.log("shapedata = ", shapeData);
             inputPart.shapeID = shapeData.ShapeID;
             setInputPart(inputPart);
           });
         });
-
-        // console.log("1st inputPart", inputPart);
-
-        // if (shape !== null && shape !== undefined && shape !== material.Shape) {
-        //   toast.error("Please select a same type of part");
-        // }
-        console.log("material.Shape", material.Shape);
 
         if (material.Shape === "Units") {
           setPara1Label("Qty"); //Nos
@@ -404,15 +357,12 @@ function OpenButtonDraftSheetUnit(props) {
           setUnitLabel2("mm");
           setUnitLabel3("");
         } else if (material.Shape === "Sheet") {
-          setPara1Label("Width"); //mm
-          setPara2Label("Length"); //mm
-          // setPara3Label("");
+          setPara1Label("Width");
+          setPara2Label("Length");
           setBoolPara1(false);
           setBoolPara2(false);
-          // setBoolPara3(true);
           setUnitLabel1("mm");
           setUnitLabel2("mm");
-          // setUnitLabel3("");
         } else if (material.Shape === "Tiles") {
           setPara1Label("");
           setPara2Label("");
@@ -448,7 +398,6 @@ function OpenButtonDraftSheetUnit(props) {
     });
     //set inputPart set material code
     setInputPart((preValue) => {
-      //console.log(preValue)
       return {
         ...preValue,
         [name]: value,
@@ -457,9 +406,6 @@ function OpenButtonDraftSheetUnit(props) {
 
     inputPart[name] = value;
     setInputPart(inputPart);
-
-    // console.log("2nd inputPart update = ", inputPart);
-
     await delay(500);
     //update database row
     postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
@@ -471,7 +417,6 @@ function OpenButtonDraftSheetUnit(props) {
 
     //update table grid
     const newArray = materialArray.map((p) =>
-      //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
       p.id === partUniqueId
         ? {
             ...p,
@@ -482,47 +427,10 @@ function OpenButtonDraftSheetUnit(props) {
     setMaterialArray(newArray);
   };
 
-  // let changeLocation = async (e) => {
-  //   e.preventDefault();
-  //   const { value, name } = e.target;
-
-  //   //update input Array set material code
-  //   setInputPart((preValue) => {
-  //     //console.log(preValue)
-  //     return {
-  //       ...preValue,
-  //       [name]: value,
-  //     };
-  //   });
-  //   inputPart[name] = value;
-  //   setInputPart(inputPart);
-
-  //   //update databse row
-  //   postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
-  //     if (data.affectedRows !== 0) {
-  //     } else {
-  //       toast.error("Record Not Updated");
-  //     }
-  //   });
-
-  //   //update table grid
-  //   const newArray = materialArray.map((p) =>
-  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-  //     p.id === partUniqueId
-  //       ? {
-  //           ...p,
-  //           [name]: value,
-  //         }
-  //       : p
-  //   );
-  //   setMaterialArray(newArray);
-  // };
-
   //input header change event
   const InputHeaderEvent = (e) => {
     const { value, name } = e.target;
     setFormHeader((preValue) => {
-      //console.log(preValue)
       return {
         ...preValue,
         [name]: value,
@@ -536,7 +444,6 @@ function OpenButtonDraftSheetUnit(props) {
       endpoints.insertHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setFormHeader((preValue) => {
             return {
@@ -556,12 +463,10 @@ function OpenButtonDraftSheetUnit(props) {
   };
 
   const updateHeaderFunction = () => {
-    //console.log("update formheader = ", formHeader);
     postRequest(
       endpoints.updateHeaderMaterialReceiptRegister,
       formHeader,
       (data) => {
-        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           setSaveUpdateCount(saveUpdateCount + 1);
           toast.success("Record Updated Successfully");
@@ -588,10 +493,8 @@ function OpenButtonDraftSheetUnit(props) {
         await delay(500);
         // insertHeaderFunction();
         updateHeaderFunction();
-        // toast.success("Record Updated Successfully");
         setBoolVal2(true);
       } else {
-        // console.log("part array = ", materialArray);
         let flag1 = 0;
         for (let i = 0; i < materialArray.length; i++) {
           if (
@@ -613,8 +516,7 @@ function OpenButtonDraftSheetUnit(props) {
       }
     }
   };
-  // console.log("part arrayyyyyy = ", materialArray);
-  console.log("formheader.... = ", formHeader);
+
   const allotRVButtonState = (e) => {
     e.preventDefault();
 
@@ -644,7 +546,7 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].dynamicPara1 == 0.0
         ) {
           flag1 = 2;
-          // console.log("Setting flag1 to 2");
+
           break;
         }
 
@@ -655,7 +557,6 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].qtyReceived === undefined
         ) {
           flag1 = 3;
-          // console.log("Setting flag1 to 3");
         }
 
         if (
@@ -665,20 +566,15 @@ function OpenButtonDraftSheetUnit(props) {
           materialArray[i].qtyAccepted === undefined
         ) {
           flag1 = 4;
-          // console.log("Setting flag1 to 4");
         }
 
         if (materialArray[i].locationNo == "") {
           flag1 = 5;
-          // console.log("Setting flag1 to 5");
         }
         if (materialArray[i].qtyAccepted > materialArray[i].qtyReceived) {
           flag1 = 6;
-          // console.log("Setting flag1 to 6");
         }
       }
-
-      // console.log("flag1 value:", flag1);
 
       if (flag1 === 1) {
         toast.error("Select Material");
@@ -697,7 +593,6 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
   const allotRVYesButton = async (data) => {
-    //console.log("data = ", formHeader);
     await delay(500);
     setFormHeader(data);
     setBoolVal4(true);
@@ -769,18 +664,11 @@ function OpenButtonDraftSheetUnit(props) {
     setInsCheck(false);
     inputPart.inspected = 0;
     setBoolVal5(false);
-    console.log("inputPart = ", inputPart);
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
-        //toast.success("Record added");
         let id = data.insertId;
         inputPart.id = id;
-        // inputPart.dynamicPara1 = "";
-        // inputPart.dynamicPara2 = "";
-        // inputPart.dynamicPara3 = "";
-
-        //count total record in material Array
         let count = materialArray.length + 1;
         srl = "0" + count;
         inputPart.srl = srl;
@@ -799,35 +687,13 @@ function OpenButtonDraftSheetUnit(props) {
           locationNo: "",
           updated: "",
         };
-        //setPartArray(newRow);
         setMaterialArray([...materialArray, newRow]);
-
-        // setMaterialArray([
-        //   ...materialArray,
-        //   {
-        //     id,
-        //     srl,
-        //     mtrlCode,
-        //     dynamicPara1,
-        //     dynamicPara2,
-        //     dynamicPara3,
-        //     qty,
-        //     inspected,
-        //     locationNo,
-        //     upDated,
-        //   },
-        // ]);
-
         setInputPart(inputPart);
       } else {
         toast.error("Record Not Inserted");
       }
     });
-
-    //console.log("after = ", partArray);
   };
-
-  // console.log("3rd inputPart", inputPart);
   const deleteButtonState = () => {
     setModalOpen(true);
   };
@@ -836,15 +702,9 @@ function OpenButtonDraftSheetUnit(props) {
     if (inputPart?.id?.length === 0) {
       toast.error("Select Material");
     } else {
-      //console.log("id = ", inputPart.id);
-      // console.log("input part = ", inputPart);
       postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
-          const newArray = materialArray.filter(
-            (p) =>
-              //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-              p.id !== inputPart.id
-          );
+          const newArray = materialArray.filter((p) => p.id !== inputPart.id);
           setMaterialArray(newArray);
           toast.success("Material Deleted");
         }
@@ -872,28 +732,15 @@ function OpenButtonDraftSheetUnit(props) {
   };
 
   const changeMaterialHandle = async (e, id) => {
-    // console.log("materialArray..........", materialArray);
     const { value, name } = e.target;
-    // console.log("eventvalue....", e.target.value, "id....", id);
     for (let i = 0; i < materialArray.length; i++) {
       const element = materialArray[i];
 
       if (element.id === id) {
         element[name] = value;
-
-        // console.log("element..................", element);
       }
     }
-    // setInputPart((preValue) => {
-    //   //console.log(preValue)
-    //   return {
-    //     ...preValue,
-    //     [name]: value,
-    //   };
-    // });
-    // inputPart[name] = value;
-    //inputPart.custCode = formHeader.customer;
-    //inputPart.rvId = formHeader.rvId;
+
     inputPart[name] = value;
     //checkbox update
     if (name === "inspected") {
@@ -914,15 +761,8 @@ function OpenButtonDraftSheetUnit(props) {
       inputPart.inspected = false;
       inputPart.qtyAccepted = 0;
     }
-    // if (materialArray[0].qty <= 0) {
-    //   setBoolVal8(false);
-    // } else {
-    //   setBoolVal8(true);
-    // }
 
     setInputPart(inputPart);
-    // console.log("4th inputPart", inputPart);
-
     //calculate weight
     if (name === "qtyAccepted") {
       if (e.target.value) {
@@ -958,18 +798,15 @@ function OpenButtonDraftSheetUnit(props) {
 
           //update material array:
           const newArray = materialArray.map((p) =>
-            //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
             p.id === partUniqueId
               ? {
                   ...p,
                   [name]: value,
                   qty: inputPart.qtyReceived,
-                  // inspected: inputPart.inspected,
                 }
               : p
           );
           setMaterialArray(newArray);
-          // console.log("material array = ", materialArray);
           await delay(500);
 
           //find calculateweight
@@ -998,21 +835,13 @@ function OpenButtonDraftSheetUnit(props) {
                   )) /
                   (1000 * 1000);
             }
-            //parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-            //console.log(newWeight);
           });
           setCalcWeightVal(parseFloat(totwt).toFixed(2));
         });
-        //inputPart[name] = value;
-        //setInputPart(inputPart);
-
-        // console.log("inputPart11 : ", inputPart);
       }
     }
 
-    // console.log("5th inputPart", inputPart);
     const newArray = materialArray.map((p) =>
-      //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
       p.id === id
         ? {
             ...p,
@@ -1025,8 +854,6 @@ function OpenButtonDraftSheetUnit(props) {
 
     setMaterialArray(newArray);
     await delay(500);
-    // debugger
-
     console.log("inputpart", inputPart);
     //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
@@ -1038,23 +865,75 @@ function OpenButtonDraftSheetUnit(props) {
     await delay(500);
   };
 
-  // console.log("setMaterialArray...", materialArray);
   const selectRow = {
     mode: "radio",
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // console.log("Row = ", row);
-      // console.log("Row = ", row.updated);
-      // setIsButtonEnabled(row.updated === 1);
-      // setInputPart(row);
-      // updated = upDated;
+      console.log("Row = ", row);
+
       if (row.updated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
       } else {
         setRmvBtn(false);
         setAddBtn(true);
+      }
+
+      if (row.ShapeID === 1) {
+        // Sheet
+        setPara1Label("Width");
+        setPara2Label("Length");
+        // setBoolPara1(false);
+        // setBoolPara2(false);
+        setUnitLabel1("mm");
+        setUnitLabel2("mm");
+      } else if (row.ShapeID === 2) {
+        // Plate
+        setPara1Label("Length");
+        setPara2Label("Width");
+        // setBoolPara1(false);
+        // setBoolPara2(false);
+        // setBoolPara3(true);
+        setUnitLabel1("mm");
+        setUnitLabel2("mm");
+      } else if (row.ShapeID === 3 || row.ShapeID === 4 || row.ShapeID === 5) {
+        // Tube Round, Tube Square, Tube Rectangle
+        setPara1Label("Length");
+        // setBoolPara1(false);
+        // setBoolPara2(true);
+        // setBoolPara3(true);
+        setUnitLabel1("mm");
+      } else if (row.ShapeID === 6 || row.ShapeID === 7) {
+        // Titles, Strip
+        // setBoolPara1(false);
+        // setBoolPara2(false);
+        // setBoolPara3(false);
+      } else if (row.ShapeID === 8) {
+        // Block
+        setPara1Label("Length");
+        setPara2Label("Width");
+        setPara3Label("Height");
+        // setBoolPara1(false);
+        // setBoolPara2(false);
+        // setBoolPara3(false);
+        setUnitLabel1("mm");
+        setUnitLabel2("mm");
+        setUnitLabel3("mm");
+      } else if (row.ShapeID === 9) {
+        // Cylinder
+        setPara1Label("Volume");
+        // setBoolPara1(false);
+        // setBoolPara2(true);
+        // setBoolPara3(true);
+        setUnitLabel1("CubicMtr");
+      } else {
+        // Units
+        setPara1Label("Qty");
+        // setBoolPara1(false);
+        // setBoolPara2(true);
+        // setBoolPara3(true);
+        setUnitLabel1("Nos");
       }
 
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
@@ -1105,230 +984,14 @@ function OpenButtonDraftSheetUnit(props) {
               updated: row.updated,
               accepted: obj.accepted,
               totalWeightCalculated: obj.totalWeightCalculated,
+              totalWeight: row.totalWeight,
             });
           }
         });
       });
-
-      // setInputPart({
-      //   // id: row.id,
-      //   // partId: row.partId,
-      //   // unitWeight: row.unitWeight,
-      //   // qtyAccepted: row.qtyAccepted,
-      //   // qtyRejected: row.qtyRejected,
-      //   // qtyReceived: row.qtyReceived,
-      //   id: row.id,
-      //   srl: row.srl,
-      //   mtrlCode: row.mtrlCode,
-      //   dynamicPara1: row.dynamicPara1,
-      //   dynamicPara2: row.dynamicPara2,
-      //   dynamicPara3: row.dynamicPara3,
-      //   qty: row.qty,
-      //   inspected: row.inspected,
-      //   locationNo: row.locationNo,
-      //   updated: row.updated,
-      //   accepted: row.accepted,
-      //   custCode: row.custCode,
-      //   material: row.material,
-      //   mtrlCode: row.mtrlCode,
-      //   qtyAccepted: row.qtyAccepted,
-      //   qtyRejected: row.qtyRejected,
-      //   qtyReceived: row.qtyReceived,
-      //   qtyUsed: row.qtyUsed,
-      //   rvId: row.rvId,
-      //   shapeID: row.shapeID,
-      //   shapeMtrlId: row.shapeMtrlId,
-      //   totalWeight: row.totalWeight,
-      //   totalWeightCalculated: row.totalWeightCalculated,
-      //   updated: row.updated,
-      // });
     },
   };
 
-  // console.log("asdfghjkjhgfdfgjkjvcvnjkjh", inputPart);
-
-  // const changeMaterialHandle = async (e, id) => {
-  //   const { value, name } = e.target;
-
-  //   // console.log("eventvalue....", e.target.value, "id....", id);
-  //   for (let i = 0; i < materialArray.length; i++) {
-  //     const element = materialArray[i];
-
-  //     if (element.id === id) {
-  //       element[name] = value;
-
-  //       // console.log("element..................", element);
-  //     }
-  //   }
-
-  //   // setInputPart((preValue) => {
-  //   //   //console.log(preValue)
-  //   //   return {
-  //   //     ...preValue,
-  //   //     [name]: value,
-  //   //   };
-  //   // });
-  //   // inputPart[name] = value;
-  //   //inputPart.custCode = formHeader.customer;
-  //   //inputPart.rvId = formHeader.rvId;
-
-  //   //checkbox update
-  //   if (name === "inspected") {
-  //     if (e.target.checked) {
-  //       inputPart.inspected = 1;
-  //       setBoolVal5(true);
-  //       setInsCheck(true);
-  //     } else {
-  //       inputPart.inspected = 0;
-  //       setBoolVal5(false);
-  //       setInsCheck(false);
-  //     }
-  //   }
-
-  //   inputPart[name] = value;
-  //   setInputPart(inputPart);
-  //   //console.log(inputPart);
-
-  //   //calculate weight
-  //   if (name === "qtyAccepted") {
-  //     if (e.target.value) {
-  //       let val = e.target.value;
-  //       //get mtrl_data by mtrl_code
-  //       let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
-  //       getRequest(url, async (data) => {
-  //         //setCustdata(data);
-  //         console.log("weight", data);
-  //         let TotalWeightCalculated =
-  //           parseFloat(inputPart.qtyAccepted) *
-  //           getWeight(
-  //             data,
-  //             parseFloat(inputPart.dynamicPara1),
-  //             parseFloat(inputPart.dynamicPara2),
-  //             parseFloat(inputPart.dynamicPara3)
-  //           );
-
-  //         console.log("TotalWeightCalculated", TotalWeightCalculated);
-
-  //         TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
-  //         // console.log("TotalWeightCalculated", TotalWeightCalculated);
-
-  //         inputPart.totalWeightCalculated = parseFloat(
-  //           TotalWeightCalculated
-  //         ).toFixed(2);
-
-  //         inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(2);
-  //         inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
-  //         inputPart["TotalWeight"] = TotalWeightCalculated;
-
-  //         setInputPart(inputPart);
-  //         console.log("formHeader", formHeader);
-  //         //update forheader in database
-  //         postRequest(
-  //           endpoints.updateHeaderMaterialReceiptRegister,
-  //           formHeader,
-  //           (data) => {}
-  //         );
-
-  //         //update material array:
-  //         const newArray = materialArray.map((p) =>
-  //           //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-  //           p.id === id
-  //             ? {
-  //                 ...p,
-  //                 [name]: value,
-  //                 //qty: inputPart.qtyReceived,
-  //                 //inspected: inputPart.inspected,
-  //               }
-  //             : p
-  //         );
-  //         setMaterialArray(newArray);
-  //         console.log("material array = ", materialArray);
-  //         await delay(500);
-
-  //         //find calculateweight
-  //         let totwt = 0;
-  //         materialArray.map((obj) => {
-  //           if (obj.id === partUniqueId) {
-  //             totwt =
-  //               parseFloat(totwt) +
-  //               (parseFloat(value) *
-  //                 getWeight(
-  //                   data,
-  //                   parseFloat(obj.dynamicPara1),
-  //                   parseFloat(obj.dynamicPara2),
-  //                   parseFloat(obj.dynamicPara3)
-  //                 )) /
-  //                 (1000 * 1000);
-  //           } else {
-  //             totwt =
-  //               parseFloat(totwt) +
-  //               (parseFloat(obj.qtyAccepted) *
-  //                 getWeight(
-  //                   data,
-  //                   parseFloat(obj.dynamicPara1),
-  //                   parseFloat(obj.dynamicPara2),
-  //                   parseFloat(obj.dynamicPara3)
-  //                 )) /
-  //                 (1000 * 1000);
-  //           }
-  //           //parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-  //           //console.log(newWeight);
-  //         });
-  //         setCalcWeightVal(parseFloat(totwt).toFixed(2));
-
-  //         formHeader.calcWeight = parseFloat(totwt).toFixed(2);
-  //         setFormHeader(formHeader);
-  //         delay(500);
-  //         console.log("form header = ", formHeader);
-  //         //update calc weight in header
-  //         postRequest(
-  //           endpoints.updateHeaderMaterialReceiptRegister,
-  //           formHeader,
-  //           (data) => {
-  //             if (data.affectedRows !== 0) {
-  //             }
-  //           }
-  //         );
-  //       });
-  //       //inputPart[name] = value;
-  //       //setInputPart(inputPart);
-
-  //       //console.log("inputPart : ", inputPart);
-  //     }
-  //   }
-  //   const newArray = materialArray.map((p) =>
-  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-  //     p.id === id
-  //       ? {
-  //           ...p,
-  //           [name]: value,
-  //           qty: inputPart.qtyReceived,
-  //           inspected: inputPart.inspected == "on" ? 1 : 0,
-  //         }
-  //       : p
-  //   );
-
-  //   setMaterialArray(newArray);
-  //   await delay(500);
-
-  //   // if (inputPart.qtyAccepted > inputPart.qtyReceived) {
-  //   //   toast.error("QtyAccepted should be less than or equal to QtyReceived");
-  //   // }
-
-  //   // console.log("selectedRowss:", selectedRows);
-  //   console.log("inputPart", inputPart);
-  //   //update blank row with respected to modified part textfield
-  //   postRequest(endpoints.updateMtrlReceiptDetails, inputPart, (data) => {
-  //     if (data.affectedRows !== 0) {
-  //     } else {
-  //       toast.error("Record Not Updated");
-  //     }
-  //   });
-  //   await delay(500);
-  // };
-
-  console.log("props...................", props);
-  // console.log("inpurtpart.srl", inputPart.srl);
   const addToStock = async () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
@@ -1359,27 +1022,30 @@ function OpenButtonDraftSheetUnit(props) {
         locationNo: mtrlStock.locationNo,
         qtyAccepted: mtrlStock.qtyAccepted,
       };
-      // console.log("newrow = ", newRow);
-      //console.log("before api");
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
-        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Added Successfully");
-          //setBoolVal2(true);
-          //setBoolVal3(false);
           setBoolValStock("on");
-          // setBoolVal6(true);
-          // setBoolVal7(false);
           setRmvBtn(true);
           setAddBtn(false);
         } else {
           toast.error("Stock Not Added");
         }
       });
-      //console.log("mtrlstock = ", mtrlStock);
-      //console.log("before materialArray = ", materialArray);
 
+      //update updated status = 1
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 1,
+      };
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          console.log("updated = 1");
+        }
+      );
       //update checkbox
       for (let i = 0; i < materialArray.length; i++) {
         if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
@@ -1388,24 +1054,18 @@ function OpenButtonDraftSheetUnit(props) {
       }
       await delay(500);
       setMaterialArray(materialArray);
-      //console.log("after materialArray = ", materialArray);
+      setInputPart({ ...inputPart, updated: 1 });
     }
   };
-  // console.log("setMaterialArray", materialArray);
+
   const removeStock = () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
       postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
-          //enable remove stock buttons
           toast.success("Stock Removed Successfully");
-          //setBoolVal2(false);
-          //setBoolVal3(true);
           setBoolValStock("off");
-          // setBoolVal6(false);
-          // setBoolVal7(true);
           setAddBtn(true);
           setRmvBtn(false);
 
@@ -1417,6 +1077,7 @@ function OpenButtonDraftSheetUnit(props) {
           }
           await delay(500);
           setMaterialArray(materialArray);
+          setInputPart({ ...inputPart, updated: 0 });
         } else {
           toast.error("Stock Not Removed");
         }
@@ -1428,15 +1089,9 @@ function OpenButtonDraftSheetUnit(props) {
     if (inputPart?.id?.length === 0) {
       toast.error("Select Material");
     } else {
-      //console.log("id = ", inputPart.id);
-      // console.log("input part = ", inputPart);
       postRequest(endpoints.deleteMtrlReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
-          const newArray = materialArray.filter(
-            (p) =>
-              //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-              p.id !== inputPart.id
-          );
+          const newArray = materialArray.filter((p) => p.id !== inputPart.id);
           setMaterialArray(newArray);
           toast.success("Material Deleted");
           setInputPart({
@@ -1488,11 +1143,12 @@ function OpenButtonDraftSheetUnit(props) {
     }
     setModalOpen(false);
   };
+
   const handleRVYes = () => {
     deleteRVButtonState();
     setDeleteRvModalOpen(false);
   };
-  // console.log("materialArray", materialArray);
+
   return (
     <div>
       <CreateYesNoModal
@@ -1528,11 +1184,11 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -1541,7 +1197,7 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -1550,22 +1206,7 @@ function OpenButtonDraftSheetUnit(props) {
               readOnly
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
-            <label className="form-label">Customer</label>
-            <select
-              className="ip-select"
-              name="customer"
-              disabled={true}
-              //onChange={changeCustomer}
-            >
-              <option value={formHeader.customer} disabled selected>
-                {formHeader.customerName}
-              </option>
-            </select>
-          </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Weight</label>
             <input
               type="text"
@@ -1577,9 +1218,16 @@ function OpenButtonDraftSheetUnit(props) {
             />
           </div>
         </div>
-
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
+            <label className="form-label">Customer</label>
+            <select className="ip-select mt-1 " name="customer" disabled={true}>
+              <option value={formHeader.customer} disabled selected>
+                {formHeader.customerName}
+              </option>
+            </select>
+          </div>
+          <div className="col-md-4">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -1589,7 +1237,7 @@ function OpenButtonDraftSheetUnit(props) {
               disabled={boolVal2 & boolVal4}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="text"
@@ -1600,54 +1248,47 @@ function OpenButtonDraftSheetUnit(props) {
           </div>
         </div>
 
-        <div className="row mt-3">
+        <div className="row">
           <div className="col-md-8 justify-content-center">
-            <div className="row">
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  onClick={saveButtonState}
-                  disabled={boolVal4}
-                >
-                  Save
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={allotRVButtonState}
-                >
-                  Allot RV No
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style"
-                  disabled={boolVal4}
-                  onClick={deleteRVButton}
-                >
-                  Delete RV
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style "
-                  id="btnclose"
-                  type="submit"
-                  onClick={() => nav("/MaterialManagement")}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <button
+              className="button-style"
+              style={{ marginLeft: "70px" }}
+              onClick={saveButtonState}
+              disabled={boolVal4}
+            >
+              Save
+            </button>
+
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={allotRVButtonState}
+            >
+              Allot RV No
+            </button>
+
+            <button
+              className="button-style"
+              disabled={boolVal4}
+              onClick={deleteRVButton}
+            >
+              Delete RV
+            </button>
+
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
           </div>
-          <div className="col-md-4 mb-3">
-            <label className="form-label"></label>
+          <div className="col-md-4 mb-3 mt-4">
             <textarea
               id="exampleFormControlTextarea1"
-              rows="4"
-              style={{ width: "330px" }}
+              rows="2"
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -1655,7 +1296,7 @@ function OpenButtonDraftSheetUnit(props) {
         </div>
         <div className="row">
           <div className="col-md-8 col-sm-12">
-            <div style={{ height: "330px", overflowY: "scroll" }}>
+            <div style={{ height: "420px", overflowY: "scroll" }}>
               <BootstrapTable
                 keyField="id"
                 columns={columns}
@@ -1667,34 +1308,34 @@ function OpenButtonDraftSheetUnit(props) {
                 headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable>
             </div>
-
-            {/* <div
-              className="table-data"
-              style={{ height: "480px", overflowY: "scroll" }}
-            >
-             <Tables theadData={getHeadings()} tbodyData={data3} />
-            </div> */}
           </div>
-          <div className="col-md-4 col-sm-12">
+          <div
+            className="col-md-4 col-sm-12"
+            style={{ overflowY: "scroll", height: "420px" }}
+          >
             <div className="ip-box form-bg">
               <div className="row justify-content-center mt-2">
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  //onClick={addNewPart}
-                  disabled={boolVal4}
-                  onClick={addNewMaterial}
-                >
-                  Add Serial
-                </button>
-                <button
-                  className="button-style "
-                  style={{ width: "155px" }}
-                  disabled={boolVal3 | boolVal4}
-                  onClick={deleteButtonState}
-                >
-                  Delete Serial
-                </button>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    //onClick={addNewPart}
+                    disabled={boolVal4}
+                    onClick={addNewMaterial}
+                  >
+                    Add Serial
+                  </button>
+                </div>
+                <div className="col-md-6 col-sm-12">
+                  <button
+                    className="button-style "
+                    style={{ width: "155px" }}
+                    disabled={boolVal3 | boolVal4}
+                    onClick={deleteButtonState}
+                  >
+                    Delete Serial
+                  </button>
+                </div>
               </div>
 
               <div className="row  justify-content-center">
@@ -1702,13 +1343,6 @@ function OpenButtonDraftSheetUnit(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    // disabled={
-                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
-                    //   boolValStock === "off"
-                    //     ? !boolVal4
-                    //     : true*/
-                    //   boolVal6
-                    // }
                     disabled={rmvBtn | boolVal6}
                     onClick={addToStock}
                   >
@@ -1719,13 +1353,6 @@ function OpenButtonDraftSheetUnit(props) {
                   <button
                     className="button-style "
                     style={{ width: "155px" }}
-                    // disabled={
-                    //   /*(props.type2 === "purchase" || props.type === "gas") &&
-                    //   boolValStock === "on"
-                    //     ? !boolVal4
-                    //     : true*/
-                    //   boolVal7
-                    // }
                     disabled={addBtn | boolVal6}
                     onClick={removeStock}
                   >
@@ -1740,7 +1367,7 @@ function OpenButtonDraftSheetUnit(props) {
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-4 ">
+                    <div className="col-md-3 ">
                       <label className="form-label">Part ID</label>
                     </div>
                     <div className="col-md-8" style={{ marginTop: "8px" }}>
@@ -1796,129 +1423,133 @@ function OpenButtonDraftSheetUnit(props) {
                     </div>
                   </div>
 
-                  <div className="row mt-3">
-                    <div className="col-md-4">
-                      <label className="form-label">{para1Label}</label>
+                  {!(boolVal3 || boolVal4 || boolPara1) && (
+                    <div className="row mt-3">
+                      <div className="col-md-3">
+                        <label className="form-label">{para1Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara1"
+                          value={inputPart.dynamicPara1}
+                          disabled={boolVal5}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel1}</label>
+                      </div>
                     </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara1"
-                        value={inputPart.dynamicPara1}
-                        disabled={boolVal3 | boolVal4 | boolPara1 | boolVal5}
-                        // onChange={changeMaterialHandle}
+                  )}
 
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                      />
+                  {!(boolVal3 || boolVal4 || boolPara2) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para2Label}</label>
+                      </div>
+                      <div className="col-md-6">
+                        <input
+                          className="in-field"
+                          name="dynamicPara2"
+                          value={inputPart.dynamicPara2}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                          disabled={boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel2}</label>
+                      </div>
                     </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel1}</label>
+                  )}
+                  {!(boolVal3 || boolVal4 || boolPara3) && (
+                    <div className="row">
+                      <div className="col-md-3">
+                        <label className="form-label">{para3Label}</label>
+                      </div>
+                      <div className="col-md-6 ">
+                        <input
+                          className="in-field"
+                          name="dynamicPara3"
+                          value={inputPart.dynamicPara3}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                          disabled={boolVal5}
+                        />
+                      </div>
+                      <div className="col-md-3">
+                        <label className="form-label">{unitLabel3}</label>
+                      </div>
                     </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para2Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara2"
-                        value={inputPart.dynamicPara2}
-                        // onChange={changeMaterialHandle}
-
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={boolVal3 | boolVal4 | boolPara2 | boolVal5}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel2}</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">{para3Label}</label>
-                    </div>
-                    <div className="col-md-8 ">
-                      <input
-                        className="in-fields"
-                        name="dynamicPara3"
-                        value={inputPart.dynamicPara3}
-                        // onChange={changeMaterialHandle}
-
-                        min="0"
-                        onChange={(e) => {
-                          changeMaterialHandle(e, inputPart.id);
-                        }}
-                        disabled={boolVal3 | boolVal4 | boolPara3 | boolVal5}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">{unitLabel3}</label>
-                    </div>
-                  </div>
+                  )}
 
                   <p className="form-title-deco">
                     <h5>Quantity Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Received</label>
+                    <div className="col-md-3 col-sm-12">
+                      <label className="form-label mt-1">Received</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
                         name="qtyReceived"
-                        // defaultValue={0}
-                        value={inputPart.qtyReceived}
+                        value={
+                          (inputPart.qtyReceived = Math.floor(
+                            inputPart.qtyReceived
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4}
-                        // onChange={changeMaterialHandle}
-
                         min="0"
                         onChange={(e) => {
                           changeMaterialHandle(e, inputPart.id);
                         }}
                       />
                     </div>
-
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="inspected"
-                            checked={insCheck}
-                            // checked={inputPart.inspected === "1" ? true : false}
-                            disabled={boolVal3 | boolVal4}
-                            // onChange={changeMaterialHandle}
-
-                            min="0"
-                            onChange={(e) => {
-                              changeMaterialHandle(e, inputPart.id);
-                            }}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Inspected</label>
-                        </div>
+                    <div className="col-md-5 ">
+                      <div
+                        className="col-md-12 "
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="inspected"
+                          checked={inputPart.inspected}
+                          disabled={boolVal3 | boolVal4}
+                          min="0"
+                          onChange={(e) => {
+                            changeMaterialHandle(e, inputPart.id);
+                          }}
+                        />
+                        <label className="form-label mt-1">Inspected</label>
                       </div>
-                       
                     </div>
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                      <label className="form-label">Accepted</label>
+                    <div className="col-md-3 col-sm-12">
+                      <label className="form-label mt-1">Accepted</label>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
                         name="qtyAccepted"
                         // defaultValue={0}
-                        value={inputPart.qtyAccepted}
+                        value={
+                          (inputPart.qtyAccepted = Math.floor(
+                            inputPart.qtyAccepted
+                          ))
+                        }
                         disabled={boolVal3 | boolVal4 | !boolVal5}
                         // onChange={changeMaterialHandle}
 
@@ -1929,23 +1560,24 @@ function OpenButtonDraftSheetUnit(props) {
                       />
                     </div>
 
-                    <div className="col-md-6 col-sm-12">
-                      <div className="row">
-                        <div className="col-md-4 col-sm-12 mt-2">
-                          <input
-                            className="checkBoxStyle mt-2"
-                            type="checkbox"
-                            id="flexCheckDefault"
-                            name="updated"
-                            value={inputPart.updated}
-                            //disabled={boolVal3 | boolVal4}
-                            disabled={true}
-                            onChange={changeMaterialHandle}
-                          />
-                        </div>
-                        <div className="col-md-8 col-sm-12">
-                          <label className="form-label">Updated</label>
-                        </div>
+                    <div className="col-md-5 ">
+                      <div
+                        className="col-md-12 "
+                        style={{ display: "flex", gap: "5px" }}
+                      >
+                        <input
+                          // className="checkBoxStyle mt-2"
+                          // type="checkbox"
+                          className="form-check-input mt-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          name="updated"
+                          checked={inputPart.updated === 1 ? true : false}
+                          disabled={boolVal3 | boolVal4}
+                          // disabled={boolVal}
+                          onChange={changeMaterialHandle}
+                        />
+                        <label className="form-label mt-1">Updated</label>
                       </div>
                     </div>
                   </div>
@@ -1958,6 +1590,8 @@ function OpenButtonDraftSheetUnit(props) {
                       >
                         Wt Calculated 2
                       </label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         name="totalWeightCalculated"
@@ -1969,6 +1603,8 @@ function OpenButtonDraftSheetUnit(props) {
                   <div className="row">
                     <div className="col-md-6">
                       <label className="form-label">Weight</label>
+                    </div>
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         name="totalWeight"
@@ -1981,6 +1617,8 @@ function OpenButtonDraftSheetUnit(props) {
                   <div className="row">
                     <div className="col-md-6 ">
                       <label className="form-label">Location</label>
+                    </div>
+                    <div className="col-md-6 mt-1">
                       <select
                         className="ip-select dropdown-field"
                         // onChange={changeMaterialHandle}
@@ -2001,24 +1639,9 @@ function OpenButtonDraftSheetUnit(props) {
                             {location.LocationNo}
                           </option>
                         ))}
-
-                        {/* <option value="option 1">001</option>
-                            <option value="option 1">002</option>
-                            <option value="option 1">003</option>
-                            <option value="option 1">004</option> */}
                       </select>
                     </div>
                   </div>
-                  {/* <div className="row justify-content-center mt-3 mb-4">
-                    <button
-                      className="button-style "
-                      style={{ width: "155px" }}
-                      disabled={boolVal3 | boolVal4}
-                      onClick={deleteButtonState}
-                    >
-                      Delete Serial
-                    </button>
-                  </div> */}
                 </div>
               </div>
             </div>

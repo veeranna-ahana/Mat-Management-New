@@ -36,7 +36,7 @@ function OpenButtonOpenSheetUnit() {
 
   const [rmvBtn, setRmvBtn] = useState(false);
   const [addBtn, setAddBtn] = useState(false);
-
+  const [insCheck, setInsCheck] = useState(false);
   //falg for add to stock and remove stock
   const [boolValStock, setBoolValStock] = useState("off");
 
@@ -106,6 +106,7 @@ function OpenButtonOpenSheetUnit() {
       getRequest(endpoints.getCustomers, (data1) => {
         const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
         formHeader.address = found.Address;
+        console.log("formHeader.address", formHeader.address);
         setFormHeader(formHeader);
       });
 
@@ -133,6 +134,7 @@ function OpenButtonOpenSheetUnit() {
       getRequest(url1, (data2) => {
         console.log("table data  = ", data2);
         data2.forEach((obj) => {
+          console.log("obj.UpDated", obj.UpDated);
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
           obj.srl = obj.Srl;
@@ -144,7 +146,7 @@ function OpenButtonOpenSheetUnit() {
           obj.dynamicPara1 = obj.DynamicPara1;
           obj.dynamicPara2 = obj.DynamicPara2;
           obj.dynamicPara3 = obj.DynamicPara3;
-          obj.qty = obj.Qty;
+          obj.qty = Math.floor(obj.Qty);
           obj.inspected = obj.Inspected;
           obj.accepted = obj.Accepted;
           obj.totalWeightCalculated = obj.TotalWeightCalculated;
@@ -162,10 +164,14 @@ function OpenButtonOpenSheetUnit() {
         //find shape of material
         for (let i = 0; i < data2.length; i++) {
           let material = data2[i];
+
+          console.log("material....", material);
           const url2 =
             endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
           getRequest(url2, (data3) => {
-            if (material.Shape === "Units") {
+            console.log("material.Shape....", material.Shape);
+            console.log("data3....", data3.Shape);
+            if (data3.Shape === "Units") {
               setPara1Label("Qty"); //Nos
               setPara2Label("");
               setPara3Label("");
@@ -175,7 +181,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("Nos");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Block") {
+            } else if (data3.Shape === "Block") {
               setPara1Label("Length"); //mm
               setPara2Label("Width");
               setPara3Label("Height");
@@ -185,7 +191,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("mm");
-            } else if (material.Shape === "Plate") {
+            } else if (data3.Shape === "Plate") {
               setPara1Label("Length"); //mm
               setPara2Label("Width");
               setPara3Label("");
@@ -195,7 +201,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("");
-            } else if (material.Shape === "Sheet") {
+            } else if (data3.Shape === "Sheet") {
               setPara1Label("Width"); //mm
               setPara2Label("Length"); //mm
               setPara3Label("");
@@ -205,7 +211,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("mm");
               setUnitLabel3("");
-            } else if (material.Shape === "Tiles") {
+            } else if (data3.Shape === "Tiles") {
               setPara1Label("");
               setPara2Label("");
               setPara3Label("");
@@ -215,7 +221,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Tube") {
+            } else if (data3.Shape === "Tube") {
               setPara1Label("Length"); //mm
               setPara2Label("");
               setPara3Label("");
@@ -225,7 +231,7 @@ function OpenButtonOpenSheetUnit() {
               setUnitLabel1("mm");
               setUnitLabel2("");
               setUnitLabel3("");
-            } else if (material.Shape === "Cylinder") {
+            } else if (data3.Shape === "Cylinder") {
               setPara1Label("Volume"); //CubicMtr
               setPara2Label("");
               setPara3Label("");
@@ -352,7 +358,7 @@ function OpenButtonOpenSheetUnit() {
 
       for (let i = 0; i < mtrlArray.length; i++) {
         if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].upDated = 1;
+          mtrlArray[i].updated = 1;
           //console.log("Its Updated");
         }
       }
@@ -362,7 +368,8 @@ function OpenButtonOpenSheetUnit() {
       setMtrlArray([]);
       await delay(200);
       setMtrlArray(newArray);
-
+      // setInputPart({ ...inputPart, updated: 1 });
+      console.log("mtrlArray", mtrlArray);
       //console.log("input part ", inputPart);
       //console.log("formheader ", formHeader);
       //console.log("mtrlstock ", mtrlArray);
@@ -391,6 +398,7 @@ function OpenButtonOpenSheetUnit() {
           }
           await delay(500);
           setMtrlArray(newArray);
+          // setInputPart({ ...inputPart, updated: 0 });
         } else {
           toast.success("Stock Removed Successfully");
         }
@@ -408,16 +416,15 @@ function OpenButtonOpenSheetUnit() {
           console.log("updated = 0");
         }
       );
-      //console.log("prev mtrlArray = ", mtrlArray);
-      //console.log("prev mtrlStock = ", mtrlStock);
 
       for (let i = 0; i < mtrlArray.length; i++) {
         if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].upDated = 0;
+          mtrlArray[i].updated = 0;
           //console.log("Its Updated");
         }
       }
       await delay(500);
+      // console.log(newArray);
       let newArray = mtrlArray;
       console.log("mtrle new array = ", newArray);
       setMtrlArray([]);
@@ -442,18 +449,18 @@ function OpenButtonOpenSheetUnit() {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      // text: unitLabel1 !== "" ? para1Label + "(" + unitLabel1 + ")" : "",
-      text: "Width(Mm)",
+      text: unitLabel1 !== "" ? para1Label : "",
+      // text: "Width(Mm)",
       dataField: "dynamicPara1",
     },
     {
-      // text: unitLabel2 !== "" ? para2Label + "(" + unitLabel2 + ")" : "",
-      text: "Length(Mm)",
+      text: unitLabel2 !== "" ? para2Label : "",
+      // text: "Length(Mm)",
       dataField: "dynamicPara2",
     },
     {
-      // text: unitLabel3 !== "" ? para3Label + "(" + unitLabel3 + ")" : "",
-      text: "Height(Mm)",
+      text: unitLabel3 !== "" ? para3Label : "",
+      // text: "Height(Mm)",
       dataField: "dynamicPara3",
     },
     {
@@ -463,6 +470,7 @@ function OpenButtonOpenSheetUnit() {
     {
       text: "Inspected",
       dataField: "inspected",
+
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
@@ -485,7 +493,7 @@ function OpenButtonOpenSheetUnit() {
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
-            <input type="checkbox" checked={row.upDated == 1 ? true : false} />
+            <input type="checkbox" checked={row.updated == 1 ? true : false} />
           </lable>
         </div>
       ),
@@ -501,7 +509,7 @@ function OpenButtonOpenSheetUnit() {
       console.log("row", row);
       // setSelectedRows(row);
       setInputPart(row);
-      if (row.upDated === 1) {
+      if (row.updated === 1) {
         setRmvBtn(true);
         setAddBtn(false);
       } else {
@@ -512,6 +520,7 @@ function OpenButtonOpenSheetUnit() {
       mtrlArray?.map((obj) => {
         if (obj.id == row.id) {
           setMtrlStock(obj);
+          // console.log("obj.totalWeight", obj.totalWeight);
           setInputPart({
             qtyAccepted: row.qtyAccepted,
             qtyRejected: obj.qtyRejected,
@@ -528,6 +537,7 @@ function OpenButtonOpenSheetUnit() {
             updated: row.updated,
             accepted: obj.accepted,
             totalWeightCalculated: obj.totalWeightCalculated,
+            totalWeight: row.totalWeight,
           });
         }
       });
@@ -535,9 +545,9 @@ function OpenButtonOpenSheetUnit() {
   };
 
   console.log("inputPart....", inputPart);
-  console.log("inputPart....", inputPart.mtrlCode);
-  console.log("inputPart....", inputPart.locationNo);
+  // console.log("inputPart.location", inputPart.locationNo);
   // console.log("inputPart....", inputPart.totalWeight);
+  // console.log("inputPart.upDated....", inputPart.upDated);
 
   return (
     <div>
@@ -554,11 +564,11 @@ function OpenButtonOpenSheetUnit() {
               readOnly
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV No</label>
             <input type="text" name="rvNo" value={formHeader.rvNo} readOnly />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">RV Date</label>
             <input
               type="text"
@@ -568,7 +578,7 @@ function OpenButtonOpenSheetUnit() {
             />
             {/* value={currDate} */}
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Status</label>
             <input
               type="text"
@@ -577,12 +587,23 @@ function OpenButtonOpenSheetUnit() {
               readOnly
             />
           </div>
+          <div className="col-md-3">
+            <label className="form-label">Weight</label>
+            <input
+              type="text"
+              name="weight"
+              required
+              value={formHeader.weight}
+              disabled={boolVal}
+              // onChange={InputHeaderEvent}
+            />
+          </div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-5">
             <label className="form-label">Customer</label>
             <select
-              className="ip-select"
+              className="ip-select mt-1"
               name="customer"
               disabled={boolVal}
               // onChange={changeCustomer}
@@ -599,19 +620,6 @@ function OpenButtonOpenSheetUnit() {
             </select>
           </div>
           <div className="col-md-4">
-            <label className="form-label">Weight</label>
-            <input
-              type="text"
-              name="weight"
-              required
-              value={formHeader.weight}
-              disabled={boolVal}
-              // onChange={InputHeaderEvent}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8">
             <label className="form-label">Reference</label>
             <input
               type="text"
@@ -621,7 +629,7 @@ function OpenButtonOpenSheetUnit() {
               // onChange={InputHeaderEvent}
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <label className="form-label">Calculated Weight</label>
             <input
               type="text"
@@ -632,42 +640,39 @@ function OpenButtonOpenSheetUnit() {
           </div>
         </div>
 
-        <div className="row mt-4">
+        <div className="row">
           <div className="col-md-8 justify-content-center">
-            <div className="row">
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Save
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Allot RV No
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button className="button-style" disabled={boolVal}>
-                  Delete RV
-                </button>
-              </div>
-              <div className="col-md-3 col-sm-12">
-                <button
-                  className="button-style "
-                  id="btnclose"
-                  type="submit"
-                  onClick={() => nav("/MaterialManagement")}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <button
+              className="button-style"
+              style={{ marginLeft: "70px" }}
+              disabled={boolVal}
+            >
+              Save
+            </button>
+
+            <button className="button-style" disabled={boolVal}>
+              Allot RV No
+            </button>
+
+            <button className="button-style" disabled={boolVal}>
+              Delete RV
+            </button>
+
+            <button
+              className="button-style "
+              id="btnclose"
+              type="submit"
+              onClick={() => nav("/MaterialManagement")}
+            >
+              Close
+            </button>
           </div>
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4 mb-3 mt-4">
             <label className="form-label"></label>
             <textarea
               id="exampleFormControlTextarea1"
               rows="4"
-              style={{ width: "330px" }}
+              style={{ width: "400px", height: "40px" }}
               value={formHeader.address}
               readOnly
             ></textarea>
@@ -675,7 +680,7 @@ function OpenButtonOpenSheetUnit() {
         </div>
         <div className="row">
           <div
-            style={{ height: "330px", overflowY: "scroll" }}
+            style={{ height: "420px", overflowY: "scroll" }}
             className="col-md-8 col-sm-12"
           >
             <BootstrapTable
@@ -697,9 +702,12 @@ function OpenButtonOpenSheetUnit() {
               <Tables theadData={getHeadings()} tbodyData={data3} />
             </div> 
           </div> */}
-          <div className="col-md-4 col-sm-12">
+          <div
+            className="col-md-4 col-sm-12"
+            style={{ overflowY: "scroll", height: "420px" }}
+          >
             <div className="ip-box form-bg">
-              <div className="row justify-content-center mt-2">
+              {/* <div className="row justify-content-center mt-2">
                 <button
                   className="button-style "
                   style={{ width: "155px" }}
@@ -707,7 +715,7 @@ function OpenButtonOpenSheetUnit() {
                 >
                   Add Serial
                 </button>
-              </div>
+              </div> */}
               <div className="row justify-content-center">
                 <div className="col-md-6 col-sm-12">
                   <button
@@ -737,7 +745,7 @@ function OpenButtonOpenSheetUnit() {
                       <h5>Serial Details</h5>
                     </p>
 
-                    <div className="col-md-4 ">
+                    <div className="col-md-3 ">
                       <label className="form-label">Part ID</label>
                     </div>
                     <div className="col-md-8" style={{ marginTop: "8px" }}>
@@ -748,18 +756,18 @@ function OpenButtonOpenSheetUnit() {
                         value={inputPart.mtrlCode}
                         name="mtrlCode"
                       >
-                        <option value="" disabled selected>
-                          Select Material
+                        <option value={inputPart.mtrlCode} disabled selected>
+                          {inputPart.mtrlCode}
                         </option>
                       </select>
                     </div>
                   </div>
-
+                  {/* {!(boolVal3 || boolPara1) && ( */}
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <label className="form-label">{para1Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         className="in-field"
                         value={inputPart.dynamicPara1}
@@ -770,11 +778,13 @@ function OpenButtonOpenSheetUnit() {
                       <label className="form-label">{unitLabel1}</label>
                     </div>
                   </div>
+                  {/* )} */}
+                  {/* {!(boolVal3 || boolPara2) && ( */}
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <label className="form-label">{para2Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         className="in-field"
                         disabled={boolVal}
@@ -785,11 +795,13 @@ function OpenButtonOpenSheetUnit() {
                       <label className="form-label">{unitLabel2}</label>
                     </div>
                   </div>
+                  {/* )} */}
+                  {/* {!(boolVal3 || boolPara3) && ( */}
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <label className="form-label">{para3Label}</label>
                     </div>
-                    <div className="col-md-8 ">
+                    <div className="col-md-6 ">
                       <input
                         className="in-field"
                         disabled={boolVal}
@@ -800,59 +812,74 @@ function OpenButtonOpenSheetUnit() {
                       <label className="form-label">{unitLabel3}</label>
                     </div>
                   </div>
+                  {/* )} */}
                   <div className="col-md-12  mt-3">
                     <p className="form-title-deco">
                       <h5>Quantity Details</h5>
                     </p>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-3">
                         <label className="form-label">Received</label>
+                      </div>
+                      <div className="col-md-4">
                         <input
                           className="in-field"
                           disabled={boolVal}
-                          value={inputPart.qtyReceived}
+                          value={
+                            (inputPart.qtyReceived = Math.floor(
+                              inputPart.qtyReceived
+                            ))
+                          }
                         />
                       </div>
 
-                      <div className="col-md-6">
+                      <div className="col-md-5">
                         <div
-                          className="col-md-12 mt-2"
+                          className="col-md-12"
                           style={{ display: "flex", gap: "5px" }}
                         >
                           <input
-                            className="form-check-input mt-2"
+                            className="form-check-input mt-3"
                             type="checkbox"
                             checked={inputPart.inspected == 1 ? true : false}
+                            value={inputPart.inspected}
+                            // checked={insCheck}
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
-                          <label className="form-label">Inspected</label>
+                          <label className="form-label mt-1">Inspected</label>
                         </div>
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-3">
                         <label className="form-label">Accepted</label>
+                      </div>
+                      <div className="col-md-4">
                         <input
                           className="in-field"
                           disabled={boolVal}
-                          value={inputPart.qtyAccepted}
+                          value={
+                            (inputPart.qtyAccepted = Math.floor(
+                              inputPart.qtyAccepted
+                            ))
+                          }
                         />
                       </div>
 
-                      <div className="col-md-6">
+                      <div className="col-md-5">
                         <div
-                          className="col-md-12 mt-2"
-                          style={{ display: "flex", gap: "5px" }}
+                          className="col-md-12 "
+                          style={{ display: "flex", gap: "3px" }}
                         >
                           <input
-                            className="form-check-input mt-2"
+                            className="form-check-input mt-3"
                             type="checkbox"
-                            checked={inputPart.upDated == 1 ? true : false}
+                            checked={inputPart.updated === 1 ? true : false}
                             id="flexCheckDefault"
                             disabled={boolVal}
                           />
-                           <label className="form-label">Updated</label>
+                           <label className="form-label mt-1">Updated</label>
                         </div>
                       </div>
                     </div>
@@ -865,6 +892,8 @@ function OpenButtonOpenSheetUnit() {
                         >
                           Wt Calculated 2
                         </label>
+                      </div>
+                      <div className="col-md-6 mt-1">
                         <input
                           className="in-field"
                           disabled={boolVal}
@@ -874,7 +903,9 @@ function OpenButtonOpenSheetUnit() {
                     </div>
                     <div className="row">
                       <div className="col-md-6">
-                        <label className="form-label">Weight</label>
+                        <label className="form-label mt-1">Weight</label>
+                      </div>
+                      <div className="col-md-6">
                         <input
                           className="in-field"
                           disabled={boolVal}
@@ -882,21 +913,25 @@ function OpenButtonOpenSheetUnit() {
                         />
                       </div>
                     </div>
-                    <div className="row">
+                    <div className="row mb-2">
                       <div className="col-md-6 ">
                         <label className="form-label">Location</label>
+                      </div>
+                      <div className="col-md-6 mt-2">
                         <select
                           className="ip-select dropdown-field"
                           disabled={boolVal}
-                          value={inputPart.locationNo}
-                          name="locationNo"
-                        ></select>
+                        >
+                          <option value={inputPart.locationNo}>
+                            {inputPart.locationNo}
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="row justify-content-center mt-2 mb-4">
+              {/* <div className="row justify-content-center mt-2 mb-4">
                 <button
                   className="button-style "
                   style={{ width: "155px" }}
@@ -904,7 +939,7 @@ function OpenButtonOpenSheetUnit() {
                 >
                   Delete
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

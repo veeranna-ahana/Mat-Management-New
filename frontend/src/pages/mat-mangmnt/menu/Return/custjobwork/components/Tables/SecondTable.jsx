@@ -4,12 +4,8 @@ import Table from "react-bootstrap/Table";
 export default function SecondTable(props) {
   return (
     <>
-      <Table
-        hover
-        condensed
-        className="table-data border header-class table-striped"
-      >
-        <thead className="text-white">
+      <Table striped className="table-data border" style={{ border: "1px" }}>
+        <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
             <th>Mtrl Stock ID</th>
@@ -38,8 +34,8 @@ export default function SecondTable(props) {
                 <input type="checkbox" name="" id="" checked={val.Issue} />
 
               </td> */}
-              <td>{val.Weight}</td>
-              <td>{val.ScrapWeight}</td>
+              <td>{parseFloat(val.Weight).toFixed(2)}</td>
+              <td>{parseFloat(val.ScrapWeight).toFixed(2)}</td>
               <td>{val.RVId}</td>
             </tr>
           ))}

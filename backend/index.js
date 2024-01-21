@@ -1,5 +1,3 @@
-/*import express from "express";
-import { logger } from "./helpers/logger";*/
 const express = require("express");
 require("dotenv").config();
 const bodyParser = require("body-parser");

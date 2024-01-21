@@ -4,12 +4,8 @@ import Table from "react-bootstrap/Table";
 export default function ThirdTable(props) {
   return (
     <>
-      <Table
-        hover
-        condensed
-        className="table-data border header-class table-striped"
-      >
-        <thead className="text-white">
+      <Table striped className="table-data border" style={{ border: "1px" }}>
+        <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
             <th>Mtrl Stock ID</th>
@@ -27,7 +23,7 @@ export default function ThirdTable(props) {
               <td>{val.Mtrl_Code}</td>
               <td>{val.DynamicPara1}</td>
               <td>{val.DynamicPara2}</td>
-              <td>{val.Weight}</td>
+              <td>{parseFloat(val.Weight).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
