@@ -78,6 +78,8 @@ export const endpoints = {
   //running no
   getRunningNo: `${API}/runningNo/getRunningNoBySrlType`,
   updateRunningNo: `${API}/runningNo/updateRunningNoBySrlType`,
+  insertRunningNo: `${API}/runningNo/insertRunningNo`,
+  getAndInsertRunningNo: `${API}/runningNo/getAndInsertRunningNo`,
 
   //Material stock List
   //getMtrlReceiptDetailsByRvID: `${API}/mtrlReceiptDetails/getMtrlReceiptDetailsByRvID`,

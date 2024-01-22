@@ -9,6 +9,7 @@ import CreateReturnNewModal from "../../../../components/CreateReturnNewModal";
 import FirstTable from "./Tables/FirstTable";
 import SecondTable from "./Tables/SecondTable";
 import ThirdTable from "./Tables/ThirdTable";
+import ConfirmationModal from "./Modals/ConfimationModal";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
@@ -34,6 +35,12 @@ function PofilesMaterials(props) {
 
   let [allData, setAllData] = useState([]);
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  // const [buttonClicked, setButtonClicked] = useState("");
+
+  const [runningNo, setRunningNo] = useState([]);
+  // const [currentRunningNo, setCurrentRunningNo] = useState([]);
   // const [detailsDataToPosted, setDetailsDataToPosted] = useState([]);
 
   // let [propsValue, setPropsValue] = useState(props.custCode);
@@ -50,11 +57,15 @@ function PofilesMaterials(props) {
       let url1 =
         endpoints.profileMaterialFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
-        data.forEach((item, i) => {
-          item.id = i + 1;
-          item.Issue = false;
-        });
-        setFirstTableData(data);
+        if (data?.length > 0) {
+          data.forEach((item, i) => {
+            item.id = i + 1;
+            item.Issue = false;
+          });
+          setFirstTableData(data);
+        } else {
+          toast.warning("No materials data found for selected Customer");
+        }
       });
 
       //fetch second table data
@@ -77,10 +88,41 @@ function PofilesMaterials(props) {
     }
   };
 
+  const getRunningNo = async () => {
+    let SrlType = "MaterialReturnIV";
+    let yyyy = formatDate(new Date(), 6).toString();
+    let UnitName = "Jigani";
+    const insertRunningNoVal = {
+      UnitName: UnitName,
+      SrlType: SrlType,
+      ResetPeriod: "Year",
+      ResetValue: "0",
+      EffectiveFrom_date: `${yyyy}-01-01`,
+      Reset_date: `${yyyy}-12-31`,
+      Running_No: "0",
+      UnitIntial: "0",
+      Prefix: "",
+      Suffix: "",
+      Length: "4",
+      Period: yyyy,
+    };
+
+    // var runningNo = [];
+    postRequest(
+      endpoints.getAndInsertRunningNo,
+      insertRunningNoVal,
+      (runningNo) => {
+        // console.log("post done", runningNo);
+        setRunningNo(runningNo);
+        // runningNo = runningNo;
+      }
+    );
+    // await delay(30);
+    // console.log("runningNo", runningNo);
+  };
+
   useEffect(() => {
-    //setPropsValue(props.custCode);
     fetchData();
-    //console.log("S props value = ", propsValue);
   }, [props.custCode]);
 
   // const columnsFirst = [
@@ -831,479 +873,519 @@ function PofilesMaterials(props) {
   //   // );
   // }, [thirdTableData]);
 
-  const createReturnVoucherFunc = () => {
+  const createReturnVoucherValidationFunc = () => {
+    getRunningNo();
+    setConfirmModalOpen(true);
+  };
+  const createReturnVoucherFunc = async () => {
+    // console.log("running...", runningNo);
+
+    // await delay(90);
+    // console.log("runningNo", runningNo);
     if (props.custCode) {
       if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
         if (thirdTableData.length > 0) {
-          //get running no and assign to RvNo
-          let yyyy = parseInt(formatDate(new Date(), 6).toString()) - 1;
-          const url =
-            endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
-          getRequest(url, (dataObj) => {
-            // console.log("dataObj", dataObj);
-            dataObj.map((obj) => {
-              // console.log("clicked");
-              let newNo = parseInt(obj.Running_No) + 1;
-              let series = "";
-              if (newNo < 1000) {
-                //add prefix zeros
-                for (
-                  let i = 0;
-                  i < parseInt(obj.Length) - newNo.toString().length;
-                  i++
-                ) {
-                  series = series + "0";
-                }
-                series = series + "" + newNo;
-              } else {
-                series = newNo;
+          // .....................
+          // //get running no and assign to RvNo
+          // let SrlType = "MaterialReturnIV";
+          // let yyyy = formatDate(new Date(), 6).toString();
+          // let UnitName = "Jigani";
+          // const url =
+          //   endpoints.getRunningNo +
+          //   `?SrlType=${SrlType}&Period=${yyyy}&UnitName=${UnitName}`;
+          // let runningNoArr = [];
+          // getRequest(url, (runningNo) => {
+          //   runningNoArr = runningNo;
+          //   console.log("first", runningNo);
+          // });
+
+          // // console.log("no insert", runningNoArr);
+
+          // await delay(30);
+          // if (runningNoArr.length === 0) {
+          //   // console.log("need to insert");
+          //   const insertRunningNoVal = {
+          //     UnitName: UnitName,
+          //     SrlType: SrlType,
+          //     ResetPeriod: "Year",
+          //     ResetValue: "0",
+          //     EffectiveFrom_date: `${yyyy}-01-01`,
+          //     Reset_date: `${yyyy}-12-31`,
+          //     Running_No: "0",
+          //     UnitIntial: "0",
+          //     Prefix: "",
+          //     Suffix: "",
+          //     Length: "4",
+          //     Period: yyyy,
+          //   };
+
+          //   postRequest(
+          //     endpoints.insertRunningNo,
+          //     insertRunningNoVal,
+          //     (insertRunningNoData) => {
+          //       console.log("insertRunningNoData", insertRunningNoData);
+          //     }
+          //   );
+
+          //   getRequest(url, (runningNo) => {
+          //     runningNoArr = runningNo;
+          //     console.log("second", runningNo);
+          //   });
+          //   // await delay(30);
+          //   // console.log("inserted", runningNoArr);
+          // }
+
+          // // await delay(30);
+          // // +
+          // // yyyy +
+          // // "?UnitName=" +
+          // // UnitName;
+
+          // console.log("final", runningNoArr);
+
+          // console.log("runningNo", runningNo);
+          if (runningNo.length > 0) {
+            // console.log("clicked");
+            let newNo = parseInt(runningNo[0].Running_No) + 1;
+            let series = "";
+            if (newNo < 1000) {
+              //add prefix zeros
+              for (
+                let i = 0;
+                i < parseInt(runningNo[0].Length) - newNo.toString().length;
+                i++
+              ) {
+                series = series + "0";
               }
-
-              // console.log("series", series);
-              //adding last 2 digit of year
-              let yy = formatDate(new Date(), 6).toString().substring(2);
-              let no = yy + "/" + series;
-              setIVNOVal(no);
-              // creating var for register starts
-              // calculating the total weights for selected materials in third table for register
-              let RVTotalWeight = 0;
-              let RVTotalCalWeight = 0;
-              for (let i = 0; i < thirdTableData.length; i++) {
-                const element = thirdTableData[i];
-
-                // console.log("element...", element);
-                RVTotalWeight =
-                  parseFloat(RVTotalWeight) + parseFloat(element.Weight);
-                // parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
-                RVTotalCalWeight =
-                  parseFloat(RVTotalCalWeight) + parseFloat(element.Weight);
-                // parseFloat(element.TotalCalculatedWeight);
-              }
-              let newRowMaterialIssueRegister = {
-                IV_No: no,
-                IV_Date: formatDate(new Date(), 5),
-                Cust_code: props.custCode,
-                Customer: props.custName,
-                CustCSTNo: props.custCST,
-                CustTINNo: props.custTIN,
-                CustECCNo: props.custECC,
-                CustGSTNo: props.custGST,
-                EMail: "",
-                PkngDcNo: null,
-                PkngDCDate: null,
-                TotalWeight: RVTotalWeight,
-                TotalCalculatedWeight: RVTotalCalWeight,
-                UpDated: 0,
-                IVStatus: "Draft",
-                Dc_ID: 0,
-                Type: thirdTableData[0].Type,
-              };
-              // creating var for register ends now post to BE
-
-              postRequest(
-                endpoints.insertMaterialIssueRegister,
-                newRowMaterialIssueRegister,
-                (respRegister) => {
-                  //console.log("insertId", respRegister.insertId);
-                  // console.log("first post done in register...", data);
-
-                  if (respRegister.insertId) {
-                    setSrlIVID(respRegister.insertId);
-                    // creating var for details starts
-
-                    let dataToPost = [];
-                    for (let i = 0; i < thirdTableData.length; i++) {
-                      const element = thirdTableData[i];
-                      if (dataToPost.length === 0) {
+              series = series + "" + newNo;
+            } else {
+              series = newNo;
+            }
+            // console.log("series", series);
+            //adding last 2 digit of year
+            let yy = formatDate(new Date(), 6).toString().substring(2);
+            let no = yy + "/" + series;
+            setIVNOVal(no);
+            // creating var for register starts
+            // calculating the total weights for selected materials in third table for register
+            let RVTotalWeight = 0;
+            let RVTotalCalWeight = 0;
+            for (let i = 0; i < thirdTableData.length; i++) {
+              const element = thirdTableData[i];
+              // console.log("element...", element);
+              RVTotalWeight =
+                parseFloat(RVTotalWeight) + parseFloat(element.Weight);
+              // parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
+              RVTotalCalWeight =
+                parseFloat(RVTotalCalWeight) + parseFloat(element.Weight);
+              // parseFloat(element.TotalCalculatedWeight);
+            }
+            let newRowMaterialIssueRegister = {
+              IV_No: no,
+              IV_Date: formatDate(new Date(), 5),
+              Cust_code: props.custCode,
+              Customer: props.custName,
+              CustCSTNo: props.custCST,
+              CustTINNo: props.custTIN,
+              CustECCNo: props.custECC,
+              CustGSTNo: props.custGST,
+              EMail: "",
+              PkngDcNo: null,
+              PkngDCDate: null,
+              TotalWeight: RVTotalWeight,
+              TotalCalculatedWeight: RVTotalCalWeight,
+              UpDated: 0,
+              IVStatus: "Draft",
+              Dc_ID: 0,
+              Type: thirdTableData[0].Type,
+            };
+            // creating var for register ends now post to BE
+            postRequest(
+              endpoints.insertMaterialIssueRegister,
+              newRowMaterialIssueRegister,
+              (respRegister) => {
+                //console.log("insertId", respRegister.insertId);
+                // console.log("first post done in register...", data);
+                if (respRegister.insertId) {
+                  setSrlIVID(respRegister.insertId);
+                  // creating var for details starts
+                  let dataToPost = [];
+                  for (let i = 0; i < thirdTableData.length; i++) {
+                    const element = thirdTableData[i];
+                    if (dataToPost.length === 0) {
+                      dataToPost.push({
+                        ...element,
+                        SrlNo: i + 1,
+                        Qty: 1,
+                        MtrlStockID: element.MtrlStockID,
+                      });
+                    } else {
+                      const filterData = dataToPost.filter(
+                        (obj) => obj.Cust_Docu_No === element.Cust_Docu_No
+                      );
+                      if (filterData.length > 0) {
+                        let changeRow = filterData[0];
+                        changeRow.Qty = changeRow.Qty + 1;
+                        dataToPost[changeRow.SrlNo - 1] = changeRow;
+                      } else {
                         dataToPost.push({
                           ...element,
                           SrlNo: i + 1,
                           Qty: 1,
                           MtrlStockID: element.MtrlStockID,
                         });
-                      } else {
-                        const filterData = dataToPost.filter(
-                          (obj) => obj.Cust_Docu_No === element.Cust_Docu_No
-                        );
-                        if (filterData.length > 0) {
-                          let changeRow = filterData[0];
-                          changeRow.Qty = changeRow.Qty + 1;
-                          dataToPost[changeRow.SrlNo - 1] = changeRow;
-                        } else {
-                          dataToPost.push({
-                            ...element,
-                            SrlNo: i + 1,
-                            Qty: 1,
-                            MtrlStockID: element.MtrlStockID,
-                          });
-                        }
                       }
                     }
-                    let detailsFilteredData = [];
-                    const abc = dataToPost.filter((obj) => obj != undefined);
-                    for (let i = 0; i < abc.length; i++) {
-                      const element = abc[i];
-                      // console.log("element", element);
-                      if (detailsFilteredData.length === 0) {
-                        detailsFilteredData.push(element);
-                      } else {
-                        if (
-                          !(
-                            detailsFilteredData.filter(
-                              (obj) => obj.RVId === element.RVId
-                            ).length > 0
-                          )
-                        ) {
-                          detailsFilteredData.push(element);
-                        }
-                      }
-                    }
-                    // console.log("dataToPost", dataToPost);
-                    // console.log("detailsFilteredData", detailsFilteredData);
-
-                    for (let j = 0; j < detailsFilteredData.length; j++) {
-                      const element = detailsFilteredData[j];
-                      let MtrlData;
-                      let ShapeData;
-                      // get mtrl data
-                      for (let m = 0; m < objMaterial.length; m++) {
-                        const mtrlElement = objMaterial[m];
-                        if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
-                          MtrlData = mtrlElement;
-                          break;
-                        }
-                      }
-                      // get shape data
-                      for (let s = 0; s < objShape.length; s++) {
-                        const shapeElement = objShape[s];
-                        if (shapeElement.Shape === MtrlData.Shape) {
-                          ShapeData = shapeElement;
-                          break;
-                        }
-                      }
-                      // generate the mtrl description
-                      let mtrlDescription =
-                        get_Iv_DetailsEntry(
-                          element.Scrap,
-                          element.DynamicPara1,
-                          element.DynamicPara2,
-                          element.DynamicPara3,
-                          element.Material,
-                          MtrlData.Shape,
-                          ShapeData,
-                          MtrlData
-                        ) +
-                        " /** " +
-                        element.Cust_Docu_No;
-
-                      // console.log("mtrlDescription", mtrlDescription);
-                      let newRowMtrlIssueDetails = {
-                        Iv_Id: respRegister.insertId,
-                        Srl: j + 1,
-                        IV_Date: null,
-                        IV_No: "",
-                        Cust_Code: props.custCode,
-                        Customer: "",
-                        MtrlDescription: mtrlDescription,
-                        Mtrl_Code: element.Mtrl_Code,
-                        Material: element.Material,
-                        PkngDCNo: "",
-                        cust_docu_No: element.Cust_Docu_No,
-                        RV_No: element.RV_No,
-                        RV_Srl: "",
-                        Qty: element.Qty,
-                        TotalWeightCalculated: (
-                          parseFloat(element.Qty) * parseFloat(element.Weight)
-                        )
-                          // parseFloat(element.TotalCalculatedWeight)
-                          .toFixed(3),
-                        TotalWeight: (
-                          parseFloat(element.Qty) * parseFloat(element.Weight)
-                        )
-                          // parseFloat(element.TotalWeight)
-                          .toFixed(3),
-                        UpDated: 0,
-                        RvId: element.RvID || 0,
-                        Mtrl_Rv_id: element.Mtrl_Rv_id,
-                      };
-
-                      // console.log(
-                      //   "newRowMtrlIssueDetails",
-                      //   newRowMtrlIssueDetails
-                      // );
-
-                      // post to details
-                      postRequest(
-                        endpoints.insertMtrlIssueDetails,
-                        newRowMtrlIssueDetails,
-                        async (issueDetailsData) => {
-                          //console.log("data = ", data);
-                          if (issueDetailsData.affectedRows !== 0) {
-                            // console.log(
-                            //   `Record inserted ${
-                            //     j + 1
-                            //   } : materialIssueDetails`
-                            // );
-                            // toast.success('Data recoreded sucessfully')
-                          } else {
-                            toast.error("Uncaught Error (002)");
-                          }
-                        }
-                      );
-                    }
-
-                    for (let i = 0; i < thirdTableData.length; i++) {
-                      const element = thirdTableData[i];
-                      const mtrlstockData = {
-                        Issue: 1,
-                        Iv_No: no,
-                        MtrlStockID: element.MtrlStockID,
-                      };
-                      postRequest(
-                        endpoints.updateIssueIVNo,
-                        mtrlstockData,
-                        async (mtrlUpdateData) => {
-                          // console.log(
-                          //   "mtrlUpdateData...",
-                          //   mtrlUpdateData
-                          // );
-                          const inputData = {
-                            SrlType: "MaterialReturnIV",
-                            Period: formatDate(new Date(), 6),
-                            RunningNo: newNo,
-                          };
-                          postRequest(
-                            endpoints.updateRunningNo,
-                            inputData,
-                            async (updateRunningNoData) => {
-                              // console.log(
-                              //   "updateRunningNoData",
-                              //   updateRunningNoData
-                              // );
-
-                              // toast.success(
-                              //   "Data inserted successfully..."
-                              // );
-
-                              setSrlMaterialType("material");
-                              setShow(true);
-                            }
-                          );
-                        }
-                      );
-                    }
-                  } else {
-                    toast.error("Uncaught error while posting data (001)");
                   }
+                  let detailsFilteredData = [];
+                  const abc = dataToPost.filter((obj) => obj != undefined);
+                  for (let i = 0; i < abc.length; i++) {
+                    const element = abc[i];
+                    // console.log("element", element);
+                    if (detailsFilteredData.length === 0) {
+                      detailsFilteredData.push(element);
+                    } else {
+                      if (
+                        !(
+                          detailsFilteredData.filter(
+                            (obj) => obj.RVId === element.RVId
+                          ).length > 0
+                        )
+                      ) {
+                        detailsFilteredData.push(element);
+                      }
+                    }
+                  }
+                  // console.log("dataToPost", dataToPost);
+                  // console.log("detailsFilteredData", detailsFilteredData);
+                  for (let j = 0; j < detailsFilteredData.length; j++) {
+                    const element = detailsFilteredData[j];
+                    let MtrlData;
+                    let ShapeData;
+                    // get mtrl data
+                    for (let m = 0; m < objMaterial.length; m++) {
+                      const mtrlElement = objMaterial[m];
+                      if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
+                        MtrlData = mtrlElement;
+                        break;
+                      }
+                    }
+                    // get shape data
+                    for (let s = 0; s < objShape.length; s++) {
+                      const shapeElement = objShape[s];
+                      if (shapeElement.Shape === MtrlData.Shape) {
+                        ShapeData = shapeElement;
+                        break;
+                      }
+                    }
+                    // generate the mtrl description
+                    let mtrlDescription =
+                      get_Iv_DetailsEntry(
+                        element.Scrap,
+                        element.DynamicPara1,
+                        element.DynamicPara2,
+                        element.DynamicPara3,
+                        element.Material,
+                        MtrlData.Shape,
+                        ShapeData,
+                        MtrlData
+                      ) +
+                      " /** " +
+                      element.Cust_Docu_No;
+                    // console.log("mtrlDescription", mtrlDescription);
+                    let newRowMtrlIssueDetails = {
+                      Iv_Id: respRegister.insertId,
+                      Srl: j + 1,
+                      IV_Date: null,
+                      IV_No: "",
+                      Cust_Code: props.custCode,
+                      Customer: "",
+                      MtrlDescription: mtrlDescription,
+                      Mtrl_Code: element.Mtrl_Code,
+                      Material: element.Material,
+                      PkngDCNo: "",
+                      cust_docu_No: element.Cust_Docu_No,
+                      RV_No: element.RV_No,
+                      RV_Srl: "",
+                      Qty: element.Qty,
+                      TotalWeightCalculated: (
+                        parseFloat(element.Qty) * parseFloat(element.Weight)
+                      )
+                        // parseFloat(element.TotalCalculatedWeight)
+                        .toFixed(3),
+                      TotalWeight: (
+                        parseFloat(element.Qty) * parseFloat(element.Weight)
+                      )
+                        // parseFloat(element.TotalWeight)
+                        .toFixed(3),
+                      UpDated: 0,
+                      RvId: element.RvID || 0,
+                      Mtrl_Rv_id: element.Mtrl_Rv_id,
+                    };
+                    // console.log(
+                    //   "newRowMtrlIssueDetails",
+                    //   newRowMtrlIssueDetails
+                    // );
+                    // post to details
+                    postRequest(
+                      endpoints.insertMtrlIssueDetails,
+                      newRowMtrlIssueDetails,
+                      async (issueDetailsData) => {
+                        //console.log("data = ", data);
+                        if (issueDetailsData.affectedRows !== 0) {
+                          // console.log(
+                          //   `Record inserted ${
+                          //     j + 1
+                          //   } : materialIssueDetails`
+                          // );
+                          // toast.success('Data recoreded sucessfully')
+                        } else {
+                          toast.error("Uncaught Error (002)");
+                        }
+                      }
+                    );
+                  }
+                  for (let i = 0; i < thirdTableData.length; i++) {
+                    const element = thirdTableData[i];
+                    const mtrlstockData = {
+                      Issue: 1,
+                      Iv_No: no,
+                      MtrlStockID: element.MtrlStockID,
+                    };
+                    postRequest(
+                      endpoints.updateIssueIVNo,
+                      mtrlstockData,
+                      async (mtrlUpdateData) => {
+                        // console.log(
+                        //   "mtrlUpdateData...",
+                        //   mtrlUpdateData
+                        // );
+                        const inputData = {
+                          SrlType: "MaterialReturnIV",
+                          Period: formatDate(new Date(), 6),
+                          RunningNo: newNo,
+                        };
+                        postRequest(
+                          endpoints.updateRunningNo,
+                          inputData,
+                          async (updateRunningNoData) => {
+                            // console.log(
+                            //   "updateRunningNoData",
+                            //   updateRunningNoData
+                            // );
+                            // toast.success(
+                            //   "Data inserted successfully..."
+                            // );
+                            setSrlMaterialType("material");
+                            setShow(true);
+                          }
+                        );
+                      }
+                    );
+                  }
+                } else {
+                  toast.error("Uncaught error while posting data (001)");
                 }
-              );
-
-              //......................................................................................
-              // // creating var for details starts
-
-              // let dataToPost = [];
-              // for (let i = 0; i < thirdTableData.length; i++) {
-              //   const element = thirdTableData[i];
-              //   if (dataToPost.length === 0) {
-              //     dataToPost.push({ ...element, SrlNo: i + 1, Qty: 1 });
-              //   } else {
-              //     const filterData = dataToPost.filter(
-              //       (obj) => obj.Cust_Docu_No === element.Cust_Docu_No
-              //     );
-              //     if (filterData.length > 0) {
-              //       let changeRow = filterData[0];
-              //       changeRow.Qty = changeRow.Qty + 1;
-              //       dataToPost[changeRow.SrlNo - 1] = changeRow;
-              //     } else {
-              //       dataToPost.push({ ...element, SrlNo: i + 1, Qty: 1 });
-              //     }
-              //   }
-              // }
-              // let data = [];
-              // const abc = dataToPost.filter((obj) => obj != undefined);
-              // for (let i = 0; i < abc.length; i++) {
-              //   const element = abc[i];
-              //   // console.log("element", element);
-              //   if (data.length === 0) {
-              //     data.push(element);
-              //   } else {
-              //     if (
-              //       !(
-              //         data.filter((obj) => obj.RVId === element.RVId).length > 0
-              //       )
-              //     ) {
-              //       data.push(element);
-              //     }
-              //   }
-              // }
-              // // console.log("dataToPost", dataToPost);
-              // // console.log("data", data);
-
-              // for (let j = 0; j < data.length; j++) {
-              //   const element = data[j];
-              //   let MtrlData;
-              //   let ShapeData;
-              //   // get mtrl data
-              //   for (let m = 0; m < objMaterial.length; m++) {
-              //     const mtrlElement = objMaterial[m];
-              //     if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
-              //       MtrlData = mtrlElement;
-              //       break;
-              //     }
-              //   }
-              //   // get shape data
-              //   for (let s = 0; s < objShape.length; s++) {
-              //     const shapeElement = objShape[s];
-              //     if (shapeElement.Shape === MtrlData.Shape) {
-              //       ShapeData = shapeElement;
-              //       break;
-              //     }
-              //   }
-              //   // generate the mtrl description
-              //   let mtrlDescription =
-              //     get_Iv_DetailsEntry(
-              //       element.Scrap,
-              //       element.DynamicPara1,
-              //       element.DynamicPara2,
-              //       element.DynamicPara3,
-              //       element.Material,
-              //       MtrlData.Shape,
-              //       ShapeData,
-              //       MtrlData
-              //     ) +
-              //     " /** " +
-              //     element.Cust_Docu_No;
-
-              //   // console.log("mtrlDescription", mtrlDescription);
-              //   let newRowMtrlIssueDetails = {
-              //     Iv_Id: "data.insertId from register",
-              //     Srl: "sl no from loop",
-              //     IV_Date: null,
-              //     IV_No: "",
-              //     Cust_Code: props.custCode,
-              //     Customer: "",
-              //     MtrlDescription: mtrlDescription,
-              //     Mtrl_Code: element.Mtrl_Code,
-              //     Material: element.Material,
-              //     PkngDCNo: "",
-              //     cust_docu_No: element.Cust_Docu_No,
-              //     RV_No: element.RV_No,
-              //     RV_Srl: "",
-              //     Qty: element.Qty,
-              //     TotalWeightCalculated: (
-              //       parseFloat(element.Qty) *
-              //       parseFloat(element.TotalCalculatedWeight)
-              //     ).toFixed(3),
-              //     TotalWeight: (
-              //       parseFloat(element.Qty) * parseFloat(element.TotalWeight)
-              //     ).toFixed(3),
-              //     UpDated: 0,
-              //     RvId: element.RvID || 0,
-              //     Mtrl_Rv_id: element.Mtrl_Rv_id,
-              //   };
-
-              //   console.log("newRowMtrlIssueDetails", newRowMtrlIssueDetails);
-              // }
-
-              // old 1
-              // console.log("clicked", thirdTableData);
-              // let detailsDataToPosted = [];
-              // for (let j = 0; j < thirdTableData.length; j++) {
-              //   const element = thirdTableData[j];
-              //   let MtrlData;
-              //   let ShapeData;
-              //   // get mtrl data
-              //   for (let m = 0; m < objMaterial.length; m++) {
-              //     const mtrlElement = objMaterial[m];
-              //     if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
-              //       MtrlData = mtrlElement;
-              //       break;
-              //     }
-              //   }
-              //   // get shape data
-              //   for (let s = 0; s < objShape.length; s++) {
-              //     const shapeElement = objShape[s];
-              //     if (shapeElement.Shape === MtrlData.Shape) {
-              //       ShapeData = shapeElement;
-              //       break;
-              //     }
-              //   }
-              //   // generate the mtrl description
-              //   let mtrlDescription =
-              //     get_Iv_DetailsEntry(
-              //       element.Scrap,
-              //       element.DynamicPara1,
-              //       element.DynamicPara2,
-              //       element.DynamicPara3,
-              //       element.Material,
-              //       MtrlData.Shape,
-              //       ShapeData,
-              //       MtrlData
-              //     ) +
-              //     " /** " +
-              //     element.Cust_Docu_No;
-
-              //   console.log("mtrlDescription", mtrlDescription);
-              //   let newRowMtrlIssueDetails = {
-              //     Iv_Id: "data.insertId from register",
-              //     Srl: "sl no from loop",
-              //     IV_Date: null,
-              //     IV_No: "",
-              //     Cust_Code: props.custCode,
-              //     Customer: "",
-              //     MtrlDescription: mtrlDescription,
-              //     Mtrl_Code: element.Mtrl_Code,
-              //     Material: element.Material,
-              //     PkngDCNo: "",
-              //     cust_docu_No: element.Cust_Docu_No,
-              //     RV_No: element.RV_No,
-              //     RV_Srl: "",
-              //     Qty: 1,
-              //     TotalWeightCalculated: element.TotalCalculatedWeight,
-              //     TotalWeight: element.TotalWeight,
-              //     UpDated: 0,
-              //     RvId: element.RvID || 0,
-              //     Mtrl_Rv_id: element.Mtrl_Rv_id,
-              //   };
-              //   if (detailsDataToPosted.length === 0) {
-              //     // no data, simply push it...
-              //     detailsDataToPosted.push(newRowMtrlIssueDetails);
-              //   } else {
-              //     // data found, verify and push...
-              //     detailsDataToPosted.map((val, key) => {
-              //       // if data exist in array
-
-              //       // console.log("vallll", val.MtrlDescription);
-              //       if (
-              //         val.MtrlDescription ===
-              //         newRowMtrlIssueDetails.MtrlDescription
-              //       ) {
-              //         let newQty =
-              //           parseInt(val.Qty) +
-              //           parseInt(newRowMtrlIssueDetails.Qty);
-              //         let newTotalWeight =
-              //           parseFloat(val.TotalWeight) +
-              //           parseFloat(newRowMtrlIssueDetails.TotalWeight);
-              //         let newTotalWeightCalculated =
-              //           parseFloat(val.TotalWeightCalculated) +
-              //           parseFloat(
-              //             newRowMtrlIssueDetails.TotalWeightCalculated
-              //           );
-
-              //         detailsDataToPosted[key].Qty = newQty;
-              //         detailsDataToPosted[key].TotalWeight = newTotalWeight;
-              //         detailsDataToPosted[key].TotalWeightCalculated =
-              //           newTotalWeightCalculated;
-              //       } else {
-              //         detailsDataToPosted.push(newRowMtrlIssueDetails);
-              //       }
-              //     });
-              //   }
-              // }
-
-              // console.log("datatatata", detailsDataToPosted);
-            });
-          });
+              }
+            );
+            //......................................................................................
+            // // creating var for details starts
+            // let dataToPost = [];
+            // for (let i = 0; i < thirdTableData.length; i++) {
+            //   const element = thirdTableData[i];
+            //   if (dataToPost.length === 0) {
+            //     dataToPost.push({ ...element, SrlNo: i + 1, Qty: 1 });
+            //   } else {
+            //     const filterData = dataToPost.filter(
+            //       (obj) => obj.Cust_Docu_No === element.Cust_Docu_No
+            //     );
+            //     if (filterData.length > 0) {
+            //       let changeRow = filterData[0];
+            //       changeRow.Qty = changeRow.Qty + 1;
+            //       dataToPost[changeRow.SrlNo - 1] = changeRow;
+            //     } else {
+            //       dataToPost.push({ ...element, SrlNo: i + 1, Qty: 1 });
+            //     }
+            //   }
+            // }
+            // let data = [];
+            // const abc = dataToPost.filter((obj) => obj != undefined);
+            // for (let i = 0; i < abc.length; i++) {
+            //   const element = abc[i];
+            //   // console.log("element", element);
+            //   if (data.length === 0) {
+            //     data.push(element);
+            //   } else {
+            //     if (
+            //       !(
+            //         data.filter((obj) => obj.RVId === element.RVId).length > 0
+            //       )
+            //     ) {
+            //       data.push(element);
+            //     }
+            //   }
+            // }
+            // // console.log("dataToPost", dataToPost);
+            // // console.log("data", data);
+            // for (let j = 0; j < data.length; j++) {
+            //   const element = data[j];
+            //   let MtrlData;
+            //   let ShapeData;
+            //   // get mtrl data
+            //   for (let m = 0; m < objMaterial.length; m++) {
+            //     const mtrlElement = objMaterial[m];
+            //     if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
+            //       MtrlData = mtrlElement;
+            //       break;
+            //     }
+            //   }
+            //   // get shape data
+            //   for (let s = 0; s < objShape.length; s++) {
+            //     const shapeElement = objShape[s];
+            //     if (shapeElement.Shape === MtrlData.Shape) {
+            //       ShapeData = shapeElement;
+            //       break;
+            //     }
+            //   }
+            //   // generate the mtrl description
+            //   let mtrlDescription =
+            //     get_Iv_DetailsEntry(
+            //       element.Scrap,
+            //       element.DynamicPara1,
+            //       element.DynamicPara2,
+            //       element.DynamicPara3,
+            //       element.Material,
+            //       MtrlData.Shape,
+            //       ShapeData,
+            //       MtrlData
+            //     ) +
+            //     " /** " +
+            //     element.Cust_Docu_No;
+            //   // console.log("mtrlDescription", mtrlDescription);
+            //   let newRowMtrlIssueDetails = {
+            //     Iv_Id: "data.insertId from register",
+            //     Srl: "sl no from loop",
+            //     IV_Date: null,
+            //     IV_No: "",
+            //     Cust_Code: props.custCode,
+            //     Customer: "",
+            //     MtrlDescription: mtrlDescription,
+            //     Mtrl_Code: element.Mtrl_Code,
+            //     Material: element.Material,
+            //     PkngDCNo: "",
+            //     cust_docu_No: element.Cust_Docu_No,
+            //     RV_No: element.RV_No,
+            //     RV_Srl: "",
+            //     Qty: element.Qty,
+            //     TotalWeightCalculated: (
+            //       parseFloat(element.Qty) *
+            //       parseFloat(element.TotalCalculatedWeight)
+            //     ).toFixed(3),
+            //     TotalWeight: (
+            //       parseFloat(element.Qty) * parseFloat(element.TotalWeight)
+            //     ).toFixed(3),
+            //     UpDated: 0,
+            //     RvId: element.RvID || 0,
+            //     Mtrl_Rv_id: element.Mtrl_Rv_id,
+            //   };
+            //   console.log("newRowMtrlIssueDetails", newRowMtrlIssueDetails);
+            // }
+            // old 1
+            // console.log("clicked", thirdTableData);
+            // let detailsDataToPosted = [];
+            // for (let j = 0; j < thirdTableData.length; j++) {
+            //   const element = thirdTableData[j];
+            //   let MtrlData;
+            //   let ShapeData;
+            //   // get mtrl data
+            //   for (let m = 0; m < objMaterial.length; m++) {
+            //     const mtrlElement = objMaterial[m];
+            //     if (mtrlElement.Mtrl_Code === element.Mtrl_Code) {
+            //       MtrlData = mtrlElement;
+            //       break;
+            //     }
+            //   }
+            //   // get shape data
+            //   for (let s = 0; s < objShape.length; s++) {
+            //     const shapeElement = objShape[s];
+            //     if (shapeElement.Shape === MtrlData.Shape) {
+            //       ShapeData = shapeElement;
+            //       break;
+            //     }
+            //   }
+            //   // generate the mtrl description
+            //   let mtrlDescription =
+            //     get_Iv_DetailsEntry(
+            //       element.Scrap,
+            //       element.DynamicPara1,
+            //       element.DynamicPara2,
+            //       element.DynamicPara3,
+            //       element.Material,
+            //       MtrlData.Shape,
+            //       ShapeData,
+            //       MtrlData
+            //     ) +
+            //     " /** " +
+            //     element.Cust_Docu_No;
+            //   console.log("mtrlDescription", mtrlDescription);
+            //   let newRowMtrlIssueDetails = {
+            //     Iv_Id: "data.insertId from register",
+            //     Srl: "sl no from loop",
+            //     IV_Date: null,
+            //     IV_No: "",
+            //     Cust_Code: props.custCode,
+            //     Customer: "",
+            //     MtrlDescription: mtrlDescription,
+            //     Mtrl_Code: element.Mtrl_Code,
+            //     Material: element.Material,
+            //     PkngDCNo: "",
+            //     cust_docu_No: element.Cust_Docu_No,
+            //     RV_No: element.RV_No,
+            //     RV_Srl: "",
+            //     Qty: 1,
+            //     TotalWeightCalculated: element.TotalCalculatedWeight,
+            //     TotalWeight: element.TotalWeight,
+            //     UpDated: 0,
+            //     RvId: element.RvID || 0,
+            //     Mtrl_Rv_id: element.Mtrl_Rv_id,
+            //   };
+            //   if (detailsDataToPosted.length === 0) {
+            //     // no data, simply push it...
+            //     detailsDataToPosted.push(newRowMtrlIssueDetails);
+            //   } else {
+            //     // data found, verify and push...
+            //     detailsDataToPosted.map((val, key) => {
+            //       // if data exist in array
+            //       // console.log("vallll", val.MtrlDescription);
+            //       if (
+            //         val.MtrlDescription ===
+            //         newRowMtrlIssueDetails.MtrlDescription
+            //       ) {
+            //         let newQty =
+            //           parseInt(val.Qty) +
+            //           parseInt(newRowMtrlIssueDetails.Qty);
+            //         let newTotalWeight =
+            //           parseFloat(val.TotalWeight) +
+            //           parseFloat(newRowMtrlIssueDetails.TotalWeight);
+            //         let newTotalWeightCalculated =
+            //           parseFloat(val.TotalWeightCalculated) +
+            //           parseFloat(
+            //             newRowMtrlIssueDetails.TotalWeightCalculated
+            //           );
+            //         detailsDataToPosted[key].Qty = newQty;
+            //         detailsDataToPosted[key].TotalWeight = newTotalWeight;
+            //         detailsDataToPosted[key].TotalWeightCalculated =
+            //           newTotalWeightCalculated;
+            //       } else {
+            //         detailsDataToPosted.push(newRowMtrlIssueDetails);
+            //       }
+            //     });
+            //   }
+            // }
+            // console.log("datatatata", detailsDataToPosted);
+          } else {
+            toast.error("Unable to create the running no");
+          }
         } else {
           toast.error(
             "Select atleast one Material for creating the return voucher"
@@ -1354,7 +1436,10 @@ function PofilesMaterials(props) {
               <button
                 className="button-style mx-0"
                 style={{ width: "200px" }}
-                onClick={createReturnVoucherFunc}
+                // onClick={createReturnVoucherFunc}
+                onClick={(e) => {
+                  createReturnVoucherValidationFunc();
+                }}
               >
                 Create Return Voucher
               </button>
@@ -1437,6 +1522,15 @@ function PofilesMaterials(props) {
         srlMaterialType={srlMaterialType}
         srlIVID={srlIVID}
         IVNOVal={IVNOVal}
+      />
+
+      {/* confirmation modal */}
+      <ConfirmationModal
+        confirmModalOpen={confirmModalOpen}
+        setConfirmModalOpen={setConfirmModalOpen}
+        // yesClickedFunc={cancelPN}
+        yesClickedFunc={createReturnVoucherFunc}
+        message={"Are you sure to create the return voucher ?"}
       />
     </>
   );

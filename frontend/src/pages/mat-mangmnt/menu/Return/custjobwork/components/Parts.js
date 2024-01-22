@@ -7,11 +7,14 @@ import ReturnPartQtyCheckOk from "../../../../components/ReturnPartQtyCheckOk";
 import FirstTable from "./PartsTables/FirstTable";
 import SecondTable from "./PartsTables/SecondTable";
 import ThirdTable from "./PartsTables/ThirdTable";
+import ConfirmationModal from "./Modals/ConfimationModal";
 
 const { getRequest, postRequest } = require("../../../../../api/apiinstance");
 const { endpoints } = require("../../../../../api/constants");
 
 function Parts(props) {
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
   let [firstTableData, setFirstTableData] = useState([]);
   let [secondTableData, setSecondTableData] = useState([]);
   let [thirdTableData, setThirdTableData] = useState([]);
@@ -29,25 +32,65 @@ function Parts(props) {
   let [rvNoval, setrvNoVal] = useState("");
   let [custRefval, setCustRefVal] = useState("");
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [runningNo, setRunningNo] = useState([]);
+
   const fetchData = () => {
     //console.log("props = ", props);
     if (props && props.custCode.length !== 0) {
       let url1 = endpoints.partFirst + "?Cust_Code=" + props.custCode;
       getRequest(url1, (data) => {
-        setFirstTableData(data);
-        setSecondTableData([]);
+        if (data?.length > 0) {
+          setFirstTableData(data);
+          setSecondTableData([]);
 
-        //fetch second table data
-        let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
-        getRequest(url2, (data1) => {
-          let newData = data1.filter((obj, index) => {
-            return obj.RVId === Object.values(data)[0].RvID;
+          //fetch second table data
+          let url2 = endpoints.partSecond + "?Cust_Code=" + props.custCode;
+          getRequest(url2, (data1) => {
+            let newData = data1.filter((obj, index) => {
+              return obj.RVId === Object.values(data)[0].RvID;
+            });
+            setAllData(data1);
+            // setSecondTableData(newData);
           });
-          setAllData(data1);
-          // setSecondTableData(newData);
-        });
+        } else {
+          toast.warning("No parts data found for selected Customer");
+        }
       });
     }
+  };
+
+  const getRunningNo = async () => {
+    let SrlType = "MaterialReturnIV";
+    let yyyy = formatDate(new Date(), 6).toString();
+    let UnitName = "Jigani";
+    const insertRunningNoVal = {
+      UnitName: UnitName,
+      SrlType: SrlType,
+      ResetPeriod: "Year",
+      ResetValue: "0",
+      EffectiveFrom_date: `${yyyy}-01-01`,
+      Reset_date: `${yyyy}-12-31`,
+      Running_No: "0",
+      UnitIntial: "0",
+      Prefix: "",
+      Suffix: "",
+      Length: "4",
+      Period: yyyy,
+    };
+
+    // var runningNo = [];
+    postRequest(
+      endpoints.getAndInsertRunningNo,
+      insertRunningNoVal,
+      (runningNo) => {
+        // console.log("post done", runningNo);
+        setRunningNo(runningNo);
+        // runningNo = runningNo;
+      }
+    );
+    // await delay(30);
+    // console.log("runningNo", runningNo);
   };
 
   useEffect(() => {
@@ -432,259 +475,210 @@ function Parts(props) {
     // setThirdTableData(thirdTableData);
   };
 
-  let createReturnVoucher = async () => {
-    //console.log("selected rows = ", firstTableSelectedRow);
-    //console.log("second = ", secondTableData);
-    //console.log("third = ", thirdTableData);
+  const createReturnVoucherValidationFunc = () => {
+    getRunningNo();
+    setConfirmModalOpen(true);
+  };
 
+  const createReturnVoucherFunc = async () => {
     if (props.custCode) {
       if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
-        // if(secondTableData.length > 0)
-
         if (thirdTableData.length > 0) {
-          // toast.success("good to go...");
-
+          // ..............
+          // ..........................
           //get running no and assign to RvNo
-          let yyyy = parseInt(formatDate(new Date(), 6).toString()) - 1;
-          const url =
-            endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
+          // let SrlType = "MaterialReturnIV";
+          // let yyyy = formatDate(new Date(), 6).toString();
+          // let UnitName = "Jigani";
+          // const url =
+          //   endpoints.getRunningNo +
+          //   `?SrlType=${SrlType}&Period=${yyyy}&UnitName=${UnitName}`;
+          // let runningNoArr = [];
+          // getRequest(url, (runningNo) => {
+          //   runningNoArr = runningNo;
+          //   console.log("first", runningNo);
+          // });
 
-          getRequest(url, async (data) => {
-            data.map((obj) => {
-              let newNo = parseInt(obj.Running_No) + 1;
-              //let no = "23/000" + newNo;
-              let series = "";
+          // await delay(30);
+          // // console.log("no insert", runningNoArr);
 
-              if (newNo < 1000) {
-                //add prefix zeros
-                for (
-                  let i = 0;
-                  i < parseInt(obj.Length) - newNo.toString().length;
-                  i++
-                ) {
-                  series = series + "0";
-                }
-                series = series + "" + newNo;
-              } else {
-                series = newNo;
+          // if (runningNoArr.length === 0) {
+          //   // console.log("need to insert");
+          //   const insertRunningNoVal = {
+          //     UnitName: UnitName,
+          //     SrlType: SrlType,
+          //     ResetPeriod: "Year",
+          //     ResetValue: "0",
+          //     EffectiveFrom_date: `${yyyy}-01-01`,
+          //     Reset_date: `${yyyy}-12-31`,
+          //     Running_No: "0",
+          //     UnitIntial: "0",
+          //     Prefix: "",
+          //     Suffix: "",
+          //     Length: "4",
+          //     Period: yyyy,
+          //   };
+
+          //   postRequest(
+          //     endpoints.insertRunningNo,
+          //     insertRunningNoVal,
+          //     (insertRunningNoData) => {
+          //       // console.log("insertRunningNoData", insertRunningNoData);
+          //     }
+          //   );
+
+          //   getRequest(url, (runningNo) => {
+          //     runningNoArr = runningNo;
+          //     console.log("second", runningNo);
+          //   });
+          // }
+
+          // await delay(30);
+
+          if (runningNo.length > 0) {
+            let newNo = parseInt(runningNo[0].Running_No) + 1;
+            //let no = "23/000" + newNo;
+            let series = "";
+
+            if (newNo < 1000) {
+              //add prefix zeros
+              for (
+                let i = 0;
+                i < parseInt(runningNo[0].Length) - newNo.toString().length;
+                i++
+              ) {
+                series = series + "0";
               }
+              series = series + "" + newNo;
+            } else {
+              series = newNo;
+            }
 
-              //console.log("series = ", series);
-              //get last 2 digit of year
-              let yy = formatDate(new Date(), 6).toString().substring(2);
-              let no = yy + "/" + series;
+            //console.log("series = ", series);
+            //get last 2 digit of year
+            let yy = formatDate(new Date(), 6).toString().substring(2);
+            let no = yy + "/" + series;
 
-              // console.log("noonono", no);
+            // console.log("noonono", no);
 
-              setIVNOVal(no);
+            setIVNOVal(no);
 
-              let newRowMaterialIssueRegister = {
-                IV_No: no,
-                IV_Date: formatDate(new Date(), 5),
-                Cust_code: props.custCode,
-                Customer: props.custName,
-                CustCSTNo: props.custCST,
-                CustTINNo: props.custTIN,
-                CustECCNo: props.custECC,
-                CustGSTNo: props.custGST,
-                EMail: "",
-                PkngDcNo: null,
-                PkngDCDate: null,
-                TotalWeight: parseFloat(0).toFixed(3), // firstTableSelectedRow[0].TotalWeight,
-                TotalCalculatedWeight: parseFloat(0).toFixed(3), // thirdTableData[0].TotalCalculatedWeight,
-                UpDated: 0,
-                IVStatus: "Draft",
-                Dc_ID: 0,
-                Type: "Parts",
-              };
+            let newRowMaterialIssueRegister = {
+              IV_No: no,
+              IV_Date: formatDate(new Date(), 5),
+              Cust_code: props.custCode,
+              Customer: props.custName,
+              CustCSTNo: props.custCST,
+              CustTINNo: props.custTIN,
+              CustECCNo: props.custECC,
+              CustGSTNo: props.custGST,
+              EMail: "",
+              PkngDcNo: null,
+              PkngDCDate: null,
+              TotalWeight: parseFloat(0).toFixed(3), // firstTableSelectedRow[0].TotalWeight,
+              TotalCalculatedWeight: parseFloat(0).toFixed(3), // thirdTableData[0].TotalCalculatedWeight,
+              UpDated: 0,
+              IVStatus: "Draft",
+              Dc_ID: 0,
+              Type: "Parts",
+            };
 
-              // console.log("newwwwwwwwwww.....", newRowMaterialIssueRegister);
-              //insert first table
-              postRequest(
-                endpoints.insertMaterialIssueRegister,
-                newRowMaterialIssueRegister,
-                async (data) => {
-                  setSrlIVID(data.insertId);
-                  //console.log("data = ", data);
-                  if (data.affectedRows !== 0) {
-                    // console.log("Record inserted 1 : materialIssueRegister");
+            // console.log("newwwwwwwwwww.....", newRowMaterialIssueRegister);
+            //insert first table
+            postRequest(
+              endpoints.insertMaterialIssueRegister,
+              newRowMaterialIssueRegister,
+              async (data) => {
+                setSrlIVID(data.insertId);
+                //console.log("data = ", data);
+                if (data.affectedRows !== 0) {
+                  // console.log("Record inserted 1 : materialIssueRegister");
 
-                    for (let i = 0; i < thirdTableData.length; i++) {
-                      let newRowPartIssueDetails = {
-                        Iv_Id: data.insertId,
-                        Srl: i + 1,
-                        Cust_Code: props.custCode,
-                        RVId: thirdTableData[i].RVId,
-                        Mtrl_Rv_id: thirdTableData[i].Id,
-                        PartId:
-                          thirdTableData[i].PartId +
-                          "/**Ref: " +
-                          thirdTableData[i].CustDocuNo,
-                        CustBOM_Id: thirdTableData[i].CustBOM_Id,
-                        UnitWt: parseFloat(0).toFixed(3),
-                        TotalWeight: parseFloat(0).toFixed(3),
-                        QtyReturned: thirdTableData[i].QtyReturnedNew,
-                        Remarks: thirdTableData[i].Remarks,
-                      };
+                  for (let i = 0; i < thirdTableData.length; i++) {
+                    let newRowPartIssueDetails = {
+                      Iv_Id: data.insertId,
+                      Srl: i + 1,
+                      Cust_Code: props.custCode,
+                      RVId: thirdTableData[i].RVId,
+                      Mtrl_Rv_id: thirdTableData[i].Id,
+                      PartId:
+                        thirdTableData[i].PartId +
+                        "/**Ref: " +
+                        thirdTableData[i].CustDocuNo,
+                      CustBOM_Id: thirdTableData[i].CustBOM_Id,
+                      UnitWt: parseFloat(0).toFixed(3),
+                      TotalWeight: parseFloat(0).toFixed(3),
+                      QtyReturned: thirdTableData[i].QtyReturnedNew,
+                      Remarks: thirdTableData[i].Remarks,
+                    };
 
-                      postRequest(
-                        endpoints.insertPartIssueDetails,
-                        newRowPartIssueDetails,
-                        async (data) => {
-                          // console.log("Part issue details inserted");
-                        }
-                      );
+                    postRequest(
+                      endpoints.insertPartIssueDetails,
+                      newRowPartIssueDetails,
+                      async (data) => {
+                        // console.log("Part issue details inserted");
+                      }
+                    );
 
-                      //update qtyReturned add
-                      let updateQty = {
-                        Id: thirdTableData[i].Id,
-                        QtyReturned: thirdTableData[i].QtyReturnedNew,
-                      };
-                      postRequest(
-                        endpoints.updateQtyReturnedPartReceiptDetails1,
-                        updateQty,
-                        async (data) => {
-                          // console.log("Return Qty updated");
-                        }
-                      );
-                    }
+                    //update qtyReturned add
+                    let updateQty = {
+                      Id: thirdTableData[i].Id,
+                      QtyReturned: thirdTableData[i].QtyReturnedNew,
+                    };
+                    postRequest(
+                      endpoints.updateQtyReturnedPartReceiptDetails1,
+                      updateQty,
+                      async (data) => {
+                        // console.log("Return Qty updated");
+                      }
+                    );
                   }
                 }
-              );
-              setSrlMaterialType("part");
-              setShow(true);
-              // console.log("srlivid = ", srlIVID);
-            });
-          });
+              }
+            );
+            const inputData = {
+              SrlType: "MaterialReturnIV",
+              Period: formatDate(new Date(), 6),
+              RunningNo: newNo,
+            };
+            postRequest(
+              endpoints.updateRunningNo,
+              inputData,
+              async (updateRunningNoData) => {
+                // console.log(
+                //   "updateRunningNoData",
+                //   updateRunningNoData
+                // );
+                // toast.success(
+                //   "Data inserted successfully..."
+                // );
+
+                setSrlMaterialType("part");
+                setShow(true);
+              }
+            );
+            // console.log("srlivid = ", srlIVID);
+          } else {
+            toast.error("Unable to create the running no");
+          }
         } else {
           toast.error(
-            "Please select atleast one part to create the return voucher"
+            "Select atleast one Material for creating the return voucher"
           );
         }
       } else {
-        toast.error("Please select the Return Voucher");
+        toast.error("Select the Document for creating the return voucher");
       }
     } else {
-      toast.error("Please select the customer");
+      toast.error("Select the Customer for creating the return voucher");
     }
-    // if (thirdTableData.length === 0) {
-    //   toast.error("Please select the customer");
-    // } else {
-    //   //get running no and assign to RvNo
-    //   let yyyy = formatDate(new Date(), 6).toString();
-    //   const url =
-    //     endpoints.getRunningNo + "?SrlType=MaterialReturnIV&Period=" + yyyy;
-
-    //   getRequest(url, async (data) => {
-    //     data.map((obj) => {
-    //       let newNo = parseInt(obj.Running_No) + 1;
-    //       //let no = "23/000" + newNo;
-    //       let series = "";
-    //       //add prefix zeros
-    //       for (
-    //         let i = 0;
-    //         i < parseInt(obj.Length) - newNo.toString().length;
-    //         i++
-    //       ) {
-    //         series = series + "0";
-    //       }
-    //       series = series + "" + newNo;
-    //       //console.log("series = ", series);
-    //       //get last 2 digit of year
-    //       let yy = formatDate(new Date(), 6).toString().substring(2);
-    //       let no = yy + "/" + series;
-
-    //       setIVNOVal(no);
-
-    //       let newRowMaterialIssueRegister = {
-    //         IV_No: no,
-    //         IV_Date: formatDate(new Date(), 5),
-    //         Cust_code: props.custCode,
-    //         Customer: props.custName,
-    //         CustCSTNo: props.custCST,
-    //         CustTINNo: props.custTIN,
-    //         CustECCNo: props.custECC,
-    //         CustGSTNo: props.custGST,
-    //         EMail: "",
-    //         PkngDcNo: "",
-    //         PkngDCDate: null,
-    //         TotalWeight: 0.0, // firstTableSelectedRow[0].TotalWeight,
-    //         TotalCalculatedWeight: 0.0, // thirdTableData[0].TotalCalculatedWeight,
-    //         UpDated: 0,
-    //         IVStatus: "draft",
-    //         Dc_ID: 0,
-    //         Type: "Parts",
-    //       };
-    //       //insert first table
-    //       postRequest(
-    //         endpoints.insertMaterialIssueRegister,
-    //         newRowMaterialIssueRegister,
-    //         async (data) => {
-    //           setSrlIVID(data.insertId);
-    //           //console.log("data = ", data);
-    //           if (data.affectedRows !== 0) {
-    //             console.log("Record inserted 1 : materialIssueRegister");
-
-    //             for (let i = 0; i < thirdTableData.length; i++) {
-    //               let newRowPartIssueDetails = {
-    //                 Iv_Id: data.insertId,
-    //                 Srl: i + 1,
-    //                 Cust_Code: props.custCode,
-    //                 RVId: thirdTableData[i].RVId,
-    //                 Mtrl_Rv_id: thirdTableData[i].Id,
-    //                 PartId:
-    //                   thirdTableData[i].PartId +
-    //                   "**Ref: " +
-    //                   thirdTableData[i].CustDocuNo,
-    //                 CustBOM_Id: thirdTableData[i].CustBOM_Id,
-    //                 UnitWt: thirdTableData[i].UnitWt,
-    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
-    //                 Remarks: thirdTableData[i].Remarks,
-    //               };
-
-    //               postRequest(
-    //                 endpoints.insertPartIssueDetails,
-    //                 newRowPartIssueDetails,
-    //                 async (data) => {
-    //                   console.log("Part issue details inserted");
-    //                 }
-    //               );
-
-    //               //update qtyReturned add
-    //               let updateQty = {
-    //                 Id: thirdTableData[i].Id,
-    //                 QtyReturned: thirdTableData[i].QtyReturnedNew,
-    //               };
-    //               postRequest(
-    //                 endpoints.updateQtyReturnedPartReceiptDetails1,
-    //                 updateQty,
-    //                 async (data) => {
-    //                   console.log("Return Qty updated");
-    //                 }
-    //               );
-    //             }
-    //           }
-    //         }
-    //       );
-    //       setSrlMaterialType("part");
-    //       setShow(true);
-    //       console.log("srlivid = ", srlIVID);
-    //     });
-    //   });
-    // }
   };
 
   return (
     <>
-      <ReturnPartQtyCheckOk
-        showOK={show}
-        setShowOK={setShow}
-        srlMaterialType={srlMaterialType}
-        srlIVID={srlIVID}
-        IVNOVal={IVNOVal}
-      />
-
-      {/* <CreateReturnNewModal
+      <div>
+        <div>
+          {/* <CreateReturnNewModal
         show={show}
         setShow={setShow}
         srlMaterialType={srlMaterialType}
@@ -692,60 +686,63 @@ function Parts(props) {
         IVNOVal={IVNOVal}
       /> */}
 
-      <div className="row">
-        <div className="col-md-9 p-0">
           <div className="row">
-            <div className="col-md-4">
-              <div className="rvNO">
-                <label className="form-label">RV No</label>
-                <input
-                  type="text"
-                  name="rvNo"
-                  disabled
-                  value={rvNoval}
-                  // className="in-field"
-                />
+            <div className="col-md-9 p-0">
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="rvNO">
+                    <label className="form-label">RV No</label>
+                    <input
+                      type="text"
+                      name="rvNo"
+                      disabled
+                      value={rvNoval}
+                      // className="in-field"
+                    />
+                  </div>
+                </div>
+                <div className="col-md-8">
+                  <div className="customerRef">
+                    <label className="form-label">Customer Ref</label>
+                    <input
+                      // className="in-field"
+                      type="text"
+                      name="customerRef"
+                      disabled
+                      value={custRefval}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="col-md-8">
-              <div className="customerRef">
-                <label className="form-label">Customer Ref</label>
-                <input
-                  // className="in-field"
-                  type="text"
-                  name="customerRef"
-                  disabled
-                  value={custRefval}
-                />
+            <div className="col-md-3">
+              <div className="d-flex align-items-center justify-content-end">
+                <button
+                  className="button-style mx-0"
+                  style={{ width: "200px" }}
+                  // onClick={createReturnVoucherFunc}
+                  onClick={(e) => {
+                    createReturnVoucherValidationFunc();
+                  }}
+                >
+                  Create Return Voucher
+                </button>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="d-flex align-items-center justify-content-end">
-            <button
-              className="button-style mx-0"
-              style={{ width: "200px" }}
-              onClick={createReturnVoucher}
-            >
-              Create Return Voucher
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="p-2"></div>
+          <div className="p-2"></div>
 
-      <div className="row">
-        <div className="col-md-2 col-sm-12">
-          <div className="row-md-12 table-data">
-            <div style={{ maxHeight: "400px", overflow: "auto" }}>
-              <FirstTable
-                firstTableData={firstTableData}
-                firstTableSelectedRow={firstTableSelectedRow}
-                selectRowFirstFunc={selectRowFirstFunc}
-              />
+          <div className="row">
+            <div className="col-md-2 col-sm-12">
+              <div className="row-md-12 table-data">
+                <div style={{ maxHeight: "400px", overflow: "auto" }}>
+                  <FirstTable
+                    firstTableData={firstTableData}
+                    firstTableSelectedRow={firstTableSelectedRow}
+                    selectRowFirstFunc={selectRowFirstFunc}
+                  />
 
-              {/* <BootstrapTable
+                  {/* <BootstrapTable
                 keyField="RvID"
                 columns={columnsFirst}
                 data={firstTableData}
@@ -755,20 +752,20 @@ function Parts(props) {
                 selectRow={selectRowFirst}
                 headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable> */}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-md-6 col-sm-12">
-          <div className="row-md-12 table-data">
-            <div style={{ maxHeight: "400px", overflow: "auto" }}>
-              <SecondTable
-                secondTableData={secondTableData}
-                secondSelectedRow={secondSelectedRow}
-                selectRowSecondFunc={selectRowSecondFunc}
-                thirdTableData={thirdTableData}
-              />
+            <div className="col-md-6 col-sm-12">
+              <div className="row-md-12 table-data">
+                <div style={{ maxHeight: "400px", overflow: "auto" }}>
+                  <SecondTable
+                    secondTableData={secondTableData}
+                    secondSelectedRow={secondSelectedRow}
+                    selectRowSecondFunc={selectRowSecondFunc}
+                    thirdTableData={thirdTableData}
+                  />
 
-              {/* <BootstrapTable
+                  {/* <BootstrapTable
                 keyField="Id"
                 columns={columnsSecond}
                 data={secondTableData}
@@ -779,11 +776,11 @@ function Parts(props) {
                 headerClasses="header-class tableHeaderBGColor"
                 //</div>selectRow={selectRowFirst}
               ></BootstrapTable> */}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-md-4 col-sm-12">
-          {/* <div className="ip-box form-bg">
+            <div className="col-md-4 col-sm-12">
+              {/* <div className="ip-box form-bg">
             <div className="row mb-3">
               <div className="col-md-4">
                 <label className="form-label">RV_No</label>
@@ -812,16 +809,16 @@ function Parts(props) {
             <button
               className="button-style"
               style={{ width: "200px" }}
-              onClick={createReturnVoucher}
+              onClick={createReturnVoucherFunc}
             >
               Create Return Voucher
             </button>
           </div> */}
-          <div>
-            <div style={{ maxHeight: "400px", overflow: "auto" }}>
-              <ThirdTable thirdTableData={thirdTableData} />
+              <div>
+                <div style={{ maxHeight: "400px", overflow: "auto" }}>
+                  <ThirdTable thirdTableData={thirdTableData} />
 
-              {/* <BootstrapTable
+                  {/* <BootstrapTable
                 keyField="Id"
                 columns={columnsThird}
                 data={thirdTableData}
@@ -831,9 +828,28 @@ function Parts(props) {
                 //selectRow={selectRowSecond}
                 headerClasses="header-class tableHeaderBGColor"
               ></BootstrapTable> */}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <ReturnPartQtyCheckOk
+          showOK={show}
+          setShowOK={setShow}
+          srlMaterialType={srlMaterialType}
+          srlIVID={srlIVID}
+          IVNOVal={IVNOVal}
+        />
+
+        {/* confirmation modal */}
+        <ConfirmationModal
+          confirmModalOpen={confirmModalOpen}
+          setConfirmModalOpen={setConfirmModalOpen}
+          // yesClickedFunc={cancelPN}
+          yesClickedFunc={createReturnVoucherFunc}
+          message={"Are you sure to create the return voucher ?"}
+        />
       </div>
     </>
   );
