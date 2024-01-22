@@ -11,6 +11,7 @@ import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import PrintMaterialDC from "../../../print/return/PrintMaterialDC";
+import { formatDate } from "../../../../../utils";
 
 const { getRequest, postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
@@ -61,6 +62,8 @@ function OutwordMaterialIssueVocher(props) {
     Dc_ID: "",
     IVStatus: "",
   });
+
+  const [runningNo, setRunningNo] = useState([]);
 
   // function statusFormatter(cell, row, rowIndex, formatExtraData) {
   //   if (!cell) return;
@@ -238,6 +241,39 @@ function OutwordMaterialIssueVocher(props) {
     // setBoolVal2(true);
   };
 
+  const getRunningNo = async () => {
+    let SrlType = "Outward_DCNo";
+    let yyyy = formatDate(new Date(), 6).toString();
+    let UnitName = "Jigani";
+    const insertRunningNoVal = {
+      UnitName: UnitName,
+      SrlType: SrlType,
+      ResetPeriod: "Year",
+      ResetValue: "0",
+      EffectiveFrom_date: `${yyyy}-01-01`,
+      Reset_date: `${yyyy}-12-31`,
+      Running_No: "0",
+      UnitIntial: "0",
+      Prefix: "",
+      Suffix: "",
+      Length: "4",
+      Period: yyyy,
+    };
+
+    // var runningNo = [];
+    postRequest(
+      endpoints.getAndInsertRunningNo,
+      insertRunningNoVal,
+      (runningNo) => {
+        // console.log("post done", runningNo);
+        setRunningNo(runningNo);
+        // runningNo = runningNo;
+      }
+    );
+    // await delay(30);
+    // console.log("runningNo", runningNo);
+  };
+
   let createDC = (e) => {
     // console.log("outedata = ", outData);
 
@@ -263,6 +299,7 @@ function OutwordMaterialIssueVocher(props) {
     }
 
     if (flag) {
+      getRunningNo();
       setShowCreateDC(true);
       // saveButtonState(e);
     } else {
@@ -1002,6 +1039,7 @@ function OutwordMaterialIssueVocher(props) {
         // handleSave={handleSave}
         createDcResponse={createDcResponse}
         saveButtonState={saveButtonState}
+        runningNo={runningNo}
       />
 
       <PrintMaterialDC
