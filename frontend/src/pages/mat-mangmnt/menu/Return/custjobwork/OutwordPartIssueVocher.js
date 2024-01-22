@@ -8,6 +8,7 @@ import CreateDCYesNoModal from "../../../components/CreateDCYesNoModal";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import PrintPartsDC from "../../../print/return/PrintPartsDC";
+import { formatDate } from "../../../../../utils";
 
 // formatDate
 
@@ -58,6 +59,8 @@ function OutwordPartIssueVocher(props) {
     Dc_ID: "",
     IVStatus: "",
   });
+
+  const [runningNo, setRunningNo] = useState([]);
 
   async function fetchData() {
     //header data
@@ -194,6 +197,39 @@ function OutwordPartIssueVocher(props) {
     setFormHeader({ ...formHeader, IVStatus: "Cancelled" });
   };
 
+  const getRunningNo = async () => {
+    let SrlType = "Outward_DCNo";
+    let yyyy = formatDate(new Date(), 6).toString();
+    let UnitName = "Jigani";
+    const insertRunningNoVal = {
+      UnitName: UnitName,
+      SrlType: SrlType,
+      ResetPeriod: "Year",
+      ResetValue: "0",
+      EffectiveFrom_date: `${yyyy}-01-01`,
+      Reset_date: `${yyyy}-12-31`,
+      Running_No: "0",
+      UnitIntial: "0",
+      Prefix: "",
+      Suffix: "",
+      Length: "4",
+      Period: yyyy,
+    };
+
+    // var runningNo = [];
+    postRequest(
+      endpoints.getAndInsertRunningNo,
+      insertRunningNoVal,
+      (runningNo) => {
+        // console.log("post done", runningNo);
+        setRunningNo(runningNo);
+        // runningNo = runningNo;
+      }
+    );
+    // await delay(30);
+    // console.log("runningNo", runningNo);
+  };
+
   let createDC = (e) => {
     let flag = true;
 
@@ -215,6 +251,7 @@ function OutwordPartIssueVocher(props) {
     }
 
     if (flag) {
+      getRunningNo();
       setShowCreateDC(true);
       // saveButtonState(e);
     } else {
@@ -1039,6 +1076,7 @@ function OutwordPartIssueVocher(props) {
         // handleSave={handleSave}
         createDcResponse={createDcResponse}
         saveButtonState={saveButtonState}
+        runningNo={runningNo}
       />
     </>
   );
