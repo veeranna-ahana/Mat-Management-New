@@ -48,7 +48,7 @@ function OutwordMaterialIssueVocher(props) {
 
   // const handleShow = () => setShow(true);
 
-  let [formHeader, setFormHeader] = useState({
+  const [formHeader, setFormHeader] = useState({
     Iv_Id: "",
     IV_No: "",
     IV_Date: "",
@@ -61,6 +61,7 @@ function OutwordMaterialIssueVocher(props) {
     TotalCalculatedWeight: "",
     Dc_ID: "",
     IVStatus: "",
+    RV_Remarks: "",
   });
 
   const [runningNo, setRunningNo] = useState([]);
@@ -100,6 +101,7 @@ function OutwordMaterialIssueVocher(props) {
         ),
         Dc_ID: data.Dc_ID,
         IVStatus: data.IVStatus,
+        RV_Remarks: data.RV_Remarks || "",
       });
 
       //get cust data
@@ -121,6 +123,7 @@ function OutwordMaterialIssueVocher(props) {
     });
   }
 
+  // console.log("formheader...", formHeader);
   useEffect(() => {
     fetchData();
   }, []); //[inputPart]);
@@ -180,7 +183,7 @@ function OutwordMaterialIssueVocher(props) {
   //   });
   // }
   const InputHeaderEvent = (name, value) => {
-    console.log("function.........", "name", name, "value", value);
+    // console.log("function.........", "name", name, "value", value);
     // const { name, value } = e.target;
     setFormHeader({ ...formHeader, [name]: value });
   };
@@ -620,144 +623,146 @@ function OutwordMaterialIssueVocher(props) {
 
         <div>
           <div className="row">
-            <div className="col-md-6 p-0">
-              <div className="row">
-                <div className="col-md-6">
-                  <label className="form-label">IV No</label>
-                  <input
-                    type="text"
-                    name="IvId"
-                    value={formHeader.IV_No}
-                    disabled
-                    className="input-disabled"
-                    // onChange={InputHeaderEvent}
-                  />
-                </div>
+            <div className="col-md-3">
+              <label className="form-label">IV No</label>
+              <input
+                type="text"
+                name="IvId"
+                value={formHeader.IV_No}
+                disabled
+                className="input-disabled"
+                // onChange={InputHeaderEvent}
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">IV Date</label>
 
-                <div className="col-md-6">
-                  <label className="form-label">Status</label>
-                  <input
-                    type="text"
-                    name="reference"
-                    value={formHeader.IVStatus}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
+              <input
+                type="text"
+                name="IVDate"
+                value={formHeader.IV_Date}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">Status</label>
+              <input
+                type="text"
+                name="reference"
+                value={formHeader.IVStatus}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">DC No / PN No</label>
+              <input
+                type="text"
+                name="PkngDcNo"
+                value={
+                  formHeader.PkngDcNo
+                  // ? formHeader.PkngDcNo +
+                  //   "   Date : " +
+                  //   formHeader.PkngDCDate
+                  // : ""
+                }
+                // onChange={InputHeaderEvent}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">Customer</label>
+              <input
+                type="text"
+                name="Customer"
+                value={formHeader.Customer}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">GST</label>
+              <input
+                type="text"
+                name="reference"
+                value={formHeader.CustGSTNo}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">Calculated Weight</label>
+              <input
+                name="Type"
+                value={formHeader.TotalCalculatedWeight}
+                disabled
+                className="input-disabled"
+              />
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">Actual Weight</label>
+              <input
+                type="number"
+                min="0"
+                name="TotalWeight"
+                defaultValue={formHeader.TotalWeight}
+                onChange={(e) => {
+                  InputHeaderEvent(e.target.name, parseFloat(e.target.value));
+                }}
+                disabled={
+                  formHeader.IVStatus === "Cancelled" ||
+                  formHeader.IVStatus === "Returned"
+                    ? true
+                    : false
+                }
+                className={
+                  formHeader.IVStatus === "Cancelled" ||
+                  formHeader.IVStatus === "Returned"
+                    ? "input-disabled"
+                    : ""
+                }
+              />
+            </div>
+            <div className="col-md-6">
+              <div className="d-flex flex-column">
+                <label className="form-label">Address</label>
+                <textarea
+                  cols="30"
+                  rows="3"
+                  value={custdata.Address}
+                  disabled
+                  className="input-disabled"
+                  style={{ height: "90px" }}
+                ></textarea>
               </div>
             </div>
-            <div className="col-md-6 p-0">
-              <div className="row">
-                <div className="col-md-6">
-                  <label className="form-label">Customer</label>
-                  <input
-                    type="text"
-                    name="Customer"
-                    value={formHeader.Customer}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">GST</label>
-                  <input
-                    type="text"
-                    name="reference"
-                    value={formHeader.CustGSTNo}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-md-6 p-0">
-              <div className="row">
-                <div className="col-md-6">
-                  <label className="form-label">IV Date</label>
-
-                  <input
-                    type="text"
-                    name="IVDate"
-                    value={formHeader.IV_Date}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">DC No / PN No</label>
-                  <input
-                    type="text"
-                    name="PkngDcNo"
-                    value={
-                      formHeader.PkngDcNo
-                      // ? formHeader.PkngDcNo +
-                      //   "   Date : " +
-                      //   formHeader.PkngDCDate
-                      // : ""
-                    }
-                    // onChange={InputHeaderEvent}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <label className="form-label">Calculated Weight</label>
-                  <input
-                    name="Type"
-                    value={formHeader.TotalCalculatedWeight}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">Actual Weight</label>
-                  <input
-                    type="number"
-                    min="0"
-                    name="TotalWeight"
-                    defaultValue={formHeader.TotalWeight}
-                    onChange={(e) => {
-                      InputHeaderEvent(
-                        e.target.name,
-                        parseFloat(e.target.value)
-                      );
-                    }}
-                    disabled={
-                      formHeader.IVStatus === "Cancelled" ||
-                      formHeader.IVStatus === "Returned"
-                        ? true
-                        : false
-                    }
-                    className={
-                      formHeader.IVStatus === "Cancelled" ||
-                      formHeader.IVStatus === "Returned"
-                        ? "input-disabled"
-                        : ""
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 p-0">
-              <div className="row">
-                <div className="col-md-12">
-                  <div className="d-flex flex-column">
-                    <label className="form-label">Address</label>
-                    <textarea
-                      cols="30"
-                      rows="3"
-                      value={custdata.Address}
-                      disabled
-                      className="input-disabled"
-                      style={{ height: "90px" }}
-                    ></textarea>
-                  </div>
-                </div>
+            <div className="col-md-6">
+              <div className="d-flex flex-column">
+                <label className="form-label">Remarks</label>
+                <textarea
+                  cols="30"
+                  rows="3"
+                  name="RV_Remarks"
+                  value={formHeader.RV_Remarks}
+                  onChange={(e) => {
+                    InputHeaderEvent(e.target.name, e.target.value);
+                  }}
+                  disabled={
+                    formHeader.IVStatus === "Cancelled" ||
+                    formHeader.IVStatus === "Returned"
+                      ? true
+                      : false
+                  }
+                  className={
+                    formHeader.IVStatus === "Cancelled" ||
+                    formHeader.IVStatus === "Returned"
+                      ? "input-disabled"
+                      : ""
+                  }
+                  style={{ height: "90px" }}
+                ></textarea>
               </div>
             </div>
           </div>
