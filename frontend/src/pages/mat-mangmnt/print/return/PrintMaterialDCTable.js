@@ -368,7 +368,18 @@ const PrintMaterialDCTable = ({
                 }}
               >
                 <Text style={{ ...styles.fontBold }}>Remarks :</Text>
-                <View style={{ padding: "5%", border: "1px" }}></View>
+                <View
+                  style={{
+                    ...styles.insideBox,
+                    border: "1px",
+                    minHeight: "48px",
+                    display: "flex",
+                    alignContent: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text>{formHeader?.RV_Remarks}</Text>
+                </View>
               </View>
               <View
                 style={{

@@ -53,9 +53,14 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
     // `update  material_issue_register set PkngDcNo = "${PkngDcNo}", TotalWeight = ${TotalWeight} where Iv_Id = ${Iv_Id} `,
 
     misQueryMod(
-      `UPDATE material_issue_register SET TotalWeight = '${parseFloat(
-        req.body.formHeader.TotalWeight || 0
-      ).toFixed(3)}' WHERE Iv_Id = '${req.body.formHeader.Iv_Id}' `,
+      `UPDATE material_issue_register 
+        SET 
+            RV_Remarks = '${req.body.formHeader.RV_Remarks || ""}',
+            TotalWeight = '${parseFloat(
+              req.body.formHeader.TotalWeight || 0
+            ).toFixed(3)}'
+        WHERE
+            Iv_Id = '${req.body.formHeader.Iv_Id}'`,
       (err, data1) => {
         if (err) logger.error(err);
 
