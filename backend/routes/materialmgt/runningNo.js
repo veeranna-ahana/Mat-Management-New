@@ -5,12 +5,16 @@ const { logger } = require("../../helpers/logger");
 
 runningNoRouter.get("/getRunningNoBySrlType", async (req, res, next) => {
   try {
-    //console.log("getRunningNoBySrlType", req.query);
     let SrlType = req.query.SrlType;
     let Period = req.query.Period;
-    let UnitName = req.query.UnitName;
+    // let UnitName = req.query.UnitName;
+
+    // console.log("SrlType", SrlType);
+    // console.log("Period", Period);
+    // console.log("UnitName", UnitName);
     setupQueryMod(
-      `Select * from magod_setup.magod_runningno where SrlType = "${SrlType}" and Period = "${Period}" and UnitName="${UnitName}"`,
+      `Select * from magod_setup.magod_runningno where SrlType = "${SrlType}" and Period = "${Period}"`,
+      // `Select * from magod_setup.magod_runningno where SrlType = "${SrlType}" and Period = "${Period}" and UnitName="${UnitName}"`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
