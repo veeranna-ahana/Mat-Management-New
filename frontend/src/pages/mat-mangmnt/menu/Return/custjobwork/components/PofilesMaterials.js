@@ -877,6 +877,8 @@ function PofilesMaterials(props) {
     getRunningNo();
     setConfirmModalOpen(true);
   };
+
+  // console.log("thirdTableData", thirdTableData);
   const createReturnVoucherFunc = async () => {
     // console.log("running...", runningNo);
 
@@ -974,7 +976,7 @@ function PofilesMaterials(props) {
               const element = thirdTableData[i];
               // console.log("element...", element);
               RVTotalWeight =
-                parseFloat(RVTotalWeight) + parseFloat(element.Weight);
+                parseFloat(RVTotalWeight) + parseFloat(element.ScrapWeight);
               // parseFloat(RVTotalWeight) + parseFloat(element.TotalWeight);
               RVTotalCalWeight =
                 parseFloat(RVTotalCalWeight) + parseFloat(element.Weight);
@@ -1114,7 +1116,8 @@ function PofilesMaterials(props) {
                         // parseFloat(element.TotalCalculatedWeight)
                         .toFixed(3),
                       TotalWeight: (
-                        parseFloat(element.Qty) * parseFloat(element.Weight)
+                        parseFloat(element.Qty) *
+                        parseFloat(element.ScrapWeight)
                       )
                         // parseFloat(element.TotalWeight)
                         .toFixed(3),
