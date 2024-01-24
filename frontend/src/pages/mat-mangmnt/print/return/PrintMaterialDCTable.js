@@ -177,10 +177,17 @@ const PrintMaterialDCTable = ({
                 }}
               >
                 {/* <Text>{"   "}</Text> */}
+                <View style={{ borderBottom: "1px" }}>
+                  <Text style={{ ...styles.fontBold }}>
+                    Material / Scarp Sheets Return Challan
+                  </Text>
+                </View>
                 <Text style={{ ...styles.fontBold }}>
                   Magod Laser Machining Private Limited
                 </Text>
-                <Text>GST: 29AABCM1970H1ZE CIN: U28900KA1995PTC018437</Text>
+                <Text style={{ ...styles.fontBold }}>
+                  GST: 29AABCM1970H1ZE CIN: U28900KA1995PTC018437
+                </Text>
                 <Text>
                   Plot No 72, 2nd Phase, KIADB Indl Area Jigani, Anekal Taluk
                   Bengaluru - 560105
@@ -189,11 +196,6 @@ const PrintMaterialDCTable = ({
                   Ph : 08110 414313, 9513393352, sales@magodlaser.in,
                   www.magodlaser.in
                 </Text>
-                <View>
-                  <Text style={{ ...styles.fontBold }}>
-                    Material / Scarp Sheets Return Challan
-                  </Text>
-                </View>
               </View>
               <Text style={{ width: "10%" }}>{copyVal.copyName}</Text>
             </View>
