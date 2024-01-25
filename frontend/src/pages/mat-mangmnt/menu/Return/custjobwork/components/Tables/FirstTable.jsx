@@ -2,15 +2,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Table from "react-bootstrap/Table";
 export default function FirstTable(props) {
-  // const [checkedCheckBox, setCheckedCheckBox] = useState(false);
-
   // remove materials from third table for particular document.... func
   const removeMtrlThirdTable = (rowData, k) => {
-    // checked===false
-
     let found = false;
-    // console.log("clicked checkbox", rowData);
-
     const newArray = props.allData.filter((obj) => {
       return (
         obj.RV_No === rowData.RV_No &&
@@ -20,65 +14,25 @@ export default function FirstTable(props) {
       );
     });
 
-    // console.log("newArray", newArray);
-
     for (let i = 0; i < newArray.length; i++) {
       const element = newArray[i];
-
       found = props.thirdTableData.some(
         (el) => el.Cust_Docu_No === element.Cust_Docu_No
       );
 
       if (found) {
-        // console.log("found");
         const newThirdTableData = props.thirdTableData.filter(
           (data) => data.Cust_Docu_No !== element.Cust_Docu_No
         );
         props.setThirdTableData(newThirdTableData);
-        // console.log("deleted");
-        // break;
-        // console.log("test if");
       } else {
-        // console.log("not found");
-        // break;
-        // console.log("test continue");
       }
     }
-
-    // const found = props.thirdTableData.some(
-    //   (el) => el.MtrlStockID === rowData.MtrlStockID
-    // );
-    // if (found) {
-    //   // deleting the element if found
-    // const newThirdTableData = thirdTableData.filter(
-    //   (data) => data !== rowData
-    // );
-    // setThirdTableData(newThirdTableData);
-    // // console.log("deleted");
-
-    //   // setThirdTableData([thirdTableData.remove(rowData)]);
-    //   // console.log("deselected", thirdTableData);
-    // }
-
-    // const newThirdTableData = props.thirdTableData.filter(
-    //   (data) => data !== rowData
-    // );
-    // props.setThirdTableData(newThirdTableData);
-    // console.log("deleted");
   };
-
-  // console.log("props.thirdTableData", props.thirdTableData);
   const firstTableCheckBoxClickFunc = (rowData, k) => {
-    // setCheckedCheckBox(!checkedCheckBox);
-
     let issueChecked = document.getElementById(`checkBoxFirstTable${k}`);
-
-    // console.log("checked???...", issueChecked.checked);
     if (issueChecked.checked) {
-      // checked===true
-
       removeMtrlThirdTable(rowData, k);
-
       const newArray = props.allData.filter((obj) => {
         return (
           obj.RV_No === rowData.RV_No &&
@@ -87,141 +41,15 @@ export default function FirstTable(props) {
           obj.DynamicPara2 === rowData.DynamicPara2
         );
       });
-
       props.setThirdTableData(props.thirdTableData.concat(newArray));
-
-      // for (let i = 0; i < newArray.length; i++) {
-      //   // const element = newArray[i];
-      //   console.log("element", newArray[i]);
-      //   props.setThirdTableData([...props.thirdTableData, newArray[i]]);
-      // }
     } else {
       removeMtrlThirdTable(rowData, k);
-      //   // checked===false
-
-      //   let found = false;
-      //   // console.log("clicked checkbox", rowData);
-
-      //   const newArray = props.allData.filter((obj) => {
-      //     return (
-      //       obj.RV_No === rowData.RV_No &&
-      //       obj.Mtrl_Code === rowData.Mtrl_Code &&
-      //       obj.DynamicPara1 === rowData.DynamicPara1 &&
-      //       obj.DynamicPara2 === rowData.DynamicPara2
-      //     );
-      //   });
-
-      //   // console.log("newArray", newArray);
-
-      //   for (let i = 0; i < newArray.length; i++) {
-      //     const element = newArray[i];
-
-      //     found = props.thirdTableData.some(
-      //       (el) => el.Cust_Docu_No === element.Cust_Docu_No
-      //     );
-
-      //     if (found) {
-      //       // console.log("found");
-      //       const newThirdTableData = props.thirdTableData.filter(
-      //         (data) => data.Cust_Docu_No !== element.Cust_Docu_No
-      //       );
-      //       props.setThirdTableData(newThirdTableData);
-      //       // console.log("deleted");
-      //       // break;
-      //       // console.log("test if");
-      //     } else {
-      //       // console.log("not found");
-      //       // break;
-      //       // console.log("test continue");
-      //     }
-      //   }
-
-      //   // const found = props.thirdTableData.some(
-      //   //   (el) => el.MtrlStockID === rowData.MtrlStockID
-      //   // );
-      //   // if (found) {
-      //   //   // deleting the element if found
-      //   // const newThirdTableData = thirdTableData.filter(
-      //   //   (data) => data !== rowData
-      //   // );
-      //   // setThirdTableData(newThirdTableData);
-      //   // // console.log("deleted");
-
-      //   //   // setThirdTableData([thirdTableData.remove(rowData)]);
-      //   //   // console.log("deselected", thirdTableData);
-      //   // }
-
-      //   // const newThirdTableData = props.thirdTableData.filter(
-      //   //   (data) => data !== rowData
-      //   // );
-      //   // props.setThirdTableData(newThirdTableData);
-      //   // console.log("deleted");
     }
-    // let found = false;
-    // console.log("clicked checkbox", rowData);
-
-    // const newArray = props.allData.filter((obj) => {
-    //   return (
-    //     obj.RV_No === rowData.RV_No &&
-    //     obj.Mtrl_Code === rowData.Mtrl_Code &&
-    //     obj.DynamicPara1 === rowData.DynamicPara1 &&
-    //     obj.DynamicPara2 === rowData.DynamicPara2
-    //   );
-    // });
-
-    // console.log("newArray", newArray);
-
-    // // checking the mtrlStockId exist for that document, if yes... remove the existing and add the whole/ if no...add the whole
-    // for (let i = 0; i < newArray.length; i++) {
-    //   const element = newArray[i];
-
-    //   found = props.thirdTableData.some(
-    //     (el) => el.MtrlStockID === element.MtrlStockID
-    //   );
-
-    //   if (found) {
-    //     console.log("found");
-    //     break;
-    //     // console.log("test if");
-    //   } else {
-    //     console.log("not found");
-    //     // break;
-    //     // console.log("test continue");
-    //   }
-    // }
-
-    // // if (found) {
-    // //   // deleting the element if found
-    // //   const newThirdTableData = thirdTableData.filter(
-    // //     (data) => data !== rowData
-    // //   );
-    // //   setThirdTableData(newThirdTableData);
-    // //   // console.log("deleted");
-
-    // //   // setThirdTableData([thirdTableData.remove(rowData)]);
-    // //   // console.log("deselected", thirdTableData);
-    // // } else {
-    // //   // inserting the element if not found
-    // //   setThirdTableData([...thirdTableData, rowData]);
-    // //   // console.log("inserted");
-    // // }
   };
-
-  // console.log(
-  //   "inside... includes",
-  //   props.allData.filter((obj) => {
-  //     return (
-  //       obj.RV_No === val.RV_No &&
-  //       obj.Mtrl_Code === val.Mtrl_Code &&
-  //       obj.DynamicPara1 === val.DynamicPara1 &&
-  //       obj.DynamicPara2 === val.DynamicPara2
-  //     );
-  //   })
-  // );
 
   return (
     <>
-      <Table striped className="table-data border" style={{ border: "1px" }}>
+      <Table striped className="table-data border">
         <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
@@ -274,6 +102,5 @@ export default function FirstTable(props) {
         </tbody>
       </Table>
     </>
-    // <div>FirstTable</div>
   );
 }
