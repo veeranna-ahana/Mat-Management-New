@@ -51,10 +51,10 @@ function ReturnNew() {
 
   return (
     <>
-      <h4 className="title">Customer Material Information</h4>
+      <h4 className="title m-0">Customer Material Information</h4>
       <div className="row">
         <div className="col-md-8">
-          <label className="form-label">Select Customer</label>
+          <label className="form-label m-0">Select Customer</label>
           {/* <select className="ip-select" onChange={changeCustomer}>
             <option value="" disabled selected>
               Select Customer
@@ -73,9 +73,9 @@ function ReturnNew() {
             onChange={(label) => changeCustomer(label)}
           />
         </div>
-        <div className="col-md-4 text-center">
+        <div className="col-md-4 d-flex align-items-center justify-content-end">
           <button
-            className="button-style "
+            className="button-style m-0"
             id="btnclose"
             type="submit"
             onClick={() => nav("/MaterialManagement")}
@@ -84,7 +84,7 @@ function ReturnNew() {
           </button>
         </div>
       </div>
-      <Tabs id="controlled-tab-example" className=" mt-3">
+      <Tabs id="controlled-tab-example" className="mt-1">
         <Tab eventKey="mat_rece" title="Profiles Material">
           <ProfilesMaterials
             custCode={custCode}

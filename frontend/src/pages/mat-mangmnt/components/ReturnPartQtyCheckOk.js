@@ -23,7 +23,9 @@ function ReturnPartQtyCheckOk(props) {
         IVNOVal={props.IVNOVal}
       />
       <Modal show={showOK} onHide={handleClose}>
-        <Modal.Header closeButton className="p-3 "></Modal.Header>
+        <Modal.Header closeButton className="p-3 ">
+          <Modal.Title>Confirmation Message</Modal.Title>
+        </Modal.Header>
         <Modal.Body className="p-3">
           <span>Quantity Check Ok</span>
         </Modal.Body>

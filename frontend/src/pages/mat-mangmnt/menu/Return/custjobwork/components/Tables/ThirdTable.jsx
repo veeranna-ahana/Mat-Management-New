@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import Table from "react-bootstrap/Table";
 export default function ThirdTable(props) {
   return (
     <>
-      <Table striped className="table-data border" style={{ border: "1px" }}>
+      <Table striped className="table-data border">
         <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
