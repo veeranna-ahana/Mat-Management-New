@@ -299,12 +299,12 @@ const PrintMaterialDCTable = ({
               {/* <View style={{ ...styles.titleRight1 }}></View> */}
 
               {/* <Text style={styles.titleFull1}> */}
-              <View style={{ ...styles.insideBox }}>
+              {/* <View style={{ ...styles.insideBox }}>
                 <View style={{ display: "flex", flexDirection: "row" }}>
                   <Text style={{ ...styles.fontBold }}>Authority : </Text>
                   <Text>{dcRegister?.AuhtorisingDocu}</Text>
                 </View>
-              </View>
+              </View> */}
 
               {/* <Text style={styles.topspace}></Text> */}
 
