@@ -42,6 +42,8 @@ function ShopMatIssueVocher() {
     TaskNo: "",
   });
 
+  // console.log("IssueIDVal", location?.state?.issueIDVal);
+
   const fetchData = async () => {
     let url =
       endpoints.getShopMaterialIssueVoucher +

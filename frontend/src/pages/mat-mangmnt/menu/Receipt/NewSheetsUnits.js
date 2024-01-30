@@ -70,7 +70,6 @@ function NewSheetsUnits(props) {
     customer: props.type2 === "purchase" ? "0000" : "",
     customerName:
       props.type2 === "purchase" ? "MAGOD LASER MACHINING PVT LTD" : "",
-
     reference: "",
     weight: "0",
     calcWeight: "0",
