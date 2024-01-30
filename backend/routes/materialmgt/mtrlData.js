@@ -20,6 +20,7 @@ mtrlDataRouter.get("/allmtrldata", async (req, res, next) => {
 mtrlDataRouter.get("/getRowByMtrlCode", async (req, res, next) => {
   try {
     let code = req.query.code;
+    console.log("code", code);
     // console.log(
     //   `Select * from magodmis.mtrl_data where Mtrl_Code =  "${code}"`
     // );

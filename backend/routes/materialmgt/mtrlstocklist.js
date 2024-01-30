@@ -239,7 +239,7 @@ mtrlStockListRouter.post("/insertByReturnDetails", async (req, res, next) => {
     let { Iv_Id, IV_No } = req.body;
     misQueryMod(
       `INSERT INTO  mtrlstocklist(MtrlStockID, Mtrl_Rv_id, Cust_Code, Customer, RV_No, Cust_Docu_No, Mtrl_Code, Shape, Material, DynamicPara1,
-        DynamicPara2, DynamicPara3, DynamicPara4, Locked, Scrap, Issue, Weight,ScrapWeight,  NCProgramNo, LocationNo) 
+        DynamicPara2, DynamicPara3, DynamicPara4, Locked, Scrap, Issue, Weight, ScrapWeight,  NCProgramNo, LocationNo) 
         SELECT MtrlStockID, Mtrl_Rv_id, Cust_Code, Customer, RV_No, Cust_Docu_No,Mtrl_Code, Shape, Material, DynamicPara1, DynamicPara2, DynamicPara3,
         DynamicPara4, Locked, Scrap, Issue, Weight, ScrapWeight,  NCProgramNo, LocationNo FROM materialreturneddetails WHERE IV_No = '${IV_No}'`,
       (err, data) => {

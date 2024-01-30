@@ -42,11 +42,13 @@ materialReceiptRegisterRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
+      console.log("id", id);
       // console.log(`SELECT * FROM material_receipt_register where RvID = ${id}`);
       misQueryMod(
         `SELECT * FROM material_receipt_register where RvID = ${id} order by RvID`,
         (err, data) => {
           if (err) logger.error(err);
+
           res.send(data[0]);
         }
       );
@@ -95,6 +97,7 @@ materialReceiptRegisterRouter.post(
 materialReceiptRegisterRouter.post(
   "/updateHeaderMaterialReceiptRegister",
   async (req, res, next) => {
+    console.log("req", req.body);
     try {
       let {
         rvId,
@@ -110,7 +113,7 @@ materialReceiptRegisterRouter.post(
         type,
       } = req.body;
       //res.send(req.body);
-      // console.log("rqqqq", req.body);
+      console.log("calcWeight", req.body.calcWeight);
       //convert date dd/mm/yyyy to yyyy-mm-dd
       receiptDate = formatDate(new Date(), 5);
       rvDate = rvDate.split("/").reverse().join("-");

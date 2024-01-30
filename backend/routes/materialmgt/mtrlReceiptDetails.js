@@ -48,7 +48,7 @@ mtrlReceiptDetailsRouter.get(
 mtrlReceiptDetailsRouter.post(
   "/insertMtrlReceiptDetails",
   async (req, res, next) => {
-    // console.log("req", req.body);
+    // console.log("srl", req.body.srl);
 
     try {
       let {
@@ -79,7 +79,7 @@ mtrlReceiptDetailsRouter.post(
         `insert into  mtrlreceiptdetails (RvID,Srl,Cust_Code,Mtrl_Code,Material,ShapeMtrlID,ShapeID,DynamicPara1,DynamicPara2,DynamicPara3,Qty,Inspected,Accepted,TotalWeightCalculated,TotalWeight,LocationNo,Updated,QtyReceived,QtyRejected,QtyAccepted,QtyUsed,QtyReturned) values ("${rvId}","${srl}","${custCode}","${mtrlCode}","${material}",${shapeMtrlId},${shapeID},${dynamicPara1},${dynamicPara2},${dynamicPara3},${qty},${inspected},${accepted},${totalWeightCalculated},${totalWeight},"${locationNo}",${upDated},${qtyReceived},"${qtyRejected}","${qtyAccepted}","${qtyUsed}","${qtyReturned}")`
       );*/
       misQueryMod(
-        `insert into  mtrlreceiptdetails (RvID,Srl,Cust_Code,Mtrl_Code,Material,ShapeMtrlID,ShapeID, DynamicPara1,DynamicPara2,DynamicPara3,Qty,Inspected,Accepted,TotalWeightCalculated,TotalWeight,LocationNo,Updated,QtyReceived,QtyRejected,QtyAccepted,QtyUsed,QtyReturned) values ("${rvId}","${srl}","${custCode}","${mtrlCode}","${material}",${shapeMtrlId},${shapeID}, ${dynamicPara1},${dynamicPara2},${dynamicPara3},${qty},${inspected},${accepted},${totalWeightCalculated},${totalWeight},"${locationNo}",${updated},${qtyReceived},"${qtyRejected}","${qtyAccepted}","${qtyUsed}","${qtyReturned}")`,
+        `insert into  mtrlreceiptdetails (RvID,Srl,Cust_Code,Mtrl_Code,Material,ShapeMtrlID,ShapeID, DynamicPara1,DynamicPara2,DynamicPara3,Qty,Inspected,Accepted,TotalWeightCalculated,TotalWeight,LocationNo,Updated,QtyRejected, QtyUsed,QtyReturned) values ("${rvId}","${srl}","${custCode}","${mtrlCode}","${material}",${shapeMtrlId},${shapeID}, ${dynamicPara1},${dynamicPara2},${dynamicPara3},${qty},${inspected},${accepted},${totalWeightCalculated},${totalWeight},"${locationNo}",${updated},"${qtyRejected}","${qtyUsed}","${qtyReturned}")`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
@@ -154,61 +154,6 @@ mtrlReceiptDetailsRouter.post(
       } = req.body;
       inspected = inspected == true ? "1" : "0";
 
-      // if (dynamicPara3 || updated === "") {
-      //   console.log(`UPDATE mtrlreceiptdetails SET
-      //   Srl = '${srl}',
-      //   Mtrl_Code = '${mtrlCode}',
-      //   DynamicPara1 = ${dynamicPara1},
-      //   DynamicPara2 = ${dynamicPara2},
-      //   Qty = ${qtyReceived},
-      //   Inspected = ${inspected},
-      //   Accepted = ${accepted},
-      //   TotalWeightCalculated = ${totalWeightCalculated},
-      //   LocationNo = '${locationNo}',
-      //   QtyAccepted = ${qtyAccepted},
-      //   QtyReceived = '${qtyReceived}',
-      //   QtyRejected = '${qtyRejected}'
-      //   WHERE Mtrl_Rv_id = ${id}`);
-      //   misQueryMod(
-      //     `UPDATE mtrlreceiptdetails SET
-      //     Srl = '${srl}',
-      //     Mtrl_Code = '${mtrlCode}',
-      //     DynamicPara1 = ${dynamicPara1},
-      //     DynamicPara2 = ${dynamicPara2},
-      //     Qty = ${qtyReceived},
-      //     Inspected = ${inspected},
-      //     Accepted = ${accepted},
-      //     TotalWeightCalculated = ${totalWeightCalculated},
-      //     TotalWeight = ${totalWeight},
-      //     LocationNo = '${locationNo}',
-      //     QtyAccepted = ${qtyAccepted},
-      //     QtyReceived = '${qtyReceived}',
-      //     QtyRejected = '${qtyRejected}'
-      //     WHERE Mtrl_Rv_id = ${id}`,
-      //     (err, data) => {
-      //       if (err) logger.error(err);
-      //       // console.log("updated data", data);
-      //       res.json(data);
-      //     }
-      //   );
-      // } else {
-      // console.log(`UPDATE mtrlreceiptdetails SET
-      // Srl = '${srl}',
-      // Mtrl_Code = '${mtrlCode}',
-      // DynamicPara1 = ${dynamicPara1},
-      // DynamicPara2 = ${dynamicPara2},
-      // DynamicPara3 = ${dynamicPara3},
-      // Qty = ${qtyReceived},
-      // Inspected = ${inspected},
-      // Accepted = ${accepted},
-      // TotalWeightCalculated = ${totalWeightCalculated},
-      // TotalWeight = ${totalWeight},
-      // LocationNo = '${locationNo}',
-      // Updated = ${updated},
-      // QtyAccepted = ${qtyAccepted},
-      // QtyReceived = '${qtyReceived}',
-      // QtyRejected = '${qtyRejected}'
-      // WHERE Mtrl_Rv_id = ${id}`);
       misQueryMod(
         `UPDATE mtrlreceiptdetails SET 
           Srl = '${srl}', 
@@ -216,15 +161,13 @@ mtrlReceiptDetailsRouter.post(
           DynamicPara1 = ${dynamicPara1}, 
           DynamicPara2 = ${dynamicPara2}, 
           DynamicPara3 = ${dynamicPara3}, 
-          Qty = ${qtyReceived}, 
+          Qty = ${qty}, 
           Inspected = ${inspected}, 
           Accepted = ${accepted}, 
           TotalWeightCalculated = ${totalWeightCalculated}, 
           TotalWeight = ${totalWeight},
-          LocationNo = '${locationNo}',
-          Updated = ${updated},  
-          QtyAccepted = ${qtyAccepted}, 
-          QtyReceived = '${qtyReceived}', 
+          LocationNo = '${locationNo}',      
+          Accepted = ${accepted}, 
           QtyRejected = '${qtyRejected}' 
           WHERE Mtrl_Rv_id = ${id}`,
         (err, data) => {
@@ -273,7 +216,7 @@ mtrlReceiptDetailsRouter.post(
       inspected = inspected == "on" ? "1" : "0";
 
       misQueryMod(
-        `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID}, DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",Updated = ${updated}, QtyAccepted = ${qtyAccepted},QtyReceived = "${qtyReceived}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
+        `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID}, DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",Updated = ${updated}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
 

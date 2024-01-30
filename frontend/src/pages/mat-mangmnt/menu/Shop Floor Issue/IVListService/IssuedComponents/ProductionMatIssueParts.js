@@ -92,7 +92,7 @@ function ProductionMatIssueParts() {
       "?id=" +
       location.state.issueIDVal;
     getRequest(url2, (data) => {
-      console.log("table data = ", data);
+      console.log("table data..................... = ", data);
       setTableData(data);
     });
   };

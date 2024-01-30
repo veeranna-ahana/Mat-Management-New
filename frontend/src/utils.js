@@ -100,7 +100,7 @@ export function getWeight(obj, para1, para2, para3) {
   //console.log(" dblVol = ", dblVol);
   dblWeight = dblVol * obj.SpecificWt;
   //dblWeight = dblVol * getDensity();
-  console.log(" dblweight = ", dblWeight);
+  // console.log(" dblweight = ", dblWeight);
   return dblWeight;
 }
 
@@ -130,7 +130,7 @@ export function getVolume(obj, shape, para1, para2, para3) {
   } else if (shape === "Tiles") {
     dblVol = obj.StaticPara1 * obj.StaticPara2 * obj.StaticPara3;
   } else if (shape === "Tube Rectangle") {
-    console.log("entering into tube rectangle..............");
+    // console.log("entering into tube rectangle..............");
     // debugger;
     dblVol =
       para1 *
