@@ -97,7 +97,7 @@ materialReceiptRegisterRouter.post(
 materialReceiptRegisterRouter.post(
   "/updateHeaderMaterialReceiptRegister",
   async (req, res, next) => {
-    console.log("req", req.body);
+    // console.log("req", req.body);
     try {
       let {
         rvId,
@@ -113,7 +113,7 @@ materialReceiptRegisterRouter.post(
         type,
       } = req.body;
       //res.send(req.body);
-      console.log("calcWeight", req.body.calcWeight);
+      // console.log("calcWeight", req.body.calcWeight);
       //convert date dd/mm/yyyy to yyyy-mm-dd
       receiptDate = formatDate(new Date(), 5);
       rvDate = rvDate.split("/").reverse().join("-");
