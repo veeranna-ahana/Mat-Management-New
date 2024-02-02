@@ -81,6 +81,7 @@ function POpenRVList() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
+      console.log("Row", row);
       setData({
         CustDocuNo: row.CustDocuNo,
         Cust_Code: row.Cust_Code,

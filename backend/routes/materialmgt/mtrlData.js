@@ -20,7 +20,7 @@ mtrlDataRouter.get("/allmtrldata", async (req, res, next) => {
 mtrlDataRouter.get("/getRowByMtrlCode", async (req, res, next) => {
   try {
     let code = req.query.code;
-    console.log("code", code);
+    // console.log("code", code);
     // console.log(
     //   `Select * from magodmis.mtrl_data where Mtrl_Code =  "${code}"`
     // );
@@ -28,6 +28,7 @@ mtrlDataRouter.get("/getRowByMtrlCode", async (req, res, next) => {
       `Select * from magodmis.mtrl_data where Mtrl_Code =  "${code}"`,
       (err, data) => {
         if (err) logger.error(err);
+        // console.log("data", data[0]);
         res.send(data[0]);
       }
     );

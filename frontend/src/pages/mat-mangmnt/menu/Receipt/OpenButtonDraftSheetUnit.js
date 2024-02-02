@@ -59,6 +59,7 @@ function OpenButtonDraftSheetUnit(props) {
   const [insCheck, setInsCheck] = useState(false);
   const [calcWeightVal, setCalcWeightVal] = useState(0);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
+  const [shape, setShape] = useState();
 
   const [rmvBtn, setRmvBtn] = useState(false);
   const [addBtn, setAddBtn] = useState(false);
@@ -245,11 +246,6 @@ function OpenButtonDraftSheetUnit(props) {
         });
 
         setMaterialArray(data2);
-        //find shape of material
-        // console.log("data2 = ", data2);
-        // console.log("first row data", data2[0]);
-        // console.log("Table Length", materialArray.length);
-        // console.log("Table", materialArray);
 
         const url2 =
           endpoints.getRowByMtrlCode + "?code=" + data2[0]?.Mtrl_Code;
@@ -325,133 +321,6 @@ function OpenButtonDraftSheetUnit(props) {
             setUnitRowSelect(false);
           }
         });
-
-        // for (let i = 0; i < data2.length; i++) {
-        //   const url2 =
-        //     endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
-        //   getRequest(url2, (data3) => {
-        //     // if (data3.Shape === "Block") {
-        //     //   // setPara1Label("Length");
-        //     //   // setPara2Label("Width");
-        //     //   // setPara3Label("Height");
-        //     //   // setUnitLabel1("mm");
-        //     //   // setUnitLabel2("mm");
-        //     //   // setUnitLabel3("mm");
-        //     //   setBlockRowSelect(true);
-        //     // } else if (data3.Shape === "Plate") {
-        //     //   // setPara1Label("Length");
-        //     //   // setPara2Label("Width");
-        //     //   // setUnitLabel1("mm");
-        //     //   // setUnitLabel2("mm");
-        //     //   setPlateRowSelect(true);
-        //     // } else if (data3.Shape === "Sheet") {
-        //     //   // setPara1Label("Width");
-        //     //   // setPara2Label("Length");
-        //     //   // setUnitLabel1("mm");
-        //     //   // setUnitLabel2("mm");
-        //     //   setSheetRowSelect(true);
-        //     // } else if (data3.Shape === "Tiles") {
-        //     //   // setPara1Label("");
-        //     //   // setPara2Label("");
-        //     //   // setPara3Label("");
-        //     //   // setUnitLabel1("");
-        //     //   // setUnitLabel2("");
-        //     //   // setUnitLabel3("");
-        //     //   setTilesStripRowSelect(true);
-        //     // } else if (data3.Shape.includes("Tube")) {
-        //     //   // setPara1Label("Length");
-        //     //   // setPara2Label("");
-        //     //   // setPara3Label("");
-        //     //   // setUnitLabel1("mm");
-        //     //   // setUnitLabel2("");
-        //     //   // setUnitLabel3("");
-        //     //   setTubeRowSelect(true);
-        //     // } else if (data3.Shape.includes("Units")) {
-        //     //   // setPara1Label("Qty(Nos)");
-        //     //   // setPara2Label("");
-        //     //   // setPara3Label("");
-        //     //   // setUnitLabel1("Nos");
-        //     //   // setUnitLabel2("");
-        //     //   // setUnitLabel3("");
-        //     //   setUnitRowSelect(true);
-        //     // } else if (data3.Shape === "Cylinder") {
-        //     //   // setPara1Label("Volume");
-        //     //   // setUnitLabel1("CubicMtr");
-        //     //   setCylinderRowSelect(true);
-        //     // }
-
-        //     if (data3.Shape === "Sheet") {
-        //       // Sheet
-        //       setPara1Label("Width");
-        //       setPara2Label("Length");
-        //       setUnitLabel1("mm");
-        //       setUnitLabel2("mm");
-        //       setSheetRowSelect(true);
-        //     } else {
-        //       setSheetRowSelect(false);
-        //     }
-
-        //     if (data3.Shape === "Plate") {
-        //       // Plate
-        //       setPara1Label("Length");
-        //       setPara2Label("Width");
-        //       setUnitLabel1("mm");
-        //       setUnitLabel2("mm");
-        //       setPlateRowSelect(true);
-        //     } else {
-        //       setPlateRowSelect(false);
-        //     }
-
-        //     if (data3.Shape.includes("Tube")) {
-        //       // Tube
-        //       setPara1Label("Length");
-        //       setUnitLabel1("mm");
-        //       setTubeRowSelect(true);
-        //     } else {
-        //       setTubeRowSelect(false);
-        //     }
-
-        //     if (data3.Shape === "Tiles" || data3.Shape === "Strip") {
-        //       // Titles, Strip
-        //       setPara1Label("");
-        //       setUnitLabel1("");
-        //       setTilesStripRowSelect(true);
-        //     } else {
-        //       setTilesStripRowSelect(false);
-        //     }
-
-        //     if (data3.Shape === "Block") {
-        //       // Block
-        //       setPara1Label("Length");
-        //       setPara2Label("Width");
-        //       setPara3Label("Height");
-        //       setUnitLabel1("mm");
-        //       setUnitLabel2("mm");
-        //       setUnitLabel3("mm");
-        //       setBlockRowSelect(true);
-        //     } else {
-        //       setBlockRowSelect(false);
-        //     }
-
-        //     if (data3.Shape === "Cylinder") {
-        //       // Cylinder
-        //       setPara1Label("Volume");
-        //       setUnitLabel1("CubicMtr");
-        //       setCylinderRowSelect(true);
-        //     } else {
-        //       setCylinderRowSelect(false);
-        //     }
-
-        //     if (data3.Shape === "Units") {
-        //       // Units
-        //       setPara1Label("Qty");
-        //       setUnitLabel1("Nos");
-        //       setUnitRowSelect(true);
-        //     } else {
-        //       setUnitRowSelect(false);
-        //     }
-        //   });
-        // }
       });
     });
 
@@ -476,11 +345,13 @@ function OpenButtonDraftSheetUnit(props) {
     console.log("value = ", value);
     mtrlDetails.map((material) => {
       if (material.Mtrl_Code === value) {
-        console.log("material.Mtrl_Code", material.Mtrl_Code);
+        // console.log("material.Mtrl_Code", material.Mtrl_Code);
         //update the mtrl_data related columns
         let url1 = endpoints.getRowByMtrlCode + "?code=" + value;
         getRequest(url1, async (mtrlData) => {
           // console.log("mtrldata = ", mtrlData);
+          let Mtrlshape = mtrlData.Shape;
+          setShape(Mtrlshape);
           inputPart.material = mtrlData.Mtrl_Type;
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
@@ -491,9 +362,9 @@ function OpenButtonDraftSheetUnit(props) {
           });
         });
 
-        console.log("1st inputPart", inputPart);
-
-        console.log("material.Shape", material.Shape);
+        if (shape !== null && shape !== undefined && shape !== material.Shape) {
+          toast.error("Please select a same type of part");
+        }
 
         if (material.Shape === "Sheet") {
           // Sheet
@@ -636,41 +507,50 @@ function OpenButtonDraftSheetUnit(props) {
       toast.error("Please Select Customer");
     } else if (formHeader.reference.length == 0)
       toast.error("Please Enter Customer Document Material Reference");
+    else if (parseFloat(inputPart.accepted) > parseFloat(inputPart.qty)) {
+      toast.error("Accepted value should be less than or equal to Received");
+    } else if (inputPart.accepted === "" || inputPart.qty === "") {
+      toast.error("Received and Accepted Qty cannot be empty");
+    }
+
+    // else {
+    //   if (saveUpdateCount == 0) {
+    //     formHeader.receiptDate = formatDate(new Date(), 4);
+    //     formHeader.rvDate = currDate;
+    //     setFormHeader(formHeader);
+    //     await delay(500);
+
+    //     updateHeaderFunction();
+
+    //     setBoolVal2(true);
+    //   } else {
+    //     let flag1 = 0;
+    //     for (let i = 0; i < materialArray.length; i++) {
+    //       console.log("Material Code", materialArray[i].mtrlCode);
+    //       console.log("locationNo", materialArray[i].locationNo);
+    //       console.log("Received", materialArray[i].qty);
+    //       console.log("Accepted", materialArray[i].accepted);
+
+    //       if (
+    //         materialArray[i].mtrlCode == "" ||
+    //         materialArray[i].locationNo == "" ||
+    //         materialArray[i].qty == "" ||
+    //         materialArray[i].accepted == ""
+    //       ) {
+    //         flag1 = 1;
+    //       }
+    //     }
+    //     if (flag1 == 1) {
+    //       toast.error("Please fill correct Material details");
+    //     } else {
+    //       //to update data
+    //       updateHeaderFunction();
+    //       toast.success("Record Updated Successfully");
+    //     }
+    //   }
+    // }
     else {
-      if (saveUpdateCount == 0) {
-        formHeader.receiptDate = formatDate(new Date(), 4);
-        formHeader.rvDate = currDate;
-        setFormHeader(formHeader);
-        await delay(500);
-
-        updateHeaderFunction();
-
-        setBoolVal2(true);
-      } else {
-        let flag1 = 0;
-        for (let i = 0; i < materialArray.length; i++) {
-          console.log("Material Code", materialArray[i].mtrlCode);
-          console.log("locationNo", materialArray[i].locationNo);
-          console.log("Received", materialArray[i].qty);
-          console.log("Accepted", materialArray[i].accepted);
-
-          if (
-            materialArray[i].mtrlCode == "" ||
-            materialArray[i].locationNo == "" ||
-            materialArray[i].qty == "" ||
-            materialArray[i].accepted == ""
-          ) {
-            flag1 = 1;
-          }
-        }
-        if (flag1 == 1) {
-          toast.error("Please fill correct Material details");
-        } else {
-          //to update data
-          updateHeaderFunction();
-          toast.success("Record Updated Successfully");
-        }
-      }
+      updateHeaderFunction();
     }
   };
 
@@ -737,8 +617,6 @@ function OpenButtonDraftSheetUnit(props) {
         }
       }
 
-      // console.log("flag1 value:", flag1);
-
       if (flag1 === 1) {
         toast.error("Select Material");
       } else if (flag1 === 2) {
@@ -748,13 +626,14 @@ function OpenButtonDraftSheetUnit(props) {
       } else if (flag1 === 5) {
         toast.error("Select Location");
       } else if (flag1 === 6) {
-        toast.error("QtyAccepted should be less than or equal to QtyReceived");
+        toast.error("Accepted value should be less than or equal to Received");
       } else {
         // Show model form
         setShow(true);
       }
     }
   };
+
   const allotRVYesButton = async (data) => {
     //console.log("data = ", formHeader);
     await delay(500);
@@ -854,6 +733,8 @@ function OpenButtonDraftSheetUnit(props) {
     setModalOpen(true);
   };
 
+  console.log("materialArray", materialArray);
+
   const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
 
@@ -891,90 +772,92 @@ function OpenButtonDraftSheetUnit(props) {
       //calculate weight
       if (e.target.value) {
         let val = e.target.value;
-        //get mtrl_data by mtrl_code
 
-        if (inputPart.accepted > inputPart.qty) {
-          toast.warning(
+        if (parseFloat(inputPart.accepted) > parseFloat(inputPart.qty)) {
+          toast.error(
             "Accepted value should be less than or equal to Received"
           );
-        }
-        let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
-        getRequest(url, async (data) => {
-          //setCustdata(data);
+        } else {
+          let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+          getRequest(url, async (data) => {
+            //setCustdata(data);
 
-          let TotalWeightCalculated =
-            parseFloat(inputPart.accepted) *
-            getWeight(
-              data,
-              parseFloat(inputPart.dynamicPara1),
-              parseFloat(inputPart.dynamicPara2),
-              parseFloat(inputPart.dynamicPara3)
+            let TotalWeightCalculated =
+              parseFloat(inputPart.accepted) *
+              getWeight(
+                data,
+                parseFloat(inputPart.dynamicPara1),
+                parseFloat(inputPart.dynamicPara2),
+                parseFloat(inputPart.dynamicPara3)
+              );
+
+            TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
+
+            inputPart.totalWeightCalculated = parseFloat(
+              TotalWeightCalculated
+            ).toFixed(2);
+
+            inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(
+              2
             );
 
-          TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
+            inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
+            inputPart["TotalWeight"] = TotalWeightCalculated;
 
-          inputPart.totalWeightCalculated = parseFloat(
-            TotalWeightCalculated
-          ).toFixed(2);
+            setInputPart(inputPart);
 
-          inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(2);
+            postRequest(
+              endpoints.updateHeaderMaterialReceiptRegister,
+              formHeader,
+              (data) => {}
+            );
 
-          inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
-          inputPart["TotalWeight"] = TotalWeightCalculated;
+            //update material array:
+            const newArray = materialArray.map((p) =>
+              //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+              p.id === id
+                ? {
+                    ...p,
+                    [name]: value,
+                    qty: inputPart.qty,
+                    // inspected: inputPart.inspected,
+                    inspected: inputPart.inspected == true ? 1 : 0,
+                    totalWeightCalculated: inputPart.totalWeightCalculated,
+                  }
+                : p
+            );
+            setMaterialArray(newArray);
 
-          setInputPart(inputPart);
+            // console.log("NewArray", newArray);
 
-          postRequest(
-            endpoints.updateHeaderMaterialReceiptRegister,
-            formHeader,
-            (data) => {}
-          );
+            await delay(500);
 
-          //update material array:
-          const newArray = materialArray.map((p) =>
-            //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-            p.id === id
-              ? {
-                  ...p,
-                  [name]: value,
-                  qty: inputPart.qty,
-                  // inspected: inputPart.inspected,
-                  inspected: inputPart.inspected == true ? 1 : 0,
-                  // totalWeight: inputPart.totalWeightCalculated,
-                }
-              : p
-          );
-          setMaterialArray(newArray);
-
-          console.log("NewArray", newArray);
-
-          await delay(500);
-
-          let totwt = 0;
-          for (let i = 0; i < newArray.length; i++) {
-            const element = newArray[i];
-            totwt = totwt + parseFloat(element.totalWeight);
-          }
-
-          console.log("totwt", totwt);
-
-          setCalcWeightVal(parseFloat(totwt).toFixed(2));
-
-          formHeader.calcWeight = parseFloat(totwt).toFixed(2);
-          setFormHeader(formHeader);
-          delay(500);
-          // ////console.log("form header = ", formHeader);
-          //update calc weight in header
-
-          postRequest(
-            endpoints.updateHeaderMaterialReceiptRegister,
-            formHeader,
-            (data) => {
-              if (data.affectedRows !== 0) {
-              }
+            let totwt = 0;
+            for (let i = 0; i < newArray.length; i++) {
+              const element = newArray[i];
+              totwt = totwt + parseFloat(element.totalWeightCalculated);
             }
-          );
-        });
+
+            // console.log("totwt", totwt);
+
+            setCalcWeightVal(parseFloat(totwt).toFixed(2));
+
+            formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+            setFormHeader(formHeader);
+            delay(500);
+            // ////console.log("form header = ", formHeader);
+            //update calc weight in header
+
+            postRequest(
+              endpoints.updateHeaderMaterialReceiptRegister,
+              formHeader,
+              (data) => {
+                if (data.affectedRows !== 0) {
+                }
+              }
+            );
+          });
+        }
       }
     }
 
@@ -1017,7 +900,7 @@ function OpenButtonDraftSheetUnit(props) {
         setRmvBtn(false);
         setAddBtn(true);
       }
-      console.log("Row Id", row.id);
+      // console.log("Row Id", row.id);
 
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
@@ -1049,7 +932,7 @@ function OpenButtonDraftSheetUnit(props) {
         data2?.map(async (obj) => {
           // console.log("Data2", data2);
 
-          if (obj.id == row.id) {
+          if (obj.id === row.id) {
             setMtrlStock(obj);
             setInputPart({
               qtyRejected: obj.qtyRejected,
@@ -1067,75 +950,76 @@ function OpenButtonDraftSheetUnit(props) {
               totalWeightCalculated: obj.totalWeightCalculated,
               totalWeight: obj.totalWeight,
             });
-          }
-          if (obj.ShapeID === 1) {
-            // Sheet
-            setPara1Label("Width");
-            setPara2Label("Length");
-            setUnitLabel1("mm");
-            setUnitLabel2("mm");
-            setSheetRowSelect(true);
-          } else {
-            setSheetRowSelect(false);
-          }
 
-          if (obj.ShapeID === 2) {
-            // Plate
-            setPara1Label("Length");
-            setPara2Label("Width");
-            setUnitLabel1("mm");
-            setUnitLabel2("mm");
-            setPlateRowSelect(true);
-          } else {
-            setPlateRowSelect(false);
-          }
+            if (obj.shapeID === 1) {
+              // Sheet
+              setPara1Label("Width");
+              setPara2Label("Length");
+              setUnitLabel1("mm");
+              setUnitLabel2("mm");
+              setSheetRowSelect(true);
+            } else {
+              setSheetRowSelect(false);
+            }
 
-          if (obj.ShapeID === 3 || obj.ShapeID === 4 || obj.ShapeID === 5) {
-            setPara1Label("Length");
-            setUnitLabel1("mm");
-            setTubeRowSelect(true);
-          } else {
-            setTubeRowSelect(false);
-          }
+            if (obj.ShapeID === 2) {
+              // Plate
+              setPara1Label("Length");
+              setPara2Label("Width");
+              setUnitLabel1("mm");
+              setUnitLabel2("mm");
+              setPlateRowSelect(true);
+            } else {
+              setPlateRowSelect(false);
+            }
 
-          if (obj.ShapeID === 6 || obj.ShapeID === 7) {
-            // Titles, Strip
-            setPara1Label("");
-            setUnitLabel1("");
-            setTilesStripRowSelect(true);
-          } else {
-            setTilesStripRowSelect(false);
-          }
+            if (obj.ShapeID === 3 || obj.ShapeID === 4 || obj.ShapeID === 5) {
+              setPara1Label("Length");
+              setUnitLabel1("mm");
+              setTubeRowSelect(true);
+            } else {
+              setTubeRowSelect(false);
+            }
 
-          if (obj.ShapeID === 8) {
-            // Block
-            setPara1Label("Length");
-            setPara2Label("Width");
-            setPara3Label("Height");
-            setUnitLabel1("mm");
-            setUnitLabel2("mm");
-            setUnitLabel3("mm");
-            setBlockRowSelect(true);
-          } else {
-            setBlockRowSelect(false);
-          }
+            if (obj.ShapeID === 6 || obj.ShapeID === 7) {
+              // Titles, Strip
+              setPara1Label("");
+              setUnitLabel1("");
+              setTilesStripRowSelect(true);
+            } else {
+              setTilesStripRowSelect(false);
+            }
 
-          if (obj.ShapeID === 9) {
-            // Cylinder
-            setPara1Label("Volume");
-            setUnitLabel1("CubicMtr");
-            setCylinderRowSelect(true);
-          } else {
-            setCylinderRowSelect(false);
-          }
+            if (obj.ShapeID === 8) {
+              // Block
+              setPara1Label("Length");
+              setPara2Label("Width");
+              setPara3Label("Height");
+              setUnitLabel1("mm");
+              setUnitLabel2("mm");
+              setUnitLabel3("mm");
+              setBlockRowSelect(true);
+            } else {
+              setBlockRowSelect(false);
+            }
 
-          if (obj.ShapeID === 10) {
-            // Units
-            setPara1Label("Qty");
-            setUnitLabel1("Nos");
-            setUnitRowSelect(true);
-          } else {
-            setUnitRowSelect(false);
+            if (obj.ShapeID === 9) {
+              // Cylinder
+              setPara1Label("Volume");
+              setUnitLabel1("CubicMtr");
+              setCylinderRowSelect(true);
+            } else {
+              setCylinderRowSelect(false);
+            }
+
+            if (obj.ShapeID === 10) {
+              // Units
+              setPara1Label("Qty");
+              setUnitLabel1("Nos");
+              setUnitRowSelect(true);
+            } else {
+              setUnitRowSelect(false);
+            }
           }
         });
       });
@@ -1302,12 +1186,6 @@ function OpenButtonDraftSheetUnit(props) {
           );
         }
       });
-
-      // //get total weight in material_receipt_register
-      // let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
-      // getRequest(url, async (data) => {
-
-      // });
     }
     setModalOpen(false);
   };
@@ -1317,10 +1195,10 @@ function OpenButtonDraftSheetUnit(props) {
     setDeleteRvModalOpen(false);
   };
 
-  // console.log("inputPart", inputPart);
-  // console.log("materialArray", materialArray);
-  // console.log("materialArray Length", materialArray.length);
-  // console.log("para1Label", para1Label);
+  const blockInvalidQtyChar = (e) =>
+    ["e", "E", "+", "-", "."].includes(e.key) && e.preventDefault();
+
+  console.log("Input Part", inputPart);
 
   return (
     <div>
@@ -1412,7 +1290,7 @@ function OpenButtonDraftSheetUnit(props) {
               name="reference"
               value={formHeader.reference}
               onChange={InputHeaderEvent}
-              disabled={boolVal2 & boolVal4}
+              disabled={boolVal2 && boolVal4}
             />
           </div>
           <div className="col-md-3">
@@ -1904,9 +1782,12 @@ function OpenButtonDraftSheetUnit(props) {
                     <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
+                        type="number"
                         name="qty"
-                        value={(inputPart.qty = Math.floor(inputPart.qty))}
+                        // value={(inputPart.qty = Math.floor(inputPart.qty))}
+                        value={inputPart.qty}
                         disabled={boolVal4 || materialArray.length === 0}
+                        onKeyDown={blockInvalidQtyChar}
                         min="0"
                         onChange={(e) => {
                           changeMaterialHandle(e, inputPart.id);
@@ -1925,7 +1806,8 @@ function OpenButtonDraftSheetUnit(props) {
                           name="inspected"
                           checked={inputPart.inspected}
                           disabled={boolVal4 || materialArray.length === 0}
-                          min="0"
+                          // min="0"
+                          onKeyDown={blockInvalidQtyChar}
                           onChange={(e) => {
                             changeMaterialHandle(e, inputPart.id);
                           }}
@@ -1942,10 +1824,13 @@ function OpenButtonDraftSheetUnit(props) {
                     <div className="col-md-4 col-sm-12">
                       <input
                         className="in-field"
+                        type="number"
                         name="accepted"
-                        value={
-                          (inputPart.accepted = Math.floor(inputPart.accepted))
-                        }
+                        onKeyDown={blockInvalidQtyChar}
+                        // value={
+                        //   (inputPart.accepted = Math.floor(inputPart.accepted))
+                        // }
+                        value={inputPart.accepted}
                         disabled={boolVal4 || !boolVal5}
                         min="0"
                         onChange={(e) => {
@@ -1999,13 +1884,13 @@ function OpenButtonDraftSheetUnit(props) {
                     </div>
                     <div className="col-md-6">
                       <input
+                        type="number"
                         className="in-field"
                         name="totalWeight"
                         value={inputPart.totalWeight}
                         onChange={changeMaterialHandle}
-                        disabled={
-                          boolVal3 || boolVal4 || materialArray.length === 0
-                        }
+                        onKeyDown={blockInvalidQtyChar}
+                        disabled={boolVal4 || materialArray.length === 0}
                       />
                     </div>
                   </div>
@@ -2021,9 +1906,7 @@ function OpenButtonDraftSheetUnit(props) {
                           changeMaterialHandle(e, inputPart.id);
                         }}
                         value={inputPart.locationNo}
-                        disabled={
-                          boolVal3 || boolVal4 || materialArray.length === 0
-                        }
+                        disabled={boolVal4 || materialArray.length === 0}
                         name="locationNo"
                       >
                         <option value="" disabled selected>
