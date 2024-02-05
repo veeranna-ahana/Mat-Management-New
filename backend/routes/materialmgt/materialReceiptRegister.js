@@ -97,7 +97,7 @@ materialReceiptRegisterRouter.post(
 materialReceiptRegisterRouter.post(
   "/updateHeaderMaterialReceiptRegister",
   async (req, res, next) => {
-    // console.log("req", req.body);
+    console.log("calcWeight", req.body.calcWeight);
     try {
       let {
         rvId,

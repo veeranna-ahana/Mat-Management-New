@@ -94,8 +94,9 @@ mtrlPartReceiptDetailsRouter.post(
     try {
       let { id } = req.body;
       //console.log(`delete from mtrl_part_receipt_details where id = ${id}`);
+      // console.log("delete id", req.body);
       misQueryMod(
-        `delete from mtrl_part_receipt_details where id = ${id}`,
+        `delete from mtrl_part_receipt_details where Id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
