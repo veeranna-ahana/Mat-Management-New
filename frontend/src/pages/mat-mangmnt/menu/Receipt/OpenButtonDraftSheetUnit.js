@@ -339,7 +339,7 @@ function OpenButtonDraftSheetUnit(props) {
     // addNewMaterial();
   }, []); //[inputPart]);
 
-  let changeMtrl = async (e) => {
+  const changeMtrl = async (e) => {
     e.preventDefault();
     const { value, name } = e.target;
     console.log("value = ", value);
@@ -666,9 +666,12 @@ function OpenButtonDraftSheetUnit(props) {
   const addNewMaterial = (e) => {
     setBoolVal3(false);
 
+    let count = materialArray.length + 1;
+    let srl = (count <= 9 ? "0" : "") + count;
+
     //clear all part fields
     inputPart.rvId = formHeader.rvId;
-    inputPart.srl = "01";
+    inputPart.srl = srl;
     inputPart.custCode = formHeader.customer;
     inputPart.mtrlCode = "";
     inputPart.material = "";
@@ -696,14 +699,9 @@ function OpenButtonDraftSheetUnit(props) {
     //insert blank row in table
     postRequest(endpoints.insertMtrlReceiptDetails, inputPart, (data) => {
       if (data.affectedRows !== 0) {
-        //toast.success("Record added");
+        // toast.success("Record added");
         let id = data.insertId;
         inputPart.id = id;
-
-        // count total record in material Array
-        let count = materialArray.length + 1;
-        let srl = (count <= 9 ? "0" : "") + count;
-        inputPart.srl = srl;
 
         //set inserted id
         setPartUniqueId(id);
@@ -718,7 +716,9 @@ function OpenButtonDraftSheetUnit(props) {
           inspected: "",
           locationNo: "",
           updated: "",
+          totalWeightCalculated: 0,
         };
+
         //setPartArray(newRow);
         setMaterialArray([...materialArray, newRow]);
 
@@ -1162,6 +1162,20 @@ function OpenButtonDraftSheetUnit(props) {
             qtyReturned: 0,
           });
 
+          // setNewRow({
+          //   id: inputPart.id,
+          //   srl: inputPart.srl,
+          //   mtrlCode: "",
+          //   dynamicPara1: "",
+          //   dynamicPara2: "",
+          //   dynamicPara3: "",
+          //   qty: "",
+          //   inspected: "",
+          //   locationNo: "",
+          //   updated: "",
+          //   totalWeightCalculated: 0,
+          // });
+
           const sumTotalWeightCalculated = newArray.reduce(
             (sum, obj) => sum + parseFloat(obj.totalWeightCalculated),
             0
@@ -1197,6 +1211,9 @@ function OpenButtonDraftSheetUnit(props) {
 
   const blockInvalidQtyChar = (e) =>
     ["e", "E", "+", "-", "."].includes(e.key) && e.preventDefault();
+
+  const blockInvalidChar = (e) =>
+    ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
 
   console.log("Input Part", inputPart);
 
@@ -1260,7 +1277,9 @@ function OpenButtonDraftSheetUnit(props) {
           <div className="col-md-3">
             <label className="form-label">Weight</label>
             <input
-              type="text"
+              type="number"
+              min="0"
+              onKeyDown={blockInvalidChar}
               name="weight"
               required
               value={formHeader.weight}

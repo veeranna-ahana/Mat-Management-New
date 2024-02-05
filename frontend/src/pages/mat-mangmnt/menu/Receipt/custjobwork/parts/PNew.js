@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
@@ -56,6 +56,7 @@ function PNew() {
   let [custdata, setCustdata] = useState([]);
   let [mtrlDetails, setMtrlDetails] = useState([]);
   const [saveUpdateCount, setSaveUpdateCount] = useState(0);
+  const [selectedPart, setSelectedPart] = useState([]);
 
   let [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -156,9 +157,10 @@ function PNew() {
     },
   ];
 
-  // const changePartHandle = (e) => {
-  //   // debugger;
+  // const changePartID = (e) => {
+  //   e.preventDefault();
   //   const { value, name } = e.target;
+
   //   setInputPart((preValue) => {
   //     //console.log(preValue)
   //     return {
@@ -166,27 +168,18 @@ function PNew() {
   //       [name]: value,
   //     };
   //   });
+
   //   inputPart[name] = value;
-  //   inputPart.custBomId = formHeader.customer;
-  //   inputPart.rvId = formHeader.rvId;
-  //   inputPart.qtyRejected = 0;
-  //   inputPart.qtyUsed = 0;
-  //   inputPart.calcWeightVal = 0.0;
-  //   inputPart.qtyReturned = 0;
-  //   inputPart.qtyIssued = 0;
   //   setInputPart(inputPart);
-  //   console.log("imputpart", inputPart);
-  //   //update blank row with respected to modified part textfield
+
   //   postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-  //     console.log("data", data);
-  //     if (data?.affectedRows !== 0) {
+  //     if (data.affectedRows !== 0) {
   //     } else {
   //       toast.error("Record Not Updated");
   //     }
   //   });
 
   //   const newArray = partArray.map((p) =>
-  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
   //     p.id === partUniqueId
   //       ? {
   //           ...p,
@@ -194,30 +187,41 @@ function PNew() {
   //         }
   //       : p
   //   );
-  //   setPartArray(newArray);
 
-  //   let totwt = 0;
-  //   partArray.map((obj) => {
-  //     totwt =
-  //       parseFloat(totwt) +
-  //       parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-  //     //console.log(newWeight);
-  //   });
-  //   setCalcWeightVal(parseFloat(totwt).toFixed(2));
-  //   setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
+  //   setPartArray(newArray);
   // };
+
+  const changePartID = (selected) => {
+    setSelectedPart(selected);
+
+    setInputPart((preValue) => ({
+      ...preValue,
+      partId: selected.length > 0 ? selected[0].PartId : "",
+    }));
+
+    postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
+      if (data.affectedRows !== 0) {
+        // Handle success, if needed
+      } else {
+        toast.error("Record Not Updated");
+      }
+    });
+
+    const newArray = partArray.map((p) =>
+      p.id === partUniqueId
+        ? {
+            ...p,
+            partId: selected.length > 0 ? selected[0].PartId : "",
+          }
+        : p
+    );
+
+    setPartArray(newArray);
+  };
 
   const changePartHandle = (e) => {
     const { value, name } = e.target;
     console.log(name, value);
-
-    // Check if the entered value is positive before updating the state
-    // if (name === "unitWeight" && parseFloat(value) >= 0) {
-    //   setInputPart((prevInputPart) => ({
-    //     ...prevInputPart,
-    //     [name]: value,
-    //   }));
-    // }
 
     if (name === "unitWeight" && parseFloat(value) < 0) {
       toast.error("unitWeight should be a positive value");
@@ -325,6 +329,7 @@ function PNew() {
           };
           //setPartArray(newRow);
           setPartArray([...partArray, newRow]);
+          setSelectedPart([]);
           setInputPart(inputPart);
           // setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
         } else {
@@ -339,37 +344,78 @@ function PNew() {
     setModalOpen(true);
   };
   //delete part
+  // const handleDelete = () => {
+  //   //minus calculated weight
+  //   // console.log("partarray = ", partArray);
+  //   console.log("id = ", inputPart.id);
+
+  //   postRequest(endpoints.deletePartReceiptDetails, inputPart, (data) => {
+  //     if (data.affectedRows !== 0) {
+  //       const newArray = partArray.filter(
+  //         (p) =>
+  //           //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //           p.id !== inputPart.id
+  //       );
+  //       setPartArray(newArray);
+  //       toast.success("Material Deleted");
+  //     }
+  //   });
+
+  //   //cal weight
+  //   let totwt = 0;
+  //   partArray.map((obj) => {
+  //     totwt =
+  //       parseFloat(totwt) +
+  //       parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //     //console.log(newWeight);
+  //   });
+  //   setCalcWeightVal(parseFloat(totwt).toFixed(2));
+  //   //NEW CODE
+  //   setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
+  // };
+
   const handleDelete = () => {
     //minus calculated weight
-    // console.log("partarray = ", partArray);
-    console.log("id = ", inputPart.id);
 
     postRequest(endpoints.deletePartReceiptDetails, inputPart, (data) => {
+      console.log("data", data);
       if (data.affectedRows !== 0) {
-        const newArray = partArray.filter(
-          (p) =>
-            //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
-            p.id !== inputPart.id
-        );
+        const newArray = partArray.filter((p) => p.id !== inputPart.id);
+        console.log("Delete Part Array", newArray);
         setPartArray(newArray);
         toast.success("Material Deleted");
+        setInputPart({
+          id: "",
+          partId: "",
+          unitWeight: "",
+          qtyReceived: "",
+          qtyAccepted: "",
+          qtyRejected: "0",
+        });
+        setSelectedPart([]);
+
+        let totwt = 0;
+        newArray.map((obj) => {
+          totwt =
+            parseFloat(totwt) +
+            parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+          //console.log(newWeight);
+        });
+        setCalcWeightVal(parseFloat(totwt).toFixed(2));
+        formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+        setFormHeader(formHeader);
+
+        postRequest(
+          endpoints.updateHeaderMaterialReceiptRegister,
+          formHeader,
+          (data) => {
+            if (data.affectedRows !== 0) {
+            }
+          }
+        );
       }
     });
-
-    //cal weight
-    let totwt = 0;
-    partArray.map((obj) => {
-      totwt =
-        parseFloat(totwt) +
-        parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-      //console.log(newWeight);
-    });
-    setCalcWeightVal(parseFloat(totwt).toFixed(2));
-    //NEW CODE
-    setFormHeader({ ...formHeader, calcWeight: calcWeightVal });
   };
-
-  console.log("formHeader.cal", formHeader.calcWeight);
 
   // let formHeader.calcWeight=calcWeightVal;
   const selectRow = {
@@ -386,6 +432,7 @@ function PNew() {
         qtyRejected: row.qtyRejected,
         qtyReceived: row.qtyReceived,
       });
+      setSelectedPart([{ PartId: row.partId }]);
     },
   };
 
@@ -468,7 +515,15 @@ function PNew() {
       toast.error("Please Select Customer");
     } else if (formHeader.reference.length == 0) {
       toast.error("Please Enter Customer Document Material Reference");
-    } else {
+    } else if (
+      parseFloat(inputPart.qtyAccepted) > parseFloat(inputPart.qtyReceived)
+    ) {
+      toast.error("Accepted value should be less than or equal to Received");
+    }
+    // else if (inputPart.qtyAccepted === "" || inputPart.qtyReceived === "") {
+    //   toast.error("Received and Accepted Qty cannot be empty");
+    // }
+    else {
       if (saveUpdateCount == 0) {
         formHeader.receiptDate = formatDate(new Date(), 4);
         formHeader.rvDate = currDate;
@@ -574,13 +629,6 @@ function PNew() {
     setBoolVal4(true);
   };
 
-  // const allotRVYesButton = (data) => {
-  //   console.log("data = ", formHeader);
-  //   setFormHeader(data);
-  //   console.log("formheader = ", formHeader);
-  //   setBoolVal4(true);
-  //   console.log("formheader = ", formHeader);
-  // };
   const deleteRVButton = async () => {
     setDeleteRvModalOpen(true);
   };
@@ -608,6 +656,12 @@ function PNew() {
     deleteRVButtonState();
     setDeleteRvModalOpen(false);
   };
+
+  const blockInvalidQtyChar = (e) =>
+    ["e", "E", "+", "-", "."].includes(e.key) && e.preventDefault();
+
+  const blockInvalidChar = (e) =>
+    ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
   return (
     <div>
       <CreateYesNoModal
@@ -671,6 +725,8 @@ function PNew() {
               name="weight"
               value={formHeader.weight}
               onChange={InputHeaderEvent}
+              onKeyDown={blockInvalidChar}
+              min="0"
               disabled={boolVal4}
             />
           </div>
@@ -710,7 +766,7 @@ function PNew() {
               name="reference"
               value={formHeader.reference}
               onChange={InputHeaderEvent}
-              disabled={boolVal2 & boolVal4}
+              disabled={boolVal2 && boolVal4}
             />
           </div>
           <div className="col-md-3">
@@ -746,7 +802,7 @@ function PNew() {
             <button
               className="button-style"
               // disabled={boolVal1}
-              disabled={boolVal1 | boolVal4}
+              disabled={boolVal1 || boolVal4}
               onClick={deleteRVButton}
             >
               Delete RV
@@ -831,7 +887,7 @@ function PNew() {
                 className="button-style "
                 style={{ width: "155px" }}
                 onClick={addNewPart}
-                disabled={boolVal1 | boolVal4}
+                disabled={boolVal1 || boolVal4}
               >
                 Add New
               </button>
@@ -840,13 +896,13 @@ function PNew() {
               <div className="col-md-4 ">
                 <label className="form-label">Part ID</label>
               </div>
-              <div className="col-md-8 ">
+              {/* <div className="col-md-8 ">
                 <select
                   className="ip-select dropdown-field"
                   name="partId"
                   value={inputPart.partId}
-                  onChange={changePartHandle}
-                  disabled={boolVal3 | boolVal4}
+                  onChange={changePartID}
+                  disabled={boolVal3 || boolVal4}
                 >
                   <option value="" disabled selected>
                     Select Part
@@ -858,6 +914,18 @@ function PNew() {
                     </option>
                   ))}
                 </select>
+              </div> */}
+              <div className="col-md-8 mt-2">
+                <Typeahead
+                  className="in-field"
+                  id="partId"
+                  labelKey="PartId"
+                  options={mtrlDetails}
+                  selected={selectedPart}
+                  onChange={changePartID}
+                  disabled={boolVal3 || boolVal4}
+                  placeholder="Select Part"
+                />
               </div>
             </div>
             <div className="row">
@@ -872,7 +940,9 @@ function PNew() {
                   value={inputPart.unitWeight}
                   onChange={changePartHandle}
                   //onKeyUp={changePartHandle1}
-                  disabled={boolVal3 | boolVal4}
+                  onKeyDown={blockInvalidQtyChar}
+                  min="0"
+                  disabled={boolVal3 || boolVal4}
                 />
               </div>
             </div>
@@ -886,9 +956,11 @@ function PNew() {
                   type="number"
                   name="qtyReceived"
                   //value={tempVal}
+                  onKeyDown={blockInvalidQtyChar}
+                  min="0"
                   value={inputPart.qtyReceived}
                   onChange={changePartHandle}
-                  disabled={boolVal3 | boolVal4}
+                  disabled={boolVal3 || boolVal4}
                 />
               </div>
             </div>
@@ -903,7 +975,9 @@ function PNew() {
                   name="qtyAccepted"
                   value={inputPart.qtyAccepted}
                   onChange={changePartHandle}
-                  disabled={boolVal3 | boolVal4}
+                  onKeyDown={blockInvalidQtyChar}
+                  min="0"
+                  disabled={boolVal3 || boolVal4}
                 />
               </div>
             </div>
@@ -926,7 +1000,7 @@ function PNew() {
               <button
                 className="button-style "
                 style={{ width: "155px" }}
-                disabled={boolVal3 | boolVal4}
+                disabled={boolVal3 || boolVal4}
                 onClick={deleteButtonState}
               >
                 Delete

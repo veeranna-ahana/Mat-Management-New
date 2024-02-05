@@ -733,9 +733,12 @@ function NewSheetsUnits(props) {
   const addNewMaterial = (e) => {
     setBoolVal3(false);
 
+    let count = materialArray.length + 1;
+    let srl = (count <= 9 ? "0" : "") + count;
+
     //clear all part fields
     inputPart.rvId = formHeader.rvId;
-    inputPart.srl = "01";
+    inputPart.srl = srl;
     inputPart.custCode = formHeader.customer;
     inputPart.mtrlCode = "";
     inputPart.material = "";
@@ -771,16 +774,8 @@ function NewSheetsUnits(props) {
         let id = data.insertId;
         inputPart.id = id;
 
-        //count total record in material Array
-        // let count = materialArray.length + 1;
-        // srl = "0" + count;
-
-        let count = materialArray.length + 1;
-        let srl = (count <= 9 ? "0" : "") + count;
-        inputPart.srl = srl;
-
         //set inserted id
-        inputPart.srl = srl;
+
         setPartUniqueId(id);
         let newRow = {
           id: id,
@@ -1241,7 +1236,7 @@ function NewSheetsUnits(props) {
           toast.success("Material Deleted");
 
           setInputPart({
-            id: "",
+            id: inputPart.id - 1,
             rvId: "",
             srl: "",
             custCode: "",
@@ -1304,6 +1299,9 @@ function NewSheetsUnits(props) {
 
   const blockInvalidQtyChar = (e) =>
     ["e", "E", "+", "-", "."].includes(e.key) && e.preventDefault();
+
+  const blockInvalidChar = (e) =>
+    ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
 
   console.log("Calculated Weight", formHeader.calcWeight);
 
@@ -1370,6 +1368,8 @@ function NewSheetsUnits(props) {
             <input
               type="number"
               name="weight"
+              onKeyDown={blockInvalidChar}
+              min="0"
               required
               value={formHeader.weight}
               onChange={InputHeaderEvent}

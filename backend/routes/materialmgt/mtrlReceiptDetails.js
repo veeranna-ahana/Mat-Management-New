@@ -48,7 +48,7 @@ mtrlReceiptDetailsRouter.get(
 mtrlReceiptDetailsRouter.post(
   "/insertMtrlReceiptDetails",
   async (req, res, next) => {
-    // console.log("srl", req.body.srl);
+    console.log("srl", req.body.srl);
 
     try {
       let {
