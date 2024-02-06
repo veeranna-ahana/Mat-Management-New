@@ -7,6 +7,7 @@ runningNoRouter.get("/getRunningNoBySrlType", async (req, res, next) => {
   try {
     let SrlType = req.query.SrlType;
     let Period = req.query.Period;
+
     // let UnitName = req.query.UnitName;
 
     // console.log("SrlType", SrlType);

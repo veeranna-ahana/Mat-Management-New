@@ -94,13 +94,17 @@ export function formatDate(dateObj, format) {
 }
 
 export function getWeight(obj, para1, para2, para3) {
-  //console.log(" getweight = ", obj);
+  console.log(" getweight = ", obj);
+  console.log(" para1 = ", para1);
+  console.log(" para2 = ", para2);
+  console.log(" para3 = ", para3);
+
   let dblWeight = 0;
   let dblVol = getVolume(obj, obj.Shape, para1, para2, para3);
-  //console.log(" dblVol = ", dblVol);
-  dblWeight = dblVol * obj.SpecificWt;
-  //dblWeight = dblVol * getDensity();
-  // console.log(" dblweight = ", dblWeight);
+  console.log(" dblVol = ", dblVol);
+  // dblWeight = dblVol * obj.SpecificWt;
+  dblWeight = dblVol * getDensity(obj);
+  console.log(" dblweight = ", dblWeight);
   return dblWeight;
 }
 
@@ -121,6 +125,23 @@ export function getWeight(obj, para1, para2, para3) {
     else
         return 0
 }*/
+
+export function getDensity(obj) {
+  if (!obj) {
+    return 0;
+  }
+
+  const specificWt = parseFloat(obj.SpecificWt);
+  const specific_Wt = parseFloat(obj.Specific_Wt);
+
+  if (!isNaN(specificWt) && specificWt > 0) {
+    return specificWt;
+  } else if (!isNaN(specific_Wt) && specific_Wt > 0) {
+    return specific_Wt;
+  } else {
+    return 0;
+  }
+}
 
 export function getVolume(obj, shape, para1, para2, para3) {
   let dblVol = 0;

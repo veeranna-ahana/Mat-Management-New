@@ -7,6 +7,7 @@ import DeleteRVModal from "../../components/DeleteRVModal";
 import { useNavigate } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useLocation } from "react-router-dom";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -80,6 +81,8 @@ function OpenButtonDraftSheetUnit(props) {
     type: "",
     address: "",
   });
+
+  const [selectedMtrl, setSelectedMtrl] = useState([]);
 
   //const [mtrlArray, setMtrlArray] = useState([]);
   let [para1Label, setPara1Label] = useState("Para 1");
@@ -339,10 +342,10 @@ function OpenButtonDraftSheetUnit(props) {
     // addNewMaterial();
   }, []); //[inputPart]);
 
-  const changeMtrl = async (e) => {
-    e.preventDefault();
-    const { value, name } = e.target;
-    console.log("value = ", value);
+  const changeMtrl = async (name, value) => {
+    const newSelectedMtrl = value ? [{ Mtrl_Code: value }] : [];
+    setSelectedMtrl(newSelectedMtrl);
+
     mtrlDetails.map((material) => {
       if (material.Mtrl_Code === value) {
         // console.log("material.Mtrl_Code", material.Mtrl_Code);
@@ -354,6 +357,8 @@ function OpenButtonDraftSheetUnit(props) {
           setShape(Mtrlshape);
           inputPart.material = mtrlData.Mtrl_Type;
           inputPart.shapeMtrlId = mtrlData.ShapeMtrlID;
+          console.log("Mtrl Grade ID", mtrlData.MtrlGradeID);
+
           let url2 = endpoints.getRowByShape + "?shape=" + mtrlData.Shape;
           getRequest(url2, async (shapeData) => {
             // console.log("shapedata = ", shapeData);
@@ -471,7 +476,6 @@ function OpenButtonDraftSheetUnit(props) {
     setMaterialArray(newArray);
   };
 
-  //input header change event
   const InputHeaderEvent = (e) => {
     const { value, name } = e.target;
     setFormHeader((preValue) => {
@@ -509,48 +513,50 @@ function OpenButtonDraftSheetUnit(props) {
       toast.error("Please Enter Customer Document Material Reference");
     else if (parseFloat(inputPart.accepted) > parseFloat(inputPart.qty)) {
       toast.error("Accepted value should be less than or equal to Received");
-    } else if (inputPart.accepted === "" || inputPart.qty === "") {
-      toast.error("Received and Accepted Qty cannot be empty");
-    }
+    } else {
+      if (saveUpdateCount == 0) {
+        formHeader.receiptDate = formatDate(new Date(), 4);
+        formHeader.rvDate = currDate;
+        setFormHeader(formHeader);
+        await delay(500);
 
-    // else {
-    //   if (saveUpdateCount == 0) {
-    //     formHeader.receiptDate = formatDate(new Date(), 4);
-    //     formHeader.rvDate = currDate;
-    //     setFormHeader(formHeader);
-    //     await delay(500);
+        updateHeaderFunction();
 
-    //     updateHeaderFunction();
+        setBoolVal2(true);
+      } else {
+        let flag1 = 0;
+        for (let i = 0; i < materialArray.length; i++) {
+          console.log("Material Code", materialArray[i].mtrlCode);
+          console.log("locationNo", materialArray[i].locationNo);
+          console.log("Received", materialArray[i].qty);
+          console.log("Accepted", materialArray[i].accepted);
 
-    //     setBoolVal2(true);
-    //   } else {
-    //     let flag1 = 0;
-    //     for (let i = 0; i < materialArray.length; i++) {
-    //       console.log("Material Code", materialArray[i].mtrlCode);
-    //       console.log("locationNo", materialArray[i].locationNo);
-    //       console.log("Received", materialArray[i].qty);
-    //       console.log("Accepted", materialArray[i].accepted);
+          if (
+            materialArray[i].mtrlCode == "" ||
+            // materialArray[i].locationNo == "" ||
+            materialArray[i].qty == "" ||
+            materialArray[i].accepted == ""
+          ) {
+            flag1 = 1;
+          }
 
-    //       if (
-    //         materialArray[i].mtrlCode == "" ||
-    //         materialArray[i].locationNo == "" ||
-    //         materialArray[i].qty == "" ||
-    //         materialArray[i].accepted == ""
-    //       ) {
-    //         flag1 = 1;
-    //       }
-    //     }
-    //     if (flag1 == 1) {
-    //       toast.error("Please fill correct Material details");
-    //     } else {
-    //       //to update data
-    //       updateHeaderFunction();
-    //       toast.success("Record Updated Successfully");
-    //     }
-    //   }
-    // }
-    else {
-      updateHeaderFunction();
+          if (materialArray[i].accepted > materialArray[i].qty) {
+            flag1 = 2;
+            // console.log("Setting flag1 to 6");
+          }
+        }
+        if (flag1 == 1) {
+          toast.error("Please fill correct Material details");
+        } else if (flag1 === 2) {
+          toast.error(
+            "Accepted value should be less than or equal to Received"
+          );
+        } else {
+          //to update data
+          updateHeaderFunction();
+          // toast.success("Record Updated Successfully");
+        }
+      }
     }
   };
 
@@ -666,6 +672,15 @@ function OpenButtonDraftSheetUnit(props) {
   const addNewMaterial = (e) => {
     setBoolVal3(false);
 
+    const isAnyMtrlCodeEmpty = materialArray.some(
+      (item) => item.mtrlCode === ""
+    );
+
+    if (isAnyMtrlCodeEmpty) {
+      toast.error("Select Material for the Inserted row");
+      return;
+    }
+
     let count = materialArray.length + 1;
     let srl = (count <= 9 ? "0" : "") + count;
 
@@ -721,6 +736,7 @@ function OpenButtonDraftSheetUnit(props) {
 
         //setPartArray(newRow);
         setMaterialArray([...materialArray, newRow]);
+        setSelectedMtrl([]);
 
         // setInputPart(inputPart);
       } else {
@@ -732,8 +748,6 @@ function OpenButtonDraftSheetUnit(props) {
   const deleteButtonState = () => {
     setModalOpen(true);
   };
-
-  console.log("materialArray", materialArray);
 
   const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
@@ -778,8 +792,11 @@ function OpenButtonDraftSheetUnit(props) {
             "Accepted value should be less than or equal to Received"
           );
         } else {
-          let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+          // let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+          // getRequest(url, async (data) => {
+          let url = endpoints.getSpecific_Wt + "?code=" + inputPart.mtrlCode;
           getRequest(url, async (data) => {
+            console.log("data", data);
             //setCustdata(data);
 
             let TotalWeightCalculated =
@@ -892,6 +909,7 @@ function OpenButtonDraftSheetUnit(props) {
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
       console.log("Row = ", row);
+      setSelectedMtrl([{ Mtrl_Code: row.mtrlCode }]);
 
       if (row.updated === 1) {
         setRmvBtn(true);
@@ -900,7 +918,6 @@ function OpenButtonDraftSheetUnit(props) {
         setRmvBtn(false);
         setAddBtn(true);
       }
-      // console.log("Row Id", row.id);
 
       const url1 = endpoints.getMtrlReceiptDetailsByID + "?id=" + row.id;
       getRequest(url1, async (data2) => {
@@ -1095,12 +1112,14 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
+  console.log("material array", materialArray);
+
   const removeStock = () => {
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
       postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        //console.log("data = ", data);
+        console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Removed Successfully");
@@ -1162,19 +1181,7 @@ function OpenButtonDraftSheetUnit(props) {
             qtyReturned: 0,
           });
 
-          // setNewRow({
-          //   id: inputPart.id,
-          //   srl: inputPart.srl,
-          //   mtrlCode: "",
-          //   dynamicPara1: "",
-          //   dynamicPara2: "",
-          //   dynamicPara3: "",
-          //   qty: "",
-          //   inspected: "",
-          //   locationNo: "",
-          //   updated: "",
-          //   totalWeightCalculated: 0,
-          // });
+          setSelectedMtrl([]);
 
           const sumTotalWeightCalculated = newArray.reduce(
             (sum, obj) => sum + parseFloat(obj.totalWeightCalculated),
@@ -1187,7 +1194,7 @@ function OpenButtonDraftSheetUnit(props) {
           formHeader.calcWeight = sumTotalWeightCalculated.toFixed(2);
           setFormHeader(formHeader);
           delay(500);
-          // ////console.log("form header = ", formHeader);
+
           //update calc weight in header
 
           postRequest(
@@ -1216,6 +1223,29 @@ function OpenButtonDraftSheetUnit(props) {
     ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
 
   console.log("Input Part", inputPart);
+
+  const filterMaterials = () => {
+    if (location?.state?.type === "sheets") {
+      return mtrlDetails.filter(
+        (material) =>
+          material.Shape !== "Units" &&
+          material.Shape !== "Cylinder" &&
+          material.Shape !== null &&
+          material.Mtrl_Code !== ""
+      );
+    } else if (location?.state?.type === "units") {
+      return mtrlDetails.filter(
+        (material) =>
+          material.Shape === "Units" &&
+          material.Shape !== null &&
+          material.Mtrl_Code !== ""
+      );
+    } else {
+      return mtrlDetails.filter(
+        (material) => material.Shape !== null && material.Mtrl_Code !== ""
+      );
+    }
+  };
 
   return (
     <div>
@@ -1442,11 +1472,11 @@ function OpenButtonDraftSheetUnit(props) {
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-3 ">
+                    <div className="col-md-3 mt-2">
                       <label className="form-label">Part ID</label>
                     </div>
-                    <div className="col-md-8" style={{ marginTop: "8px" }}>
-                      <select
+                    <div className="col-md-8">
+                      {/* <select
                         className="ip-select dropdown-field"
                         onChange={changeMtrl}
                         defaultValue={" "}
@@ -1499,7 +1529,24 @@ function OpenButtonDraftSheetUnit(props) {
                                 ""
                               )
                             )}
-                      </select>
+                      </select> */}
+                      <Typeahead
+                        id="mtrlCode"
+                        className="in-field"
+                        labelKey="Mtrl_Code"
+                        options={filterMaterials()}
+                        selected={selectedMtrl}
+                        onChange={(selected) =>
+                          changeMtrl("mtrlCode", selected[0]?.Mtrl_Code)
+                        }
+                        disabled={
+                          boolVal3 ||
+                          boolVal4 ||
+                          boolVal5 ||
+                          materialArray.length === 0
+                        }
+                        placeholder="Select Material"
+                      />
                     </div>
                   </div>
 
@@ -1564,11 +1611,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5 || materialArray.length === 0}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1584,10 +1633,12 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara2"
                             value={inputPart.dynamicPara2}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1609,11 +1660,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1629,10 +1682,12 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara2"
                             value={inputPart.dynamicPara2}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1654,11 +1709,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1683,11 +1740,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1703,10 +1762,12 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara2"
                             value={inputPart.dynamicPara2}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1724,10 +1785,12 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara3"
                             value={inputPart.dynamicPara3}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1749,11 +1812,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
@@ -1774,11 +1839,13 @@ function OpenButtonDraftSheetUnit(props) {
                         </div>
                         <div className="col-md-6 ">
                           <input
+                            type="number"
                             className="in-field"
                             name="dynamicPara1"
                             value={inputPart.dynamicPara1}
                             disabled={boolVal5}
                             min="0"
+                            onKeyDown={blockInvalidChar}
                             onChange={(e) => {
                               changeMaterialHandle(e, inputPart.id);
                             }}
