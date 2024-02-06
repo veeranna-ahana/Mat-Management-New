@@ -48,7 +48,7 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
       qtyAccepted,
     } = req.body;
 
-    // console.log("reqqqqq", req.body);
+    console.log("reqqqqq", req.body);
 
     let returnData = null;
     //find shape
@@ -88,6 +88,7 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
 mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
   try {
     let { rvNo } = req.body;
+    console.log("rvNo", req.body.rvNo);
     misQueryMod(
       `delete from magodmis.mtrlstocklist where RV_No =  "${rvNo}"`,
       (err, data) => {

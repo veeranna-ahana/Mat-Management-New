@@ -21,6 +21,7 @@ export const endpoints = {
   //mtrl data
   getMtrlData: `${API}/mtrlData/allmtrldata`,
   getRowByMtrlCode: `${API}/mtrlData/getRowByMtrlCode`,
+  getSpecific_Wt: `${API}/mtrlData/getSpecific_Wt`,
 
   //shape data
   getAllShapes: `${API}/shapes/getAllShapes`,

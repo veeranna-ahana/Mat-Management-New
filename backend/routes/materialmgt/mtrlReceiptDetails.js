@@ -190,6 +190,7 @@ mtrlReceiptDetailsRouter.post(
   async (req, res, next) => {
     // console.log("shapeID", req.body.shapeID);
     // console.log("material", req.body.material);
+    console.log("materialCode", req.body.mtrlCode);
 
     try {
       let {

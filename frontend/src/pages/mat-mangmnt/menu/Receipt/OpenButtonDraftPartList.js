@@ -293,8 +293,15 @@ function OpenButtonDraftPartList() {
 
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
 
+  console.log("partArray", partArray);
   const addNewPart = (e) => {
-    // console.log("entering into add new ");
+    const isAnyPartIDEmpty = partArray.some((item) => item.partId === "");
+
+    if (isAnyPartIDEmpty) {
+      toast.error("Select Part ID for the Inserted row");
+      return;
+    }
+
     setBoolVal3(false);
 
     //clear all part fields
@@ -340,9 +347,9 @@ function OpenButtonDraftPartList() {
         toast.error("Record Not Inserted");
       }
     });
-
-    //console.log("after = ", partArray);
   };
+
+  console.log("after = ", partArray);
 
   const deleteButtonState = () => {
     console.log("partArray", partArray);

@@ -280,11 +280,12 @@ function PNew() {
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
   //let id = uuid();
   const addNewPart = (e) => {
-    // {
-    //   mtrlDetails.length === 0
-    //     ? toast.error("Customer has no Part registered to add ")
-    //     : null;
-    // }
+    const isAnyPartIDEmpty = partArray.some((item) => item.partId === "");
+
+    if (isAnyPartIDEmpty) {
+      toast.error("Select Part ID for the Inserted row");
+      return;
+    }
     if (mtrlDetails.length === 0) {
       toast.error("Customer has no Part registered to add.");
     } else {
@@ -303,7 +304,6 @@ function PNew() {
       inputPart.unitWeight = 0;
       inputPart.custBomId = formHeader.customer;
 
-      console.log("partarray = ", inputPart);
       //insert blank row in table
       postRequest(endpoints.insertPartReceiptDetails, inputPart, (data) => {
         if (data.affectedRows !== 0) {
@@ -518,7 +518,7 @@ function PNew() {
     } else if (
       parseFloat(inputPart.qtyAccepted) > parseFloat(inputPart.qtyReceived)
     ) {
-      toast.error("Accepted value should be less than or equal to Received");
+      toast.error("QtyAccepted  should be less than or equal to QtyReceived");
     }
     // else if (inputPart.qtyAccepted === "" || inputPart.qtyReceived === "") {
     //   toast.error("Received and Accepted Qty cannot be empty");
@@ -552,6 +552,10 @@ function PNew() {
         }
         if (flag1 === 1) {
           toast.error("Please fill correct Part details");
+        } else if (flag1 === 2) {
+          toast.error(
+            "QtyAccepted  should be less than or equal to QtyReceived"
+          );
         } else {
           //to update data
           updateHeaderFunction();
