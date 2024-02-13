@@ -180,7 +180,7 @@ function NewSheetsUnits(props) {
       dataField: "locationNo",
     },
     {
-      text: "Updated",
+      text: "UpDated",
       dataField: "updated",
       formatter: (celContent, row) => (
         <div className="checkbox">
@@ -728,11 +728,25 @@ function NewSheetsUnits(props) {
       }
     }
   };
-  // console.log("formheader", formHeader);
+
+  const getRVNo = async () => {
+    const requestData = {
+      unit: "Jigani",
+      srlType: "MaterialReceiptVoucher",
+      ResetPeriod: "Year",
+      ResetValue: 0,
+      VoucherNoLength: 4,
+    };
+
+    postRequest(endpoints.insertRunNoRow, requestData, async (data) => {
+      console.log("RV NO Response", data);
+    });
+  };
 
   // console.log("part array = ", materialArray);
   const allotRVButtonState = (e) => {
     e.preventDefault();
+    getRVNo();
 
     if (materialArray.length === 0) {
       toast.error("Add Details Before Saving");
@@ -752,10 +766,7 @@ function NewSheetsUnits(props) {
         if (
           materialArray[i].dynamicPara1 == "" ||
           materialArray[i].dynamicPara1 == "0" ||
-          materialArray[i].dynamicPara1 == 0.0 ||
-          materialArray[i].dynamicPara2 == "" ||
-          materialArray[i].dynamicPara2 == "0" ||
-          materialArray[i].dynamicPara2 == 0.0
+          materialArray[i].dynamicPara1 == 0.0
         ) {
           flag1 = 2;
           // console.log("Setting flag1 to 2");
@@ -783,10 +794,11 @@ function NewSheetsUnits(props) {
           flag1 = 4;
         }
 
-        if (materialArray[i].accepted > materialArray[i].qty) {
+        if (materialArray[i].locationNo == "") {
           flag1 = 5;
         }
-        if (materialArray[i].locationNo == "") {
+
+        if (materialArray[i].accepted > materialArray[i].qty) {
           flag1 = 6;
         }
       }
@@ -795,12 +807,14 @@ function NewSheetsUnits(props) {
         toast.error("Select Material");
       } else if (flag1 === 2) {
         toast.error("Parameters cannot be Zero");
+      } else if (flag1 === 3) {
+        toast.error("Received  Qty cannot be Zero");
       } else if (flag1 === 4) {
-        toast.error("Received and Accepted Qty cannot be Zero");
+        toast.error("Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
-        toast.error("Accepted value should be less than or equal to Received");
-      } else if (flag1 === 6) {
         toast.error("Select Location");
+      } else if (flag1 === 6) {
+        toast.error("Accepted value should be less than or equal to Received");
       } else {
         // Show model form
         setShow(true);
@@ -1299,6 +1313,7 @@ function NewSheetsUnits(props) {
         ivNo: "",
         ncProgramNo: "",
         locationNo: mtrlStock.locationNo,
+        accepted: mtrlStock.accepted,
         // qtyAccepted: mtrlStock.qtyAccepted,
       };
 
@@ -1332,7 +1347,8 @@ function NewSheetsUnits(props) {
       );
       //update checkbox
       for (let i = 0; i < materialArray.length; i++) {
-        if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+        // if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+        if (materialArray[i].id === mtrlStock.id) {
           materialArray[i].updated = 1;
         }
       }
@@ -1343,43 +1359,150 @@ function NewSheetsUnits(props) {
   };
 
   // const removeToStock
-  const removeStock = () => {
+  // const removeStock = () => {
+  //   if (Object.keys(mtrlStock).length === 0) {
+  //     toast.error("Please Select Material");
+  //   } else {
+  //     postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
+  //       if (data.affectedRows !== 0) {
+  //         //enable remove stock buttons
+  //         toast.success("Stock Removed Successfully");
+  //         //setBoolVal2(false);
+  //         //setBoolVal3(true);
+  //         setBoolValStock("off");
+  //         // setBoolVal6(false);
+  //         // setBoolVal7(true);
+  //         setAddBtn(true);
+  //         setRmvBtn(false);
+
+  //         //update checkbox
+  //         for (let i = 0; i < materialArray.length; i++) {
+  //           // if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+  //           if (materialArray[i].id === mtrlStock.id) {
+  //             materialArray[i].updated = 0;
+  //           }
+  //           // setMaterialArray(materialArray);
+  //         }
+  //         await delay(500);
+  //         setMaterialArray(materialArray);
+  //         setInputPart({ ...inputPart, updated: 0 });
+  //       } else {
+  //         toast.error("Stock Not Removed");
+  //       }
+  //     });
+  //   }
+  //   // // Update checkboxState based on materialArray
+  //   // const updatedCheckboxState = materialArray.map(
+  //   //   (item) => item.updated === 0
+  //   // );
+  //   // setCheckboxState(updatedCheckboxState);
+  // };
+
+  const removeStock = async () => {
+    // console.log("mtrlStock.Mtrl_Rv_id", mtrlStock.Mtrl_Rv_id);
+    // console.log("mtrlStock.Mtrl_Code", mtrlStock.Mtrl_Code);
+    // console.log("inputPart.accepted", inputPart.accepted);
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
-      postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        //console.log("data = ", data);
-        if (data.affectedRows !== 0) {
-          //enable remove stock buttons
-          toast.success("Stock Removed Successfully");
-          //setBoolVal2(false);
-          //setBoolVal3(true);
-          setBoolValStock("off");
-          // setBoolVal6(false);
-          // setBoolVal7(true);
-          setAddBtn(true);
-          setRmvBtn(false);
+      const requestData = {
+        Mtrl_Rv_id: mtrlStock.Mtrl_Rv_id,
+        Mtrl_Code: mtrlStock.Mtrl_Code,
+        Accepted: inputPart.accepted,
+      };
 
-          //update checkbox
-          for (let i = 0; i < materialArray.length; i++) {
-            if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-              materialArray[i].updated = 0;
-            }
-            // setMaterialArray(materialArray);
+      //update updated status = 1
+
+      postRequest(
+        endpoints.deleteMtrlStockByRVNo,
+        requestData,
+        async (data) => {
+          console.log("Remove stock data = ", data);
+          console.log("data[0].count = ", data[0].count);
+
+          if (data[0].count < inputPart.accepted) {
+            toast.error(
+              "Received Material Already used, to return create a Issue Voucher"
+            );
+            return;
           }
-          await delay(500);
-          setMaterialArray(materialArray);
-          setInputPart({ ...inputPart, updated: 0 });
-        } else {
-          toast.error("Stock Not Removed");
+
+          // Validate if the material is already in use for production
+          if (data[0].inUseCount > 0) {
+            toast.error(
+              "Material already in use for production, cannot take out from stock"
+            );
+            return;
+          }
+
+          if (data.affectedRows !== 0) {
+            //enable remove stock buttons
+            toast.success("Stock Removed Successfully");
+            // Update UI state here
+            setBoolValStock("off");
+            setAddBtn(true);
+            setRmvBtn(false);
+            //update checkbox
+            for (let i = 0; i < mtrlArray.length; i++) {
+              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+                mtrlArray[i].upDated = 0;
+              }
+            }
+            await delay(500);
+            setMtrlArray(newArray);
+            // setInputPart({ ...inputPart, updated: 0 });
+          } else {
+            toast.success("Stock Removed Successfully");
+          }
         }
-      });
+      );
+
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 0,
+      };
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          // console.log("updated = 0");
+        }
+      );
+
+      for (let i = 0; i < mtrlArray.length; i++) {
+        if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
+          mtrlArray[i].updated = 0;
+          //console.log("Its Updated");
+        }
+      }
+      await delay(500);
+      // console.log(newArray);
+      let newArray = mtrlArray;
+
+      setMtrlArray([]);
+      await delay(200);
+      setMtrlArray(newArray);
+
+      await updateStockRegister();
     }
-    // // Update checkboxState based on materialArray
-    // const updatedCheckboxState = materialArray.map(
-    //   (item) => item.updated === 0
-    // );
-    // setCheckboxState(updatedCheckboxState);
+  };
+
+  const updateStockRegister = async () => {
+    try {
+      const requestData = {
+        rvId: formHeader.rvId,
+        custCode: formHeader.customer,
+      };
+
+      const response = await postRequest(
+        endpoints.updateAfterRemoveStock,
+        requestData
+      );
+
+      console.log("response", response);
+    } catch (error) {
+      console.error("Error updating Stock Register:", error);
+    }
   };
 
   const handleYes = () => {
@@ -1746,8 +1869,8 @@ function NewSheetsUnits(props) {
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-3 mt-2">
-                      <label className="form-label">Part ID</label>
+                    <div className="col-md-4">
+                      <label className="form-label">Mtrl Code</label>
                     </div>
                     <div className="col-md-8">
                       {/* <select
@@ -1823,10 +1946,10 @@ function NewSheetsUnits(props) {
                   {materialArray.length === 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 1</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             className="in-field"
                             name="dynamicPara1"
@@ -1834,12 +1957,12 @@ function NewSheetsUnits(props) {
                             min="0"
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 2</label>
                         </div>
                         <div className="col-md-6">
@@ -1850,12 +1973,12 @@ function NewSheetsUnits(props) {
                             disabled
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 3</label>
                         </div>
                         <div className="col-md-6 ">
@@ -1866,7 +1989,7 @@ function NewSheetsUnits(props) {
                             disabled
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
@@ -1876,7 +1999,7 @@ function NewSheetsUnits(props) {
                   {sheetRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
                         <div className="col-md-6 ">
@@ -1893,12 +2016,12 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -1915,7 +2038,7 @@ function NewSheetsUnits(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
@@ -1924,8 +2047,8 @@ function NewSheetsUnits(props) {
 
                   {plateRowSelect && materialArray.length !== 0 && (
                     <div>
-                      <div className="row mt-3">
-                        <div className="col-md-3">
+                      <div className="row mt-4">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
                         <div className="col-md-6 ">
@@ -1942,12 +2065,12 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -1964,7 +2087,7 @@ function NewSheetsUnits(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
@@ -1974,10 +2097,10 @@ function NewSheetsUnits(props) {
                   {tubeRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1991,7 +2114,7 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
@@ -2004,11 +2127,11 @@ function NewSheetsUnits(props) {
 
                   {blockRowSelect && materialArray.length !== 0 && (
                     <div>
-                      <div className="row mt-3">
-                        <div className="col-md-3">
+                      <div className="row mt-4">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -2022,12 +2145,12 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -2044,16 +2167,16 @@ function NewSheetsUnits(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
 
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para3Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -2067,7 +2190,7 @@ function NewSheetsUnits(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel3}</label>
                         </div>
                       </div>
@@ -2077,10 +2200,10 @@ function NewSheetsUnits(props) {
                   {cylinderRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -2094,7 +2217,7 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
@@ -2104,10 +2227,10 @@ function NewSheetsUnits(props) {
                   {unitRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -2121,7 +2244,7 @@ function NewSheetsUnits(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
@@ -2132,7 +2255,7 @@ function NewSheetsUnits(props) {
                     <h5>Quantity Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-3 col-sm-12 ">
+                    <div className="col-md-3 col-sm-12">
                       <label className="form-label mt-1">Received</label>
                     </div>
                     <div className="col-md-4 col-sm-12">
@@ -2153,7 +2276,7 @@ function NewSheetsUnits(props) {
                         }}
                       />
                     </div>
-                    <div className="col-md-5  ">
+                    <div className="col-md-5">
                       <div
                         className="col-md-12 "
                         style={{ display: "flex", gap: "5px" }}

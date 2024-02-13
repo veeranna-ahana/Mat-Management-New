@@ -40,6 +40,14 @@ function OpenButtonOpenSheetUnit() {
   //falg for add to stock and remove stock
   const [boolValStock, setBoolValStock] = useState("off");
 
+  const [sheetRowSelect, setSheetRowSelect] = useState(false);
+  const [plateRowSelect, setPlateRowSelect] = useState(false);
+  const [tubeRowSelect, setTubeRowSelect] = useState(false);
+  const [tilesStripRowSelect, setTilesStripRowSelect] = useState(false);
+  const [blockRowSelect, setBlockRowSelect] = useState(false);
+  const [cylinderRowSelect, setCylinderRowSelect] = useState(false);
+  const [unitRowSelect, setUnitRowSelect] = useState(false);
+
   const [mtrlStock, setMtrlStock] = useState({});
   const [formHeader, setFormHeader] = useState({
     rvId: "",
@@ -106,7 +114,7 @@ function OpenButtonOpenSheetUnit() {
       getRequest(endpoints.getCustomers, (data1) => {
         const found = data1.find((obj) => obj.Cust_Code === data.Cust_Code);
         formHeader.address = found.Address;
-        console.log("formHeader.address", formHeader.address);
+
         setFormHeader(formHeader);
       });
 
@@ -115,14 +123,11 @@ function OpenButtonOpenSheetUnit() {
       let url3 = endpoints.checkStockAvailable + "?rvno=" + formHeader.rvNo;
 
       getRequest(url3, (data4) => {
-        //console.log("data 4 = ", data4);
         //length = 0 means no stock
         if (data4.length === 0) {
-          //console.log("Stock alredy found");
           setBoolVal2(false);
           setBoolVal3(true);
         } else {
-          //console.log("stock not found");
           setBoolVal2(true);
           setBoolVal3(false);
         }
@@ -132,9 +137,7 @@ function OpenButtonOpenSheetUnit() {
       const url1 =
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
-        console.log("table data  = ", data2);
         data2.forEach((obj) => {
-          console.log("obj.UpDated", obj.UpDated);
           obj.id = obj.Mtrl_Rv_id;
           obj.rvId = obj.RvID;
           obj.srl = obj.Srl;
@@ -162,94 +165,165 @@ function OpenButtonOpenSheetUnit() {
         setMtrlArray(data2);
 
         //find shape of material
-        for (let i = 0; i < data2.length; i++) {
-          let material = data2[i];
+        // for (let i = 0; i < data2.length; i++) {
+        //   let material = data2[i];
 
-          console.log("material....", material);
-          const url2 =
-            endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
-          getRequest(url2, (data3) => {
-            console.log("material.Shape....", material.Shape);
-            console.log("data3....", data3.Shape);
-            if (data3.Shape === "Units") {
-              setPara1Label("Qty"); //Nos
-              setPara2Label("");
-              setPara3Label("");
-              setBoolPara1(false);
-              setBoolPara2(true);
-              setBoolPara3(true);
-              setUnitLabel1("Nos");
-              setUnitLabel2("");
-              setUnitLabel3("");
-            } else if (data3.Shape === "Block") {
-              setPara1Label("Length"); //mm
-              setPara2Label("Width");
-              setPara3Label("Height");
-              setBoolPara1(false);
-              setBoolPara2(false);
-              setBoolPara3(false);
-              setUnitLabel1("mm");
-              setUnitLabel2("mm");
-              setUnitLabel3("mm");
-            } else if (data3.Shape === "Plate") {
-              setPara1Label("Length"); //mm
-              setPara2Label("Width");
-              setPara3Label("");
-              setBoolPara1(false);
-              setBoolPara2(false);
-              setBoolPara3(true);
-              setUnitLabel1("mm");
-              setUnitLabel2("mm");
-              setUnitLabel3("");
-            } else if (data3.Shape === "Sheet") {
-              setPara1Label("Width"); //mm
-              setPara2Label("Length"); //mm
-              setPara3Label("");
-              setBoolPara1(false);
-              setBoolPara2(false);
-              setBoolPara3(true);
-              setUnitLabel1("mm");
-              setUnitLabel2("mm");
-              setUnitLabel3("");
-            } else if (data3.Shape === "Tiles") {
-              setPara1Label("");
-              setPara2Label("");
-              setPara3Label("");
-              setBoolPara1(true);
-              setBoolPara2(true);
-              setBoolPara3(true);
-              setUnitLabel1("");
-              setUnitLabel2("");
-              setUnitLabel3("");
-            } else if (data3.Shape === "Tube") {
-              setPara1Label("Length"); //mm
-              setPara2Label("");
-              setPara3Label("");
-              setBoolPara1(false);
-              setBoolPara2(true);
-              setBoolPara3(true);
-              setUnitLabel1("mm");
-              setUnitLabel2("");
-              setUnitLabel3("");
-            } else if (data3.Shape === "Cylinder") {
-              setPara1Label("Volume"); //CubicMtr
-              setPara2Label("");
-              setPara3Label("");
-              setBoolPara1(false);
-              setBoolPara2(true);
-              setBoolPara3(true);
-              setUnitLabel1("CubicMtr");
-              setUnitLabel2("");
-              setUnitLabel3("");
-            }
-          });
-        }
+        //   const url2 =
+        //     endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
+        //   getRequest(url2, (data3) => {
+
+        //     if (data3.Shape === "Units") {
+        //       setPara1Label("Qty"); //Nos
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //       setBoolPara1(false);
+        //       setBoolPara2(true);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("Nos");
+        //       setUnitLabel2("");
+        //       setUnitLabel3("");
+        //     } else if (data3.Shape === "Block") {
+        //       setPara1Label("Length"); //mm
+        //       setPara2Label("Width");
+        //       setPara3Label("Height");
+        //       setBoolPara1(false);
+        //       setBoolPara2(false);
+        //       setBoolPara3(false);
+        //       setUnitLabel1("mm");
+        //       setUnitLabel2("mm");
+        //       setUnitLabel3("mm");
+        //     } else if (data3.Shape === "Plate") {
+        //       setPara1Label("Length"); //mm
+        //       setPara2Label("Width");
+        //       setPara3Label("");
+        //       setBoolPara1(false);
+        //       setBoolPara2(false);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("mm");
+        //       setUnitLabel2("mm");
+        //       setUnitLabel3("");
+        //     } else if (data3.Shape === "Sheet") {
+        //       setPara1Label("Width"); //mm
+        //       setPara2Label("Length"); //mm
+        //       setPara3Label("");
+        //       setBoolPara1(false);
+        //       setBoolPara2(false);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("mm");
+        //       setUnitLabel2("mm");
+        //       setUnitLabel3("");
+        //     } else if (data3.Shape === "Tiles") {
+        //       setPara1Label("");
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //       setBoolPara1(true);
+        //       setBoolPara2(true);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("");
+        //       setUnitLabel2("");
+        //       setUnitLabel3("");
+        //     } else if (data3.Shape === "Tube") {
+        //       setPara1Label("Length"); //mm
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //       setBoolPara1(false);
+        //       setBoolPara2(true);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("mm");
+        //       setUnitLabel2("");
+        //       setUnitLabel3("");
+        //     } else if (data3.Shape === "Cylinder") {
+        //       setPara1Label("Volume"); //CubicMtr
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //       setBoolPara1(false);
+        //       setBoolPara2(true);
+        //       setBoolPara3(true);
+        //       setUnitLabel1("CubicMtr");
+        //       setUnitLabel2("");
+        //       setUnitLabel3("");
+        //     }
+        //   });
+        // }
+
+        const url2 =
+          endpoints.getRowByMtrlCode + "?code=" + data2[0]?.Mtrl_Code;
+        getRequest(url2, (data3) => {
+          if (data3.Shape === "Sheet") {
+            // Sheet
+            setPara1Label("Width");
+            setPara2Label("Length");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setSheetRowSelect(true);
+          } else {
+            setSheetRowSelect(false);
+          }
+
+          if (data3.Shape === "Plate") {
+            // Plate
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setPlateRowSelect(true);
+          } else {
+            setPlateRowSelect(false);
+          }
+
+          if (data3.Shape.includes("Tube")) {
+            // Tube
+            setPara1Label("Length");
+            setUnitLabel1("mm");
+            setTubeRowSelect(true);
+          } else {
+            setTubeRowSelect(false);
+          }
+
+          if (data3.Shape === "Tiles" || data3.Shape === "Strip") {
+            // Titles, Strip
+            setPara1Label("");
+            setUnitLabel1("");
+            setTilesStripRowSelect(true);
+          } else {
+            setTilesStripRowSelect(false);
+          }
+
+          if (data3.Shape === "Block") {
+            // Block
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setPara3Label("Height");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setUnitLabel3("mm");
+            setBlockRowSelect(true);
+          } else {
+            setBlockRowSelect(false);
+          }
+
+          if (data3.Shape === "Cylinder") {
+            // Cylinder
+            setPara1Label("Volume");
+            setUnitLabel1("CubicMtr");
+            setCylinderRowSelect(true);
+          } else {
+            setCylinderRowSelect(false);
+          }
+
+          if (data3.Shape === "Units") {
+            // Units
+            setPara1Label("Qty");
+            setUnitLabel1("Nos");
+            setUnitRowSelect(true);
+          } else {
+            setUnitRowSelect(false);
+          }
+        });
 
         //setFormHeader(formHeader);
-        //console.log(data2);
       });
     });
-    //console.log("data = ", formHeader);
   }
 
   useEffect(() => {
@@ -258,7 +332,7 @@ function OpenButtonOpenSheetUnit() {
   }, []);
 
   // useEffect(() => {
-  //   console.log("use state mtrlarray");
+
   // }, [mtrlArray]);
 
   function updateCount(cnt, callback) {
@@ -270,7 +344,7 @@ function OpenButtonOpenSheetUnit() {
       });
       await delay(500);
       setMtrlArray(mtrlArray);
-      //console.log("mtrl arry = ", mtrlArray);
+
       callback("hello");
     }, 500);
   }
@@ -302,11 +376,12 @@ function OpenButtonOpenSheetUnit() {
         ivNo: "",
         ncProgramNo: "",
         locationNo: mtrlStock.locationNo,
-        qtyAccepted: mtrlStock.qtyAccepted,
+        // qtyAccepted: mtrlStock.qtyAccepted,
+        accepted: mtrlStock.accepted,
       };
-      //console.log("before api");
+
       // postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
-      //   //console.log("data = ", data);
+
       //   if (data.affectedRows !== 0) {
       //     //enable remove stock buttons
       //     toast.success("Stock Added Successfully");
@@ -320,7 +395,6 @@ function OpenButtonOpenSheetUnit() {
       // });
 
       postRequest(endpoints.insertMtrlStockList, newRow, async (data) => {
-        //console.log("data = ", data);
         if (data.affectedRows !== 0) {
           //enable remove stock buttons
           toast.success("Stock Added Successfully");
@@ -344,67 +418,90 @@ function OpenButtonOpenSheetUnit() {
         endpoints.updateMtrlReceiptDetailsUpdated,
         updateObj,
         async (data) => {
-          console.log("updated = 1");
+          // console.log("updated = 1");s
         }
       );
 
       // updateCount(1, (nm) => {
-      //   console.log("value updated");
-      //   console.log("mtrl arry = ", mtrlArray);
+
       //   setMtrlArray(mtrlArray);
       // });
-      //console.log("prev mtrlArray = ", mtrlArray);
-      //console.log("prev mtrlStock = ", mtrlStock);
 
       for (let i = 0; i < mtrlArray.length; i++) {
         if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
+          // if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
           mtrlArray[i].updated = 1;
-          //console.log("Its Updated");
         }
       }
       await delay(500);
       let newArray = mtrlArray;
-      console.log("mtrle new array = ", newArray);
+
       setMtrlArray([]);
       await delay(200);
       setMtrlArray(newArray);
       // setInputPart({ ...inputPart, updated: 1 });
-      console.log("mtrlArray", mtrlArray);
-      //console.log("input part ", inputPart);
-      //console.log("formheader ", formHeader);
-      //console.log("mtrlstock ", mtrlArray);
     }
   };
 
   const removeStock = async () => {
+    // console.log("mtrlStock.Mtrl_Rv_id", mtrlStock.Mtrl_Rv_id);
+    // console.log("mtrlStock.Mtrl_Code", mtrlStock.Mtrl_Code);
+    // console.log("inputPart.accepted", inputPart.accepted);
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
-      postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        console.log("data = ", data);
-        if (data.affectedRows !== 0) {
-          //enable remove stock buttons
-          toast.success("Stock Removed Successfully");
-          // setBoolVal2(false);
-          // setBoolVal3(true);
-          setBoolValStock("off");
-          setAddBtn(true);
-          setRmvBtn(false);
-          //update checkbox
-          for (let i = 0; i < mtrlArray.length; i++) {
-            if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-              mtrlArray[i].upDated = 0;
-            }
-          }
-          await delay(500);
-          setMtrlArray(newArray);
-          // setInputPart({ ...inputPart, updated: 0 });
-        } else {
-          toast.success("Stock Removed Successfully");
-        }
-      });
+      const requestData = {
+        Mtrl_Rv_id: mtrlStock.Mtrl_Rv_id,
+        Mtrl_Code: mtrlStock.Mtrl_Code,
+        Accepted: inputPart.accepted,
+      };
 
       //update updated status = 1
+
+      postRequest(
+        endpoints.deleteMtrlStockByRVNo,
+        requestData,
+        async (data) => {
+          console.log("Remove stock data = ", data);
+          console.log("data[0].count = ", data[0].count);
+
+          if (data[0].count < inputPart.accepted) {
+            toast.error(
+              "Received Material Already used, to return create a Issue Voucher"
+            );
+            return;
+          }
+
+          // Validate if the material is already in use for production
+          if (data[0].inUseCount > 0) {
+            toast.error(
+              "Material already in use for production, cannot take out from stock"
+            );
+            return;
+          }
+
+          if (data.affectedRows !== 0) {
+            //enable remove stock buttons
+            toast.success("Stock Removed Successfully");
+            // Update UI state here
+            setBoolValStock("off");
+            setAddBtn(true);
+            setRmvBtn(false);
+            //update checkbox
+            for (let i = 0; i < mtrlArray.length; i++) {
+              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+                mtrlArray[i].upDated = 0;
+              }
+            }
+            await delay(500);
+            setMtrlArray(newArray);
+            // setInputPart({ ...inputPart, updated: 0 });
+          } else {
+            toast.success("Stock Removed Successfully");
+          }
+        }
+      );
+
       let updateObj = {
         id: mtrlStock.Mtrl_Rv_id,
         upDated: 0,
@@ -413,7 +510,7 @@ function OpenButtonOpenSheetUnit() {
         endpoints.updateMtrlReceiptDetailsUpdated,
         updateObj,
         async (data) => {
-          console.log("updated = 0");
+          // console.log("updated = 0");
         }
       );
 
@@ -426,10 +523,30 @@ function OpenButtonOpenSheetUnit() {
       await delay(500);
       // console.log(newArray);
       let newArray = mtrlArray;
-      console.log("mtrle new array = ", newArray);
+
       setMtrlArray([]);
       await delay(200);
       setMtrlArray(newArray);
+
+      await updateStockRegister();
+    }
+  };
+
+  const updateStockRegister = async () => {
+    try {
+      const requestData = {
+        rvId: formHeader.rvId,
+        custCode: formHeader.customer,
+      };
+
+      const response = await postRequest(
+        endpoints.updateAfterRemoveStock,
+        requestData
+      );
+
+      console.log("response", response);
+    } catch (error) {
+      console.error("Error updating Stock Register:", error);
     }
   };
 
@@ -488,7 +605,7 @@ function OpenButtonOpenSheetUnit() {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: "Updated",
+      text: "UpDated",
       dataField: "updated",
       formatter: (celContent, row) => (
         <div className="checkbox">
@@ -505,8 +622,6 @@ function OpenButtonOpenSheetUnit() {
     clickToSelect: true,
     bgColor: "#8A92F0",
     onSelect: (row, isSelect, rowIndex, e) => {
-      // console.log("isselect", isSelect);
-      console.log("row", row);
       // setSelectedRows(row);
       setInputPart(row);
       if (row.updated === 1) {
@@ -522,32 +637,100 @@ function OpenButtonOpenSheetUnit() {
           setMtrlStock(obj);
           // console.log("obj.totalWeight", obj.totalWeight);
           setInputPart({
-            qtyAccepted: row.qtyAccepted,
+            // qtyAccepted: row.qtyAccepted,
             qtyRejected: obj.qtyRejected,
-            qtyReceived: row.qtyReceived,
-            id: row.id,
-            srl: row.srl,
+            // qtyReceived: row.qtyReceived,
+            id: obj.id,
+            srl: obj.srl,
             mtrlCode: row.mtrlCode,
             dynamicPara1: row.dynamicPara1,
             dynamicPara2: row.dynamicPara2,
             dynamicPara3: row.dynamicPara3,
-            qty: row.qty,
-            inspected: row.inspected,
-            locationNo: row.locationNo,
-            updated: row.updated,
+            qty: obj.qty,
+            inspected: obj.inspected,
+            locationNo: obj.locationNo,
+            updated: obj.updated,
             accepted: obj.accepted,
             totalWeightCalculated: obj.totalWeightCalculated,
-            totalWeight: row.totalWeight,
+            totalWeight: obj.totalWeight,
           });
+          if (obj.shapeID === 1) {
+            // Sheet
+            setPara1Label("Width");
+            setPara2Label("Length");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setSheetRowSelect(true);
+          } else {
+            setSheetRowSelect(false);
+          }
+
+          if (obj.ShapeID === 2) {
+            // Plate
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setPlateRowSelect(true);
+          } else {
+            setPlateRowSelect(false);
+          }
+
+          if (obj.ShapeID === 3 || obj.ShapeID === 4 || obj.ShapeID === 5) {
+            setPara1Label("Length");
+            setUnitLabel1("mm");
+            setTubeRowSelect(true);
+          } else {
+            setTubeRowSelect(false);
+          }
+
+          if (obj.ShapeID === 6 || obj.ShapeID === 7) {
+            // Titles, Strip
+            setPara1Label("");
+            setUnitLabel1("");
+            setTilesStripRowSelect(true);
+          } else {
+            setTilesStripRowSelect(false);
+          }
+
+          if (obj.ShapeID === 8) {
+            // Block
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setPara3Label("Height");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setUnitLabel3("mm");
+            setBlockRowSelect(true);
+          } else {
+            setBlockRowSelect(false);
+          }
+
+          if (obj.ShapeID === 9) {
+            // Cylinder
+            setPara1Label("Volume");
+            setUnitLabel1("CubicMtr");
+            setCylinderRowSelect(true);
+          } else {
+            setCylinderRowSelect(false);
+          }
+
+          if (obj.ShapeID === 10) {
+            // Units
+            setPara1Label("Qty");
+            setUnitLabel1("Nos");
+            setUnitRowSelect(true);
+          } else {
+            setUnitRowSelect(false);
+          }
         }
       });
     },
   };
 
-  console.log("inputPart....", inputPart);
-  // console.log("inputPart.location", inputPart.locationNo);
-  // console.log("inputPart....", inputPart.totalWeight);
-  // console.log("inputPart.upDated....", inputPart.upDated);
+  console.log("Input Part", inputPart);
+  console.log("formHeader", formHeader);
+  console.log("rvId", formHeader.rvId);
 
   return (
     <div>
@@ -740,12 +923,12 @@ function OpenButtonOpenSheetUnit() {
               </div>
               <div className="row">
                 <div className="ip-box form-bg">
-                  <div className="row">
+                  {/* <div className="row">
                     <p className="form-title-deco mt-2">
                       <h5>Serial Details</h5>
                     </p>
 
-                    <div className="col-md-3 ">
+                    <div className="col-md-4">
                       <label className="form-label">Part ID</label>
                     </div>
                     <div className="col-md-8" style={{ marginTop: "8px" }}>
@@ -761,26 +944,26 @@ function OpenButtonOpenSheetUnit() {
                         </option>
                       </select>
                     </div>
-                  </div>
+                  </div> */}
                   {/* {!(boolVal3 || boolPara1) && ( */}
-                  <div className="row">
-                    <div className="col-md-3">
+                  {/* <div className="row">
+                    <div className="col-md-4">
                       <label className="form-label">{para1Label}</label>
                     </div>
-                    <div className="col-md-6 ">
+                    <div className="col-md-6">
                       <input
                         className="in-field"
                         value={inputPart.dynamicPara1}
                         disabled={boolVal}
                       />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                       <label className="form-label">{unitLabel1}</label>
                     </div>
-                  </div>
+                  </div> */}
                   {/* )} */}
                   {/* {!(boolVal3 || boolPara2) && ( */}
-                  <div className="row">
+                  {/* <div className="row">
                     <div className="col-md-3">
                       <label className="form-label">{para2Label}</label>
                     </div>
@@ -794,10 +977,10 @@ function OpenButtonOpenSheetUnit() {
                     <div className="col-md-3">
                       <label className="form-label">{unitLabel2}</label>
                     </div>
-                  </div>
+                  </div> */}
                   {/* )} */}
                   {/* {!(boolVal3 || boolPara3) && ( */}
-                  <div className="row">
+                  {/* <div className="row">
                     <div className="col-md-3">
                       <label className="form-label">{para3Label}</label>
                     </div>
@@ -811,25 +994,258 @@ function OpenButtonOpenSheetUnit() {
                     <div className="col-md-3">
                       <label className="form-label">{unitLabel3}</label>
                     </div>
-                  </div>
+                  </div> */}
                   {/* )} */}
+
+                  <div className="row">
+                    <p className="form-title-deco mt-2">
+                      <h5>Serial Details</h5>
+                    </p>
+
+                    <div className="col-md-4">
+                      <label className="form-label">Mtrl Code</label>
+                    </div>
+                    <div className="col-md-8" style={{ marginTop: "8px" }}>
+                      <select
+                        className="ip-select dropdown-field"
+                        disabled={boolVal}
+                        // defaultValue={" "}
+                        value={inputPart.mtrlCode}
+                        name="mtrlCode"
+                      >
+                        <option value={inputPart.mtrlCode} disabled selected>
+                          {inputPart.mtrlCode}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {sheetRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-4">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-4">
+                          <label className="form-label">{para2Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara2"
+                            value={inputPart.dynamicPara2}
+                            min="0"
+                            disabled
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel2}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {plateRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-4">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-4">
+                          <label className="form-label">{para2Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara2"
+                            value={inputPart.dynamicPara2}
+                            min="0"
+                            disabled
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel2}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {tubeRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-4">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {tilesStripRowSelect && <div></div>}
+
+                  {blockRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-4">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-4">
+                          <label className="form-label">{para2Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara2"
+                            value={inputPart.dynamicPara2}
+                            min="0"
+                            disabled
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel2}</label>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-4">
+                          <label className="form-label">{para3Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara3"
+                            value={inputPart.dynamicPara3}
+                            min="0"
+                            disabled
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel3}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {cylinderRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-3">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {unitRowSelect && (
+                    <div>
+                      <div className="row mt-3">
+                        <div className="col-md-4">
+                          <label className="form-label">{para1Label}</label>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="number"
+                            className="in-field"
+                            name="dynamicPara1"
+                            value={inputPart.dynamicPara1}
+                            disabled
+                            min="0"
+                          />
+                        </div>
+                        <div className="col-md-2">
+                          <label className="form-label">{unitLabel1}</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="col-md-12  mt-3">
                     <p className="form-title-deco">
                       <h5>Quantity Details</h5>
                     </p>
                     <div className="row">
-                      <div className="col-md-3">
+                      <div className="col-md-3 col-sm-12">
                         <label className="form-label">Received</label>
                       </div>
-                      <div className="col-md-4">
+                      <div className="col-md-4 col-sm-12">
                         <input
                           className="in-field"
                           disabled={boolVal}
-                          value={
-                            (inputPart.qtyReceived = Math.floor(
-                              inputPart.qtyReceived
-                            ))
-                          }
+                          value={(inputPart.qty = Math.floor(inputPart.qty))}
                         />
                       </div>
 
@@ -841,10 +1257,12 @@ function OpenButtonOpenSheetUnit() {
                           <input
                             className="form-check-input mt-3"
                             type="checkbox"
+                            id="flexCheckDefault"
+                            name="inspected"
                             checked={inputPart.inspected == 1 ? true : false}
                             value={inputPart.inspected}
                             // checked={insCheck}
-                            id="flexCheckDefault"
+
                             disabled={boolVal}
                           />
                           <label className="form-label mt-1">Inspected</label>
@@ -860,8 +1278,8 @@ function OpenButtonOpenSheetUnit() {
                           className="in-field"
                           disabled={boolVal}
                           value={
-                            (inputPart.qtyAccepted = Math.floor(
-                              inputPart.qtyAccepted
+                            (inputPart.accepted = Math.floor(
+                              inputPart.accepted
                             ))
                           }
                         />

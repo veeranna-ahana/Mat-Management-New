@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import { formatDate } from "../../../../utils";
 import { useLocation } from "react-router-dom";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
@@ -304,11 +305,15 @@ function OpenButtonOpenClosedPartList() {
               </button>
             </div>
             <div className="row">
+              {/* <label className="form-label">Srl Details</label> */}
+              <p className="form-title-deco mt-1">
+                <h5>Serial Details</h5>
+              </p>
               <div className="col-md-4 ">
-                <label className="form-label mt-1">Part ID</label>
+                <label className="form-label mt-1">Mtrl Code</label>
               </div>
               <div className="col-md-8">
-                <select
+                {/* <select
                   className="ip-select dropdown-field"
                   name="partId"
                   value={inputPart.partId}
@@ -322,7 +327,15 @@ function OpenButtonOpenClosedPartList() {
                       {part.PartId}
                     </option>
                   ))}
-                </select>
+                </select> */}
+                <Typeahead
+                  className="in-field"
+                  id="partId"
+                  labelKey="PartId"
+                  options={mtrlDetails}
+                  disabled={boolVal}
+                  placeholder="Select Part"
+                />
               </div>
             </div>
             <div className="row">
