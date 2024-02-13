@@ -154,7 +154,7 @@ function MaterialAllotmentMain() {
     //console.log("on blur : ", issuenowval, " calc = ", formHeader);
 
     if (issuenowval > formHeader.Qty - formHeader.QtyAllotted) {
-      toast.error("Cannot Allot more material than Prgrammed Quantity");
+      toast.error("Cannot Allot more material than Programmed Quantity");
       setBtnVisibility(true);
     } else {
       setBtnVisibility(false);
@@ -670,7 +670,8 @@ function MaterialAllotmentMain() {
           <div className="col-md-3">
             <label className="form-label">Issue Now</label>
             <input
-              type="text"
+              type="number"
+              min="0"
               onChange={issuenowchange}
               value={issuenowval}
               onBlur={issuenowonblur}
@@ -762,7 +763,6 @@ function MaterialAllotmentMain() {
                   <th>RV No</th>
                   <th>RV Date</th>
                   <th>Received</th>
-
                   <th>Accepted</th>
                   <th>Issued</th>
                   <th>Issue Now</th>
@@ -879,6 +879,7 @@ function MaterialAllotmentMain() {
                     >
                       <input
                         type="number"
+                        min="0"
                         value={row.issueNow}
                         onChange={(e) => handleIssueNowChange(e, row)}
                         style={{
@@ -902,7 +903,6 @@ function MaterialAllotmentMain() {
               <div className="col-md-4 mt-2 ">
                 <label className="form-label">RV No</label>
               </div>
-
               <div className="col-md-8 ">
                 <input
                   className="in-field"

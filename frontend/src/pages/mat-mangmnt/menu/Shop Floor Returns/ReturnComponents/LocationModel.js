@@ -60,7 +60,6 @@ function LocationModel({ show, setShow, scrapModal }) {
         <Modal.Body>
           <Form>
             <div className="row mt-2">
-              {" "}
               <div className="col-md-11 ">
                 <label className="form-label">Scrap Weight</label>
                 <input
@@ -69,13 +68,12 @@ function LocationModel({ show, setShow, scrapModal }) {
                   value={row.scrapWeight}
                   onChange={InputHeaderEvent}
                 />
-                 {" "}
-              </div>{" "}
+                 
+              </div>
               <div className="col-md-12 ">
-                <label className="form-label">Location</label>{" "}
-              </div>{" "}
+                <label className="form-label">Location</label>
+              </div>
               <div className="col-md-11" style={{ marginTop: "8px" }}>
-                {" "}
                 <select
                   className="ip-select dropdown-field"
                   name="location"
@@ -89,8 +87,8 @@ function LocationModel({ show, setShow, scrapModal }) {
                       {location.LocationNo}
                     </option>
                   ))}
-                </select>{" "}
-              </div>{" "}
+                </select>
+              </div>
             </div>
           </Form>
         </Modal.Body>

@@ -179,7 +179,7 @@ function OpenButtonDraftSheetUnit(props) {
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
-      text: "Updated",
+      text: "UpDated",
       dataField: "updated",
       formatter: (celContent, row) => (
         <div className="checkbox">
@@ -560,8 +560,23 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
+  const getRVNo = async () => {
+    const requestData = {
+      unit: "Jigani",
+      srlType: "MaterialReceiptVoucher",
+      ResetPeriod: "Year",
+      ResetValue: 0,
+      VoucherNoLength: 4,
+    };
+
+    postRequest(endpoints.insertRunNoRow, requestData, async (data) => {
+      console.log("RV NO Response", data);
+    });
+  };
+
   const allotRVButtonState = (e) => {
     e.preventDefault();
+    getRVNo();
 
     if (materialArray.length === 0) {
       toast.error("Add Details Before Saving");
@@ -627,8 +642,10 @@ function OpenButtonDraftSheetUnit(props) {
         toast.error("Select Material");
       } else if (flag1 === 2) {
         toast.error("Parameters cannot be Zero");
+      } else if (flag1 === 3) {
+        toast.error("Received  Qty cannot be Zero");
       } else if (flag1 === 4) {
-        toast.error("Received and Accepted Qty cannot be Zero");
+        toast.error("Accepted Qty cannot be Zero");
       } else if (flag1 === 5) {
         toast.error("Select Location");
       } else if (flag1 === 6) {
@@ -1093,6 +1110,8 @@ function OpenButtonDraftSheetUnit(props) {
         id: mtrlStock.Mtrl_Rv_id,
         upDated: 1,
       };
+
+      console.log("updateObj", updateObj);
       postRequest(
         endpoints.updateMtrlReceiptDetailsUpdated,
         updateObj,
@@ -1100,9 +1119,10 @@ function OpenButtonDraftSheetUnit(props) {
           console.log("updated = 1");
         }
       );
-      //update checkbox
+      // update checkbox
       for (let i = 0; i < materialArray.length; i++) {
-        if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+        // if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+        if (materialArray[i].id === mtrlStock.id) {
           materialArray[i].updated = 1;
         }
       }
@@ -1112,38 +1132,144 @@ function OpenButtonDraftSheetUnit(props) {
     }
   };
 
-  console.log("material array", materialArray);
+  // const removeStock = () => {
+  //   if (Object.keys(mtrlStock).length === 0) {
+  //     toast.error("Please Select Material");
+  //   } else {
+  //     postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
+  //       console.log("data = ", data);
+  //       if (data.affectedRows !== 0) {
+  //         //enable remove stock buttons
+  //         toast.success("Stock Removed Successfully");
+  //         //setBoolVal2(false);
+  //         //setBoolVal3(true);
+  //         setBoolValStock("off");
+  //         // setBoolVal6(false);
+  //         // setBoolVal7(true);
+  //         setAddBtn(true);
+  //         setRmvBtn(false);
 
-  const removeStock = () => {
+  //         //update checkbox
+  //         for (let i = 0; i < materialArray.length; i++) {
+  //           // if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+  //           if (materialArray[i].id == mtrlStock.id) {
+  //             materialArray[i].updated = 0;
+  //           }
+  //         }
+  //         await delay(500);
+  //         setMaterialArray(materialArray);
+  //         setInputPart({ ...inputPart, updated: 0 });
+  //       } else {
+  //         toast.error("Stock Not Removed");
+  //       }
+  //     });
+  //   }
+  // };
+
+  const removeStock = async () => {
+    // console.log("mtrlStock.Mtrl_Rv_id", mtrlStock.Mtrl_Rv_id);
+    // console.log("mtrlStock.Mtrl_Code", mtrlStock.Mtrl_Code);
+    // console.log("inputPart.accepted", inputPart.accepted);
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
-      postRequest(endpoints.deleteMtrlStockByRVNo, formHeader, async (data) => {
-        console.log("data = ", data);
-        if (data.affectedRows !== 0) {
-          //enable remove stock buttons
-          toast.success("Stock Removed Successfully");
-          //setBoolVal2(false);
-          //setBoolVal3(true);
-          setBoolValStock("off");
-          // setBoolVal6(false);
-          // setBoolVal7(true);
-          setAddBtn(true);
-          setRmvBtn(false);
+      const requestData = {
+        Mtrl_Rv_id: mtrlStock.Mtrl_Rv_id,
+        Mtrl_Code: mtrlStock.Mtrl_Code,
+        Accepted: inputPart.accepted,
+      };
 
-          //update checkbox
-          for (let i = 0; i < materialArray.length; i++) {
-            if (materialArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-              materialArray[i].updated = 0;
-            }
+      //update updated status = 1
+
+      postRequest(
+        endpoints.deleteMtrlStockByRVNo,
+        requestData,
+        async (data) => {
+          console.log("Remove stock data = ", data);
+          console.log("data[0].count = ", data[0].count);
+
+          if (data[0].count < inputPart.accepted) {
+            toast.error(
+              "Received Material Already used, to return create a Issue Voucher"
+            );
+            return;
           }
-          await delay(500);
-          setMaterialArray(materialArray);
-          setInputPart({ ...inputPart, updated: 0 });
-        } else {
-          toast.error("Stock Not Removed");
+
+          // Validate if the material is already in use for production
+          if (data[0].inUseCount > 0) {
+            toast.error(
+              "Material already in use for production, cannot take out from stock"
+            );
+            return;
+          }
+
+          if (data.affectedRows !== 0) {
+            //enable remove stock buttons
+            toast.success("Stock Removed Successfully");
+            // Update UI state here
+            setBoolValStock("off");
+            setAddBtn(true);
+            setRmvBtn(false);
+            //update checkbox
+            for (let i = 0; i < mtrlArray.length; i++) {
+              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+                mtrlArray[i].upDated = 0;
+              }
+            }
+            await delay(500);
+            setMtrlArray(newArray);
+            // setInputPart({ ...inputPart, updated: 0 });
+          } else {
+            toast.success("Stock Removed Successfully");
+          }
         }
-      });
+      );
+
+      let updateObj = {
+        id: mtrlStock.Mtrl_Rv_id,
+        upDated: 0,
+      };
+      postRequest(
+        endpoints.updateMtrlReceiptDetailsUpdated,
+        updateObj,
+        async (data) => {
+          // console.log("updated = 0");
+        }
+      );
+
+      for (let i = 0; i < mtrlArray.length; i++) {
+        if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
+          mtrlArray[i].updated = 0;
+          //console.log("Its Updated");
+        }
+      }
+      await delay(500);
+      // console.log(newArray);
+      let newArray = mtrlArray;
+
+      setMtrlArray([]);
+      await delay(200);
+      setMtrlArray(newArray);
+
+      await updateStockRegister();
+    }
+  };
+
+  const updateStockRegister = async () => {
+    try {
+      const requestData = {
+        rvId: formHeader.rvId,
+        custCode: formHeader.customer,
+      };
+
+      const response = await postRequest(
+        endpoints.updateAfterRemoveStock,
+        requestData
+      );
+
+      console.log("response", response);
+    } catch (error) {
+      console.error("Error updating Stock Register:", error);
     }
   };
 
@@ -1223,6 +1349,7 @@ function OpenButtonDraftSheetUnit(props) {
     ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
 
   console.log("Input Part", inputPart);
+  console.log("rvId", inputPart.rvId);
 
   const filterMaterials = () => {
     if (location?.state?.type === "sheets") {
@@ -1472,8 +1599,8 @@ function OpenButtonDraftSheetUnit(props) {
                     <h5>Serial Details</h5>
                   </p>
                   <div className="row">
-                    <div className="col-md-3 mt-2">
-                      <label className="form-label">Part ID</label>
+                    <div className="col-md-4">
+                      <label className="form-label">Mtrl Code</label>
                     </div>
                     <div className="col-md-8">
                       {/* <select
@@ -1553,10 +1680,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {materialArray.length === 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 1</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             className="in-field"
                             name="dynamicPara1"
@@ -1564,12 +1691,12 @@ function OpenButtonDraftSheetUnit(props) {
                             min="0"
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 2</label>
                         </div>
                         <div className="col-md-6">
@@ -1580,12 +1707,12 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">Para 3</label>
                         </div>
                         <div className="col-md-6 ">
@@ -1596,7 +1723,7 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">mm</label>
                         </div>
                       </div>
@@ -1606,10 +1733,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {sheetRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1623,12 +1750,12 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -1645,7 +1772,7 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
@@ -1655,10 +1782,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {plateRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1672,12 +1799,12 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -1694,7 +1821,7 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
@@ -1704,10 +1831,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {tubeRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1721,7 +1848,7 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
@@ -1735,10 +1862,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {blockRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1752,12 +1879,12 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para2Label}</label>
                         </div>
                         <div className="col-md-6">
@@ -1774,16 +1901,16 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel2}</label>
                         </div>
                       </div>
 
                       <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para3Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1797,7 +1924,7 @@ function OpenButtonDraftSheetUnit(props) {
                             disabled={boolVal5}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel3}</label>
                         </div>
                       </div>
@@ -1807,10 +1934,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {cylinderRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1824,7 +1951,7 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>
@@ -1834,10 +1961,10 @@ function OpenButtonDraftSheetUnit(props) {
                   {unitRowSelect && materialArray.length !== 0 && (
                     <div>
                       <div className="row mt-3">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label className="form-label">{para1Label}</label>
                         </div>
-                        <div className="col-md-6 ">
+                        <div className="col-md-6">
                           <input
                             type="number"
                             className="in-field"
@@ -1851,7 +1978,7 @@ function OpenButtonDraftSheetUnit(props) {
                             }}
                           />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                           <label className="form-label">{unitLabel1}</label>
                         </div>
                       </div>

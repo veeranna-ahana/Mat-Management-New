@@ -89,6 +89,7 @@ function IVListProfileCutting(props) {
     clickToSelect: true,
     bgColor: "#98A8F8",
     onSelect: (row, isSelect, rowIndex, e) => {
+      console.log("Row", row);
       setIssueIDVal(row.IssueID);
       setRowData({
         Cust_Name: row.Cust_Name,
@@ -100,7 +101,7 @@ function IVListProfileCutting(props) {
         TaskNo: row.TaskNo,
         Mtrl_Code: row.Mtrl_Code,
         QtyIssued: row.QtyIssued,
-        //QtyUsed: row.QtyUsed,
+        QtyUsed: row.QtyUsed,
         QtyReturned: row.QtyReturned,
         //RV_Date: formatDate(new Date(row.RV_Date), 3), //dateToShort(row.RV_Date),
       });
@@ -263,7 +264,11 @@ function IVListProfileCutting(props) {
                   <label className="form-label">Used</label>
                 </div>
                 <div className="col-md-8 ">
-                  <input className="in-field" disabled />
+                  <input
+                    className="in-field"
+                    value={rowData.QtyUsed}
+                    disabled
+                  />
                 </div>
               </div>
               <div className="row mb-4">

@@ -54,7 +54,7 @@ function UnitsOpenRVList() {
     // const { value, name } = e.target;
 
     const found = allData.filter((obj) => obj.Cust_Code === e[0].Cust_Code);
-    //console.log("table data = ", tabledata);
+    // console.log("table data = ", tabledata);
     setTableData(found);
   };
 
@@ -112,6 +112,8 @@ function UnitsOpenRVList() {
       dataField: "CustDocuNo",
     },
   ];
+
+  console.log("tableData", tabledata);
   return (
     <div>
       <>

@@ -34,6 +34,18 @@ function OpenButtonClosedSheetUnit() {
     address: "",
   });
 
+  const [unitLabel1, setUnitLabel1] = useState("");
+  const [unitLabel2, setUnitLabel2] = useState("");
+  const [unitLabel3, setUnitLabel3] = useState("");
+
+  const [sheetRowSelect, setSheetRowSelect] = useState(false);
+  const [plateRowSelect, setPlateRowSelect] = useState(false);
+  const [tubeRowSelect, setTubeRowSelect] = useState(false);
+  const [tilesStripRowSelect, setTilesStripRowSelect] = useState(false);
+  const [blockRowSelect, setBlockRowSelect] = useState(false);
+  const [cylinderRowSelect, setCylinderRowSelect] = useState(false);
+  const [unitRowSelect, setUnitRowSelect] = useState(false);
+
   async function fetchData() {
     const url =
       endpoints.getByTypeMaterialReceiptRegisterByRvID +
@@ -59,37 +71,112 @@ function OpenButtonClosedSheetUnit() {
         setMtrlArray(data2);
 
         //find shape of material
-        for (let i = 0; i < data2.length; i++) {
-          const url2 =
-            endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
-          getRequest(url2, (data3) => {
-            if (data3.Shape === "Block") {
-              setPara1Label("Length");
-              setPara2Label("Width");
-              setPara3Label("Height");
-            } else if (data3.Shape === "Plate") {
-              setPara1Label("Length");
-              setPara2Label("Width");
-              setPara3Label("");
-            } else if (data3.Shape === "Sheet") {
-              setPara1Label("Width");
-              setPara2Label("Length");
-              setPara3Label("");
-            } else if (data3.Shape === "Tiles") {
-              setPara1Label("");
-              setPara2Label("");
-              setPara3Label("");
-            } else if (data3.Shape.includes("Tube")) {
-              setPara1Label("Length");
-              setPara2Label("");
-              setPara3Label("");
-            } else if (data3.Shape.includes("Units")) {
-              setPara1Label("Qty(Nos)");
-              setPara2Label("");
-              setPara3Label("");
-            }
-          });
-        }
+        // for (let i = 0; i < data2.length; i++) {
+        //   const url2 =
+        //     endpoints.getRowByMtrlCode + "?code=" + data2[i].Mtrl_Code;
+        //   getRequest(url2, (data3) => {
+        //     if (data3.Shape === "Block") {
+        //       setPara1Label("Length");
+        //       setPara2Label("Width");
+        //       setPara3Label("Height");
+        //     } else if (data3.Shape === "Plate") {
+        //       setPara1Label("Length");
+        //       setPara2Label("Width");
+        //       setPara3Label("");
+        //     } else if (data3.Shape === "Sheet") {
+        //       setPara1Label("Width");
+        //       setPara2Label("Length");
+        //       setPara3Label("");
+        //     } else if (data3.Shape === "Tiles") {
+        //       setPara1Label("");
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //     } else if (data3.Shape.includes("Tube")) {
+        //       setPara1Label("Length");
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //     } else if (data3.Shape.includes("Units")) {
+        //       setPara1Label("Qty(Nos)");
+        //       setPara2Label("");
+        //       setPara3Label("");
+        //     }
+        //   });
+        // }
+
+        const url2 =
+          endpoints.getRowByMtrlCode + "?code=" + data2[0]?.Mtrl_Code;
+        getRequest(url2, (data3) => {
+          if (data3.Shape === "Sheet") {
+            // Sheet
+            setPara1Label("Width");
+            setPara2Label("Length");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setSheetRowSelect(true);
+          } else {
+            setSheetRowSelect(false);
+          }
+
+          if (data3.Shape === "Plate") {
+            // Plate
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setPlateRowSelect(true);
+          } else {
+            setPlateRowSelect(false);
+          }
+
+          if (data3.Shape.includes("Tube")) {
+            // Tube
+            setPara1Label("Length");
+            setUnitLabel1("mm");
+            setTubeRowSelect(true);
+          } else {
+            setTubeRowSelect(false);
+          }
+
+          if (data3.Shape === "Tiles" || data3.Shape === "Strip") {
+            // Titles, Strip
+            setPara1Label("");
+            setUnitLabel1("");
+            setTilesStripRowSelect(true);
+          } else {
+            setTilesStripRowSelect(false);
+          }
+
+          if (data3.Shape === "Block") {
+            // Block
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setPara3Label("Height");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setUnitLabel3("mm");
+            setBlockRowSelect(true);
+          } else {
+            setBlockRowSelect(false);
+          }
+
+          if (data3.Shape === "Cylinder") {
+            // Cylinder
+            setPara1Label("Volume");
+            setUnitLabel1("CubicMtr");
+            setCylinderRowSelect(true);
+          } else {
+            setCylinderRowSelect(false);
+          }
+
+          if (data3.Shape === "Units") {
+            // Units
+            setPara1Label("Qty");
+            setUnitLabel1("Nos");
+            setUnitRowSelect(true);
+          } else {
+            setUnitRowSelect(false);
+          }
+        });
 
         //setFormHeader(formHeader);
         //console.log(data2);
@@ -135,7 +222,7 @@ function OpenButtonClosedSheetUnit() {
     },
     {
       text: "Inspected",
-      dataField: "inspected",
+      dataField: "Inspected",
       formatter: (celContent, row) => (
         console.log("inspected cell = ", celContent),
         (
@@ -149,11 +236,11 @@ function OpenButtonClosedSheetUnit() {
     },
     {
       text: "Location No",
-      dataField: "locationNo",
+      dataField: "LocationNo",
     },
     {
-      text: "Updated",
-      dataField: "updated",
+      text: "UpDated",
+      dataField: "UpDated",
       formatter: (celContent, row) => (
         <div className="checkbox">
           <lable>
@@ -360,8 +447,8 @@ function OpenButtonClosedSheetUnit() {
                         <h5>Serial Details</h5>
                       </p>
 
-                      <div className="col-md-3 ">
-                        <label className="form-label">Part ID</label>
+                      <div className="col-md-4">
+                        <label className="form-label">Mtrl Code</label>
                       </div>
                       <div className="col-md-8" style={{ marginTop: "8px" }}>
                         <select
@@ -379,46 +466,250 @@ function OpenButtonClosedSheetUnit() {
                       </div>
                     </div>
 
-                    <div className="row">
-                      {/* <div className="col-md-3">
-                        <label className="form-label">Length</label>
-                      </div> */}
-                      <div className="col-md-3">
+                    {/* <div className="row">                      
+                      <div className="col-md-4">
                         <label className="form-label">{para1Label}</label>
                       </div>
                       <div className="col-md-6 ">
                         <input
-                          className="in-field"
-                          // value={inputPart.dynamicPara1}
+                          className="in-field"                        
                           disabled={boolVal}
                         />
                       </div>
-                      <div className="col-md-3">
-                        {/* <label className="form-label">{unitLabel1}</label> */}
+                      <div className="col-md-2">
+                        <label className="form-label">{unitLabel1}</label>
                       </div>
-                    </div>
-                    <div className="row">
+                    </div> */}
+                    {/* <div className="row">
                       <div className="col-md-3">
                         <label className="form-label">{para2Label}</label>
                       </div>
                       <div className="col-md-6 ">
                         <input className="in-field" disabled={boolVal} />
                       </div>
-                      <div className="col-md-3">
-                        {/* <label className="form-label">{unitLabel1}</label> */}
-                      </div>
-                    </div>
-                    <div className="row">
+                      <div className="col-md-3"></div>
+                    </div> */}
+                    {/* <div className="row">
                       <div className="col-md-3">
                         <label className="form-label">{para3Label}</label>
                       </div>
                       <div className="col-md-6 ">
                         <input className="in-field" disabled={boolVal} />
                       </div>
-                      <div className="col-md-3">
-                        {/* <label className="form-label">{unitLabel1}</label> */}
+                      <div className="col-md-3"></div>
+                    </div> */}
+                    {sheetRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-4">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <label className="form-label">{para2Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara2"
+                              // value={inputPart.dynamicPara2}
+                              min="0"
+                              disabled
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel2}</label>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {plateRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-4">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <label className="form-label">{para2Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara2"
+                              // value={inputPart.dynamicPara2}
+                              min="0"
+                              disabled
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel2}</label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {tubeRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-4">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {tilesStripRowSelect && <div></div>}
+
+                    {blockRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-4">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <label className="form-label">{para2Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara2"
+                              // value={inputPart.dynamicPara2}
+                              min="0"
+                              disabled
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel2}</label>
+                          </div>
+                        </div>
+
+                        <div className="row">
+                          <div className="col-md-4">
+                            <label className="form-label">{para3Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara3"
+                              // value={inputPart.dynamicPara3}
+                              min="0"
+                              disabled
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel3}</label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {cylinderRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-3">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {unitRowSelect && (
+                      <div>
+                        <div className="row mt-3">
+                          <div className="col-md-4">
+                            <label className="form-label">{para1Label}</label>
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              className="in-field"
+                              name="dynamicPara1"
+                              // value={inputPart.dynamicPara1}
+                              disabled
+                              min="0"
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label">{unitLabel1}</label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div className="col-md-12 mt-3 ">
                       <p className="form-title-deco">
                         <h5>Quantity Details</h5>
@@ -428,7 +719,6 @@ function OpenButtonClosedSheetUnit() {
                           <label className="form-label mt-2">Received</label>
                         </div>
                         <div className="col-md-4">
-                          {" "}
                           <input className="in-field" disabled={boolVal} />
                         </div>
 
@@ -503,12 +793,7 @@ function OpenButtonClosedSheetUnit() {
                           <select
                             className="ip-select dropdown-field"
                             disabled={boolVal}
-                          >
-                            {/* <option value="option 1">001</option>
-                            <option value="option 1">002</option>
-                            <option value="option 1">003</option>
-                            <option value="option 1">004</option> */}
-                          </select>
+                          ></select>
                         </div>
                       </div>
                     </div>
