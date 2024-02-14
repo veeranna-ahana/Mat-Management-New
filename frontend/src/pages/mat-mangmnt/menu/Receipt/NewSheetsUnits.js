@@ -711,7 +711,10 @@ function NewSheetsUnits(props) {
           ) {
             flag1 = 1;
           }
-          if (materialArray[i].accepted > materialArray[i].qty) {
+          if (
+            parseFloat(materialArray[i].accepted) >
+            parseFloat(materialArray[i].qty)
+          ) {
             flag1 = 2;
           }
         }
@@ -798,7 +801,10 @@ function NewSheetsUnits(props) {
           flag1 = 5;
         }
 
-        if (materialArray[i].accepted > materialArray[i].qty) {
+        if (
+          parseFloat(materialArray[i].accepted) >
+          parseFloat(materialArray[i].qty)
+        ) {
           flag1 = 6;
         }
       }
@@ -820,22 +826,6 @@ function NewSheetsUnits(props) {
         setShow(true);
       }
     }
-
-    // if (formHeader.weight == "0") {
-    //   toast.error(
-    //     "Enter the Customer Material Weight as per Customer Document"
-    //   );
-    // } else {
-    //   //show model form
-    //   setShow(true);
-    // }
-
-    //ADDED POPUP FOR ALLOTRVNO
-    // if (materialArray.length === 0) {
-    //   toast.error("Add Details Before Saving");
-    // } else {
-    //   setShow(true);
-    // }
   };
 
   const allotRVYesButton = async (data) => {
@@ -972,7 +962,159 @@ function NewSheetsUnits(props) {
     });
   };
 
-  // console.log("materialArray", materialArray);
+  // const changeMaterialHandle = async (e, id) => {
+  //   const { value, name } = e.target;
+
+  //   for (let i = 0; i < materialArray.length; i++) {
+  //     const element = materialArray[i];
+
+  //     if (element.id === id) {
+  //       element[name] = value;
+  //     }
+  //   }
+
+  //   inputPart[name] = value;
+  //   //checkbox update
+  //   if (name === "inspected") {
+  //     if (e.target.checked) {
+  //       inputPart.inspected = true;
+  //       setBoolVal5(true);
+  //       setInsCheck(true);
+  //     } else {
+  //       inputPart.inspected = false;
+  //       setBoolVal5(false);
+  //       setInsCheck(false);
+  //     }
+  //   }
+  //   if (name === "qty") {
+  //     // setInsCheck(false);
+  //     setBoolVal5(false);
+  //     setInsCheck(false);
+  //     inputPart.inspected = false;
+  //     inputPart.accepted = 0;
+  //   }
+  //   setInputPart(inputPart);
+
+  //   if (name === "accepted") {
+  //     //calculate weight
+  //     if (e.target.value) {
+  //       let val = e.target.value;
+  //       //get mtrl_data by mtrl_code
+
+  //       if (parseFloat(inputPart.accepted) > parseFloat(inputPart.qty)) {
+  //         toast.error(
+  //           "Accepted value should be less than or equal to Received"
+  //         );
+  //       } else {
+  //         // let url = endpoints.getRowByMtrlCode + "?code=" + inputPart.mtrlCode;
+  //         // getRequest(url, async (data) => {
+  //         let url = endpoints.getSpecific_Wt + "?code=" + inputPart.mtrlCode;
+  //         getRequest(url, async (data) => {
+  //           let TotalWeightCalculated =
+  //             parseFloat(inputPart.accepted) *
+  //             getWeight(
+  //               data,
+  //               parseFloat(inputPart.dynamicPara1),
+  //               parseFloat(inputPart.dynamicPara2),
+  //               parseFloat(inputPart.dynamicPara3)
+  //             );
+
+  //           console.log("TotalWeightCalculated...", TotalWeightCalculated);
+
+  //           TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
+  //           console.log("TotalWeightCalculated", TotalWeightCalculated);
+
+  //           inputPart.totalWeightCalculated = parseFloat(
+  //             TotalWeightCalculated
+  //           ).toFixed(2);
+
+  //           inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(
+  //             2
+  //           );
+  //           inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
+  //           inputPart["TotalWeight"] = TotalWeightCalculated;
+
+  //           setInputPart(inputPart);
+  //           // console.log("formHeader", formHeader);
+  //           //update forheader in database
+  //           postRequest(
+  //             endpoints.updateHeaderMaterialReceiptRegister,
+  //             formHeader,
+  //             (data) => {}
+  //           );
+
+  //           //update material array:
+  //           const newArray = materialArray.map((p) =>
+  //             //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //             p.id === id
+  //               ? {
+  //                   ...p,
+  //                   [name]: value,
+  //                   qty: inputPart.qtyReceived,
+  //                   // inspected: inputPart.inspected,
+  //                   inspected: inputPart.inspected == true ? 1 : 0,
+  //                   totalWeightCalculated: inputPart.totalWeightCalculated,
+  //                 }
+  //               : p
+  //           );
+  //           setMaterialArray(newArray);
+  //           // console.log("material array = ", materialArray);
+  //           await delay(500);
+
+  //           //find calculateweight
+
+  //           let totwt = 0;
+  //           for (let i = 0; i < newArray.length; i++) {
+  //             const element = newArray[i];
+  //             totwt = totwt + parseFloat(element.totalWeightCalculated);
+  //           }
+
+  //           setCalcWeightVal(parseFloat(totwt).toFixed(2));
+
+  //           formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+  //           setFormHeader(formHeader);
+  //           delay(500);
+
+  //           //update calc weight in header
+  //           postRequest(
+  //             endpoints.updateHeaderMaterialReceiptRegister,
+  //             formHeader,
+  //             (data) => {
+  //               if (data.affectedRows !== 0) {
+  //               }
+  //             }
+  //           );
+  //         });
+  //       }
+  //     }
+  //   }
+  //   const newArray = materialArray.map((p) =>
+  //     //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
+  //     p.id === id
+  //       ? {
+  //           ...p,
+  //           [name]: value,
+  //           qty: inputPart.qty,
+  //           // inspected: inputPart.inspected == "on" ? 1 : 0,
+  //           inspected: inputPart.inspected == true ? 1 : 0,
+  //           // inspected: inputPart.inspected,
+  //         }
+  //       : p
+  //   );
+  //   setMaterialArray(newArray);
+  //   await delay(500);
+
+  //   console.log("materialarray", materialArray);
+
+  //   //update blank row with respected to modified part textfield
+  //   postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
+  //     if (data?.affectedRows !== 0) {
+  //     } else {
+  //       toast.error("Record Not Updated");
+  //     }
+  //   });
+  //   await delay(500);
+  // };
 
   const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
@@ -1011,7 +1153,6 @@ function NewSheetsUnits(props) {
       //calculate weight
       if (e.target.value) {
         let val = e.target.value;
-        //get mtrl_data by mtrl_code
 
         if (parseFloat(inputPart.accepted) > parseFloat(inputPart.qty)) {
           toast.error(
@@ -1022,6 +1163,9 @@ function NewSheetsUnits(props) {
           // getRequest(url, async (data) => {
           let url = endpoints.getSpecific_Wt + "?code=" + inputPart.mtrlCode;
           getRequest(url, async (data) => {
+            console.log("data", data);
+            //setCustdata(data);
+
             let TotalWeightCalculated =
               parseFloat(inputPart.accepted) *
               getWeight(
@@ -1031,10 +1175,7 @@ function NewSheetsUnits(props) {
                 parseFloat(inputPart.dynamicPara3)
               );
 
-            console.log("TotalWeightCalculated...", TotalWeightCalculated);
-
             TotalWeightCalculated = TotalWeightCalculated / (1000 * 1000);
-            console.log("TotalWeightCalculated", TotalWeightCalculated);
 
             inputPart.totalWeightCalculated = parseFloat(
               TotalWeightCalculated
@@ -1043,12 +1184,12 @@ function NewSheetsUnits(props) {
             inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(
               2
             );
+
             inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
             inputPart["TotalWeight"] = TotalWeightCalculated;
 
             setInputPart(inputPart);
-            // console.log("formHeader", formHeader);
-            //update forheader in database
+
             postRequest(
               endpoints.updateHeaderMaterialReceiptRegister,
               formHeader,
@@ -1062,7 +1203,7 @@ function NewSheetsUnits(props) {
                 ? {
                     ...p,
                     [name]: value,
-                    qty: inputPart.qtyReceived,
+                    qty: inputPart.qty,
                     // inspected: inputPart.inspected,
                     inspected: inputPart.inspected == true ? 1 : 0,
                     totalWeightCalculated: inputPart.totalWeightCalculated,
@@ -1070,10 +1211,10 @@ function NewSheetsUnits(props) {
                 : p
             );
             setMaterialArray(newArray);
-            // console.log("material array = ", materialArray);
-            await delay(500);
 
-            //find calculateweight
+            // console.log("NewArray", newArray);
+
+            await delay(500);
 
             let totwt = 0;
             for (let i = 0; i < newArray.length; i++) {
@@ -1081,13 +1222,16 @@ function NewSheetsUnits(props) {
               totwt = totwt + parseFloat(element.totalWeightCalculated);
             }
 
+            // console.log("totwt", totwt);
+
             setCalcWeightVal(parseFloat(totwt).toFixed(2));
 
             formHeader.calcWeight = parseFloat(totwt).toFixed(2);
             setFormHeader(formHeader);
             delay(500);
-
+            // ////console.log("form header = ", formHeader);
             //update calc weight in header
+
             postRequest(
               endpoints.updateHeaderMaterialReceiptRegister,
               formHeader,
@@ -1100,8 +1244,8 @@ function NewSheetsUnits(props) {
         }
       }
     }
+
     const newArray = materialArray.map((p) =>
-      //p.id === "d28d67b2-6c32-4aae-a7b6-74dc985a3cff"
       p.id === id
         ? {
             ...p,
@@ -1116,14 +1260,11 @@ function NewSheetsUnits(props) {
     setMaterialArray(newArray);
     await delay(500);
 
-    console.log("materialarray", materialArray);
-
-    //update blank row with respected to modified part textfield
     postRequest(endpoints.updateMtrlReceiptDetailsAfter, inputPart, (data) => {
-      if (data?.affectedRows !== 0) {
-      } else {
-        toast.error("Record Not Updated");
-      }
+      // if (data?.affectedRows !== 0) {
+      // } else {
+      //   toast.error("Record Not Updated");
+      // }
     });
     await delay(500);
   };
@@ -1399,9 +1540,6 @@ function NewSheetsUnits(props) {
   // };
 
   const removeStock = async () => {
-    // console.log("mtrlStock.Mtrl_Rv_id", mtrlStock.Mtrl_Rv_id);
-    // console.log("mtrlStock.Mtrl_Code", mtrlStock.Mtrl_Code);
-    // console.log("inputPart.accepted", inputPart.accepted);
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
@@ -1411,48 +1549,92 @@ function NewSheetsUnits(props) {
         Accepted: inputPart.accepted,
       };
 
-      //update updated status = 1
+      // postRequest(
+      //   endpoints.deleteMtrlStockByRVNo,
+      //   requestData,
+      //   async (data) => {
+      //     // console.log("Remove stock data = ", data);
+      //     console.log("countResult", data.countResult[0].count);
+      //     console.log("affectedRows", data.deletionResult.affectedRows);
+      //     console.log("inUseResult", data.inUseResult[0].inUseCount);
+
+      //     if (data.countResult[0].count < parseFloat(inputPart.accepted)) {
+      //       toast.error(
+      //         "Received Material Already used, to return create a Issue Voucher"
+      //       );
+      //       return;
+      //     }
+
+      //     // Validate if the material is already in use for production
+      //     if (data.inUseResult[0].inUseCount > 0) {
+      //       toast.error(
+      //         "Material already in use for production, cannot take out from stock"
+      //       );
+      //       return;
+      //     }
+
+      //     if (data.deletionResult.affectedRows !== 0) {
+      //       //enable remove stock buttons
+      //       toast.success("Stock Removed Successfully");
+      //       // Update UI state here
+      //       setBoolValStock("off");
+      //       setAddBtn(true);
+      //       setRmvBtn(false);
+      //       //update checkbox
+      //       for (let i = 0; i < materialArray.length; i++) {
+      //         if (materialArray[i].id == mtrlStock.id) {
+      //           materialArray[i].updated = 0;
+      //         }
+      //       }
+      //       await delay(200);
+      //       setInputPart({ ...inputPart, updated: 0 });
+      //       setMaterialArray(materialArray);
+      //     } else {
+      //       toast.success("Stock Removed Successfully");
+      //     }
+      //   }
+      // );
 
       postRequest(
         endpoints.deleteMtrlStockByRVNo,
         requestData,
         async (data) => {
           console.log("Remove stock data = ", data);
-          console.log("data[0].count = ", data[0].count);
 
-          if (data[0].count < inputPart.accepted) {
+          if (data.countResult[0].count < parseFloat(inputPart.accepted)) {
             toast.error(
               "Received Material Already used, to return create a Issue Voucher"
             );
             return;
-          }
-
-          // Validate if the material is already in use for production
-          if (data[0].inUseCount > 0) {
-            toast.error(
-              "Material already in use for production, cannot take out from stock"
-            );
-            return;
-          }
-
-          if (data.affectedRows !== 0) {
-            //enable remove stock buttons
-            toast.success("Stock Removed Successfully");
-            // Update UI state here
-            setBoolValStock("off");
-            setAddBtn(true);
-            setRmvBtn(false);
-            //update checkbox
-            for (let i = 0; i < mtrlArray.length; i++) {
-              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-                mtrlArray[i].upDated = 0;
+          } else {
+            // Validate if the material is already in use for production
+            if (data.inUseResult[0].inUseCount > 0) {
+              toast.error(
+                "Material already in use for production, cannot take out from stock"
+              );
+              return;
+            } else {
+              // Only execute this block if the first two conditions are validated
+              if (data.deletionResult.affectedRows !== 0) {
+                //enable remove stock buttons
+                toast.success("Stock Removed Successfully");
+                // Update UI state here
+                setBoolValStock("off");
+                setAddBtn(true);
+                setRmvBtn(false);
+                //update checkbox
+                for (let i = 0; i < materialArray.length; i++) {
+                  if (materialArray[i].id == mtrlStock.id) {
+                    materialArray[i].updated = 0;
+                  }
+                }
+                await delay(200);
+                setInputPart({ ...inputPart, updated: 0 });
+                setMaterialArray(materialArray);
+              } else {
+                toast.success("Stock Removed Successfully");
               }
             }
-            await delay(500);
-            setMtrlArray(newArray);
-            // setInputPart({ ...inputPart, updated: 0 });
-          } else {
-            toast.success("Stock Removed Successfully");
           }
         }
       );
@@ -1461,27 +1643,13 @@ function NewSheetsUnits(props) {
         id: mtrlStock.Mtrl_Rv_id,
         upDated: 0,
       };
-      postRequest(
+      await postRequest(
         endpoints.updateMtrlReceiptDetailsUpdated,
         updateObj,
         async (data) => {
           // console.log("updated = 0");
         }
       );
-
-      for (let i = 0; i < mtrlArray.length; i++) {
-        if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].updated = 0;
-          //console.log("Its Updated");
-        }
-      }
-      await delay(500);
-      // console.log(newArray);
-      let newArray = mtrlArray;
-
-      setMtrlArray([]);
-      await delay(200);
-      setMtrlArray(newArray);
 
       await updateStockRegister();
     }
@@ -1501,7 +1669,7 @@ function NewSheetsUnits(props) {
 
       console.log("response", response);
     } catch (error) {
-      console.error("Error updating Stock Register:", error);
+      // console.error("Error updating Stock Register:", error);
     }
   };
 
@@ -1516,7 +1684,7 @@ function NewSheetsUnits(props) {
           toast.success("Material Deleted");
 
           setInputPart({
-            id: inputPart.id - 1,
+            id: "",
             rvId: "",
             srl: "",
             custCode: "",
@@ -1605,6 +1773,11 @@ function NewSheetsUnits(props) {
       );
     }
   };
+
+  console.log("Input Part", inputPart);
+  console.log("formHeader", formHeader);
+  console.log("rvId", formHeader.rvId);
+  console.log("materialArray", materialArray);
 
   return (
     <div>
@@ -2375,7 +2548,6 @@ function NewSheetsUnits(props) {
                         className="in-field"
                         name="totalWeight"
                         value={inputPart.totalWeight}
-                        // onChange={changeMaterialHandle}
                         onKeyDown={blockInvalidQtyChar}
                         onChange={(e) => {
                           changeMaterialHandle(e, inputPart.id);
@@ -2393,7 +2565,6 @@ function NewSheetsUnits(props) {
                     <div className="col-md-6 mt-1">
                       <select
                         className="ip-select dropdown-field"
-                        // onChange={changeMaterialHandle}
                         onChange={(e) => {
                           changeMaterialHandle(e, inputPart.id);
                         }}
