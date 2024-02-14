@@ -463,41 +463,40 @@ function OpenButtonOpenSheetUnit() {
         requestData,
         async (data) => {
           console.log("Remove stock data = ", data);
-          console.log("data[0].count = ", data[0].count);
 
-          if (data[0].count < inputPart.accepted) {
+          if (data.countResult[0].count < parseFloat(inputPart.accepted)) {
             toast.error(
               "Received Material Already used, to return create a Issue Voucher"
             );
             return;
-          }
-
-          // Validate if the material is already in use for production
-          if (data[0].inUseCount > 0) {
-            toast.error(
-              "Material already in use for production, cannot take out from stock"
-            );
-            return;
-          }
-
-          if (data.affectedRows !== 0) {
-            //enable remove stock buttons
-            toast.success("Stock Removed Successfully");
-            // Update UI state here
-            setBoolValStock("off");
-            setAddBtn(true);
-            setRmvBtn(false);
-            //update checkbox
-            for (let i = 0; i < mtrlArray.length; i++) {
-              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-                mtrlArray[i].upDated = 0;
+          } else {
+            // Validate if the material is already in use for production
+            if (data.inUseResult[0].inUseCount > 0) {
+              toast.error(
+                "Material already in use for production, cannot take out from stock"
+              );
+              return;
+            } else {
+              // Only execute this block if the first two conditions are validated
+              if (data.deletionResult.affectedRows !== 0) {
+                //enable remove stock buttons
+                toast.success("Stock Removed Successfully");
+                // Update UI state here
+                setBoolValStock("off");
+                setAddBtn(true);
+                setRmvBtn(false);
+                //update checkbox
+                for (let i = 0; i < mtrlArray.length; i++) {
+                  if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
+                    mtrlArray[i].upDated = 0;
+                  }
+                }
+                await delay(500);
+                setMtrlArray(newArray);
+              } else {
+                // toast.success("Stock Removed Successfully");
               }
             }
-            await delay(500);
-            setMtrlArray(newArray);
-            // setInputPart({ ...inputPart, updated: 0 });
-          } else {
-            toast.success("Stock Removed Successfully");
           }
         }
       );
@@ -731,6 +730,7 @@ function OpenButtonOpenSheetUnit() {
   console.log("Input Part", inputPart);
   console.log("formHeader", formHeader);
   console.log("rvId", formHeader.rvId);
+  console.log("materialArray", mtrlArray);
 
   return (
     <div>

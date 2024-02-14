@@ -540,7 +540,10 @@ function OpenButtonDraftSheetUnit(props) {
             flag1 = 1;
           }
 
-          if (materialArray[i].accepted > materialArray[i].qty) {
+          if (
+            parseFloat(materialArray[i].accepted) >
+            parseFloat(materialArray[i].qty)
+          ) {
             flag1 = 2;
             // console.log("Setting flag1 to 6");
           }
@@ -632,7 +635,10 @@ function OpenButtonDraftSheetUnit(props) {
           flag1 = 5;
           // console.log("Setting flag1 to 5");
         }
-        if (materialArray[i].accepted > materialArray[i].qty) {
+        if (
+          parseFloat(materialArray[i].accepted) >
+          parseFloat(materialArray[i].qty)
+        ) {
           flag1 = 6;
           // console.log("Setting flag1 to 6");
         }
@@ -640,9 +646,12 @@ function OpenButtonDraftSheetUnit(props) {
 
       if (flag1 === 1) {
         toast.error("Select Material");
-      } else if (flag1 === 2) {
-        toast.error("Parameters cannot be Zero");
-      } else if (flag1 === 3) {
+      }
+
+      // else if (flag1 === 2) {
+      //   toast.error("Parameters cannot be Zero");
+      // }
+      else if (flag1 === 3) {
         toast.error("Received  Qty cannot be Zero");
       } else if (flag1 === 4) {
         toast.error("Accepted Qty cannot be Zero");
@@ -1167,9 +1176,6 @@ function OpenButtonDraftSheetUnit(props) {
   // };
 
   const removeStock = async () => {
-    // console.log("mtrlStock.Mtrl_Rv_id", mtrlStock.Mtrl_Rv_id);
-    // console.log("mtrlStock.Mtrl_Code", mtrlStock.Mtrl_Code);
-    // console.log("inputPart.accepted", inputPart.accepted);
     if (Object.keys(mtrlStock).length === 0) {
       toast.error("Please Select Material");
     } else {
@@ -1179,48 +1185,92 @@ function OpenButtonDraftSheetUnit(props) {
         Accepted: inputPart.accepted,
       };
 
-      //update updated status = 1
+      // postRequest(
+      //   endpoints.deleteMtrlStockByRVNo,
+      //   requestData,
+      //   async (data) => {
+      //     // console.log("Remove stock data = ", data);
+      //     console.log("countResult", data.countResult[0].count);
+      //     console.log("affectedRows", data.deletionResult.affectedRows);
+      //     console.log("inUseResult", data.inUseResult[0].inUseCount);
+
+      //     if (data.countResult[0].count < parseFloat(inputPart.accepted)) {
+      //       toast.error(
+      //         "Received Material Already used, to return create a Issue Voucher"
+      //       );
+      //       return;
+      //     }
+
+      //     // Validate if the material is already in use for production
+      //     if (data.inUseResult[0].inUseCount > 0) {
+      //       toast.error(
+      //         "Material already in use for production, cannot take out from stock"
+      //       );
+      //       return;
+      //     }
+
+      //     if (data.deletionResult.affectedRows !== 0) {
+      //       //enable remove stock buttons
+      //       toast.success("Stock Removed Successfully");
+      //       // Update UI state here
+      //       setBoolValStock("off");
+      //       setAddBtn(true);
+      //       setRmvBtn(false);
+      //       //update checkbox
+      //       for (let i = 0; i < materialArray.length; i++) {
+      //         if (materialArray[i].id == mtrlStock.id) {
+      //           materialArray[i].updated = 0;
+      //         }
+      //       }
+      //       await delay(200);
+      //       setInputPart({ ...inputPart, updated: 0 });
+      //       setMaterialArray(materialArray);
+      //     } else {
+      //       toast.success("Stock Removed Successfully");
+      //     }
+      //   }
+      // );
 
       postRequest(
         endpoints.deleteMtrlStockByRVNo,
         requestData,
         async (data) => {
           console.log("Remove stock data = ", data);
-          console.log("data[0].count = ", data[0].count);
 
-          if (data[0].count < inputPart.accepted) {
+          if (data.countResult[0].count < parseFloat(inputPart.accepted)) {
             toast.error(
               "Received Material Already used, to return create a Issue Voucher"
             );
             return;
-          }
-
-          // Validate if the material is already in use for production
-          if (data[0].inUseCount > 0) {
-            toast.error(
-              "Material already in use for production, cannot take out from stock"
-            );
-            return;
-          }
-
-          if (data.affectedRows !== 0) {
-            //enable remove stock buttons
-            toast.success("Stock Removed Successfully");
-            // Update UI state here
-            setBoolValStock("off");
-            setAddBtn(true);
-            setRmvBtn(false);
-            //update checkbox
-            for (let i = 0; i < mtrlArray.length; i++) {
-              if (mtrlArray[i].mtrlCode == mtrlStock.Mtrl_Code) {
-                mtrlArray[i].upDated = 0;
+          } else {
+            // Validate if the material is already in use for production
+            if (data.inUseResult[0].inUseCount > 0) {
+              toast.error(
+                "Material already in use for production, cannot take out from stock"
+              );
+              return;
+            } else {
+              // Only execute this block if the first two conditions are validated
+              if (data.deletionResult.affectedRows !== 0) {
+                //enable remove stock buttons
+                toast.success("Stock Removed Successfully");
+                // Update UI state here
+                setBoolValStock("off");
+                setAddBtn(true);
+                setRmvBtn(false);
+                //update checkbox
+                for (let i = 0; i < materialArray.length; i++) {
+                  if (materialArray[i].id == mtrlStock.id) {
+                    materialArray[i].updated = 0;
+                  }
+                }
+                await delay(200);
+                setInputPart({ ...inputPart, updated: 0 });
+                setMaterialArray(materialArray);
+              } else {
+                toast.success("Stock Removed Successfully");
               }
             }
-            await delay(500);
-            setMtrlArray(newArray);
-            // setInputPart({ ...inputPart, updated: 0 });
-          } else {
-            toast.success("Stock Removed Successfully");
           }
         }
       );
@@ -1229,27 +1279,13 @@ function OpenButtonDraftSheetUnit(props) {
         id: mtrlStock.Mtrl_Rv_id,
         upDated: 0,
       };
-      postRequest(
+      await postRequest(
         endpoints.updateMtrlReceiptDetailsUpdated,
         updateObj,
         async (data) => {
           // console.log("updated = 0");
         }
       );
-
-      for (let i = 0; i < mtrlArray.length; i++) {
-        if (mtrlArray[i].Mtrl_Rv_id == mtrlStock.Mtrl_Rv_id) {
-          mtrlArray[i].updated = 0;
-          //console.log("Its Updated");
-        }
-      }
-      await delay(500);
-      // console.log(newArray);
-      let newArray = mtrlArray;
-
-      setMtrlArray([]);
-      await delay(200);
-      setMtrlArray(newArray);
 
       await updateStockRegister();
     }
@@ -1269,7 +1305,7 @@ function OpenButtonDraftSheetUnit(props) {
 
       console.log("response", response);
     } catch (error) {
-      console.error("Error updating Stock Register:", error);
+      // console.error("Error updating Stock Register:", error);
     }
   };
 
@@ -1349,7 +1385,6 @@ function OpenButtonDraftSheetUnit(props) {
     ["e", "E", "+", "-"].includes(e.key) && e.preventDefault();
 
   console.log("Input Part", inputPart);
-  console.log("rvId", inputPart.rvId);
 
   const filterMaterials = () => {
     if (location?.state?.type === "sheets") {
