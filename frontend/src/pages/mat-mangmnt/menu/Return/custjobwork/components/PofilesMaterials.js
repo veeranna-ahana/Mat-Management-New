@@ -131,8 +131,22 @@ function PofilesMaterials(props) {
   };
 
   const createReturnVoucherValidationFunc = () => {
-    getRunningNo();
-    setConfirmModalOpen(true);
+    if (props.custCode) {
+      if (firstTableSelectedRow.length > 0 || secondTableData.length > 0) {
+        if (thirdTableData.length > 0) {
+          getRunningNo();
+          setConfirmModalOpen(true);
+        } else {
+          toast.warning(
+            "Select atleast one Material for creating the return voucher"
+          );
+        }
+      } else {
+        toast.warning("Select the Document for creating the return voucher");
+      }
+    } else {
+      toast.warning("Select the Customer for creating the return voucher");
+    }
   };
   const createReturnVoucherFunc = async () => {
     if (props.custCode) {
