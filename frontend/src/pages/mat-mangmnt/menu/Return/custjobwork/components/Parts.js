@@ -20,7 +20,7 @@ function Parts(props) {
   let [thirdTableData, setThirdTableData] = useState([]);
 
   let [firstTableSelectedRow, setFirstTableSelectedRow] = useState([]);
-  let [secondSelectedRow, setSecondSelectedRow] = useState({ selected: [] });
+
   const [srlIVID, setSrlIVID] = useState("");
   const [IVNOVal, setIVNOVal] = useState("");
 
@@ -36,6 +36,12 @@ function Parts(props) {
   const [runningNo, setRunningNo] = useState([]);
 
   const fetchData = () => {
+    setFirstTableData([]);
+    setSecondTableData([]);
+    setThirdTableData([]);
+    setFirstTableSelectedRow([]);
+    setrvNoVal("");
+    setCustRefVal("");
     //console.log("props = ", props);
     if (props && props.custCode.length !== 0) {
       let url1 = endpoints.partFirst + "?Cust_Code=" + props.custCode;
@@ -760,7 +766,6 @@ function Parts(props) {
                 <div style={{ maxHeight: "400px", overflow: "auto" }}>
                   <SecondTable
                     secondTableData={secondTableData}
-                    secondSelectedRow={secondSelectedRow}
                     selectRowSecondFunc={selectRowSecondFunc}
                     thirdTableData={thirdTableData}
                   />
