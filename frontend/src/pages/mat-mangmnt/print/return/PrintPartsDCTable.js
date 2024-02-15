@@ -339,7 +339,8 @@ const PrintPartsDCTable = ({
                       >
                         <Text style={styles.tableCol1}>{index + 1}</Text>
                         <Text style={styles.tableCol2}>
-                          {item.PartId?.split("/**Ref:")[0]}
+                          {item.PartId}
+                          {/* {item.PartId?.split("/**Ref:")[0]} */}
                         </Text>
                         <Text style={styles.tableCol3}>{item.Remarks}</Text>
                         <Text style={styles.tableCol4}>{item.QtyReturned}</Text>
