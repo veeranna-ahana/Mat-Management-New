@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 const copiesNames = [
   { copyName: "Original for Recipient" },
   { copyName: "Transporter Copy" },
-  { copyName: "Accounts Copy" },
+  // { copyName: "Accounts Copy" },
   { copyName: "Extra Copy" },
 ];
 const PrintPartsDCTable = ({
