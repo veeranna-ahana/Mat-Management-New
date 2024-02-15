@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 const copiesNames = [
   { copyName: "Original for Recipient" },
   { copyName: "Transporter Copy" },
-  { copyName: "Accounts Copy" },
+  // { copyName: "Accounts Copy" },
   { copyName: "Extra Copy" },
 ];
 const PrintPartsDCTable = ({
@@ -339,7 +339,8 @@ const PrintPartsDCTable = ({
                       >
                         <Text style={styles.tableCol1}>{index + 1}</Text>
                         <Text style={styles.tableCol2}>
-                          {item.PartId?.split("/**Ref:")[0]}
+                          {item.PartId}
+                          {/* {item.PartId?.split("/**Ref:")[0]} */}
                         </Text>
                         <Text style={styles.tableCol3}>{item.Remarks}</Text>
                         <Text style={styles.tableCol4}>{item.QtyReturned}</Text>
@@ -390,8 +391,10 @@ const PrintPartsDCTable = ({
                     ...styles.titleMiddle2,
                   }}
                 >
-                  <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
-                  <Text>{totalQTYVar}</Text>
+                  {/* <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
+                  <Text>{totalQTYVar}</Text>   */}
+                  <Text style={{ ...styles.fontBold }}>Total Items : </Text>
+                  <Text>{outData?.length}</Text>
                 </View>
 
                 <View

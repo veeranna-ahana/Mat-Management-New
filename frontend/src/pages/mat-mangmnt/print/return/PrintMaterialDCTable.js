@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 const copiesNames = [
   { copyName: "Original for Recipient" },
   { copyName: "Transporter Copy" },
-  { copyName: "Accounts Copy" },
+  // { copyName: "Accounts Copy" },
   { copyName: "Extra Copy" },
 ];
 
@@ -341,12 +341,13 @@ const PrintMaterialDCTable = ({
                       >
                         <Text style={styles.tableCol1}>{index + 1}</Text>
                         <Text style={styles.tableCol2}>
-                          {
+                          {item.MtrlDescription}
+                          {/* {
                             item.MtrlDescription?.split("/**")[0]
                               ?.split(".00")[0]
                               ?.replace(/[0-9]/g, "")
                               ?.split("Quantity")[0]
-                          }
+                          } */}
                         </Text>
                         <Text style={styles.tableCol3}>{item.Material}</Text>
                         <Text style={styles.tableCol4}>{item.Qty}</Text>
@@ -397,8 +398,10 @@ const PrintMaterialDCTable = ({
                     ...styles.titleMiddle2,
                   }}
                 >
-                  <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
-                  <Text>{totalQTYVar}</Text>
+                  {/* <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
+                  <Text>{totalQTYVar}</Text> */}
+                  <Text style={{ ...styles.fontBold }}>Total Items : </Text>
+                  <Text>{outData?.length}</Text>
                 </View>
 
                 <View
