@@ -398,8 +398,10 @@ const PrintMaterialDCTable = ({
                     ...styles.titleMiddle2,
                   }}
                 >
-                  <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
-                  <Text>{totalQTYVar}</Text>
+                  {/* <Text style={{ ...styles.fontBold }}>Total Quantity : </Text>
+                  <Text>{totalQTYVar}</Text> */}
+                  <Text style={{ ...styles.fontBold }}>Total Items : </Text>
+                  <Text>{outData?.length}</Text>
                 </View>
 
                 <View
