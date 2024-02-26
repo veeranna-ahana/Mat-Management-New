@@ -810,7 +810,7 @@ function OpenButtonDraftPartList() {
                   value={inputPart.unitWeight}
                   onChange={changePartHandle}
                   //onKeyUp={changePartHandle1}
-                  onKeyDown={blockInvalidQtyChar}
+                  onKeyDown={blockInvalidChar}
                   min="0"
                   disabled={boolVal4}
                 />

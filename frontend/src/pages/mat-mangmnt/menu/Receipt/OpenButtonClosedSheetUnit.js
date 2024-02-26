@@ -18,6 +18,7 @@ function OpenButtonClosedSheetUnit() {
   const [para1Label, setPara1Label] = useState("");
   const [para2Label, setPara2Label] = useState("");
   const [para3Label, setPara3Label] = useState("");
+  const [mtrlStock, setMtrlStock] = useState({});
 
   const [formHeader, setFormHeader] = useState({
     RvID: "",
@@ -46,6 +47,32 @@ function OpenButtonClosedSheetUnit() {
   const [cylinderRowSelect, setCylinderRowSelect] = useState(false);
   const [unitRowSelect, setUnitRowSelect] = useState(false);
 
+  const [inputPart, setInputPart] = useState({
+    id: "",
+    rvId: "",
+    srl: "",
+    custCode: "",
+    mtrlCode: "",
+    material: "",
+    shapeMtrlId: "",
+    shapeID: "",
+    dynamicPara1: "",
+    dynamicPara2: "",
+    dynamicPara3: "",
+    qty: "",
+    inspected: "",
+    accepted: "",
+    totalWeightCalculated: "",
+    totalWeight: "",
+    locationNo: "",
+    upDated: "",
+    qtyAccepted: 0,
+    qtyReceived: 0,
+    qtyRejected: 0,
+    qtyUsed: 0,
+    qtyReturned: 0,
+  });
+
   async function fetchData() {
     const url =
       endpoints.getByTypeMaterialReceiptRegisterByRvID +
@@ -68,6 +95,33 @@ function OpenButtonClosedSheetUnit() {
         endpoints.getMtrlReceiptDetailsByRvID + "?id=" + location.state.id;
       getRequest(url1, (data2) => {
         console.log("data2  = ", data2);
+        // setMtrlArray(data2);
+
+        data2.forEach((obj) => {
+          obj.id = obj.Mtrl_Rv_id;
+          obj.rvId = obj.RvID;
+          obj.srl = obj.Srl;
+          obj.custCode = obj.Cust_Code;
+          obj.mtrlCode = obj.Mtrl_Code;
+          obj.material = obj.Material;
+          obj.shapeMtrlId = obj.ShapeMtrlID;
+          obj.shapeID = obj.ShapeID;
+          obj.dynamicPara1 = obj.DynamicPara1;
+          obj.dynamicPara2 = obj.DynamicPara2;
+          obj.dynamicPara3 = obj.DynamicPara3;
+          obj.qty = Math.floor(obj.Qty);
+          obj.inspected = obj.Inspected;
+          obj.accepted = obj.Accepted;
+          obj.totalWeightCalculated = obj.TotalWeightCalculated;
+          obj.totalWeight = obj.TotalWeight;
+          obj.locationNo = obj.LocationNo;
+          obj.updated = obj.UpDated;
+          obj.qtyAccepted = obj.QtyAccepted;
+          obj.qtyReceived = obj.QtyReceived;
+          obj.qtyRejected = obj.QtyRejected;
+          obj.qtyUsed = obj.QtyUsed;
+          obj.qtyReturned = obj.QtyReturned;
+        });
         setMtrlArray(data2);
 
         //find shape of material
@@ -251,6 +305,118 @@ function OpenButtonClosedSheetUnit() {
     },
   ];
 
+  const selectRow = {
+    mode: "radio",
+    clickToSelect: true,
+    bgColor: "#8A92F0",
+    onSelect: (row, isSelect, rowIndex, e) => {
+      // setSelectedRows(row);
+      console.log("row", row);
+      setInputPart(row);
+      // if (row.updated === 1) {
+      //   setRmvBtn(true);
+      //   setAddBtn(false);
+      // } else {
+      //   setRmvBtn(false);
+      //   setAddBtn(true);
+      // }
+      // console.log("mtrlArray", mtrlArray);
+      mtrlArray?.map((obj) => {
+        if (obj.id == row.id) {
+          setMtrlStock(obj);
+          // console.log("obj.totalWeight", obj.totalWeight);
+          setInputPart({
+            // qtyAccepted: row.qtyAccepted,
+            qtyRejected: obj.qtyRejected,
+            // qtyReceived: row.qtyReceived,
+            id: obj.id,
+            srl: obj.srl,
+            mtrlCode: row.mtrlCode,
+            dynamicPara1: row.dynamicPara1,
+            dynamicPara2: row.dynamicPara2,
+            dynamicPara3: row.dynamicPara3,
+            qty: obj.qty,
+            inspected: obj.inspected,
+            locationNo: obj.locationNo,
+            updated: obj.updated,
+            accepted: obj.accepted,
+            totalWeightCalculated: obj.totalWeightCalculated,
+            totalWeight: obj.totalWeight,
+          });
+          if (obj.shapeID === 1) {
+            // Sheet
+            setPara1Label("Width");
+            setPara2Label("Length");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setSheetRowSelect(true);
+          } else {
+            setSheetRowSelect(false);
+          }
+
+          if (obj.ShapeID === 2) {
+            // Plate
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setPlateRowSelect(true);
+          } else {
+            setPlateRowSelect(false);
+          }
+
+          if (obj.ShapeID === 3 || obj.ShapeID === 4 || obj.ShapeID === 5) {
+            setPara1Label("Length");
+            setUnitLabel1("mm");
+            setTubeRowSelect(true);
+          } else {
+            setTubeRowSelect(false);
+          }
+
+          if (obj.ShapeID === 6 || obj.ShapeID === 7) {
+            // Titles, Strip
+            setPara1Label("");
+            setUnitLabel1("");
+            setTilesStripRowSelect(true);
+          } else {
+            setTilesStripRowSelect(false);
+          }
+
+          if (obj.ShapeID === 8) {
+            // Block
+            setPara1Label("Length");
+            setPara2Label("Width");
+            setPara3Label("Height");
+            setUnitLabel1("mm");
+            setUnitLabel2("mm");
+            setUnitLabel3("mm");
+            setBlockRowSelect(true);
+          } else {
+            setBlockRowSelect(false);
+          }
+
+          if (obj.ShapeID === 9) {
+            // Cylinder
+            setPara1Label("Volume");
+            setUnitLabel1("CubicMtr");
+            setCylinderRowSelect(true);
+          } else {
+            setCylinderRowSelect(false);
+          }
+
+          if (obj.ShapeID === 10) {
+            // Units
+            setPara1Label("Qty");
+            setUnitLabel1("Nos");
+            setUnitRowSelect(true);
+          } else {
+            setUnitRowSelect(false);
+          }
+        }
+      });
+    },
+  };
+
   return (
     <div>
       <div>
@@ -394,7 +560,7 @@ function OpenButtonClosedSheetUnit() {
               hover
               condensed
               headerClasses="header-class tableHeaderBGColor"
-              //selectRow={selectRow}
+              selectRow={selectRow}
             ></BootstrapTable>
           </div>
           {/* <div className="col-md-6 col-sm-12">
@@ -454,14 +620,15 @@ function OpenButtonClosedSheetUnit() {
                         <select
                           className="ip-select dropdown-field"
                           disabled={boolVal}
+                          value={inputPart.mtrlCode}
+                          name="mtrlCode"
                         >
                           <option value="" disabled selected>
                             Select Material
                           </option>
-                          {/* <option value="option 1">001</option>
-                          <option value="option 1">002</option>
-                          <option value="option 1">003</option>
-                          <option value="option 1">004</option> */}
+                          <option value={inputPart.mtrlCode} disabled selected>
+                            {inputPart.mtrlCode}
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -509,7 +676,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -527,7 +694,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara2"
-                              // value={inputPart.dynamicPara2}
+                              value={inputPart.dynamicPara2}
                               min="0"
                               disabled
                             />
@@ -550,7 +717,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -568,7 +735,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara2"
-                              // value={inputPart.dynamicPara2}
+                              value={inputPart.dynamicPara2}
                               min="0"
                               disabled
                             />
@@ -591,7 +758,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -616,7 +783,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -634,7 +801,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara2"
-                              // value={inputPart.dynamicPara2}
+                              value={inputPart.dynamicPara2}
                               min="0"
                               disabled
                             />
@@ -653,7 +820,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara3"
-                              // value={inputPart.dynamicPara3}
+                              value={inputPart.dynamicPara3}
                               min="0"
                               disabled
                             />
@@ -676,7 +843,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -699,7 +866,7 @@ function OpenButtonClosedSheetUnit() {
                               type="number"
                               className="in-field"
                               name="dynamicPara1"
-                              // value={inputPart.dynamicPara1}
+                              value={inputPart.dynamicPara1}
                               disabled
                               min="0"
                             />
@@ -719,7 +886,11 @@ function OpenButtonClosedSheetUnit() {
                           <label className="form-label mt-2">Received</label>
                         </div>
                         <div className="col-md-4">
-                          <input className="in-field" disabled={boolVal} />
+                          <input
+                            className="in-field"
+                            disabled={boolVal}
+                            value={(inputPart.qty = Math.floor(inputPart.qty))}
+                          />
                         </div>
 
                         <div className="col-md-5">
@@ -730,9 +901,11 @@ function OpenButtonClosedSheetUnit() {
                             <input
                               className="form-check-input mt-3"
                               type="checkbox"
-                              value=""
                               id="flexCheckDefault"
                               disabled={boolVal}
+                              name="inspected"
+                              checked={inputPart.inspected == 1 ? true : false}
+                              value={inputPart.inspected}
                             />
                              
                             <label className="form-label mt-1">Inspected</label>
@@ -744,7 +917,15 @@ function OpenButtonClosedSheetUnit() {
                           <label className="form-label mt-2">Accepted</label>
                         </div>
                         <div className="col-md-4">
-                          <input className="in-field" disabled={boolVal} />
+                          <input
+                            className="in-field"
+                            disabled={boolVal}
+                            value={
+                              (inputPart.accepted = Math.floor(
+                                inputPart.accepted
+                              ))
+                            }
+                          />
                         </div>
 
                         <div className="col-md-5">
@@ -755,6 +936,7 @@ function OpenButtonClosedSheetUnit() {
                             <input
                               className="form-check-input mt-3"
                               type="checkbox"
+                              checked={inputPart.updated === 1 ? true : false}
                               value=""
                               id="flexCheckDefault"
                               disabled={boolVal}
@@ -774,7 +956,11 @@ function OpenButtonClosedSheetUnit() {
                           </label>
                         </div>
                         <div className="col-md-6 mt-1">
-                          <input className="in-field" disabled={boolVal} />
+                          <input
+                            className="in-field"
+                            disabled={boolVal}
+                            value={inputPart.totalWeightCalculated}
+                          />
                         </div>
                       </div>
                       <div className="row">
@@ -782,7 +968,11 @@ function OpenButtonClosedSheetUnit() {
                           <label className="form-label">Weight</label>
                         </div>
                         <div className="col-md-6 ">
-                          <input className="in-field" disabled={boolVal} />
+                          <input
+                            className="in-field"
+                            disabled={boolVal}
+                            value={inputPart.totalWeight}
+                          />
                         </div>
                       </div>
                       <div className="row">
@@ -793,7 +983,11 @@ function OpenButtonClosedSheetUnit() {
                           <select
                             className="ip-select dropdown-field"
                             disabled={boolVal}
-                          ></select>
+                          >
+                            <option value={inputPart.locationNo}>
+                              {inputPart.locationNo}
+                            </option>
+                          </select>
                         </div>
                       </div>
                     </div>

@@ -2135,9 +2135,10 @@ function OpenButtonDraftSheetUnit(props) {
                         type="number"
                         className="in-field"
                         name="totalWeight"
+                        min="0"
                         value={inputPart.totalWeight}
                         onChange={changeMaterialHandle}
-                        onKeyDown={blockInvalidQtyChar}
+                        onKeyDown={blockInvalidChar}
                         disabled={boolVal4 || materialArray.length === 0}
                       />
                     </div>
