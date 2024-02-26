@@ -476,13 +476,28 @@ function OpenButtonDraftSheetUnit(props) {
     setMaterialArray(newArray);
   };
 
+  // const InputHeaderEvent = (e) => {
+  //   const { value, name } = e.target;
+  //   setFormHeader((preValue) => {
+  //     //console.log(preValue)
+  //     return {
+  //       ...preValue,
+  //       [name]: value,
+  //     };
+  //   });
+  // };
+
   const InputHeaderEvent = (e) => {
     const { value, name } = e.target;
+
+    const formattedValue =
+      name === "weight" ? value.replace(/(\.\d{3})\d+/, "$1") : value;
+
     setFormHeader((preValue) => {
       //console.log(preValue)
       return {
         ...preValue,
-        [name]: value,
+        [name]: formattedValue,
       };
     });
   };
@@ -778,15 +793,20 @@ function OpenButtonDraftSheetUnit(props) {
   const changeMaterialHandle = async (e, id) => {
     const { value, name } = e.target;
 
+    const formattedValue =
+      name === "totalWeight" ? value.replace(/(\.\d{3})\d+/, "$1") : value;
+
     for (let i = 0; i < materialArray.length; i++) {
       const element = materialArray[i];
 
       if (element.id === id) {
-        element[name] = value;
+        // element[name] = value;
+        element[name] = formattedValue;
       }
     }
 
-    inputPart[name] = value;
+    // inputPart[name] = value;
+    inputPart[name] = formattedValue;
     //checkbox update
     if (name === "inspected") {
       if (e.target.checked) {
@@ -838,10 +858,10 @@ function OpenButtonDraftSheetUnit(props) {
 
             inputPart.totalWeightCalculated = parseFloat(
               TotalWeightCalculated
-            ).toFixed(2);
+            ).toFixed(3);
 
             inputPart.totalWeight = parseFloat(TotalWeightCalculated).toFixed(
-              2
+              3
             );
 
             inputPart["TotalWeightCalculated"] = TotalWeightCalculated;
@@ -883,9 +903,9 @@ function OpenButtonDraftSheetUnit(props) {
 
             // console.log("totwt", totwt);
 
-            setCalcWeightVal(parseFloat(totwt).toFixed(2));
+            setCalcWeightVal(parseFloat(totwt).toFixed(3));
 
-            formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+            formHeader.calcWeight = parseFloat(totwt).toFixed(3);
             setFormHeader(formHeader);
             delay(500);
             // ////console.log("form header = ", formHeader);
@@ -1351,9 +1371,9 @@ function OpenButtonDraftSheetUnit(props) {
           );
 
           // Set CalcWeightVal to the sum, rounded to two decimal places
-          setCalcWeightVal(sumTotalWeightCalculated.toFixed(2));
+          setCalcWeightVal(sumTotalWeightCalculated.toFixed(3));
 
-          formHeader.calcWeight = sumTotalWeightCalculated.toFixed(2);
+          formHeader.calcWeight = sumTotalWeightCalculated.toFixed(3);
           setFormHeader(formHeader);
           delay(500);
 
