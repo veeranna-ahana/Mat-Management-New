@@ -168,56 +168,109 @@ function PNew() {
     setPartArray(newArray);
   };
 
+  // const changePartHandle = (e) => {
+  //   const { value, name } = e.target;
+
+  //   if (name === "unitWeight" && parseFloat(value) < 0) {
+  //     toast.error("unitWeight should be a positive value");
+  //   }
+  //   setInputPart((preValue) => {
+  //     return {
+  //       ...preValue,
+  //       [name]: value,
+  //     };
+  //   });
+  //   inputPart[name] = value;
+  //   inputPart.custBomId = formHeader.customer;
+  //   inputPart.rvId = formHeader.rvId;
+  //   inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
+  //   inputPart.qtyUsed = 0;
+  //   inputPart.qtyReturned = 0;
+  //   inputPart.qtyIssued = 0;
+
+  //   setInputPart(inputPart);
+
+  //   postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
+  //     if (data.affectedRows !== 0) {
+  //     } else {
+  //       toast.error("Record Not Updated");
+  //     }
+  //   });
+
+  //   const newArray = partArray.map((p) =>
+  //     p.id === partUniqueId
+  //       ? {
+  //           ...p,
+  //           [name]: value,
+  //         }
+  //       : p
+  //   );
+
+  //   setPartArray(newArray);
+
+  //   let totwt = 0;
+  //   newArray.map((obj) => {
+  //     totwt =
+  //       parseFloat(totwt) +
+  //       // parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+  //       parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
+  //   });
+
+  //   setCalcWeightVal(parseFloat(totwt).toFixed(2));
+  //   setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
+  // };
+
   const changePartHandle = (e) => {
     const { value, name } = e.target;
 
     if (name === "unitWeight" && parseFloat(value) < 0) {
       toast.error("unitWeight should be a positive value");
+      return;
     }
-    setInputPart((preValue) => {
-      return {
-        ...preValue,
-        [name]: value,
-      };
-    });
-    inputPart[name] = value;
-    inputPart.custBomId = formHeader.customer;
-    inputPart.rvId = formHeader.rvId;
-    inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
-    inputPart.qtyUsed = 0;
-    inputPart.qtyReturned = 0;
-    inputPart.qtyIssued = 0;
 
-    setInputPart(inputPart);
+    const formattedValue =
+      name === "unitWeight" ? value.replace(/(\.\d{3})\d+/, "$1") : value;
 
+    // Update inputPart state
+    setInputPart((prevInputPart) => ({
+      ...prevInputPart,
+      [name]: formattedValue,
+      custBomId: formHeader.customer,
+      rvId: formHeader.rvId,
+      qtyRejected: prevInputPart.qtyReceived - prevInputPart.qtyAccepted,
+      qtyUsed: 0,
+      qtyReturned: 0,
+      qtyIssued: 0,
+    }));
+
+    // Update the server with the new inputPart data
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows !== 0) {
-      } else {
+      if (data.affectedRows === 0) {
         toast.error("Record Not Updated");
       }
     });
 
+    // Update the partArray with the new value
     const newArray = partArray.map((p) =>
       p.id === partUniqueId
         ? {
             ...p,
-            [name]: value,
+            [name]: formattedValue,
           }
         : p
     );
-
     setPartArray(newArray);
 
+    // Calculate and set the total weight
     let totwt = 0;
-    newArray.map((obj) => {
-      totwt =
-        parseFloat(totwt) +
-        // parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-        parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
+    newArray.forEach((obj) => {
+      totwt += parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
     });
-
-    setCalcWeightVal(parseFloat(totwt).toFixed(2));
-    setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
+    setCalcWeightVal(totwt.toFixed(3));
+    setFormHeader((prevFormHeader) => ({
+      ...prevFormHeader,
+      calcWeight: totwt.toFixed(3),
+    }));
   };
 
   //add new part
@@ -309,8 +362,8 @@ function PNew() {
             // parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
             parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
         });
-        setCalcWeightVal(parseFloat(totwt).toFixed(2));
-        formHeader.calcWeight = parseFloat(totwt).toFixed(2);
+        setCalcWeightVal(parseFloat(totwt).toFixed(3));
+        formHeader.calcWeight = parseFloat(totwt).toFixed(3);
         setFormHeader(formHeader);
 
         postRequest(
@@ -344,15 +397,28 @@ function PNew() {
   };
 
   //input header change event
+  // const InputHeaderEvent = (e) => {
+  //   const { value, name } = e.target;
+  //   setFormHeader((preValue) => {
+  //     return {
+  //       ...preValue,
+  //       [name]: value,
+  //       [formHeader.calcWeight]: calcWeightVal,
+  //     };
+  //   });
+  // };
+
   const InputHeaderEvent = (e) => {
     const { value, name } = e.target;
-    setFormHeader((preValue) => {
-      return {
-        ...preValue,
-        [name]: value,
-        [formHeader.calcWeight]: calcWeightVal,
-      };
-    });
+
+    const formattedValue =
+      name === "weight" ? value.replace(/(\.\d{3})\d+/, "$1") : value;
+
+    setFormHeader((prevFormHeader) => ({
+      ...prevFormHeader,
+      [name]: formattedValue,
+      [formHeader.calcWeight]: calcWeightVal,
+    }));
   };
 
   const insertHeaderFunction = () => {
