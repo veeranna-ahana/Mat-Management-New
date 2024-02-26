@@ -2548,7 +2548,8 @@ function NewSheetsUnits(props) {
                         className="in-field"
                         name="totalWeight"
                         value={inputPart.totalWeight}
-                        onKeyDown={blockInvalidQtyChar}
+                        onKeyDown={blockInvalidChar}
+                        min="0"
                         onChange={(e) => {
                           changeMaterialHandle(e, inputPart.id);
                         }}

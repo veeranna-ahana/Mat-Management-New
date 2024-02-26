@@ -34,9 +34,9 @@ function OpenButtonOpenClosedPartList() {
     Id: "",
     PartId: "",
     UnitWt: "",
-    QtyReceived: "",
-    QtyAccepted: "",
-    QtyRejected: "0",
+    qtyReceived: "",
+    qtyAccepted: "",
+    qtyRejected: "0",
   });
 
   const [custDetailVal, setCustDetailVal] = useState("");
@@ -61,6 +61,8 @@ function OpenButtonOpenClosedPartList() {
     Type: "",
     address: "",
   });
+
+  const [selectedPart, setSelectedPart] = useState([]);
 
   //   async function fetchCustData() {
   //     getRequest(endpoints.getCustomers, (data) => {
@@ -92,10 +94,28 @@ function OpenButtonOpenClosedPartList() {
         const url1 =
           endpoints.getPartReceiptDetailsByRvID + "?id=" + location.state.id;
         getRequest(url1, (data2) => {
-          setPartArray(data2);
+          getRequest(url1, (data2) => {
+            data2.forEach((obj) => {
+              obj["id"] = obj["Id"];
+              obj["partId"] = obj["PartId"];
+              obj["unitWeight"] = obj["UnitWt"];
+              obj["qtyReceived"] = obj["QtyReceived"];
+              obj["qtyAccepted"] = obj["QtyAccepted"];
+              obj["qtyRejected"] = obj["QtyRejected"];
+            });
+            setPartArray(data2);
+          });
+          // setPartArray(data2);
           //setFormHeader(formHeader);
           //console.log(data2);
         });
+      });
+
+      getRequest(endpoints.getCustBomList, (data3) => {
+        const foundPart = data3.filter(
+          (obj) => obj.Cust_code == data.Cust_Code
+        );
+        setMtrlDetails(foundPart);
       });
     });
     //console.log("data = ", formHeader);
@@ -124,20 +144,37 @@ function OpenButtonOpenClosedPartList() {
     },
     {
       text: "Qty Received",
-      dataField: "QtyReceived",
+      dataField: "qtyReceived",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Qty Accepted",
-      dataField: "QtyAccepted",
+      dataField: "qtyAccepted",
       headerStyle: { whiteSpace: "nowrap" },
     },
     {
       text: "Qty Rejected",
-      dataField: "QtyRejected",
+      dataField: "qtyRejected",
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
+
+  // const selectRow = {
+  //   mode: "radio",
+  //   clickToSelect: true,
+  //   bgColor: "#8A92F0",
+  //   onSelect: (row, isSelect, rowIndex, e) => {
+  //     setPartUniqueId(row.id);
+  //     setInputPart({
+  //       id: row.id,
+  //       partId: row.partId,
+  //       unitWeight: row.unitWeight,
+  //       qtyAccepted: row.qtyAccepted,
+  //       qtyRejected: row.qtyRejected,
+  //       qtyReceived: row.qtyReceived,
+  //     });
+  //   },
+  // };
 
   const selectRow = {
     mode: "radio",
@@ -148,11 +185,13 @@ function OpenButtonOpenClosedPartList() {
       setInputPart({
         id: row.id,
         partId: row.partId,
+        // partId: isSelect ? row.partId : "",
         unitWeight: row.unitWeight,
         qtyAccepted: row.qtyAccepted,
         qtyRejected: row.qtyRejected,
         qtyReceived: row.qtyReceived,
       });
+      setSelectedPart([{ PartId: row.partId }]);
     },
   };
 
@@ -290,7 +329,7 @@ function OpenButtonOpenClosedPartList() {
             hover
             condensed
             headerClasses="header-class tableHeaderBGColor"
-            //selectRow={selectRow}
+            selectRow={selectRow}
           ></BootstrapTable>
         </div>
         <div className="col-md-4 col-sm-12">
@@ -310,7 +349,7 @@ function OpenButtonOpenClosedPartList() {
                 <h5>Serial Details</h5>
               </p>
               <div className="col-md-4 ">
-                <label className="form-label mt-1">Mtrl Code</label>
+                <label className="form-label mt-1">Part ID</label>
               </div>
               <div className="col-md-8">
                 {/* <select
@@ -328,12 +367,14 @@ function OpenButtonOpenClosedPartList() {
                     </option>
                   ))}
                 </select> */}
+
                 <Typeahead
                   className="in-field"
                   id="partId"
                   labelKey="PartId"
                   options={mtrlDetails}
-                  disabled={boolVal}
+                  selected={selectedPart}
+                  disabled
                   placeholder="Select Part"
                 />
               </div>
@@ -390,6 +431,7 @@ function OpenButtonOpenClosedPartList() {
                 <input
                   className="in-field"
                   type="text"
+                  value={inputPart.qtyReceived - inputPart.qtyAccepted}
                   name="qtyRejected"
                   readOnly
                 />

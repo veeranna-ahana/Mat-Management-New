@@ -62,9 +62,7 @@ function Header({ user }) {
               <button
                 style={{
                   backgroundColor: "transparent",
-
                   border: "none",
-
                   color: "black",
                 }}
                 onClick={logout}
