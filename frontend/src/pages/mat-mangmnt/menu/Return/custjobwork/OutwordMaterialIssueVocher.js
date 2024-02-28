@@ -727,7 +727,7 @@ function OutwordMaterialIssueVocher(props) {
             </div>
             <div className="col-md-6">
               <div className="d-flex flex-column">
-                <label className="form-label">Address</label>
+                <label className="form-label">Consignee Address</label>
                 <textarea
                   cols="30"
                   rows="3"
