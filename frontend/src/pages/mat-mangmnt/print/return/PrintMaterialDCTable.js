@@ -295,9 +295,7 @@ const PrintMaterialDCTable = ({
                   </View>
                 </View>
               </View>
-
               {/* <View style={{ ...styles.titleRight1 }}></View> */}
-
               {/* <Text style={styles.titleFull1}> */}
               {/* <View style={{ ...styles.insideBox }}>
                 <View style={{ display: "flex", flexDirection: "row" }}>
@@ -305,9 +303,7 @@ const PrintMaterialDCTable = ({
                   <Text>{dcRegister?.AuhtorisingDocu}</Text>
                 </View>
               </View> */}
-
               {/* <Text style={styles.topspace}></Text> */}
-
               <View
                 style={{
                   ...styles.insideBox,
@@ -356,7 +352,6 @@ const PrintMaterialDCTable = ({
                   );
                 })}
               </View>
-
               {/* <Text style={styles.topspace}></Text>
           <Text style={styles.topspace}></Text>
           <Text style={styles.topspace}></Text>
@@ -386,6 +381,8 @@ const PrintMaterialDCTable = ({
               </View>
               <View
                 style={{
+                  ...styles.insideBox,
+                  // borderBottom:'1px',
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-around",
@@ -413,6 +410,84 @@ const PrintMaterialDCTable = ({
                 >
                   <Text style={{ ...styles.fontBold }}>Total Weight : </Text>
                   <Text>{formHeader.TotalWeight}</Text>
+                </View>
+              </View>
+              <View style={{ ...styles.insideBox }}>
+                <View>
+                  <Text>
+                    Please receive the above goods return to us the duplicate
+                    copy of the "Delivery Challan" duly stamped and receipted in
+                    acknowledgement of having received the material in good
+                    condition. Any issues on this transactions, kindly initmate
+                    to us in writing within 3 days from the date of receipt.
+                  </Text>
+                </View>
+                <View>
+                  <Text style={{ ...styles.fontBold }}>
+                    SUBJECT TO BANGALORE JURISDICTION
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  ...styles.insideBox,
+                  ...styles.fontBold,
+                  display: "flex",
+                  flexDirection: "row",
+                  // height: "42px",
+                  border: "none",
+                }}
+              >
+                <View
+                  style={{
+                    width: "50%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    {/* <Text style={{ padding: "6%" }}></Text> */}
+
+                    <Text> </Text>
+                    <Text style={{ padding: "3%" }}></Text>
+                    <Text>Customer Signature with Seal</Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: "50%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      // alignItems: "space-between",
+                      // justifyContent: "center",
+                    }}
+                  >
+                    <Text>For MAGOD LASER MACHINING PVT. LTD.</Text>
+                    <Text style={{ padding: "5%" }}></Text>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text>Authorised Signatory</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
