@@ -835,7 +835,10 @@ function Parts(props) {
           </div> */}
               <div>
                 <div style={{ maxHeight: "400px", overflow: "auto" }}>
-                  <ThirdTable thirdTableData={thirdTableData} />
+                  <ThirdTable
+                    thirdTableData={thirdTableData}
+                    setThirdTableData={setThirdTableData}
+                  />
 
                   {/* <BootstrapTable
                 keyField="Id"
