@@ -37,7 +37,7 @@ function PrintIVListServicePart({
   return (
     <Modal show={isOpen} onHide={handleClose} fullscreen>
       <Modal.Header closeButton>
-        <Modal.Title>Assemby Parts Issue Voucher</Modal.Title>
+        <Modal.Title>Assembly Parts Issue Voucher</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Fragment>

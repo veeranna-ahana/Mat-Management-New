@@ -160,7 +160,7 @@ function OpenButtonDraftPartList() {
     {
       text: "Qty Rejected",
       dataField: "qtyRejected",
-      formatter: (celContent, row) => <div className="">{qtyRejected}</div>,
+      // formatter: (celContent, row) => <div className="">{qtyRejected}</div>,
       headerStyle: { whiteSpace: "nowrap" },
     },
   ];
@@ -193,61 +193,8 @@ function OpenButtonDraftPartList() {
     setPartArray(newArray);
   };
 
-  // const changePartHandle = (e) => {
-  //   const { value, name } = e.target;
-  //   if (name === "unitWeight" && parseFloat(value) < 0) {
-  //     toast.error("unitWeight should be a positive value");
-  //   }
-  //   setInputPart((preValue) => {
-  //     return {
-  //       ...preValue,
-  //       [name]: value,
-  //     };
-  //   });
-  //   inputPart[name] = value;
-  //   inputPart.custBomId = formHeader.customer;
-  //   inputPart.rvId = formHeader.rvId;
-  //   // inputPart.qtyRejected = 0;
-  //   inputPart.qtyRejected = inputPart.qtyReceived - inputPart.qtyAccepted;
-  //   inputPart.qtyUsed = 0;
-  //   inputPart.qtyReturned = 0;
-  //   inputPart.qtyIssued = 0;
-  //   setInputPart(inputPart);
-
-  //   //update blank row with respected to modified part textfield
-  //   postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-  //     if (data?.affectedRows !== 0) {
-  //     } else {
-  //       toast.error("Record Not Updated");
-  //     }
-  //   });
-
-  //   const newArray = partArray.map((p) =>
-  //     p.id === partUniqueId
-  //       ? {
-  //           ...p,
-  //           [name]: value,
-  //         }
-  //       : p
-  //   );
-
-  //   setPartArray(newArray);
-
-  //   let totwt = 0;
-  //   newArray.map((obj) => {
-  //     totwt =
-  //       parseFloat(totwt) +
-  //       // parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
-  //       parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
-  //   });
-
-  //   setCalcWeightVal(parseFloat(totwt).toFixed(2));
-  //   setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(2) });
-  // };
-
   const changePartHandle = (e) => {
     const { value, name } = e.target;
-
     if (name === "unitWeight" && parseFloat(value) < 0) {
       toast.error("unitWeight should be a positive value");
       return;
@@ -255,47 +202,72 @@ function OpenButtonDraftPartList() {
 
     const formattedValue =
       name === "unitWeight" ? value.replace(/(\.\d{3})\d+/, "$1") : value;
+    setInputPart((preValue) => {
+      return {
+        ...preValue,
+        [name]: formattedValue,
+      };
+    });
+    inputPart[name] = formattedValue;
+    inputPart.custBomId = formHeader.customer;
+    inputPart.rvId = formHeader.rvId;
+    // inputPart.qtyRejected = 0;
+    inputPart.qtyRejected =
+      parseFloat(inputPart.qtyReceived) - parseFloat(inputPart.qtyAccepted);
+    inputPart.qtyUsed = 0;
+    inputPart.qtyReturned = 0;
+    inputPart.qtyIssued = 0;
+    setInputPart(inputPart);
 
-    // Update inputPart state
-    setInputPart((prevInputPart) => ({
-      ...prevInputPart,
-      [name]: formattedValue,
-      custBomId: formHeader.customer,
-      rvId: formHeader.rvId,
-      qtyRejected: prevInputPart.qtyReceived - prevInputPart.qtyAccepted,
-      qtyUsed: 0,
-      qtyReturned: 0,
-      qtyIssued: 0,
-    }));
-
-    // Update the server with the new inputPart data
+    //update blank row with respected to modified part textfield
     postRequest(endpoints.updatePartReceiptDetails, inputPart, (data) => {
-      if (data.affectedRows === 0) {
+      if (data?.affectedRows !== 0) {
+      } else {
         toast.error("Record Not Updated");
       }
     });
 
-    // Update the partArray with the new value
-    const newArray = partArray.map((p) =>
-      p.id === partUniqueId
-        ? {
-            ...p,
-            [name]: formattedValue,
-          }
-        : p
-    );
+    // const newArray = partArray.map((p) =>
+    //   p.id === partUniqueId
+    //     ? {
+    //         ...p,
+    //         [name]: formattedValue,
+
+    //       }
+    //     : p
+    // );
+
+    const newArray = partArray.map((p) => {
+      if (p.id === partUniqueId) {
+        // Calculate the updated qtyRejected based on the new qtyReceived and qtyAccepted values
+        const qtyReceived =
+          name === "qtyReceived" ? formattedValue : p.qtyReceived;
+        const qtyAccepted =
+          name === "qtyAccepted" ? formattedValue : p.qtyAccepted;
+        const qtyRejected = parseFloat(qtyReceived) - parseFloat(qtyAccepted);
+
+        return {
+          ...p,
+          [name]: formattedValue,
+          qtyRejected: isNaN(qtyRejected) ? 0 : qtyRejected,
+        };
+      } else {
+        return p;
+      }
+    });
+
     setPartArray(newArray);
 
-    // Calculate and set the total weight
     let totwt = 0;
-    newArray.forEach((obj) => {
-      totwt += parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
+    newArray.map((obj) => {
+      totwt =
+        parseFloat(totwt) +
+        // parseFloat(obj.unitWeight) * parseFloat(obj.qtyReceived);
+        parseFloat(obj.unitWeight) * parseFloat(obj.qtyAccepted);
     });
-    setCalcWeightVal(totwt.toFixed(3));
-    setFormHeader((prevFormHeader) => ({
-      ...prevFormHeader,
-      calcWeight: totwt.toFixed(3),
-    }));
+
+    setCalcWeightVal(parseFloat(totwt).toFixed(3));
+    setFormHeader({ ...formHeader, calcWeight: parseFloat(totwt).toFixed(3) });
   };
 
   let { partId, unitWeight, qtyReceived, qtyAccepted, qtyRejected } = inputPart;
