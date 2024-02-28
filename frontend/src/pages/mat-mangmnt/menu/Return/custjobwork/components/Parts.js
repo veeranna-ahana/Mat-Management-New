@@ -402,7 +402,7 @@ function Parts(props) {
         toast.error(
           "Greater then the quantity received, plus already returned/used."
         );
-      } else if (returnNew === 0) {
+      } else if (returnNew <= 0) {
         toast.error("Stock is already returned");
       } else {
         // toast.success("good to go!!!");
