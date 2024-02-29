@@ -395,12 +395,12 @@ export default function PrintMaterialDCTable(props) {
                         ...styles.titleMiddle2,
                       }}
                     >
-                      <Text style={{ ...styles.fontBold }}>
+                      {/* <Text style={{ ...styles.fontBold }}>
                         Total Quantity :{" "}
                       </Text>
-                      <Text>{props.totalQTYVar}</Text>
-                      {/* <Text style={{ ...styles.fontBold }}>Total Items : </Text>
-                      <Text>{props.outData?.length}</Text> */}
+                      <Text>{props.totalQTYVar}</Text> */}
+                      <Text style={{ ...styles.fontBold }}>Total Items : </Text>
+                      <Text>{props.outData?.length}</Text>
                     </View>
 
                     <View
@@ -411,7 +411,7 @@ export default function PrintMaterialDCTable(props) {
                       }}
                     >
                       <Text style={{ ...styles.fontBold }}>
-                        Total Weight :{" "}
+                        Total Weight / Quantity :{" "}
                       </Text>
                       <Text>{props.formHeader.TotalWeight}</Text>
                     </View>
