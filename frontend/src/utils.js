@@ -168,8 +168,8 @@ export function getVolume(obj, shape, para1, para2, para3) {
     dblVol =
       Math.PI *
       para1 *
-      (Math.Pow(obj.StaticPara1 / 2, 2) -
-        Math.Pow(obj.StaticPara1 / 2 - obj.StaticPara2, 2));
+      (Math.pow(obj.StaticPara1 / 2, 2) -
+        Math.pow(obj.StaticPara1 / 2 - obj.StaticPara2, 2));
   } else if (shape === "Plate") {
     dblVol = obj.StaticPara1 * para1 * para2;
   } else if (shape === "Strip") {
